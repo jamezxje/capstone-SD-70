@@ -7,7 +7,7 @@ import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.type.Role;
 import org.fpoly.capstone.repository.UserRepository;
 import org.fpoly.capstone.service.UserService;
-import org.fpoly.capstone.service.payload.UserRequestDTO;
+import org.fpoly.capstone.service.payload.user.UserRequestDTO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;

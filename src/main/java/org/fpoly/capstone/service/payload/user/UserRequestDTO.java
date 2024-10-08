@@ -1,4 +1,4 @@
-package org.fpoly.capstone.service.payload;
+package org.fpoly.capstone.service.payload.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

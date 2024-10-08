@@ -1,5 +1,6 @@
 package org.fpoly.capstone.config;
 
+import org.fpoly.capstone.entity.Color;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.type.Role;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,5 +21,12 @@ public class DataSeeder {
       new User(null, "Customer", "User3", "customer1@example.com", passwordEncoder().encode("customerPass1"), "1112223333", LocalDate.of(1995, 8, 20), null, Role.ROLE_CUSTOMER, null, true),
       new User(null, "Customer", "User4", "customer2@example.com", passwordEncoder().encode("customerPass2"), "4445556666", LocalDate.of(1992, 12, 10), null, Role.ROLE_CUSTOMER, null, true)
   );
-  
+
+  public static final List<Color> COLOR_LIST = List.of(
+      new Color("red", true),
+      new Color("blue", true),
+      new Color("green", true),
+      new Color("black", false)
+  );
+
 }

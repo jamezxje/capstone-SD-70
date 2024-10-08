@@ -1,9 +1,9 @@
 package org.fpoly.capstone.controller.auth;
 
 import lombok.RequiredArgsConstructor;
-import org.fpoly.capstone.controller.payload.UserModel;
+import org.fpoly.capstone.controller.payload.user.UserModel;
 import org.fpoly.capstone.service.UserService;
-import org.fpoly.capstone.service.payload.UserRequestDTO;
+import org.fpoly.capstone.service.payload.user.UserRequestDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
