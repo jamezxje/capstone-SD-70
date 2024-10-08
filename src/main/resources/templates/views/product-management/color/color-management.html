@@ -74,26 +74,48 @@
                     <div class="d-flex justify-content-end">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-center">
+
+                                <!-- First Page Button -->
+                                <li class="page-item" th:classappend="${colorPage.number == 0} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/dashboard/product-management/color(page=1, size=${colorPage.size})}">
+                                        First
+                                    </a>
+                                </li>
+
+                                <!-- Previous Page Button -->
                                 <li class="page-item" th:classappend="${colorPage.hasPrevious()} ? '' : 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/dashboard/product-management/color(page=${colorPage.number - 1}, size=${colorPage.size})}">
+                                       th:href="@{/dashboard/product-management/color(page=${colorPage.number}, size=${colorPage.size})}">
                                         Previous
                                     </a>
                                 </li>
 
+                                <!-- Page Numbers -->
                                 <li class="page-item" th:each="i : ${#numbers.sequence(1, colorPage.totalPages)}"
                                     th:classappend="${colorPage.number + 1 == i} ? 'active'">
                                     <a class="page-link"
-                                       th:href="@{/dashboard/product-management/color(page=${i - 1}, size=${colorPage.size})}"
+                                       th:href="@{/dashboard/product-management/color(page=${i}, size=${colorPage.size})}"
                                        th:text="${i}">1</a>
                                 </li>
 
+                                <!-- Next Page Button -->
                                 <li class="page-item" th:classappend="${colorPage.hasNext()} ? '' : 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/dashboard/product-management/color(page=${colorPage.number + 1}, size=${colorPage.size})}">
+                                       th:href="@{/dashboard/product-management/color(page=${colorPage.number + 2}, size=${colorPage.size})}">
                                         Next
                                     </a>
                                 </li>
+
+                                <!-- Last Page Button -->
+                                <li class="page-item"
+                                    th:classappend="${colorPage.number + 1 == colorPage.totalPages} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/dashboard/product-management/color(page=${colorPage.totalPages}, size=${colorPage.size})}">
+                                        Last
+                                    </a>
+                                </li>
+
                             </ul>
                         </nav>
                     </div>
@@ -236,7 +258,6 @@
                 deleteForm.setAttribute('action', action.replace('/0', '/' + colorId));
             });
         });
-
 
     </script>
 

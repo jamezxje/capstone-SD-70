@@ -34,10 +34,10 @@ public class ColorController {
   private final ModelMapper modelMapper;
 
   @GetMapping
-  public String onOpenColorView(@RequestParam(defaultValue = "0") int page,
+  public String onOpenColorView(@RequestParam(defaultValue = "1") int page,  // Start page index from 1
                                 @RequestParam(defaultValue = "1") int size,
                                 Model model) {
-    Pageable pageable = PageRequest.of(page, size);
+    Pageable pageable = PageRequest.of(page - 1, size);  // Subtract 1 to adjust for 0-based index
     Page<ColorResponse> colorPage = this.colorService.getAllColor(pageable);
 
     List<ColorViewModel> viewModels = colorPage.getContent().stream()
@@ -52,14 +52,15 @@ public class ColorController {
     return "/views/product-management/color/color-management";
   }
 
+
   @PostMapping
   public String createColor(@Valid @ModelAttribute("colorModel") ColorModel colorModel,
                             BindingResult result,
-                            @RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "1") int size,
                             Model model, RedirectAttributes redirectAttributes) {
     if (result.hasErrors()) {
-      Pageable pageable = PageRequest.of(page, size);
+      Pageable pageable = PageRequest.of(page - 1, size);
       Page<ColorResponse> colorPage = this.colorService.getAllColor(pageable);
 
       List<ColorViewModel> viewModels = colorPage.getContent().stream()
@@ -84,11 +85,11 @@ public class ColorController {
   @PostMapping("/update")
   public String updateColor(@Valid @ModelAttribute("editColorModel") ColorModel editColorModel,
                             BindingResult result,
-                            @RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "1") int size,
                             Model model, RedirectAttributes redirectAttributes) {
     if (result.hasErrors()) {
-      Pageable pageable = PageRequest.of(page, size);
+      Pageable pageable = PageRequest.of(page - 1, size);
       Page<ColorResponse> colorPage = this.colorService.getAllColor(pageable);
 
       List<ColorViewModel> viewModels = colorPage.getContent().stream()
@@ -115,7 +116,7 @@ public class ColorController {
 
   @PostMapping("/delete/{id}")
   public String deleteColor(@PathVariable Integer id,
-                            @RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "1") int size,
                             RedirectAttributes redirectAttributes) {
     try {
