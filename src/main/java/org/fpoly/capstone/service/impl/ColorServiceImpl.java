@@ -8,13 +8,9 @@ import org.fpoly.capstone.service.ColorService;
 import org.fpoly.capstone.service.payload.color.ColorRequest;
 import org.fpoly.capstone.service.payload.color.ColorResponse;
 import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +23,12 @@ public class ColorServiceImpl implements ColorService {
   public Page<ColorResponse> getAllColor(Pageable pageable) {
     return this.colorRepository.findAll(pageable)
         .map(color -> this.modelMapper.map(color, ColorResponse.class));
+  }
+
+  @Override
+  public Page<ColorResponse> searchColors(String name, Boolean status, Pageable pageable) {
+    // Delegate the search logic to the repository's custom query method
+    return this.colorRepository.findByFilter(name, status, pageable);
   }
 
   @Override

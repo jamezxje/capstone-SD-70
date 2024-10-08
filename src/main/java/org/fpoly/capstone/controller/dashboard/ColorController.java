@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(path = "dashboard/product-management/color")
@@ -32,26 +31,36 @@ public class ColorController {
 
   private final ColorService colorService;
   private final ModelMapper modelMapper;
+  private static final String COLOR = "colors";
+  private static final String COLOR_PAGE = "colorPage";
+  private static final String COLOR_VIEW = "/views/product-management/color/color-management";
+  private static final String SUCCESS_MESSAGE = "successMessage";
 
   @GetMapping
-  public String onOpenColorView(@RequestParam(defaultValue = "1") int page,  // Start page index from 1
+  public String onOpenColorView(@RequestParam(defaultValue = "1") int page,
                                 @RequestParam(defaultValue = "1") int size,
+                                @RequestParam(required = false) String name,
+                                @RequestParam(required = false) Boolean status,
                                 Model model) {
-    Pageable pageable = PageRequest.of(page - 1, size);  // Subtract 1 to adjust for 0-based index
-    Page<ColorResponse> colorPage = this.colorService.getAllColor(pageable);
+
+    Pageable pageable = PageRequest.of(page - 1, size);
+
+    Page<ColorResponse> colorPage = this.colorService.searchColors(name, status, pageable);
 
     List<ColorViewModel> viewModels = colorPage.getContent().stream()
         .map(response -> this.modelMapper.map(response, ColorViewModel.class))
-        .collect(Collectors.toList());
+        .toList();
 
-    model.addAttribute("colors", viewModels);
-    model.addAttribute("colorPage", colorPage);
+    model.addAttribute(COLOR, viewModels);
+    model.addAttribute(COLOR_PAGE, colorPage);
+    model.addAttribute("searchName", name);
+    model.addAttribute("searchStatus", status);
     model.addAttribute("colorModel", new ColorModel());
     model.addAttribute("editColorModel", new ColorModel());
 
-    return "/views/product-management/color/color-management";
-  }
+    return COLOR_VIEW;
 
+  }
 
   @PostMapping
   public String createColor(@Valid @ModelAttribute("colorModel") ColorModel colorModel,
@@ -59,28 +68,30 @@ public class ColorController {
                             @RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "1") int size,
                             Model model, RedirectAttributes redirectAttributes) {
+
     if (result.hasErrors()) {
       Pageable pageable = PageRequest.of(page - 1, size);
       Page<ColorResponse> colorPage = this.colorService.getAllColor(pageable);
 
       List<ColorViewModel> viewModels = colorPage.getContent().stream()
           .map(response -> this.modelMapper.map(response, ColorViewModel.class))
-          .collect(Collectors.toList());
+          .toList();
 
-      model.addAttribute("colors", viewModels);
-      model.addAttribute("colorPage", colorPage);
+      model.addAttribute(COLOR, viewModels);
+      model.addAttribute(COLOR_PAGE, colorPage);
 
-      return "/views/product-management/color/color-management";
+      return COLOR_VIEW;
+
     }
 
     ColorRequest colorRequest = this.modelMapper.map(colorModel, ColorRequest.class);
     this.colorService.createColor(colorRequest);
 
-    redirectAttributes.addFlashAttribute("successMessage", "Color created successfully!");
+    redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Color created successfully!");
 
     return "redirect:/dashboard/product-management/color";
-  }
 
+  }
 
   @PostMapping("/update")
   public String updateColor(@Valid @ModelAttribute("editColorModel") ColorModel editColorModel,
@@ -88,30 +99,34 @@ public class ColorController {
                             @RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "1") int size,
                             Model model, RedirectAttributes redirectAttributes) {
+
     if (result.hasErrors()) {
       Pageable pageable = PageRequest.of(page - 1, size);
       Page<ColorResponse> colorPage = this.colorService.getAllColor(pageable);
 
       List<ColorViewModel> viewModels = colorPage.getContent().stream()
           .map(response -> this.modelMapper.map(response, ColorViewModel.class))
-          .collect(Collectors.toList());
+          .toList();
 
-      model.addAttribute("colors", viewModels);
-      model.addAttribute("colorPage", colorPage);
+      model.addAttribute(COLOR, viewModels);
+      model.addAttribute(COLOR_PAGE, colorPage);
 
-      return "/views/product-management/color/color-management";
+      return COLOR_VIEW;
+
     }
 
     try {
       ColorRequest colorRequest = this.modelMapper.map(editColorModel, ColorRequest.class);
+
       this.colorService.updateColor(editColorModel.getId(), colorRequest);
 
-      redirectAttributes.addFlashAttribute("successMessage", "Color updated successfully!");
+      redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Color updated successfully!");
     } catch (Exception e) {
       redirectAttributes.addFlashAttribute("errorMessage", "Failed to update the color. Please try again.");
     }
 
     return "redirect:/dashboard/product-management/color";
+
   }
 
   @PostMapping("/delete/{id}")
@@ -119,15 +134,17 @@ public class ColorController {
                             @RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "1") int size,
                             RedirectAttributes redirectAttributes) {
+
     try {
       this.colorService.deleteColor(id);
-      redirectAttributes.addFlashAttribute("successMessage", "Color deleted successfully!");
+
+      redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Color deleted successfully!");
     } catch (Exception e) {
       redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete the color. Please try again.");
     }
 
-    // After deletion, redirect to the paginated list
     return "redirect:/dashboard/product-management/color?page=" + page + "&size=" + size;
+
   }
 
 }
