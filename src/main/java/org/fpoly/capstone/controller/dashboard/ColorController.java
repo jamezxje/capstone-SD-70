@@ -45,7 +45,7 @@ public class ColorController {
 
     Pageable pageable = PageRequest.of(page - 1, size);
 
-    Page<ColorResponse> colorPage = this.colorService.searchColors(name, status, pageable);
+    Page<ColorResponse> colorPage = this.colorService.searchColor(name, status, pageable);
 
     List<ColorViewModel> viewModels = colorPage.getContent().stream()
         .map(response -> this.modelMapper.map(response, ColorViewModel.class))

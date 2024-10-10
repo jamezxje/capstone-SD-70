@@ -9,13 +9,14 @@ public interface ColorService {
 
   Page<ColorResponse> getAllColor(Pageable pageable);
 
-  Page<ColorResponse> searchColors(String name, Boolean status, Pageable pageable);
+  Page<ColorResponse> searchColor(String name, Boolean status, Pageable pageable);
 
   void createColor(ColorRequest request);
 
-  ColorResponse updateColor(Integer colorId, ColorRequest request);
+  void updateColor(Integer colorId, ColorRequest request);
 
   void deleteColor(Integer colorId);
 
   ColorResponse getColorById(Integer colorId);
+
 }

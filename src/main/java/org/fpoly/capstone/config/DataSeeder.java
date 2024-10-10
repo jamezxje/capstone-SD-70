@@ -1,5 +1,6 @@
 package org.fpoly.capstone.config;
 
+import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Color;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.type.Role;
@@ -27,6 +28,14 @@ public class DataSeeder {
       new Color("blue", true),
       new Color("green", true),
       new Color("black", false)
+  );
+
+  public static final List<Category> CATEGORY_LIST = List.of(
+      new Category("Polo", true),
+      new Category("Crew Neck", true),
+      new Category("Henly T-Shirts", true),
+      new Category("Off Shoulder T-Shirts", false),
+      new Category("Cowl", false)
   );
 
 }
