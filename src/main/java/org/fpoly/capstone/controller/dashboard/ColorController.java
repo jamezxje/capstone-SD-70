@@ -38,7 +38,7 @@ public class ColorController {
 
   @GetMapping
   public String onOpenColorView(@RequestParam(defaultValue = "1") int page,
-                                @RequestParam(defaultValue = "1") int size,
+                                @RequestParam(defaultValue = "10") int size,
                                 @RequestParam(required = false) String name,
                                 @RequestParam(required = false) Boolean status,
                                 Model model) {
@@ -66,7 +66,7 @@ public class ColorController {
   public String createColor(@Valid @ModelAttribute("colorModel") ColorModel colorModel,
                             BindingResult result,
                             @RequestParam(defaultValue = "1") int page,
-                            @RequestParam(defaultValue = "1") int size,
+                            @RequestParam(defaultValue = "10") int size,
                             Model model, RedirectAttributes redirectAttributes) {
 
     if (result.hasErrors()) {
@@ -97,7 +97,7 @@ public class ColorController {
   public String updateColor(@Valid @ModelAttribute("editColorModel") ColorModel editColorModel,
                             BindingResult result,
                             @RequestParam(defaultValue = "1") int page,
-                            @RequestParam(defaultValue = "1") int size,
+                            @RequestParam(defaultValue = "10") int size,
                             Model model, RedirectAttributes redirectAttributes) {
 
     if (result.hasErrors()) {
@@ -132,7 +132,7 @@ public class ColorController {
   @PostMapping("/delete/{id}")
   public String deleteColor(@PathVariable Integer id,
                             @RequestParam(defaultValue = "1") int page,
-                            @RequestParam(defaultValue = "1") int size,
+                            @RequestParam(defaultValue = "10") int size,
                             RedirectAttributes redirectAttributes) {
 
     try {

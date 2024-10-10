@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.repository.CategoryRepository;
 import org.fpoly.capstone.repository.ColorRepository;
 import org.fpoly.capstone.repository.MaterialRepository;
+import org.fpoly.capstone.repository.SizeRepository;
 import org.fpoly.capstone.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ public class ApplicationStartupRunner implements CommandLineRunner {
   private final ColorRepository colorRepository;
   private final CategoryRepository categoryRepository;
   private final MaterialRepository materialRepository;
+  private final SizeRepository sizeRepository;
 
   @Override
   public void run(String... args) throws Exception {
@@ -26,6 +28,7 @@ public class ApplicationStartupRunner implements CommandLineRunner {
     this.colorRepository.saveAll(COLOR_LIST);
     this.categoryRepository.saveAll(CATEGORY_LIST);
     this.materialRepository.saveAll(MATERIAL_LIST);
+    this.sizeRepository.saveAll(SIZE_LIST);
 
   }
 }

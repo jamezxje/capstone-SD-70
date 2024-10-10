@@ -38,7 +38,7 @@ public class MaterialController {
 
   @GetMapping
   public String onOpenMaterialView(@RequestParam(defaultValue = "1") int page,
-                                   @RequestParam(defaultValue = "1") int size,
+                                   @RequestParam(defaultValue = "10") int size,
                                    @RequestParam(required = false) String name,
                                    @RequestParam(required = false) Boolean status,
                                    Model model) {
@@ -66,7 +66,7 @@ public class MaterialController {
   public String createMaterial(@Valid @ModelAttribute("materialModel") MaterialModel materialModel,
                                BindingResult result,
                                @RequestParam(defaultValue = "1") int page,
-                               @RequestParam(defaultValue = "1") int size,
+                               @RequestParam(defaultValue = "10") int size,
                                Model model, RedirectAttributes redirectAttributes) {
 
     if (result.hasErrors()) {
@@ -97,7 +97,7 @@ public class MaterialController {
   public String updateMaterial(@Valid @ModelAttribute("editMaterialModel") MaterialModel editMaterialModel,
                                BindingResult result,
                                @RequestParam(defaultValue = "1") int page,
-                               @RequestParam(defaultValue = "1") int size,
+                               @RequestParam(defaultValue = "10") int size,
                                Model model, RedirectAttributes redirectAttributes) {
 
     if (result.hasErrors()) {
@@ -132,7 +132,7 @@ public class MaterialController {
   @PostMapping("/delete/{id}")
   public String deleteMaterial(@PathVariable Integer id,
                                @RequestParam(defaultValue = "1") int page,
-                               @RequestParam(defaultValue = "1") int size,
+                               @RequestParam(defaultValue = "10") int size,
                                RedirectAttributes redirectAttributes) {
 
     try {

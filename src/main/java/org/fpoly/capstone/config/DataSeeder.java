@@ -3,6 +3,7 @@ package org.fpoly.capstone.config;
 import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Color;
 import org.fpoly.capstone.entity.Material;
+import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.type.Role;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,6 +46,14 @@ public class DataSeeder {
       new Material("Jersey", true),
       new Material("Pima Cotton", false),
       new Material("Rayon", false)
+  );
+
+  public static final List<Size> SIZE_LIST = List.of(
+      new Size("S", true),
+      new Size("M", true),
+      new Size("L", true),
+      new Size("XL", false),
+      new Size("XXL", false)
   );
 
 }
