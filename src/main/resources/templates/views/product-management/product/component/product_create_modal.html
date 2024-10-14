@@ -1,0 +1,101 @@
+<!--/*@thymesVar id="someCollection" type="org.fpoly.capstone.service.payload.product.ProductRequest"*/-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Create Modal</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
+</head>
+<body>
+<th:block th:fragment="productCreateModal">
+    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+            data-bs-target="#createProductModal">
+        Create new product
+    </button>
+    <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg w-50">
+            <div class="modal-content">
+                <form th:action="@{/dashboard/product-management/product}" th:object="${productModel}" method="post"
+                      enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createModalLabel">Create New Product</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="code" class="form-label">Product Code</label>
+                                    <input type="text" class="form-control" id="code" name="code" th:field="*{code}"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Product Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" th:field="*{name}"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="weight" class="form-label">Weight</label>
+                                    <input type="text" class="form-control" id="weight" name="weight"
+                                           th:field="*{weight}"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="gsmQualification" class="form-label">GSM Qualification</label>
+                                    <input type="text" class="form-control" id="gsmQualification"
+                                           name="gsmQualification"
+                                           th:field="*{gsmQualification}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="featureImage" class="form-label">Feature Image</label>
+                                    <input type="file" class="form-control" id="featureImage" name="featureImage">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="sizeGuideImage" class="form-label">Size Guide Image</label>
+                                    <input type="file" class="form-control" id="sizeGuideImage" name="sizeGuideImage">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description"
+                                      th:field="*{description}"></textarea>
+                            <script>
+                                CKEDITOR.replace('description');
+                            </script>
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-control" id="status" name="status">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

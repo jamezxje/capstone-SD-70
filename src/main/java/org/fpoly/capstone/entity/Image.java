@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.fpoly.capstone.entity.base.BaseEntity;
 import org.fpoly.capstone.entity.type.ImageFormat;
 
@@ -18,6 +19,7 @@ import org.fpoly.capstone.entity.type.ImageFormat;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "image")
 public class Image extends BaseEntity {

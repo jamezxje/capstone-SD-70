@@ -1,6 +1,7 @@
 package org.fpoly.capstone.config;
 
 import lombok.RequiredArgsConstructor;
+import org.fpoly.capstone.util.RequestURI;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -29,6 +30,7 @@ public class SecurityConfiguration {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             requests -> requests
+                .requestMatchers(RequestURI.PUBLIC_UNAUTHENTICATION_URI).permitAll()
                 .requestMatchers(WHITE_LIST_URL).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/assets/**")).permitAll()
                 .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "CUSTOMER")

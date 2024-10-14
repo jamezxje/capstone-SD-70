@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.fpoly.capstone.entity.base.BaseEntity;
 
 @Builder
@@ -18,6 +19,7 @@ import org.fpoly.capstone.entity.base.BaseEntity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "product")
 public class Product extends BaseEntity {
@@ -33,6 +35,10 @@ public class Product extends BaseEntity {
 
   @Column(name = "gsm_qualification")
   private String gsmQualification;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "feature_image_id")
+  private Image featureImage;
 
   @Column(name = "description")
   private String description;
