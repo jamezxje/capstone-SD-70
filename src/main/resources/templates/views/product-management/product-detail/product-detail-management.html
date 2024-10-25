@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Detail Management</title>
+  <th:block id="th-css">
+    <link rel="stylesheet" th:href="@{/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/js/select.dataTables.min.css}">
+    <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  <div class="main-panel">
+    <div class="content-wrapper mt-3">
+      <div
+          th:insert="~{views/fragments/message-alert :: messageAlert}">
+      </div>
+
+      <!-- Search form -->
+      <div class="row">
+        <form th:action="@{/dashboard/product-management/product-detail}" method="GET"
+              class="forms-sample col-12">
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label for="searchCode">Product Code</label>
+              <input type="text" class="form-control" id="searchCode" name="searchCode" th:value="${searchCode}"
+                     placeholder="Product Code">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="searchName">Product Name</label>
+              <input type="text" class="form-control" id="searchName" name="searchName" th:value="${searchName}"
+                     placeholder="Product Name">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="searchCategoryId">Category</label>
+              <select class="form-select" id="searchCategoryId" name="searchCategoryId">
+                <option value="" selected>Select category</option>
+                <option th:each="category : ${categoryList}"
+                        th:value="${category.id}"
+                        th:text="${category.name}"
+                        th:selected="${searchCategoryId != null} ? ${searchCategoryId} == ${category.id} : false">
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="searchMaterialId">Material</label>
+              <select class="form-select" id="searchMaterialId" name="searchMaterialId">
+                <option value="" selected>Select material</option>
+                <option th:each="material : ${materialList}"
+                        th:value="${material.id}"
+                        th:text="${material.name}"
+                        th:selected="${searchMaterialId != null} ? ${searchMaterialId} == ${material.id} : false">
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="searchColorId">Color</label>
+              <select class="form-select" id="searchColorId" name="searchColorId">
+                <option value="" selected>Select color</option>
+                <option th:each="color : ${colorList}"
+                        th:value="${color.id}"
+                        th:text="${color.name}"
+                        th:selected="${searchColorId != null} ? ${searchColorId} == ${color.id} : false">
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="searchSizeId">Size</label>
+              <select class="form-select" id="searchSizeId" name="searchSizeId">
+                <option value="" selected>Select size</option>
+                <option th:each="size : ${sizeList}"
+                        th:value="${size.id}"
+                        th:text="${size.name}"
+                        th:selected="${searchSizeId != null} ? ${searchSizeId} == ${size.id} : false">
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="searchStatus">Status</label>
+              <select id="searchStatus" name="searchStatus" class="form-select">
+                <option th:value="null" th:selected="${searchStatus == null}">All</option>
+                <option th:value="true" th:selected="${searchStatus == true}">Active</option>
+                <option th:value="false" th:selected="${searchStatus == false}">Inactive</option>
+              </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end mb-4">
+              <button type="submit" class="btn btn-primary mr-2">Search</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                    data-bs-target="#createProductDetailModal">
+              Create new product detail
+            </button>
+          </div>
+          <table class="table table-hover my-3">
+            <thead>
+            <tr>
+              <th>Product code</th>
+              <th>Name</th>
+              <th>Feature image</th>
+              <th>Category</th>
+              <th>Material</th>
+              <th>Color</th>
+              <th>Size</th>
+              <th>Base Price</th>
+              <th>Stock Quantity</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(productDetails)}">
+              <td colspan="8" class="text-center"><h3>NO DATA FOUND</h3></td>
+            </tr>
+            <tr th:each="detail : ${productDetails}">
+              <td th:text="${detail.productCode}">Product Code</td>
+              <td th:text="${detail.productName}">Product Name</td>
+              <td>
+                <div>
+                  <img th:src="@{'/'+ ${detail.featureImageUrl}}"
+                       alt="Product detail Feature Image"
+                       style="width: 100%; height: 100%; border-radius: 0">
+                </div>
+              </td>
+              <td th:text="${detail.categoryName}">Category</td>
+              <td th:text="${detail.materialName}">Material</td>
+              <td th:text="${detail.colorName}">Color</td>
+              <td th:text="${detail.sizeName}">Size</td>
+              <td th:text="${detail.basePrice}">Base Price</td>
+              <td th:text="${detail.stockQuantity}">Stock Quantity</td>
+              <td th:text="${detail.status ? 'Active' : 'Inactive'}">Status</td>
+              <td>
+                <button type="button" class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editProductDetailModal"
+                        th:data-product-detail-id="${detail.productDetailId}"
+                        th:data-product-id="${detail.productId}"
+                        th:data-color-id="${detail.colorId}"
+                        th:data-category-id="${detail.categoryId}"
+                        th:data-size-id="${detail.sizeId}"
+                        th:data-material-id="${detail.materialId}"
+                        th:data-basePrice="${detail.basePrice}"
+                        th:data-stockQuantity="${detail.stockQuantity}"
+                        th:data-image-urls="${#strings.arrayJoin(detail.imageUrls, ',')}"
+                        th:data-status="${detail.status}">
+                  Edit
+                </button>
+                <a href="#"
+                   class="btn"
+                   th:classappend="${detail.status} ? 'btn-danger' : 'btn-success'"
+                   th:text="${detail.status ? 'Inactive' : 'Active'}"
+                   data-bs-toggle="modal"
+                   data-bs-target="#updateProductDetailStatusModal"
+                   th:data-product-detail-id="${detail.productDetailId}">
+                  Change status
+                </a>
+                <button type="button" class="btn btn-info"
+                        data-bs-toggle="modal"
+                        data-bs-target="#viewProductDetailModal"
+                        th:data-product-detail-id="${detail.productDetailId}"
+                        th:data-product-id="${detail.productId}"
+                        th:data-color-id="${detail.colorId}"
+                        th:data-category-id="${detail.categoryId}"
+                        th:data-size-id="${detail.sizeId}"
+                        th:data-material-id="${detail.materialId}"
+                        th:data-basePrice="${detail.basePrice}"
+                        th:data-stockQuantity="${detail.stockQuantity}"
+                        th:data-image-urls="${#strings.arrayJoin(detail.imageUrls, ',')}"
+                        th:data-status="${detail.status}">
+                  View
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <!-- Pagination -->
+          <div th:unless="${#lists.isEmpty(productDetails)}">
+            <div class="d-flex justify-content-end">
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  <!-- First Page Button -->
+                  <li class="page-item" th:classappend="${productDetailPage.number == 0} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}">
+                      First
+                    </a>
+                  </li>
+
+                  <!-- Previous Page Button -->
+                  <li class="page-item"
+                      th:classappend="${productDetailPage.hasPrevious()} ? '' : 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}">
+                      Previous
+                    </a>
+                  </li>
+
+                  <!-- Page Numbers -->
+                  <li class="page-item" th:each="i : ${#numbers.sequence(1, productDetailPage.totalPages)}"
+                      th:classappend="${productDetailPage.number + 1 == i} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}"
+                       th:text="${i}">1</a>
+                  </li>
+
+                  <!-- Next Page Button -->
+                  <li class="page-item" th:classappend="${productDetailPage.hasNext()} ? '' : 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}">
+                      Next
+                    </a>
+                  </li>
+
+                  <!-- Last Page Button -->
+                  <li class="page-item"
+                      th:classappend="${productDetailPage.number + 1 == productDetailPage.totalPages} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}">
+                      Last
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--create product detail modal-->
+  <div class="modal fade" id="createProductDetailModal" tabindex="-1" aria-labelledby="createModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg w-50">
+      <div class="modal-content">
+        <form th:action="@{/dashboard/product-management/product-detail}" th:object="${productDetailModel}"
+              method="post"
+              enctype="multipart/form-data">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createModalLabel">Create New Product Detail</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="productId">Product <span class="text-danger">*</span></label>
+                  <select class="form-select" id="productId" name="productId">
+                    <option value="" selected>Select product</option>
+                    <option th:each="product : ${productList}"
+                            th:value="${product.id}"
+                            th:text="${product.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="categoryId">Category <span class="text-danger">*</span></label>
+                  <select class="form-select" id="categoryId" name="categoryId">
+                    <option value="" selected>Select category</option>
+                    <option th:each="category : ${categoryList}"
+                            th:value="${category.id}"
+                            th:text="${category.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="materialId">Material <span class="text-danger">*</span></label>
+                  <select class="form-select" id="materialId" name="materialId">
+                    <option value="" selected>Select material</option>
+                    <option th:each="material : ${materialList}"
+                            th:value="${material.id}"
+                            th:text="${material.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="sizeId">Size <span class="text-danger">*</span></label>
+                  <select class="form-select" id="sizeId" name="sizeId">
+                    <option value="" selected>Select size</option>
+                    <option th:each="size : ${sizeList}"
+                            th:value="${size.id}"
+                            th:text="${size.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="colorId">Color <span class="text-danger">*</span></label>
+                  <select class="form-select" id="colorId" name="colorId">
+                    <option value="" selected>Select color</option>
+                    <option th:each="color : ${colorList}"
+                            th:value="${color.id}"
+                            th:text="${color.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="images" class="form-label">Gallery Image</label>
+                  <input multiple type="file" class="form-control" id="images" name="images">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="stockQuantity" class="form-label">Stock quantity</label>
+                  <input type="text" class="form-control" id="stockQuantity" name="stockQuantity"
+                         th:field="*{stockQuantity}"
+                         required>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="basePrice" class="form-label">Base price</label>
+                  <input type="text" class="form-control" id="basePrice" name="basePrice" th:field="*{basePrice}"
+                         required>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="status" class="form-label">Status</label>
+              <select class="form-control" id="status" name="status">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Product Detail Modal -->
+  <div class="modal fade" id="editProductDetailModal" tabindex="-1" aria-labelledby="editModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg w-50">
+      <div class="modal-content">
+        <form th:action="@{/dashboard/product-management/product-detail/update}" th:object="${editProductDetailModel}"
+              method="post"
+              enctype="multipart/form-data">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Edit Product Detail</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" th:field="*{id}" id="editProductDetailId">
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="editProductId">Product <span class="text-danger">*</span></label>
+                  <select class="form-select" id="editProductId" th:field="*{productId}" disabled>
+                    <option value="" selected>Select product</option>
+                    <option th:each="product : ${productList}"
+                            th:value="${product.id}"
+                            th:text="${product.name}"
+                            th:selected="${editProductDetailModel.productId == product.id}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="editCategoryId">Category <span class="text-danger">*</span></label>
+                  <select class="form-select" id="editCategoryId" th:field="*{categoryId}">
+                    <option value="" selected>Select category</option>
+                    <option th:each="category : ${categoryList}"
+                            th:value="${category.id}"
+                            th:text="${category.name}"
+                            th:selected="${editProductDetailModel.categoryId == category.id}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="editMaterialId">Material <span class="text-danger">*</span></label>
+                  <select class="form-select" id="editMaterialId" th:field="*{materialId}">
+                    <option value="" selected>Select material</option>
+                    <option th:each="material : ${materialList}"
+                            th:value="${material.id}"
+                            th:text="${material.name}"
+                            th:selected="${editProductDetailModel.materialId == material.id}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="editSizeId">Size <span class="text-danger">*</span></label>
+                  <select class="form-select" id="editSizeId" th:field="*{sizeId}">
+                    <option value="" selected>Select size</option>
+                    <option th:each="size : ${sizeList}"
+                            th:value="${size.id}"
+                            th:text="${size.name}"
+                            th:selected="${editProductDetailModel.sizeId == size.id}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="editColorId">Color <span class="text-danger">*</span></label>
+                  <select class="form-select" id="editColorId" th:field="*{colorId}">
+                    <option value="" selected>Select color</option>
+                    <option th:each="color : ${colorList}"
+                            th:value="${color.id}"
+                            th:text="${color.name}"
+                            th:selected="${editProductDetailModel.colorId == color.id}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="editImages" class="form-label">Gallery Image</label>
+                  <input multiple type="file" class="form-control" id="editImages" th:field="*{images}">
+                  <div>
+                    <p class="fs-6">Old Gallery Images</p>
+                    <div id="imagePreviewContainer" class="d-flex flex-wrap">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="editStockQuantity" class="form-label">Stock quantity</label>
+                  <input type="text" class="form-control" id="editStockQuantity"
+                         th:field="*{stockQuantity}" required>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="editBasePrice" class="form-label">Base price</label>
+                  <input type="text" class="form-control" id="editBasePrice"
+                         th:field="*{basePrice}" required>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editStatus" class="form-label">Status</label>
+              <select class="form-control" id="editStatus" th:field="*{status}">
+                <option th:value="true" th:selected="${editProductDetailModel.status == true}">Active</option>
+                <option th:value="false" th:selected="${editProductDetailModel.status == false}">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Product Detail Modal -->
+  <div class="modal fade" id="viewProductDetailModal" tabindex="-1" aria-labelledby="viewModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg w-50">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewModalLabel">View Product Detail</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-6">
+              <div class="mb-3">
+                <label for="viewProductId">Product</label>
+                <select class="form-select" id="viewProductId" disabled>
+                  <option th:each="product : ${productList}"
+                          th:value="${product.id}"
+                          th:text="${product.name}">
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                <label for="viewCategoryId">Category</label>
+                <select class="form-select" id="viewCategoryId" disabled>
+                  <option th:each="category : ${categoryList}"
+                          th:value="${category.id}"
+                          th:text="${category.name}">
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="mb-3">
+                <label for="viewMaterialId">Material</label>
+                <select class="form-select" id="viewMaterialId" disabled>
+                  <option th:each="material : ${materialList}"
+                          th:value="${material.id}"
+                          th:text="${material.name}">
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                <label for="viewSizeId">Size</label>
+                <select class="form-select" id="viewSizeId" disabled>
+                  <option th:each="size : ${sizeList}"
+                          th:value="${size.id}"
+                          th:text="${size.name}">
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="mb-3">
+                <label for="viewColorId">Color</label>
+                <select class="form-select" id="viewColorId" disabled>
+                  <option th:each="color : ${colorList}"
+                          th:value="${color.id}"
+                          th:text="${color.name}">
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                <label for="viewBasePrice">Base Price</label>
+                <input type="text" class="form-control" id="viewBasePrice" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="mb-3">
+                <label for="viewStockQuantity">Stock Quantity</label>
+                <input type="text" class="form-control" id="viewStockQuantity" readonly>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                <label for="viewStatus">Status</label>
+                <input type="text" class="form-control" id="viewStatus" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label>Gallery Image</label>
+            <div id="viewImagePreviewContainer" class="d-flex flex-wrap"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="updateProductDetailStatusModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Update Product Detail's Status</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to change status of this product?</p>
+        </div>
+        <div class="modal-footer">
+          <form id="updateProductDetailStatusForm"
+                th:action="@{/dashboard/product-management/product-detail/update/status/{id}(id=0)}"
+                method="post">
+            <input type="hidden" id="deleteProductDetailId">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Yes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</th:block>
+
+<!-- JS Section -->
+<th:block id="th-js">
+  <script src="/assets/vendors/chart.js/chart.umd.js"></script>
+  <script src="/assets/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="/assets/js/jquery.cookie.js" type="text/javascript"></script>
+  <script src="/assets/js/dashboardJS.js"></script>
+  <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          var editProductDetailModal = document.getElementById('editProductDetailModal');
+
+          editProductDetailModal.addEventListener('show.bs.modal', function (event) {
+              var button = event.relatedTarget;
+
+              // Retrieve data attributes from the clicked button
+              var productDetailId = button.getAttribute('data-product-detail-id');
+              var productId = button.getAttribute('data-product-id');
+              var categoryId = button.getAttribute('data-category-id');
+              var materialId = button.getAttribute('data-material-id');
+              var colorId = button.getAttribute('data-color-id');
+              var sizeId = button.getAttribute('data-size-id');
+              var basePrice = button.getAttribute('data-basePrice');
+              var stockQuantity = button.getAttribute('data-stockQuantity');
+              var imageUrls = button.getAttribute('data-image-urls');
+              var productStatus = button.getAttribute('data-status') === 'true';
+
+              var cleanedImageUrls = imageUrls.replace(/^\[|\]$/g, '');  // Remove leading/trailing brackets
+              var parsedImageUrls = cleanedImageUrls ? cleanedImageUrls.split(',') : [];
+
+              //log data
+              console.log("Product Edit Data")
+              console.log("Product ID:", productId);
+              console.log("Category ID:", categoryId);
+              console.log("Material ID:", materialId);
+              console.log("Color ID:", colorId);
+              console.log("Size ID:", sizeId);
+              console.log("Base Price:", basePrice);
+              console.log("Stock Quantity:", stockQuantity);
+              console.log("Image URLs:", parsedImageUrls);
+              console.log("Status:", productStatus ? 'Active' : 'Inactive');
+
+              // Get the input elements in the modal
+              var modalProductDetailId = editProductDetailModal.querySelector('#editProductDetailId');
+              var modalProductId = editProductDetailModal.querySelector('#editProductId');
+              var modalCategoryId = editProductDetailModal.querySelector('#editCategoryId');
+              var modalMaterialId = editProductDetailModal.querySelector('#editMaterialId');
+              var modalColorId = editProductDetailModal.querySelector('#editColorId');
+              var modalSizeId = editProductDetailModal.querySelector('#editSizeId');
+              var modalBasePrice = editProductDetailModal.querySelector('#editBasePrice');
+              var modalStockQuantity = editProductDetailModal.querySelector('#editStockQuantity');
+              var modalStatus = editProductDetailModal.querySelector('#editStatus');
+              var modalImagePreview = editProductDetailModal.querySelector('#imagePreviewContainer');
+
+              // Set the values into the modal fields
+              modalProductDetailId.value = productDetailId;
+              modalProductId.value = productId;
+              modalCategoryId.value = categoryId;
+              modalMaterialId.value = materialId;
+              modalColorId.value = colorId;
+              modalSizeId.value = sizeId;
+              modalBasePrice.value = basePrice;
+              modalStockQuantity.value = stockQuantity;
+              modalStatus.value = productStatus ? 'true' : 'false';
+
+              // Clear the image preview container first
+              modalImagePreview.innerHTML = '';
+
+              // Display the existing images in the modal
+              parsedImageUrls.forEach(function (url) {
+                  var imgElement = document.createElement('img');
+                  imgElement.src = '/' + url.trim();
+                  imgElement.className = 'img-fluid d-block m-2';
+                  imgElement.style.height = '60px';
+                  modalImagePreview.appendChild(imgElement);
+              });
+          });
+
+          // Detail modal
+          var viewProductDetailModal = document.getElementById('viewProductDetailModal');
+
+          viewProductDetailModal.addEventListener('show.bs.modal', function (event) {
+              var button = event.relatedTarget;
+
+              // Retrieve data attributes from the clicked button
+              var productDetailId = button.getAttribute('data-product-detail-id');
+              var productId = button.getAttribute('data-product-id');
+              var categoryId = button.getAttribute('data-category-id');
+              var materialId = button.getAttribute('data-material-id');
+              var colorId = button.getAttribute('data-color-id');
+              var sizeId = button.getAttribute('data-size-id');
+              var basePrice = button.getAttribute('data-basePrice');
+              var stockQuantity = button.getAttribute('data-stockQuantity');
+              var imageUrls = button.getAttribute('data-image-urls');
+              var productStatus = button.getAttribute('data-status') === 'true';
+
+              var cleanedImageUrls = imageUrls.replace(/^\[|\]$/g, '');  // Remove leading/trailing brackets
+              var parsedImageUrls = cleanedImageUrls ? cleanedImageUrls.split(',') : [];
+
+              //log data
+              console.log("Product Detail Data")
+              console.log("Product ID:", productId);
+              console.log("Category ID:", categoryId);
+              console.log("Material ID:", materialId);
+              console.log("Color ID:", colorId);
+              console.log("Size ID:", sizeId);
+              console.log("Base Price:", basePrice);
+              console.log("Stock Quantity:", stockQuantity);
+              console.log("Image URLs:", parsedImageUrls);
+              console.log("Status:", productStatus ? 'Active' : 'Inactive');
+
+              // Get the input elements in the modal
+              var modalProductId = viewProductDetailModal.querySelector('#viewProductId');
+              var modalCategoryId = viewProductDetailModal.querySelector('#viewCategoryId');
+              var modalMaterialId = viewProductDetailModal.querySelector('#viewMaterialId');
+              var modalColorId = viewProductDetailModal.querySelector('#viewColorId');
+              var modalSizeId = viewProductDetailModal.querySelector('#viewSizeId');
+              var modalBasePrice = viewProductDetailModal.querySelector('#viewBasePrice');
+              var modalStockQuantity = viewProductDetailModal.querySelector('#viewStockQuantity');
+              var modalStatus = viewProductDetailModal.querySelector('#viewStatus');
+              var modalImagePreview = viewProductDetailModal.querySelector('#viewImagePreviewContainer');
+
+              // Set the values into the modal fields
+              modalProductId.value = productId;
+              modalCategoryId.value = categoryId;
+              modalMaterialId.value = materialId;
+              modalColorId.value = colorId;
+              modalSizeId.value = sizeId;
+              modalBasePrice.value = basePrice;
+              modalStockQuantity.value = stockQuantity;
+              modalStatus.value = productStatus ? 'Active' : 'Inactive';
+
+              // Clear the image preview container first
+              modalImagePreview.innerHTML = '';
+
+              // Display the existing images in the modal
+              parsedImageUrls.forEach(function (url) {
+                  var imgElement = document.createElement('img');
+                  imgElement.src = '/' + url.trim();
+                  imgElement.className = 'img-fluid d-block m-2';
+                  imgElement.style.height = '60px';
+                  modalImagePreview.appendChild(imgElement);
+              });
+          });
+
+          // Handle status change modal if needed
+          var updateProductDetailStatusModal = document.getElementById('updateProductDetailStatusModal');
+          updateProductDetailStatusModal.addEventListener('show.bs.modal', function (event) {
+              var button = event.relatedTarget;
+              var productDetailId = button.getAttribute('data-product-detail-id');
+              console.log("productDetailId: " + productDetailId);
+
+              var updateStatusForm = document.getElementById('updateProductDetailStatusForm');
+              var action = updateStatusForm.getAttribute('action');
+              updateStatusForm.setAttribute('action', action.replace('/0', '/' + productDetailId));
+          });
+
+      });
+  </script>
+</th:block>
+
+</body>
+</html>
