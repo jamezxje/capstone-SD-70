@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.fpoly.capstone.entity.base.BaseEntity;
 import org.fpoly.capstone.entity.type.Role;
 
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "_user")
 public class User extends BaseEntity {

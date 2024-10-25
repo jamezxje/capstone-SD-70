@@ -12,9 +12,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.fpoly.capstone.entity.base.BaseEntity;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
@@ -22,6 +22,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "product_detail")
 public class ProductDetail extends BaseEntity {
@@ -53,7 +54,7 @@ public class ProductDetail extends BaseEntity {
   private Long stockQuantity;
 
   @Column(name = "base_price")
-  private BigDecimal basePrice;
+  private Double basePrice;
 
   @Column(name = "status")
   private Boolean status;

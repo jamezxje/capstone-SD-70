@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ColorServiceImpl implements ColorService {
@@ -19,6 +21,11 @@ public class ColorServiceImpl implements ColorService {
   private final ColorRepository colorRepository;
   private final ModelMapper modelMapper;
   private static final String COLOR_NOT_FOUND_EXCEPTIONS = "Color not found with id: ";
+
+  @Override
+  public List<Color> getAllColor() {
+    return this.colorRepository.findAll();
+  }
 
   @Override
   public Page<ColorResponse> getAllColor(Pageable pageable) {

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -35,6 +36,11 @@ public class ProductServiceImpl implements ProductService {
       mapper.map(ProductResponse::getFeatureImageUrl, ProductViewModel::setFeatureImageUrl);
       mapper.map(ProductResponse::getSizeGuideUrl, ProductViewModel::setSizeGuideUrl);
     });
+  }
+
+  @Override
+  public List<Product> getAllProduct() {
+    return this.productRepository.findAll();
   }
 
   @Override

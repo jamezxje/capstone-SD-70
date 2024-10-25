@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.fpoly.capstone.entity.base.BaseEntity;
 import org.fpoly.capstone.entity.type.OrderStatus;
 
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "order_detail")
 public class OrderDetail extends BaseEntity {

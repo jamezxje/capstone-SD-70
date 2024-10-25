@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MaterialServiceImpl implements MaterialService {
@@ -19,6 +21,11 @@ public class MaterialServiceImpl implements MaterialService {
   private final MaterialRepository materialRepository;
   private final ModelMapper modelMapper;
   private static final String MATERIAL_NOT_FOUND_EXCEPTIONS = "Material not found with id: ";
+
+  @Override
+  public List<Material> getAllMaterial() {
+    return this.materialRepository.findAll();
+  }
 
   @Override
   public Page<MaterialResponse> getAllMaterial(Pageable pageable) {

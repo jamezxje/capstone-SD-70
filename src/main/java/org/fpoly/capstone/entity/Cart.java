@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.fpoly.capstone.entity.base.BaseEntity;
 
 @Builder
@@ -17,6 +18,7 @@ import org.fpoly.capstone.entity.base.BaseEntity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "cart")
 public class Cart extends BaseEntity {

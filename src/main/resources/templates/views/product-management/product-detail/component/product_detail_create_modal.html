@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Create Modal</title>
+</head>
+<body>
+<th:block th:fragment="productCreateModal">
+  <button type="button" class="btn btn-success" data-bs-toggle="modal"
+          data-bs-target="#createProductDetailModal">
+    Create new product detail
+  </button>
+  <div class="modal fade" id="createProductDetailModal" tabindex="-1" aria-labelledby="createModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg w-50">
+      <div class="modal-content">
+        <form th:action="@{/dashboard/product-management/product-detail}" th:object="${productDetailModel}"
+              method="post"
+              enctype="multipart/form-data">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createModalLabel">Create New Product Detail</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="productId">Product <span class="text-danger">*</span></label>
+                  <select class="form-select" id="productId" name="productId">
+                    <option value="" selected>Select product</option>
+                    <option th:each="product : ${productList}"
+                            th:value="${product.id}"
+                            th:text="${product.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="categoryId">Category <span class="text-danger">*</span></label>
+                  <select class="form-select" id="categoryId" name="categoryId">
+                    <option value="" selected>Select category</option>
+                    <option th:each="category : ${categoryList}"
+                            th:value="${category.id}"
+                            th:text="${category.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="materialId">Material <span class="text-danger">*</span></label>
+                  <select class="form-select" id="materialId" name="materialId">
+                    <option value="" selected>Select material</option>
+                    <option th:each="material : ${materialList}"
+                            th:value="${material.id}"
+                            th:text="${material.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="sizeId">Size <span class="text-danger">*</span></label>
+                  <select class="form-select" id="sizeId" name="sizeId">
+                    <option value="" selected>Select size</option>
+                    <option th:each="size : ${sizeList}"
+                            th:value="${size.id}"
+                            th:text="${size.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="colorId">Color <span class="text-danger">*</span></label>
+                  <select class="form-select" id="colorId" name="colorId">
+                    <option value="" selected>Select color</option>
+                    <option th:each="color : ${colorList}"
+                            th:value="${color.id}"
+                            th:text="${color.name}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="images" class="form-label">Gallery Image</label>
+                  <input multiple type="file" class="form-control" id="images" name="images">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="stockQuantity" class="form-label">Stock quantity</label>
+                  <input type="text" class="form-control" id="stockQuantity" name="stockQuantity"
+                         th:field="*{stockQuantity}"
+                         required>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mb-3">
+                  <label for="basePrice" class="form-label">Base price</label>
+                  <input type="text" class="form-control" id="basePrice" name="basePrice" th:field="*{basePrice}"
+                         required>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="status" class="form-label">Status</label>
+              <select class="form-control" id="status" name="status">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>

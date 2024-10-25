@@ -13,11 +13,14 @@ import org.fpoly.capstone.entity.type.Role;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public class DataSeeder {
+
+  private DataSeeder() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
 
   private static PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -82,9 +85,9 @@ public class DataSeeder {
   );
 
   public static final List<ProductDetail> PRODUCT_DETAIL_LIST = List.of(
-      new ProductDetail(PRODUCT_LIST.get(0), CATEGORY_LIST.get(0), COLOR_LIST.get(0), MATERIAL_LIST.get(0), SIZE_LIST.get(1), List.of(), 50L, new BigDecimal("19.99"), true),
-      new ProductDetail(PRODUCT_LIST.get(1), CATEGORY_LIST.get(1), COLOR_LIST.get(1), MATERIAL_LIST.get(1), SIZE_LIST.get(2), List.of(), 100L, new BigDecimal("24.99"), true),
-      new ProductDetail(PRODUCT_LIST.get(2), CATEGORY_LIST.get(2), COLOR_LIST.get(2), MATERIAL_LIST.get(2), SIZE_LIST.get(3), List.of(), 75L, new BigDecimal("29.99"), true)
+      new ProductDetail(PRODUCT_LIST.get(0), CATEGORY_LIST.get(0), COLOR_LIST.get(0), MATERIAL_LIST.get(0), SIZE_LIST.get(1), List.of(), 50L, 19.99, true),
+      new ProductDetail(PRODUCT_LIST.get(1), CATEGORY_LIST.get(1), COLOR_LIST.get(1), MATERIAL_LIST.get(1), SIZE_LIST.get(2), List.of(), 100L, 24.99, true),
+      new ProductDetail(PRODUCT_LIST.get(2), CATEGORY_LIST.get(2), COLOR_LIST.get(2), MATERIAL_LIST.get(2), SIZE_LIST.get(3), List.of(), 75L, 29.99, true)
   );
 
 }

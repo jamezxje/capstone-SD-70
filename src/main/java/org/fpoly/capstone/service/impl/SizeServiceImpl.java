@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SizeServiceImpl implements SizeService {
@@ -19,6 +21,11 @@ public class SizeServiceImpl implements SizeService {
   private final SizeRepository sizeRepository;
   private final ModelMapper modelMapper;
   private static final String SIZE_NOT_FOUND_EXCEPTIONS = "Size not found with id: ";
+
+  @Override
+  public List<Size> getAllSize() {
+    return this.sizeRepository.findAll();
+  }
 
   @Override
   public Page<SizeResponse> getAllSize(Pageable pageable) {
