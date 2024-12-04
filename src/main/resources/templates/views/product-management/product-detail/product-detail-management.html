@@ -18,7 +18,6 @@
       <div
           th:insert="~{views/fragments/message-alert :: messageAlert}">
       </div>
-
       <!-- Search form -->
       <div class="row">
         <form th:action="@{/dashboard/product-management/product-detail}" method="GET"
@@ -37,7 +36,7 @@
             <div class="form-group col-md-4">
               <label for="searchCategoryId">Category</label>
               <select class="form-select" id="searchCategoryId" name="searchCategoryId">
-                <option value="" selected>Select category</option>
+                <option value="" selected>All category</option>
                 <option th:each="category : ${categoryList}"
                         th:value="${category.id}"
                         th:text="${category.name}"
@@ -48,7 +47,7 @@
             <div class="form-group col-md-4">
               <label for="searchMaterialId">Material</label>
               <select class="form-select" id="searchMaterialId" name="searchMaterialId">
-                <option value="" selected>Select material</option>
+                <option value="" selected>All material</option>
                 <option th:each="material : ${materialList}"
                         th:value="${material.id}"
                         th:text="${material.name}"
@@ -59,7 +58,7 @@
             <div class="form-group col-md-4">
               <label for="searchColorId">Color</label>
               <select class="form-select" id="searchColorId" name="searchColorId">
-                <option value="" selected>Select color</option>
+                <option value="" selected>All color</option>
                 <option th:each="color : ${colorList}"
                         th:value="${color.id}"
                         th:text="${color.name}"
@@ -70,7 +69,7 @@
             <div class="form-group col-md-4">
               <label for="searchSizeId">Size</label>
               <select class="form-select" id="searchSizeId" name="searchSizeId">
-                <option value="" selected>Select size</option>
+                <option value="" selected>All size</option>
                 <option th:each="size : ${sizeList}"
                         th:value="${size.id}"
                         th:text="${size.name}"
@@ -92,14 +91,12 @@
           </div>
         </form>
       </div>
-
       <div class="row">
         <div class="col-sm-12">
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                    data-bs-target="#createProductDetailModal">
-              Create new product detail
-            </button>
+            <div
+                th:insert="~{views/product-management/product-detail/component/product_detail_create_modal :: productDetailCreateModal}">
+            </div>
           </div>
           <table class="table table-hover my-3">
             <thead>
@@ -237,125 +234,6 @@
     </div>
   </div>
 
-  <!--create product detail modal-->
-  <div class="modal fade" id="createProductDetailModal" tabindex="-1" aria-labelledby="createModalLabel"
-       aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg w-50">
-      <div class="modal-content">
-        <form th:action="@{/dashboard/product-management/product-detail}" th:object="${productDetailModel}"
-              method="post"
-              enctype="multipart/form-data">
-          <div class="modal-header">
-            <h5 class="modal-title" id="createModalLabel">Create New Product Detail</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="productId">Product <span class="text-danger">*</span></label>
-                  <select class="form-select" id="productId" name="productId">
-                    <option value="" selected>Select product</option>
-                    <option th:each="product : ${productList}"
-                            th:value="${product.id}"
-                            th:text="${product.name}">
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="categoryId">Category <span class="text-danger">*</span></label>
-                  <select class="form-select" id="categoryId" name="categoryId">
-                    <option value="" selected>Select category</option>
-                    <option th:each="category : ${categoryList}"
-                            th:value="${category.id}"
-                            th:text="${category.name}">
-                    </option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="materialId">Material <span class="text-danger">*</span></label>
-                  <select class="form-select" id="materialId" name="materialId">
-                    <option value="" selected>Select material</option>
-                    <option th:each="material : ${materialList}"
-                            th:value="${material.id}"
-                            th:text="${material.name}">
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="sizeId">Size <span class="text-danger">*</span></label>
-                  <select class="form-select" id="sizeId" name="sizeId">
-                    <option value="" selected>Select size</option>
-                    <option th:each="size : ${sizeList}"
-                            th:value="${size.id}"
-                            th:text="${size.name}">
-                    </option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="colorId">Color <span class="text-danger">*</span></label>
-                  <select class="form-select" id="colorId" name="colorId">
-                    <option value="" selected>Select color</option>
-                    <option th:each="color : ${colorList}"
-                            th:value="${color.id}"
-                            th:text="${color.name}">
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="images" class="form-label">Gallery Image</label>
-                  <input multiple type="file" class="form-control" id="images" name="images">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="stockQuantity" class="form-label">Stock quantity</label>
-                  <input type="text" class="form-control" id="stockQuantity" name="stockQuantity"
-                         th:field="*{stockQuantity}"
-                         required>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="basePrice" class="form-label">Base price</label>
-                  <input type="text" class="form-control" id="basePrice" name="basePrice" th:field="*{basePrice}"
-                         required>
-                </div>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-control" id="status" name="status">
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
   <!-- Edit Product Detail Modal -->
   <div class="modal fade" id="editProductDetailModal" tabindex="-1" aria-labelledby="editModalLabel"
        aria-hidden="true">
@@ -374,7 +252,7 @@
               <div class="col-6">
                 <div class="mb-3">
                   <label for="editProductId">Product <span class="text-danger">*</span></label>
-                  <select class="form-select" id="editProductId" th:field="*{productId}" disabled>
+                  <select class="form-select" id="editProductId" th:field="*{productId}" readonly>
                     <option value="" selected>Select product</option>
                     <option th:each="product : ${productList}"
                             th:value="${product.id}"
@@ -613,7 +491,6 @@
     </div>
   </div>
 
-
 </th:block>
 
 <!-- JS Section -->
@@ -685,13 +562,20 @@
               modalImagePreview.innerHTML = '';
 
               // Display the existing images in the modal
-              parsedImageUrls.forEach(function (url) {
-                  var imgElement = document.createElement('img');
-                  imgElement.src = '/' + url.trim();
-                  imgElement.className = 'img-fluid d-block m-2';
-                  imgElement.style.height = '60px';
-                  modalImagePreview.appendChild(imgElement);
-              });
+              if (parsedImageUrls.length > 0) {
+                  parsedImageUrls.forEach(function (url) {
+                      var imgElement = document.createElement('img');
+                      imgElement.src = '/' + url.trim();
+                      imgElement.className = 'img-fluid d-block m-2';
+                      imgElement.style.height = '60px';
+                      modalImagePreview.appendChild(imgElement);
+                  });
+              } else {
+                  // Optional: Display a placeholder message if no images are available
+                  var placeholderMessage = document.createElement('p');
+                  placeholderMessage.textContent = 'No images available';
+                  modalImagePreview.appendChild(placeholderMessage);
+              }
           });
 
           // Detail modal
@@ -752,13 +636,20 @@
               modalImagePreview.innerHTML = '';
 
               // Display the existing images in the modal
-              parsedImageUrls.forEach(function (url) {
-                  var imgElement = document.createElement('img');
-                  imgElement.src = '/' + url.trim();
-                  imgElement.className = 'img-fluid d-block m-2';
-                  imgElement.style.height = '60px';
-                  modalImagePreview.appendChild(imgElement);
-              });
+              if (parsedImageUrls.length > 0) {
+                  parsedImageUrls.forEach(function (url) {
+                      var imgElement = document.createElement('img');
+                      imgElement.src = '/' + url.trim();
+                      imgElement.className = 'img-fluid d-block m-2';
+                      imgElement.style.height = '60px';
+                      modalImagePreview.appendChild(imgElement);
+                  });
+              } else {
+                  // Optional: Display a placeholder message if no images are available
+                  var placeholderMessage = document.createElement('p');
+                  placeholderMessage.textContent = 'No images available';
+                  modalImagePreview.appendChild(placeholderMessage);
+              }
           });
 
           // Handle status change modal if needed

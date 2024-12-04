@@ -2,13 +2,9 @@ package org.fpoly.capstone.config;
 
 import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Color;
-import org.fpoly.capstone.entity.Image;
 import org.fpoly.capstone.entity.Material;
-import org.fpoly.capstone.entity.Product;
-import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.entity.User;
-import org.fpoly.capstone.entity.type.ImageFormat;
 import org.fpoly.capstone.entity.type.Role;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -64,30 +60,5 @@ public class DataSeeder {
       new Size("XXL", false)
   );
 
-  public static final List<Image> IMAGE_LIST = List.of(
-      new Image("7-series-exterior-right-front-three-quarter-3.webp", ImageFormat.WEBP, "uploads/7-series-exterior-right-front-three-quarter-3.webp", "img1_alt"),
-      new Image("7-series-exterior-right-side-view.webp", ImageFormat.WEBP, "uploads/7-series-exterior-right-side-view.webp", "img2_alt"),
-      new Image("new-7-series-exterior-rear-view.webp", ImageFormat.WEBP, "uploads/new-7-series-exterior-rear-view.webp", "img3_alt"),
-      new Image("new-7-series-exterior-right-front-three-quarter.webp", ImageFormat.WEBP, "uploads/new-7-series-exterior-right-front-three-quarter.webp", "img4_alt"),
-      new Image("fronx-exterior-right-front-three-quarter-109.webp", ImageFormat.WEBP, "uploads/fronx-exterior-right-front-three-quarter-109.webp", "img4_alt"),
-      new Image("new-7-series-exterior-right-rear-three-quarter.webp", ImageFormat.WEBP, "uploads/new-7-series-exterior-right-rear-three-quarter.webp", "img5_alt"),
-      new Image("s-class-exterior-right-front-three-quarter-8.webp", ImageFormat.WEBP, "uploads/s-class-exterior-right-front-three-quarter-8.webp", "img6_alt"),
-      new Image("s-class-exterior-right-front-three-quarter-9.webp", ImageFormat.WEBP, "uploads/s-class-exterior-right-front-three-quarter-9.webp", "img7_alt"),
-      new Image("Hyundai-Grand-i10-Nios-200120231541.jpg", ImageFormat.WEBP, "uploads/Hyundai-Grand-i10-Nios-200120231541.jpg", "img alt 9"),
-      new Image("s-class-exterior-right-rear-three-quarter-2.webp", ImageFormat.WEBP, "uploads/s-class-exterior-right-rear-three-quarter-2.webp", "Rs. 1.82 - 1.85 Crore")
-
-  );
-
-  public static final List<Product> PRODUCT_LIST = List.of(
-      new Product("P001", "Basic Polo", "200g", "High", IMAGE_LIST.get(0), "Classic Polo shirt", IMAGE_LIST.get(3), true),
-      new Product("P002", "Crew Neck T-Shirt", "180g", "Medium", IMAGE_LIST.get(1), "Comfortable crew neck shirt", IMAGE_LIST.get(4), true),
-      new Product("P003", "Henley T-Shirt", "220g", "Premium", IMAGE_LIST.get(2), "Henley shirt with buttons", IMAGE_LIST.get(5), true)
-  );
-
-  public static final List<ProductDetail> PRODUCT_DETAIL_LIST = List.of(
-      new ProductDetail(PRODUCT_LIST.get(0), CATEGORY_LIST.get(0), COLOR_LIST.get(0), MATERIAL_LIST.get(0), SIZE_LIST.get(1), List.of(), 50L, 19.99, true),
-      new ProductDetail(PRODUCT_LIST.get(1), CATEGORY_LIST.get(1), COLOR_LIST.get(1), MATERIAL_LIST.get(1), SIZE_LIST.get(2), List.of(), 100L, 24.99, true),
-      new ProductDetail(PRODUCT_LIST.get(2), CATEGORY_LIST.get(2), COLOR_LIST.get(2), MATERIAL_LIST.get(2), SIZE_LIST.get(3), List.of(), 75L, 29.99, true)
-  );
 
 }

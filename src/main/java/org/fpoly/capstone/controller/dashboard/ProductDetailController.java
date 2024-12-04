@@ -171,7 +171,7 @@ public class ProductDetailController {
 
     try {
       ProductDetailRequest productDetailRequest = this.modelMapper.map(editProductDetailModel, ProductDetailRequest.class);
-      this.productDetailService.updateProductDetail(editProductDetailModel.getProductId(), productDetailRequest);
+      this.productDetailService.updateProductDetail(editProductDetailModel.getId(), productDetailRequest);
 
       redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Product Detail updated successfully!");
     } catch (Exception e) {

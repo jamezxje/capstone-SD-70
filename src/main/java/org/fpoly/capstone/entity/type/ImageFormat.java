@@ -10,6 +10,7 @@ public enum ImageFormat {
   PNG("png"),
   WEBP("webp"),
   JPG("jpg"),
+  JFIF("jfif "),
   JPEG("jpeg");
 
   private final String imageFormat;
