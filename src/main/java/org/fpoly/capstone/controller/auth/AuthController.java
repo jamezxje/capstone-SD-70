@@ -23,13 +23,13 @@ public class AuthController {
 
   @GetMapping(path = "login")
   public String showLoginPage() {
-    return "login";
+    return "views/auth/login";
   }
 
   @GetMapping(path = "register")
   public String showRegisterPage(Model model) {
     model.addAttribute("user", new UserModel());
-    return "register";
+    return "views/auth/register";
   }
 
   @PostMapping(path = "register")

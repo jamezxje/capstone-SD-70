@@ -27,6 +27,6 @@ public class HomeController {
 
     log.info("User role customer: {}", user.getRole());
 
-    return "hello";
+    return "views/hello";
   }
 }

@@ -37,19 +37,19 @@ public class DataSeeder {
   );
 
   public static final List<Category> CATEGORY_LIST = List.of(
-      new Category("Polo", true),
-      new Category("Crew Neck", true),
-      new Category("Henly T-Shirts", true),
-      new Category("Off Shoulder T-Shirts", false),
-      new Category("Cowl", false)
+      new Category("Áo bóng đá", true),
+      new Category("Áo Classic", true),
+      new Category("Áo La Liga", true),
+      new Category("Áo Ligue 1", true),
+      new Category("Áo Bundesliga", true),
+      new Category("Áo Ngoại hạng Anh", true),
+      new Category("Áo Khoác", true),
+      new Category("Áo tuyển quốc gia", false)
   );
 
   public static final List<Material> MATERIAL_LIST = List.of(
-      new Material("Cotton", true),
-      new Material("Polyester", true),
-      new Material("Jersey", true),
-      new Material("Pima Cotton", false),
-      new Material("Rayon", false)
+      new Material("Vải dệt Polyester cao cấp", true),
+      new Material("Vải Thái cao cấp", true)
   );
 
   public static final List<Size> SIZE_LIST = List.of(

@@ -20,7 +20,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfiguration {
 
   private static final String[] WHITE_LIST_URL = {
-      "/",
       "/auth/register"
   };
 

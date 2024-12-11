@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:fragment="appLayoutFragment(cssResources, jsResources, pageContent)">
+<head>
+  <meta charset="UTF-8">
+  <title>App Layout</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.22.0/ckeditor.js"></script>
+  <link rel="stylesheet" th:href="@{/assets/vendors/feather/feather.css}">
+  <link rel="stylesheet" th:href="@{/assets/vendors/mdi/css/materialdesignicons.min.css}">
+  <link rel="stylesheet" th:href="@{/assets/vendors/ti-icons/css/themify-icons.css}">
+  <link rel="stylesheet" th:href="@{/assets/vendors/font-awesome/css/font-awesome.min.css}">
+  <link rel="stylesheet" th:href="@{/assets/vendors/typicons/typicons.css}">
+  <link rel="stylesheet" th:href="@{/assets/vendors/simple-line-icons/css/simple-line-icons.css}">
+  <link rel="stylesheet" th:href="@{/assets/vendors/css/vendor.bundle.base.css}">
+  <link rel="stylesheet" th:href="@{/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+  <link rel="shortcut icon" th:href="@{/assets/images/favicon.png}"/>
+
+  <th:block th:replace="${cssResources} ?: ~{}"></th:block>
+</head>
+<body class="with-welcome-text">
+
+<div class="container-scroller">
+
+  <th:block th:replace="~{views/fragments/header::headerFragment}"></th:block>
+
+  <div class="container-fluid page-body-wrapper">
+    <th:block th:replace="~{views/fragments/side_bar::sidebarFragment}"></th:block>
+
+    <th:block th:replace="${pageContent} ?: ~{}"></th:block>
+  </div>
+  <th:block th:replace="~{views/fragments/footer::footerFragment}"></th:block>
+</div>
+
+<script src="/assets/vendors/js/vendor.bundle.base.js"></script>
+<script src="/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="/assets/js/off-canvas.js"></script>
+<script src="/assets/js/template.js"></script>
+<script src="/assets/js/settings.js"></script>
+<script src="/assets/js/hoverable-collapse.js"></script>
+<script src="/assets/js/todolist.js"></script>
+<script th:src="@{/assets/js/main.js}"></script>
+<th:block th:replace="${jsResources} ?: ~{}"></th:block>
+
+</body>
+</html>

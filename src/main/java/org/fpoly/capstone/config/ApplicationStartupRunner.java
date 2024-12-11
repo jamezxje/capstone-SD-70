@@ -14,7 +14,7 @@ import org.fpoly.capstone.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import static org.fpoly.capstone.config.DataSeeder.USER_LIST;
+import static org.fpoly.capstone.config.DataSeeder.*;
 
 @Component
 @RequiredArgsConstructor
@@ -34,14 +34,10 @@ public class ApplicationStartupRunner implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
 
-//    this.imageRepository.saveAll(IMAGE_LIST);
     this.userRepository.saveAll(USER_LIST);
-//    this.colorRepository.saveAll(COLOR_LIST);
-//    this.categoryRepository.saveAll(CATEGORY_LIST);
-//    this.materialRepository.saveAll(MATERIAL_LIST);
-//    this.sizeRepository.saveAll(SIZE_LIST);
-//    this.productRepository.saveAll(PRODUCT_LIST);
-//    this.productDetailRepository.saveAll(PRODUCT_DETAIL_LIST);
+    this.categoryRepository.saveAll(CATEGORY_LIST);
+    this.materialRepository.saveAll(MATERIAL_LIST);
+    this.sizeRepository.saveAll(SIZE_LIST);
 
   }
 }

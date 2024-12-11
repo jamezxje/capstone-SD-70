@@ -2,44 +2,133 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
       th:fragment="appLayoutFragment(cssResources, jsResources, pageContent)">
 <head>
-  <meta charset="UTF-8">
-  <title>App Layout</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.22.0/ckeditor.js"></script>
-  <link rel="stylesheet" th:href="@{/assets/vendors/feather/feather.css}">
-  <link rel="stylesheet" th:href="@{/assets/vendors/mdi/css/materialdesignicons.min.css}">
-  <link rel="stylesheet" th:href="@{/assets/vendors/ti-icons/css/themify-icons.css}">
-  <link rel="stylesheet" th:href="@{/assets/vendors/font-awesome/css/font-awesome.min.css}">
-  <link rel="stylesheet" th:href="@{/assets/vendors/typicons/typicons.css}">
-  <link rel="stylesheet" th:href="@{/assets/vendors/simple-line-icons/css/simple-line-icons.css}">
-  <link rel="stylesheet" th:href="@{/assets/vendors/css/vendor.bundle.base.css}">
-  <link rel="stylesheet" th:href="@{/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css}">
-  <link rel="stylesheet" th:href="@{/assets/css/style.css}">
-  <link rel="shortcut icon" th:href="@{/assets/images/favicon.png}"/>
-
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8">
+  <meta name="keywords" content="">
+  <meta name="author" content="">
+  <meta name="robots" content="">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Zenix - Crypto Admin Dashboard">
+  <meta property="og:title" content="Zenix - Crypto Admin Dashboard">
+  <meta property="og:description" content="Zenix - Crypto Admin Dashboard">
+  <meta property="og:image" content="https://zenix.dexignzone.com/xhtml/social-image.png">
+  <meta name="format-detection" content="telephone=no">
+  <title>Juyde Bellingham </title>
+  <!-- Favicon icon -->
+  <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/images/821ce224e9e4d4240f55e7b4641edd68.jpg}">
+  <link rel="stylesheet" th:href="@{/assets/vendor/chartist/css/chartist.min.css}">
+  <link th:href="@{/assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css}" rel="stylesheet">
+  <link th:href="@{/assets/vendor/owl-carousel/owl.carousel.css}" rel="stylesheet">
+  <link th:href="@{/assets/css/style.css}" rel="stylesheet">
   <th:block th:replace="${cssResources} ?: ~{}"></th:block>
 </head>
-<body class="with-welcome-text">
+<body>
 
-<div class="container-scroller">
-
-  <th:block th:replace="~{views/fragments/header::headerFragment}"></th:block>
-
-  <div class="container-fluid page-body-wrapper">
-    <th:block th:replace="~{views/fragments/side_bar::sidebarFragment}"></th:block>
-
-    <th:block th:replace="${pageContent} ?: ~{}"></th:block>
+<!--*******************
+    Preloader start
+********************-->
+<div id="preloader">
+  <div class="sk-three-bounce">
+    <div class="sk-child sk-bounce1"></div>
+    <div class="sk-child sk-bounce2"></div>
+    <div class="sk-child sk-bounce3"></div>
   </div>
-  <th:block th:replace="~{views/fragments/footer::footerFragment}"></th:block>
 </div>
+<!--*******************
+    Preloader end
+********************-->
 
-<script src="/assets/vendors/js/vendor.bundle.base.js"></script>
-<script src="/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-<script src="/assets/js/off-canvas.js"></script>
-<script src="/assets/js/template.js"></script>
-<script src="/assets/js/settings.js"></script>
-<script src="/assets/js/hoverable-collapse.js"></script>
-<script src="/assets/js/todolist.js"></script>
-<script th:src="@{/assets/js/main.js}"></script>
+<!--**********************************
+    Main wrapper start
+***********************************-->
+<div id="main-wrapper">
+
+  <!--**********************************
+      Nav header start
+  ***********************************-->
+  <th:block th:replace="~{views/fragments/nav_header::navHeaderFragment}"></th:block>
+  <!--**********************************
+      Nav header end
+  ***********************************-->
+
+  <!--**********************************
+          Chat box start
+      ***********************************-->
+  <th:block th:replace="~{views/fragments/chatbox::chatboxFragment}"></th:block>
+  <!--**********************************
+          Chat box End
+      ***********************************-->
+
+  <!--**********************************
+          Header start
+      ***********************************-->
+  <th:block th:replace="~{views/fragments/header::headerFragment}"></th:block>
+  <!--**********************************
+      Header end ti-comment-alt
+  ***********************************-->
+
+  <!--**********************************
+      Sidebar start
+  ***********************************-->
+  <th:block th:replace="~{views/fragments/side_bar::sidebarFragment}"></th:block>
+  <!--**********************************
+      Sidebar end
+  ***********************************-->
+
+  <!--**********************************
+          Content body start
+      ***********************************-->
+  <th:block th:replace="${pageContent} ?: ~{}"></th:block>
+  <!--**********************************
+      Content body end
+  ***********************************-->
+
+  <!--**********************************
+      Footer start
+  ***********************************-->
+  <th:block th:replace="~{views/fragments/footer::footerFragment}"></th:block>
+  <!--**********************************
+      Footer end
+  ***********************************-->
+
+
+  <!--**********************************
+         Support ticket button start
+      ***********************************-->
+
+  <!--**********************************
+     Support ticket button end
+  ***********************************-->
+
+
+</div>
+<!--**********************************
+    Main wrapper end
+***********************************-->
+
+<!--**********************************
+    Scripts
+***********************************-->
+<!-- Required vendors -->
+<script data-cfasync="false"
+        th:src="@{../assets/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js}"></script>
+<script th:src="@{/assets/vendor/global/global.min.js}"></script>
+<script th:src="@{/assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js}"></script>
+<script th:src="@{/assets/vendor/chart.js/Chart.bundle.min.js}"></script>
+
+<!-- Chart piety plugin files -->
+<script th:src="@{/assets/vendor/peity/jquery.peity.min.js}"></script>
+
+<!-- Apex Chart -->
+<script th:src="@{/assets/vendor/apexchart/apexchart.js}"></script>
+
+<!-- Dashboard 1 -->
+<script th:src="@{/assets/vendor/owl-carousel/owl.carousel.js}"></script>
+<script th:src="@{/assets/js/custom.min.js}"></script>
+<script th:src="@{/assets/js/deznav-init.js}"></script>
+<script th:src="@{/assets/js/demo.js}"></script>
+<script th:src="@{/assets/js/styleSwitcher.js}"></script>
 <th:block th:replace="${jsResources} ?: ~{}"></th:block>
 
 </body>
