@@ -26,7 +26,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;
-    private static final String CATEGORY = "categories";
+    private static final String CATEGORIES = "categories";
     private static final String CATEGORY_PAGE = "categoryPage";
     private static final String CATEGORY_VIEW = "/views/product-management/category/category-management";
     private static final String SUCCESS_MESSAGE = "successMessage";
@@ -46,7 +46,7 @@ public class CategoryController {
                 .map(response -> this.modelMapper.map(response, CategoryViewModel.class))
                 .toList();
 
-        model.addAttribute(CATEGORY, viewModels);
+        model.addAttribute(CATEGORIES, viewModels);
         model.addAttribute(CATEGORY_PAGE, categoryPage);
         model.addAttribute("searchName", name);
         model.addAttribute("searchStatus", status);
@@ -77,7 +77,7 @@ public class CategoryController {
 
     }
 
-    @PostMapping("/update")
+    @PostMapping(path = "update")
     public String updateCategory(@Valid @ModelAttribute("editCategoryModel") CategoryModel editCategoryModel,
                                  BindingResult result,
                                  @RequestParam(defaultValue = "1") int page,
@@ -102,7 +102,7 @@ public class CategoryController {
 
     }
 
-    @PostMapping("/delete/{id}")
+    @PostMapping(path = "delete/{id}")
     public String deleteCategory(@PathVariable Integer id,
                                  @RequestParam(defaultValue = "1") int page,
                                  @RequestParam(defaultValue = "10") int size,
@@ -120,7 +120,6 @@ public class CategoryController {
 
     }
 
-
     private String handleCategoryActionErrors(int page, int size, Model model) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
@@ -130,7 +129,7 @@ public class CategoryController {
                 .map(response -> this.modelMapper.map(response, CategoryViewModel.class))
                 .toList();
 
-        model.addAttribute(CATEGORY, viewModels);
+        model.addAttribute(CATEGORIES, viewModels);
         model.addAttribute(CATEGORY_PAGE, categoryPage);
 
         return CATEGORY_VIEW;
