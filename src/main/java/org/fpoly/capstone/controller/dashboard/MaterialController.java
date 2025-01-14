@@ -14,7 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -68,10 +73,16 @@ public class MaterialController {
             return this.handleCategoryActionErrors(page, size, model);
         }
 
-        MaterialRequest materialRequest = this.modelMapper.map(materialModel, MaterialRequest.class);
-        this.materialService.createMaterial(materialRequest);
+        try {
+            MaterialRequest materialRequest = this.modelMapper.map(materialModel, MaterialRequest.class);
+            this.materialService.createMaterial(materialRequest);
 
-        redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Material created successfully!");
+            redirectAttributes.addFlashAttribute("message", "Item created successfully!");
+            redirectAttributes.addFlashAttribute("alertType", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Failed to create item.");
+            redirectAttributes.addFlashAttribute("alertType", "error");
+        }
 
         return "redirect:/dashboard/product-management/material";
 

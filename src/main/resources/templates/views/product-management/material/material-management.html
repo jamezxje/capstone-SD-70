@@ -8,6 +8,8 @@
     <link rel="stylesheet" th:href="@{/assets/vendor/pickadate/themes/default.css}">
     <link rel="stylesheet" th:href="@{/assets/vendor/pickadate/themes/default.date.css}">
     <link href="../icon.css?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
   </th:block>
 </head>
 <body>
@@ -22,9 +24,9 @@
       </div>
       
       <!--Message alert start-->
-      <div
-          th:insert="~{views/fragments/message-alert :: messageAlert}">
-      </div>
+      <!--      <div-->
+      <!--          th:insert="~{views/fragments/message-alert :: messageAlert}">-->
+      <!--      </div>-->
       <!--Message alert end-->
       
       <!--Search form start-->
@@ -366,6 +368,7 @@
   
   <!-- Form Population Script -->
   <script>
+    //Edit material JS
     $(document).on('click', '[data-target="#editMaterialModal"]', function () {
       const button = $(this);
       
@@ -386,21 +389,35 @@
       $(this).find('form')[0].reset(); // Reset form fields
     });
     
+    //Delete material JS
     $(document).on('click', '[data-target="#deleteMaterialModal"]', function () {
       const materialId = $(this).data('id');
       const formAction = `/dashboard/product-management/material/delete/${materialId}`;
       $('#deleteTransactionForm').attr('action', formAction);
     });
     
-    window.onload = function () {
-      setTimeout(function () {
-        $('#successAlert').alert('close');
-      }, 2000);
-      
-      setTimeout(function () {
-        $('#errorAlert').alert('close');
-      }, 2000);
-    };
+    //Set timeout for message alert
+    // window.onload = function () {
+    //   setTimeout(function () {
+    //     $('#successAlert').alert('close');
+    //   }, 2000);
+    //
+    //   setTimeout(function () {
+    //     $('#errorAlert').alert('close');
+    //   }, 2000);
+    // };
+    
+    const message = [[${message}]];
+    const alertType = [[${alertType}]];
+    
+    if (message) {
+      Swal.fire({
+        title: alertType === 'success' ? 'Success' : 'Error',
+        text: message,
+        icon: alertType,
+        confirmButtonText: 'OK'
+      });
+    }
   </script>
 </th:block>
 </body>
