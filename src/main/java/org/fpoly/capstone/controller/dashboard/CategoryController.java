@@ -14,7 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -68,10 +73,15 @@ public class CategoryController {
             return this.handleCategoryActionErrors(page, size, model);
         }
 
-        CategoryRequest categoryRequest = this.modelMapper.map(categoryModel, CategoryRequest.class);
-        this.categoryService.createCategory(categoryRequest);
-
-        redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Category created successfully!");
+        try {
+            CategoryRequest categoryRequest = this.modelMapper.map(categoryModel, CategoryRequest.class);
+            this.categoryService.createCategory(categoryRequest);
+            redirectAttributes.addFlashAttribute("message", "Add category success");
+            redirectAttributes.addFlashAttribute("type", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Add category fail");
+            redirectAttributes.addFlashAttribute("type", "error");
+        }
 
         return "redirect:/dashboard/product-management/category";
 
@@ -93,9 +103,11 @@ public class CategoryController {
 
             this.categoryService.updateCategory(editCategoryModel.getId(), categoryRequest);
 
-            redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Category updated successfully!");
+            redirectAttributes.addFlashAttribute("message", "Update category success");
+            redirectAttributes.addFlashAttribute("type", "success");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update the category. Please try again.");
+            redirectAttributes.addFlashAttribute("message", "Update category fail");
+            redirectAttributes.addFlashAttribute("type", "error");
         }
 
         return "redirect:/dashboard/product-management/category";
@@ -111,9 +123,11 @@ public class CategoryController {
         try {
             this.categoryService.deleteCategory(id);
 
-            redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Category deleted successfully!");
+            redirectAttributes.addFlashAttribute("message", "Delete category success");
+            redirectAttributes.addFlashAttribute("type", "success");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete the category. Please try again.");
+            redirectAttributes.addFlashAttribute("message", "Delete category fail");
+            redirectAttributes.addFlashAttribute("type", "error");
         }
 
         return "redirect:/dashboard/product-management/category?page=" + page + "&size=" + size;

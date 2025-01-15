@@ -10,7 +10,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Component
 @RequiredArgsConstructor
 public class FrontDataInterceptor implements HandlerInterceptor {
-  @Override
-  public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-  }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+    }
+
 }

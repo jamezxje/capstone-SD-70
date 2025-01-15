@@ -77,11 +77,11 @@ public class MaterialController {
             MaterialRequest materialRequest = this.modelMapper.map(materialModel, MaterialRequest.class);
             this.materialService.createMaterial(materialRequest);
 
-            redirectAttributes.addFlashAttribute("message", "Item created successfully!");
-            redirectAttributes.addFlashAttribute("alertType", "success");
+            redirectAttributes.addFlashAttribute("message", "Add material success");
+            redirectAttributes.addFlashAttribute("type", "success");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Failed to create item.");
-            redirectAttributes.addFlashAttribute("alertType", "error");
+            redirectAttributes.addFlashAttribute("message", "Add material fail");
+            redirectAttributes.addFlashAttribute("type", "error");
         }
 
         return "redirect:/dashboard/product-management/material";
@@ -104,9 +104,11 @@ public class MaterialController {
 
             this.materialService.updateMaterial(editMaterialModel.getId(), materialRequest);
 
-            redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Material updated successfully!");
+            redirectAttributes.addFlashAttribute("message", "Update material success");
+            redirectAttributes.addFlashAttribute("type", "success");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update the material. Please try again.");
+            redirectAttributes.addFlashAttribute("message", "Update material fail");
+            redirectAttributes.addFlashAttribute("type", "error");
         }
 
         return "redirect:/dashboard/product-management/material";
@@ -122,9 +124,11 @@ public class MaterialController {
         try {
             this.materialService.deleteMaterial(id);
 
-            redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Material deleted successfully!");
+            redirectAttributes.addFlashAttribute("message", "Delete material success");
+            redirectAttributes.addFlashAttribute("type", "success");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete the material. Please try again.");
+            redirectAttributes.addFlashAttribute("message", "Delete material fail");
+            redirectAttributes.addFlashAttribute("type", "error");
         }
 
         return "redirect:/dashboard/product-management/material?page=" + page + "&size=" + size;

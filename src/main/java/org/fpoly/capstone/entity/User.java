@@ -19,6 +19,7 @@ import org.fpoly.capstone.entity.base.BaseEntity;
 import org.fpoly.capstone.entity.type.Role;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Builder
@@ -29,42 +30,43 @@ import java.time.LocalDate;
 @ToString
 @Entity
 @Table(name = "_user")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements Serializable {
 
-  @Serial
-  private static final long serialVersionUID = 3495040978934286803L;
-  @Column(name = "first_name")
-  private String firstname;
+    @Serial
+    private static final long serialVersionUID = 3495040978934286803L;
 
-  @Column(name = "last_name")
-  private String lastname;
+    @Column(name = "first_name")
+    private String firstname;
 
-  @Column(name = "username")
-  private String username;
+    @Column(name = "last_name")
+    private String lastname;
 
-  @Column(name = "email")
-  private String email;
+    @Column(name = "username")
+    private String username;
 
-  @Column(name = "password")
-  private String password;
+    @Column(name = "email")
+    private String email;
 
-  @Column(name = "phone_no")
-  private String phoneNo;
+    @Column(name = "password")
+    private String password;
 
-  @Column(name = "date_of_birth")
-  private LocalDate dateOfBirth;
+    @Column(name = "phone_no")
+    private String phoneNo;
 
-  @Embedded
-  private Address address;
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
-  @Enumerated(EnumType.STRING)
-  private Role role;
+    @Embedded
+    private Address address;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "feature_image")
-  private Image featureImage;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-  @Column(name = "is_active")
-  private Boolean isActive;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "feature_image")
+    private Image featureImage;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
 
 }

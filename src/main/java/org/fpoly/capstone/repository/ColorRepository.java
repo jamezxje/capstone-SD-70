@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ColorRepository extends JpaRepository<Color, Long> {
 
-  @Query("SELECT new org.fpoly.capstone.service.payload.color.ColorResponse(c.id, c.name, c.status, c.createdOn, c.updatedOn) " +
-      "FROM Color c " +
-      "WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-      "AND (:status IS NULL OR c.status = :status)")
-  Page<ColorResponse> findByFilter(@Param("name") String name, @Param("status") Boolean status, Pageable pageable);
+    @Query("SELECT new org.fpoly.capstone.service.payload.color.ColorResponse(c.id, c.name, c.status, c.createdOn, c.createdBy, c.updatedOn, c.updatedBy) " +
+            "FROM Color c " +
+            "WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "AND (:status IS NULL OR c.status = :status)")
+    Page<ColorResponse> findByFilter(@Param("name") String name, @Param("status") Boolean status, Pageable pageable);
 
 }

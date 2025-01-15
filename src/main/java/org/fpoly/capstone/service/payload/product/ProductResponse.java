@@ -13,16 +13,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ProductResponse {
 
-  private Integer id;
-  private String code;
-  private String name;
-  private String weight;
-  private String gsmQualification;
-  private String featureImageUrl;
-  private String description;
-  private String sizeGuideUrl;
-  private Boolean status;
-  private LocalDateTime createdOn;
-  private LocalDateTime updatedOn;
+    private Long id;
+    private String code;
+    private String name;
+    private String weight;
+    private String gsmQualification;
+    private String featureImageUrl;
+    private String description;
+    private String sizeGuideUrl;
+    private Boolean status;
+    private LocalDateTime createdOn;
+    private String createBy;
+    private LocalDateTime updatedOn;
+    private String updateBy;
 
 }

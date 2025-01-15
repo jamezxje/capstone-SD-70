@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, Long> {
 
-  @Query("SELECT new org.fpoly.capstone.service.payload.material.MaterialResponse(m.id, m.name, m.status, m.createdOn, m.updatedOn) " +
-      "FROM Material m " +
-      "WHERE (:name IS NULL OR LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-      "AND (:status IS NULL OR m.status = :status)")
-  Page<MaterialResponse> findByFilter(@Param("name") String name, @Param("status") Boolean status, Pageable pageable);
+    @Query("SELECT new org.fpoly.capstone.service.payload.material.MaterialResponse(m.id, m.name, m.status, m.createdOn, m.createdBy, m.updatedOn, m.updatedBy) " +
+            "FROM Material m " +
+            "WHERE (:name IS NULL OR LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "AND (:status IS NULL OR m.status = :status)")
+    Page<MaterialResponse> findByFilter(@Param("name") String name, @Param("status") Boolean status, Pageable pageable);
 
 }

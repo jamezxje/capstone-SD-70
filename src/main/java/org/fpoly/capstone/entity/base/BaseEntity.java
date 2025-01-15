@@ -9,6 +9,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.Setter;
+import org.fpoly.capstone.common.CommonUtils;
 
 import java.time.LocalDateTime;
 
@@ -17,39 +18,38 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class BaseEntity {
 
-  @Id
-  @Column(updatable = false)
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @Column(updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(name = "created_on")
-  private LocalDateTime createdOn;
+    @Column(name = "created_on")
+    private LocalDateTime createdOn;
 
-  @Column(name = "created_by")
-  private String createdBy;
+    @Column(name = "created_by")
+    private String createdBy;
 
-  @Column(name = "updated_on")
-  private LocalDateTime updatedOn;
+    @Column(name = "updated_on")
+    private LocalDateTime updatedOn;
 
-  @Column(name = "updated_by")
-  private String updatedBy;
+    @Column(name = "updated_by")
+    private String updatedBy;
 
-  @PrePersist
-  public void prePersist() {
-    if (this.createdOn == null) {
-      this.createdOn = LocalDateTime.now();
+    @PrePersist
+    public void prePersist() {
+        if (this.createdOn == null) {
+            this.createdOn = LocalDateTime.now();
+        }
+        this.createdBy = CommonUtils.getPrincipal();
     }
 
-//    createdBy = LoggedUser.get();
-  }
+    @PreUpdate
+    public void preUpdate() {
+        if (this.updatedOn == null) {
+            this.updatedOn = LocalDateTime.now();
+        }
 
-  @PreUpdate
-  public void preUpdate() {
-    if (this.updatedOn == null) {
-      this.updatedOn = LocalDateTime.now();
+        this.updatedBy = CommonUtils.getPrincipal();
     }
-
-//    updatedBy = LoggedUser.get();
-  }
 
 }

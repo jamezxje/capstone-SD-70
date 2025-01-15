@@ -29,25 +29,25 @@ import java.math.BigDecimal;
 @Table(name = "order_detail")
 public class OrderDetail extends BaseEntity {
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "order_id")
-  private Order order;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "product_detail_id")
-  private ProductDetail productDetail;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_detail_id")
+    private ProductDetail productDetail;
 
-  @Column(name = "quantity")
-  private Integer quantity;
+    @Column(name = "quantity")
+    private Integer quantity;
 
-  @Column(name = "base_price")
-  private BigDecimal base_price;
+    @Column(name = "base_price")
+    private BigDecimal basePrice;
 
-  @Column(name = "total")
-  private BigDecimal total;
+    @Column(name = "total")
+    private BigDecimal total;
 
-  @Column(name = "status")
-  @Enumerated(EnumType.STRING)
-  private OrderStatus status;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
 }

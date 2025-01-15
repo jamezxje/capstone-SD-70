@@ -19,43 +19,44 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-  private static final String[] WHITE_LIST_URL = {
-      "/auth/register"
-  };
+    private static final String[] WHITE_LIST_URL = {
+            "/auth/register"
+    };
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
-            requests -> requests
-                .requestMatchers(RequestURI.PUBLIC_UNAUTHENTICATION_URI).permitAll()
-                .requestMatchers(WHITE_LIST_URL).permitAll()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/assets/**")).permitAll()
-                .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "CUSTOMER")
-//                                .hasRole("ADMIN")
-                .anyRequest().authenticated()
-        )
-        .formLogin(
-            form -> form
-                .loginPage("/auth/login")
-                .defaultSuccessUrl("/hello", true)
-                .permitAll()
-        )
-        .logout(
-            logout -> logout
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(
+                        requests -> requests
+                                .requestMatchers(RequestURI.PUBLIC_UNAUTHENTICATION_URI).permitAll()
+                                .requestMatchers(WHITE_LIST_URL).permitAll()
+                                .requestMatchers(AntPathRequestMatcher.antMatcher("/assets/**")).permitAll()
+                                .requestMatchers("/dashboard/**").hasRole("ADMIN")
+//                                . hasAnyRole("ADMIN", "CUSTOMER")
+                                .anyRequest().authenticated()
+                )
+                .formLogin(
+                        form -> form
+                                .loginPage("/auth/login")
+                                .defaultSuccessUrl("/hello", true)
+                                .permitAll()
+                )
+                .logout(
+                        logout -> logout
 //                                .logoutUrl("/logout")
-                .logoutSuccessUrl("/auth/login")
-                .invalidateHttpSession(true)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "GET"))
-                .permitAll()
-        );
-    return http.build();
+                                .logoutSuccessUrl("/auth/login")
+                                .invalidateHttpSession(true)
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "GET"))
+                                .permitAll()
+                );
 
-  }
+        return http.build();
 
-  @Bean
-  PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

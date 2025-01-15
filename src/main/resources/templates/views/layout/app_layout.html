@@ -8,6 +8,8 @@
   <meta name="keywords" content="">
   <meta name="author" content="">
   <meta name="robots" content="">
+  <meta name="flash-message" th:content="${message}">
+  <meta name="flash-type" th:content="${type}">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Zenix - Crypto Admin Dashboard">
   <meta property="og:title" content="Zenix - Crypto Admin Dashboard">
@@ -16,13 +18,14 @@
   <meta name="format-detection" content="telephone=no">
   <title>Juyde Bellingham </title>
   <!-- Favicon icon -->
+  <link rel="stylesheet" th:href="@{/assets/vendor/pickadate/themes/default.css}">
+  <link rel="stylesheet" th:href="@{/assets/vendor/pickadate/themes/default.date.css}">
   <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/images/821ce224e9e4d4240f55e7b4641edd68.jpg}">
   <link rel="stylesheet" th:href="@{/assets/vendor/chartist/css/chartist.min.css}">
   <link th:href="@{/assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css}" rel="stylesheet">
   <link th:href="@{/assets/vendor/owl-carousel/owl.carousel.css}" rel="stylesheet">
   <link th:href="@{/assets/css/style.css}" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
   <th:block th:replace="${cssResources} ?: ~{}"></th:block>
 </head>
 <body>
@@ -131,6 +134,8 @@
 <script th:src="@{/assets/js/deznav-init.js}"></script>
 <script th:src="@{/assets/js/demo.js}"></script>
 <script th:src="@{/assets/js/styleSwitcher.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script th:inline="javascript" th:src="@{/assets/js/global.js}"></script>
 <th:block th:replace="${jsResources} ?: ~{}"></th:block>
 
 </body>

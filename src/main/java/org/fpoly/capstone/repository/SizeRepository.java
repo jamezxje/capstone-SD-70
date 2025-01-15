@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SizeRepository extends JpaRepository<Size, Long> {
 
-  @Query("SELECT new org.fpoly.capstone.service.payload.size.SizeResponse(s.id, s.name, s.status, s.createdOn, s.updatedOn) " +
-      "FROM Size s " +
-      "WHERE (:name IS NULL OR LOWER(s.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-      "AND (:status IS NULL OR s.status = :status)")
-  Page<SizeResponse> findByFilter(@Param("name") String name, @Param("status") Boolean status, Pageable pageable);
+    @Query("SELECT new org.fpoly.capstone.service.payload.size.SizeResponse(s.id, s.name, s.status, s.createdOn, s.createdBy, s.updatedOn, s.updatedBy) " +
+            "FROM Size s " +
+            "WHERE (:name IS NULL OR LOWER(s.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "AND (:status IS NULL OR s.status = :status)")
+    Page<SizeResponse> findByFilter(@Param("name") String name, @Param("status") Boolean status, Pageable pageable);
 
 }

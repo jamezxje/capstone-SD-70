@@ -1,16 +1,16 @@
 package org.fpoly.capstone.service;
 
 import org.fpoly.capstone.entity.User;
-import org.fpoly.capstone.service.payload.user.UserRequestDTO;
+import org.fpoly.capstone.service.payload.user.UserRequest;
 
 import java.util.List;
 
 public interface UserService {
-  void register(UserRequestDTO userRequestDTO);
+    void register(UserRequest userRequestDTO);
 
-  User findUserByMemberEmail(String email);
+    User findUserByMemberEmail(String email);
 
-  User getUserFromContext();
+    User getUserFromContext();
 
-  List<User> findAllUser();
+    List<User> findAllUser();
 }

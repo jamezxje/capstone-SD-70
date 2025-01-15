@@ -13,10 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SizeResponse {
 
-  private Integer id;
-  private String name;
-  private Boolean status;
-  private LocalDateTime createdOn;
-  private LocalDateTime updatedOn;
+    private Long id;
+    private String name;
+    private Boolean status;
+    private LocalDateTime createdOn;
+    private String createdBy;
+    private LocalDateTime updatedOn;
+    private String updateBy;
 
 }

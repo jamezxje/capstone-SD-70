@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-  @Query("SELECT new org.fpoly.capstone.service.payload.category.CategoryResponse(c.id, c.name, c.status, c.createdOn, c.updatedOn) " +
-      "FROM Category c " +
-      "WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
-      "AND (:status IS NULL OR c.status = :status)")
-  Page<CategoryResponse> findByFilter(@Param("name") String name, @Param("status") Boolean status, Pageable pageable);
+    @Query("SELECT new org.fpoly.capstone.service.payload.category.CategoryResponse(c.id, c.name, c.status, c.createdOn, c.createdBy, c.updatedOn, c.updatedBy) " +
+            "FROM Category c " +
+            "WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "AND (:status IS NULL OR c.status = :status)")
+    Page<CategoryResponse> findByFilter(@Param("name") String name, @Param("status") Boolean status, Pageable pageable);
 
 }

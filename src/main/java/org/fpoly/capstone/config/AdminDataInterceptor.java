@@ -13,8 +13,9 @@ import org.springframework.web.servlet.ModelAndView;
 @RequiredArgsConstructor
 public class AdminDataInterceptor implements HandlerInterceptor {
 
-  @Override
-  public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-  }
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    }
+
 }

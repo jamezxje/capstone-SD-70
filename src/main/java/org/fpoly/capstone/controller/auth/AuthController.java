@@ -3,7 +3,7 @@ package org.fpoly.capstone.controller.auth;
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.user.UserModel;
 import org.fpoly.capstone.service.UserService;
-import org.fpoly.capstone.service.payload.user.UserRequestDTO;
+import org.fpoly.capstone.service.payload.user.UserRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,30 +18,30 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping(path = "auth")
 public class AuthController {
 
-  private final UserService userService;
-  private final ModelMapper modelMapper;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
 
-  @GetMapping(path = "login")
-  public String showLoginPage() {
-    return "views/auth/login";
-  }
+    @GetMapping(path = "login")
+    public String showLoginPage() {
+        return "views/auth/login";
+    }
 
-  @GetMapping(path = "register")
-  public String showRegisterPage(Model model) {
-    model.addAttribute("user", new UserModel());
-    return "views/auth/register";
-  }
+    @GetMapping(path = "register")
+    public String showRegisterPage(Model model) {
+        model.addAttribute("user", new UserModel());
+        return "views/auth/register";
+    }
 
-  @PostMapping(path = "register")
-  public String register(@ModelAttribute UserModel userModel, RedirectAttributes redirectAttributes) {
+    @PostMapping(path = "register")
+    public String register(@ModelAttribute UserModel userModel, RedirectAttributes redirectAttributes) {
 
-    UserRequestDTO request = this.modelMapper.map(userModel, UserRequestDTO.class);
+        UserRequest request = this.modelMapper.map(userModel, UserRequest.class);
 
-    this.userService.register(request);
+        this.userService.register(request);
 
-    redirectAttributes.addFlashAttribute("message", "Register successfully!");
+        redirectAttributes.addFlashAttribute("message", "Register successfully!");
 
-    return "redirect:/auth/login";
-  }
+        return "redirect:/auth/login";
+    }
 
 }

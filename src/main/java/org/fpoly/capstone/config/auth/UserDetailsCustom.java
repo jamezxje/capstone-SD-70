@@ -14,46 +14,47 @@ import java.util.List;
 @ToString
 public class UserDetailsCustom implements UserDetails {
 
-  @Serial
-  private static final long serialVersionUID = -6300327307161663112L;
-  User user;
+    @Serial
+    private static final long serialVersionUID = -6300327307161663112L;
+    User user;
 
-  public UserDetailsCustom(User user) {
-    this.user = user;
-  }
+    public UserDetailsCustom(User user) {
+        this.user = user;
+    }
 
-  @Override
-  public List<GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(this.user.getRole().toString()));
-  }
+    @Override
+    public List<GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.user.getRole().toString()));
+    }
 
-  @Override
-  public String getPassword() {
-    return this.user.getPassword();
-  }
+    @Override
+    public String getPassword() {
+        return this.user.getPassword();
+    }
 
-  @Override
-  public String getUsername() {
-    return this.user.getEmail();
-  }
+    @Override
+    public String getUsername() {
+        return this.user.getEmail();
+    }
 
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-  @Override
-  public boolean isEnabled() {
-    return true;
-  }
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }
