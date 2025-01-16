@@ -13,7 +13,7 @@
   <div class="content-body">
     <div class="container-fluid">
       <div class="form-head d-flex align-items-center flex-wrap mb-sm-5 mb-3">
-        <h2 class="font-w600 mb-0 text-black">Category management</h2>
+        <h2 class="font-w600 mb-0 text-black">Quản lý danh mục</h2>
       </div>
       
       <!--Search form start-->
@@ -23,26 +23,25 @@
             <form th:action="@{/dashboard/product-management/category}" method="GET">
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="name">Name</label>
+                  <label for="name">Tìm theo tên</label>
                   <input id="name" type="text" name="name" th:value="${searchName}"
                          class="form-control" placeholder="">
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="status">Status</label>
+                  <label for="status">Tìm theo trạng thái</label>
                   <select id="status" name="status" class="form-control default-select">
-                    <option th:value="null" th:selected="${searchStatus == null}">All</option>
-                    <option th:value="true" th:selected="${searchStatus == true}">Active</option>
-                    <option th:value="false" th:selected="${searchStatus == false}">Inactive
-                    </option>
+                    <option th:value="null" th:selected="${searchStatus == null}">Tất cả</option>
+                    <option th:value="true" th:selected="${searchStatus == true}">Hoạt động</option>
+                    <option th:value="false" th:selected="${searchStatus == false}">Không hoạt động</option>
                   </select>
                 </div>
               </div>
               <div class="d-flex justify-content-end flex-wrap">
                 <div>
-                  <button type="submit" class="btn btn-primary ">Search</button>
+                  <button type="submit" class="btn btn-primary ">Tìm kiếm</button>
                   <button type="button" data-toggle="modal" data-target="#createCategoryModal"
                           class="btn btn-secondary ml-auto">+
-                    Add Category
+                    Thêm mới
                   </button>
                 </div>
               </div>
@@ -64,25 +63,25 @@
             <thead>
             <tr>
               <th>#</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Create date</th>
-              <th>Modify date</th>
+              <th>Danh mục</th>
+              <th>Trạng thái</th>
+              <th>Ngày tạo</th>
+              <th>Ngày thay đổi</th>
               <th>Action</th>
             </tr>
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(categories)}">
-              <td colspan="5" class="text-center"><h3>NO DATA FOUND</h3></td>
+              <td colspan="5" class="text-center"><h3>KHÔNG TÌM THẤY DỮ LIỆU</h3></td>
             </tr>
             <tr th:each="category, index : ${categories}">
               <td th:text="${index.index+1}"></td>
               <td class="pr-0" th:text="${category.name}"></td>
               <td>
                   <span th:if="${category.status == false}"
-                        class="badge light badge-danger" th:text="INACTIVE"></span>
+                        class="badge light badge-danger">Không hoạt động</span>
                 <span th:if="${category.status == true}"
-                      class="badge light badge-success" th:text="ACTIVE"></span>
+                      class="badge light badge-success">Hoạt động</span>
               </td>
               <td th:text="${#temporals.format(category.createdOn, 'dd-MM-yyyy')}">Create Date</td>
               <td th:text="${#temporals.format(category.updatedOn, 'dd-MM-yyyy')}">Modify Date</td>
@@ -148,7 +147,7 @@
       <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Add category</h5>
+            <h5 class="modal-title">Thêm danh mục</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span>&times;</span>
             </button>
@@ -159,24 +158,14 @@
                 <div class="row page-titles mx-0">
                   <div class="col-sm-6 p-md-0">
                     <div class="welcome-text">
-                      <h4>Hi, welcome back!</h4>
-                      <p class="mb-0">Category</p>
+                      <h4>Chào mừng quay lại!</h4>
+                      <p class="mb-0">Danh mục</p>
                     </div>
-                  </div>
-                  <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                    <ol class="breadcrumb">
-                      <li class="breadcrumb-item"><a href="javascript:void(0)">Form</a></li>
-                      <li class="breadcrumb-item active"><a href="javascript:void(0)">Category</a>
-                      </li>
-                    </ol>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="card">
-                      <div class="card-header">
-                        <h4 class="card-title">Form Validation</h4>
-                      </div>
                       <div class="card-body">
                         <div class="form-validation">
                           <form th:action="@{/dashboard/product-management/category}"
@@ -187,24 +176,25 @@
                                 <div class="form-group row">
                                   <label class="col-lg-4 col-form-label"
                                          for="categoryName">
-                                    Category Name
+                                    Tên danh mục
                                   </label>
                                   <div class="col-lg-8">
                                     <input type="text" class="form-control"
                                            id="categoryName" name="name"
-                                           placeholder="Enter name">
+                                           placeholder="Nhập tên">
                                   </div>
                                 </div>
                                 <div class="form-group row">
                                   <label class="col-lg-4 col-form-label"
-                                         for="categoryStatus">Status
+                                         for="categoryStatus">
+                                    Trạng thái
                                     <span class="text-danger">*</span>
                                   </label>
                                   <div class="col-lg-8">
                                     <select class="form-control default-select"
                                             id="categoryStatus" name="status">
-                                      <option th:value="true">Active</option>
-                                      <option th:value="false">Inactive</option>
+                                      <option th:value="true">Hoạt động</option>
+                                      <option th:value="false">Không hoạt động</option>
                                     </select>
                                   </div>
                                 </div>
@@ -214,7 +204,7 @@
                               <button type="button" class="btn btn-danger light"
                                       data-dismiss="modal">Close
                               </button>
-                              <button type="submit" class="btn btn-primary">Save changes
+                              <button type="submit" class="btn btn-primary">Save
                               </button>
                             </div>
                           </form>
@@ -237,7 +227,7 @@
       <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Edit category</h5>
+            <h5 class="modal-title">Sửa danh mục</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span>&times;</span>
             </button>
@@ -248,24 +238,14 @@
                 <div class="row page-titles mx-0">
                   <div class="col-sm-6 p-md-0">
                     <div class="welcome-text">
-                      <h4>Hi, welcome back!</h4>
-                      <p class="mb-0">Category</p>
+                      <h4>Chào mừng quay lại!</h4>
+                      <p class="mb-0">Danh mục</p>
                     </div>
-                  </div>
-                  <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                    <ol class="breadcrumb">
-                      <li class="breadcrumb-item"><a href="javascript:void(0)">Form</a></li>
-                      <li class="breadcrumb-item active"><a href="javascript:void(0)">Category</a>
-                      </li>
-                    </ol>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="card">
-                      <div class="card-header">
-                        <h4 class="card-title">Form Validation</h4>
-                      </div>
                       <div class="card-body">
                         <div class="form-validation">
                           <form th:action="@{/dashboard/product-management/category/update}"
@@ -277,24 +257,24 @@
                                 <div class="form-group row">
                                   <label class="col-lg-4 col-form-label"
                                          for="categoryNameEdit">
-                                    Category Name
+                                    Tên danh mục
                                   </label>
                                   <div class="col-lg-8">
                                     <input type="text" class="form-control"
                                            id="categoryNameEdit" name="name"
-                                           placeholder="Enter name">
+                                           placeholder="Nhập tên">
                                   </div>
                                 </div>
                                 <div class="form-group row">
                                   <label class="col-lg-4 col-form-label"
-                                         for="categoryStatusEdit">Status
+                                         for="categoryStatusEdit">Trạng thái
                                     <span class="text-danger">*</span>
                                   </label>
                                   <div class="col-lg-8">
                                     <select class="form-control default-select"
                                             id="categoryStatusEdit" th:field="*{status}">
-                                      <option th:value="true">Active</option>
-                                      <option th:value="false">Inactive</option>
+                                      <option th:value="true">Hoạt động</option>
+                                      <option th:value="false">Không hoạt động</option>
                                     </select>
                                   </div>
                                 </div>
@@ -328,13 +308,13 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+            <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            Are you sure you want to delete this category?
+            Bạn chắc là muốn xóa danh mục này chứ ?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
