@@ -13,12 +13,12 @@
 //import org.fpoly.capstone.service.CategoryService;
 //import org.fpoly.capstone.service.ColorService;
 //import org.fpoly.capstone.service.MaterialService;
-//import org.fpoly.capstone.service.ProductDetailService;
+////import org.fpoly.capstone.service.ProductDetailService;
 //import org.fpoly.capstone.service.ProductService;
 //import org.fpoly.capstone.service.SizeService;
 //import org.fpoly.capstone.service.payload.productdetail.ProductDetailFilterRequest;
 //import org.fpoly.capstone.service.payload.productdetail.ProductDetailRequest;
-//import org.fpoly.capstone.service.payload.productdetail.ProductDetailResponse;
+////import org.fpoly.capstone.service.payload.productdetail.ProductDetailResponse;
 //import org.modelmapper.ModelMapper;
 //import org.springframework.data.domain.Page;
 //import org.springframework.data.domain.PageRequest;
@@ -42,9 +42,9 @@
 //@RequiredArgsConstructor
 //public class ProductDetailController {
 //
-//  private final ProductDetailService productDetailService;
+////  private final ProductDetailService productDetailService;
 //  private final CategoryService categoryService;
-//  private final ProductService productService;
+////  private final ProductService productService;
 //  private final MaterialService materialService;
 //  private final ColorService colorService;
 //  private final SizeService sizeService;
@@ -87,19 +87,19 @@
 //    List<Size> sizeList = this.sizeService.getAllSize();
 //
 //    // Get paginated product details
-//    Page<ProductDetailResponse> productDetailPage = this.productDetailService
-//        .searchProductDetail(filterRequest, pageable);
+////    Page<ProductDetailResponse> productDetailPage = this.productDetailService
+////        .searchProductDetail(filterRequest, pageable);
+////
+////    List<ProductDetailViewModel> viewModels = productDetailPage.getContent().stream()
+////        .map(response -> {
+////          ProductDetailViewModel viewModel = this.modelMapper.map(response, ProductDetailViewModel.class);
+////          viewModel.setImages(response.getImages()); // Manually map images
+////          return viewModel;
+////        })
+////        .toList();
 //
-//    List<ProductDetailViewModel> viewModels = productDetailPage.getContent().stream()
-//        .map(response -> {
-//          ProductDetailViewModel viewModel = this.modelMapper.map(response, ProductDetailViewModel.class);
-//          viewModel.setImages(response.getImages()); // Manually map images
-//          return viewModel;
-//        })
-//        .toList();
-//
-//    model.addAttribute(PRODUCT_DETAIL, viewModels);
-//    model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailPage);
+////    model.addAttribute(PRODUCT_DETAIL, viewModels);
+////    model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailPage);
 //    model.addAttribute("searchCode", searchCode);
 //    model.addAttribute("searchName", searchName);
 //    model.addAttribute("searchCategoryId", searchCategoryId);
@@ -118,100 +118,100 @@
 //    return PRODUCT_DETAIL_VIEW;
 //  }
 //
-//  @PostMapping
-//  public String createProductDetail(@Valid @ModelAttribute("productDetailModel") ProductDetailModel productDetailModel,
-//                                    BindingResult result,
-//                                    @RequestParam(defaultValue = "1") int page,
-//                                    @RequestParam(defaultValue = "10") int size,
-//                                    Model model, RedirectAttributes redirectAttributes) {
+////  @PostMapping
+////  public String createProductDetail(@Valid @ModelAttribute("productDetailModel") ProductDetailModel productDetailModel,
+////                                    BindingResult result,
+////                                    @RequestParam(defaultValue = "1") int page,
+////                                    @RequestParam(defaultValue = "10") int size,
+////                                    Model model, RedirectAttributes redirectAttributes) {
+////
+////    if (result.hasErrors()) {
+////      Pageable pageable = PageRequest.of(page - 1, size);
+////      Page<ProductDetailResponse> productDetailPage = this.productDetailService.searchProductDetail(null, pageable);
+////
+////      List<ProductDetailViewModel> viewModels = productDetailPage.getContent().stream()
+////          .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
+////          .toList();
+////
+////      model.addAttribute(PRODUCT_DETAIL, viewModels);
+////      model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailPage);
+////
+////      return PRODUCT_DETAIL_VIEW;
+////    }
+////
+////    ProductDetailRequest productDetailRequest = this.modelMapper.map(productDetailModel, ProductDetailRequest.class);
+////
+////    this.productDetailService.createProductDetail(productDetailRequest);
+////
+////    redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Product Detail created successfully!");
+////
+////    return "redirect:/dashboard/product-management/product-detail";
+////  }
 //
-//    if (result.hasErrors()) {
-//      Pageable pageable = PageRequest.of(page - 1, size);
-//      Page<ProductDetailResponse> productDetailPage = this.productDetailService.searchProductDetail(null, pageable);
+////  @PostMapping("/update")
+////  public String updateProductDetail(@Valid @ModelAttribute("editProductDetailModel") ProductDetailModel editProductDetailModel,
+////                                    BindingResult result,
+////                                    @RequestParam(defaultValue = "1") int page,
+////                                    @RequestParam(defaultValue = "10") int size,
+////                                    Model model, RedirectAttributes redirectAttributes) {
+////
+////    if (result.hasErrors()) {
+////      Pageable pageable = PageRequest.of(page - 1, size);
+////      Page<ProductDetailResponse> productDetailPage = this.productDetailService.searchProductDetail(null, pageable);
+////
+////      List<ProductDetailViewModel> viewModels = productDetailPage.getContent().stream()
+////          .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
+////          .toList();
+////
+////      model.addAttribute(PRODUCT_DETAIL, viewModels);
+////      model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailPage);
+////
+////      return PRODUCT_DETAIL_VIEW;
+////    }
+////
+////    try {
+////      ProductDetailRequest productDetailRequest = this.modelMapper.map(editProductDetailModel, ProductDetailRequest.class);
+////      this.productDetailService.updateProductDetail(editProductDetailModel.getId(), productDetailRequest);
+////
+////      redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Product Detail updated successfully!");
+////    } catch (Exception e) {
+////      redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "Failed to update the product detail. Please try again.");
+////    }
+////
+////    return "redirect:/dashboard/product-management/product-detail";
+////  }
 //
-//      List<ProductDetailViewModel> viewModels = productDetailPage.getContent().stream()
-//          .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
-//          .toList();
+////  @PostMapping("/update/status/{id}")
+////  public String updateProductDetailStatus(@PathVariable Integer id,
+////                                          @RequestParam(defaultValue = "1") int page,
+////                                          @RequestParam(defaultValue = "10") int size,
+////                                          RedirectAttributes redirectAttributes) {
+////
+////    try {
+////      this.productDetailService.changeProductDetailStatus(id);
+////
+////      redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Product Detail status updated successfully!");
+////    } catch (Exception e) {
+////      redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "Failed to update status of the product detail. Please try again.");
+////    }
+////
+////    return "redirect:/dashboard/product-management/product-detail?page=" + page + "&size=" + size;
+////  }
 //
-//      model.addAttribute(PRODUCT_DETAIL, viewModels);
-//      model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailPage);
-//
-//      return PRODUCT_DETAIL_VIEW;
-//    }
-//
-//    ProductDetailRequest productDetailRequest = this.modelMapper.map(productDetailModel, ProductDetailRequest.class);
-//
-//    this.productDetailService.createProductDetail(productDetailRequest);
-//
-//    redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Product Detail created successfully!");
-//
-//    return "redirect:/dashboard/product-management/product-detail";
-//  }
-//
-//  @PostMapping("/update")
-//  public String updateProductDetail(@Valid @ModelAttribute("editProductDetailModel") ProductDetailModel editProductDetailModel,
-//                                    BindingResult result,
-//                                    @RequestParam(defaultValue = "1") int page,
-//                                    @RequestParam(defaultValue = "10") int size,
-//                                    Model model, RedirectAttributes redirectAttributes) {
-//
-//    if (result.hasErrors()) {
-//      Pageable pageable = PageRequest.of(page - 1, size);
-//      Page<ProductDetailResponse> productDetailPage = this.productDetailService.searchProductDetail(null, pageable);
-//
-//      List<ProductDetailViewModel> viewModels = productDetailPage.getContent().stream()
-//          .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
-//          .toList();
-//
-//      model.addAttribute(PRODUCT_DETAIL, viewModels);
-//      model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailPage);
-//
-//      return PRODUCT_DETAIL_VIEW;
-//    }
-//
-//    try {
-//      ProductDetailRequest productDetailRequest = this.modelMapper.map(editProductDetailModel, ProductDetailRequest.class);
-//      this.productDetailService.updateProductDetail(editProductDetailModel.getId(), productDetailRequest);
-//
-//      redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Product Detail updated successfully!");
-//    } catch (Exception e) {
-//      redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "Failed to update the product detail. Please try again.");
-//    }
-//
-//    return "redirect:/dashboard/product-management/product-detail";
-//  }
-//
-//  @PostMapping("/update/status/{id}")
-//  public String updateProductDetailStatus(@PathVariable Integer id,
-//                                          @RequestParam(defaultValue = "1") int page,
-//                                          @RequestParam(defaultValue = "10") int size,
-//                                          RedirectAttributes redirectAttributes) {
-//
-//    try {
-//      this.productDetailService.changeProductDetailStatus(id);
-//
-//      redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Product Detail status updated successfully!");
-//    } catch (Exception e) {
-//      redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "Failed to update status of the product detail. Please try again.");
-//    }
-//
-//    return "redirect:/dashboard/product-management/product-detail?page=" + page + "&size=" + size;
-//  }
-//
-//  @PostMapping("/delete/{id}")
-//  public String deleteProductDetail(@PathVariable Integer id,
-//                                    @RequestParam(defaultValue = "1") int page,
-//                                    @RequestParam(defaultValue = "10") int size,
-//                                    RedirectAttributes redirectAttributes) {
-//
-//    try {
-//      this.productDetailService.deleteProductDetail(id);
-//
-//      redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Product Detail deleted successfully!");
-//    } catch (Exception e) {
-//      redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "Failed to delete the product detail. Please try again.");
-//    }
-//
-//    return "redirect:/dashboard/product-management/product-detail?page=" + page + "&size=" + size;
-//  }
+////  @PostMapping("/delete/{id}")
+////  public String deleteProductDetail(@PathVariable Integer id,
+////                                    @RequestParam(defaultValue = "1") int page,
+////                                    @RequestParam(defaultValue = "10") int size,
+////                                    RedirectAttributes redirectAttributes) {
+////
+////    try {
+////      this.productDetailService.deleteProductDetail(id);
+////
+////      redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Product Detail deleted successfully!");
+////    } catch (Exception e) {
+////      redirectAttributes.addFlashAttribute(ERROR_MESSAGE, "Failed to delete the product detail. Please try again.");
+////    }
+////
+////    return "redirect:/dashboard/product-management/product-detail?page=" + page + "&size=" + size;
+////  }
 //}

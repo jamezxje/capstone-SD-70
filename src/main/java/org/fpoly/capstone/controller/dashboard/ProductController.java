@@ -1,44 +1,49 @@
-//package org.fpoly.capstone.controller.dashboard;
-//
-//import jakarta.validation.Valid;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.fpoly.capstone.controller.payload.product.ProductModel;
-//import org.fpoly.capstone.controller.payload.product.ProductViewModel;
-//import org.fpoly.capstone.service.ProductService;
-//import org.fpoly.capstone.service.payload.product.ProductRequest;
-//import org.fpoly.capstone.service.payload.product.ProductResponse;
-//import org.modelmapper.ModelMapper;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.validation.BindingResult;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.ModelAttribute;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-//
-//import java.util.List;
-//
-//@Slf4j
-//@Controller
-//@RequestMapping(path = "dashboard/product-management/product")
-//@RequiredArgsConstructor
-//public class ProductController {
-//
-//  private final ProductService productService;
-//  private final ModelMapper modelMapper;
-//  private static final String PRODUCT = "products";
-//  private static final String PRODUCT_PAGE = "productPage";
-//  private static final String PRODUCT_VIEW = "/views/product-management/product/product-management";
-//  private static final String SUCCESS_MESSAGE = "successMessage";
-//  private static final String ERROR_MESSAGE = "errorMessage";
-//
+package org.fpoly.capstone.controller.dashboard;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.fpoly.capstone.entity.Category;
+import org.fpoly.capstone.entity.Color;
+import org.fpoly.capstone.entity.Material;
+import org.fpoly.capstone.entity.Size;
+import org.fpoly.capstone.service.CategoryService;
+import org.fpoly.capstone.service.ColorService;
+import org.fpoly.capstone.service.MaterialService;
+import org.fpoly.capstone.service.SizeService;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+
+@Slf4j
+@Controller
+@RequestMapping(path = "dashboard/product-management/product")
+@RequiredArgsConstructor
+public class ProductController {
+    private final CategoryService categoryService;
+    private final MaterialService materialService;
+    private final ColorService colorService;
+    private final SizeService sizeService;
+    private final ModelMapper modelMapper;
+
+    @GetMapping("/add")
+    public String onOpenAddNewProductView(Model model) {
+        List<Category> categoryList = this.categoryService.getAllCategory();
+        List<Material> materialList = this.materialService.getAllMaterial();
+        List<Color> colorList = this.colorService.getAllColor();
+        List<Size> sizeList = this.sizeService.getAllSize();
+
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("materialList", materialList);
+        model.addAttribute("colorList", colorList);
+        model.addAttribute("sizeList", sizeList);
+
+        return "/views/product-management/product/add-new-product-form";
+    }
+
 //  @GetMapping
 //  public String onOpenProductView(@RequestParam(defaultValue = "1") int page,
 //                                  @RequestParam(defaultValue = "10") int size,
@@ -70,7 +75,7 @@
 //
 //    return PRODUCT_VIEW;
 //  }
-//
+
 //  @PostMapping
 //  public String createProduct(@Valid @ModelAttribute("productModel") ProductModel productModel,
 //                              BindingResult result,
@@ -167,5 +172,5 @@
 //
 //    return "redirect:/dashboard/product-management/product?page=" + page + "&size=" + size;
 //  }
-//
-//}
+
+}

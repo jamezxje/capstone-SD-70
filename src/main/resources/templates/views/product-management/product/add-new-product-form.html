@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Management</title>
+  <th:block id="th-css">
+    <link rel="stylesheet" th:href="@{/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/js/select.dataTables.min.css}">
+    <style>
+      .ck-editor__editable {
+        min-height: 192px; /* 5 dòng */
+      }
+      
+      #upload {
+        opacity: 0;
+      }
+      
+      #upload-label {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        transform: translateY(-50%);
+      }
+      
+      .image-area {
+        border: 2px dashed rgba(97, 97, 97, 0.7);
+        padding: 1rem;
+        position: relative;
+      }
+      
+      .image-area::before {
+        content: 'Uploaded image result';
+        color: #fff;
+        font-weight: bold;
+        text-transform: uppercase;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.8rem;
+        z-index: 1;
+      }
+      
+      .image-area img {
+        z-index: 2;
+        position: relative;
+      }
+      
+      .toggle.ios,
+      .toggle-on.ios,
+      .toggle-off.ios {
+        border-radius: 20rem;
+      }
+      
+      .toggle.ios .toggle-handle {
+        border-radius: 20rem;
+      }
+    </style>
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  <div class="content-body">
+    <div class="container-fluid">
+      <div class="row page-titles mx-0">
+        <div class="col-sm-6 p-md-0">
+          <div class="welcome-text">
+            <h4>Hi, welcome back!</h4>
+            <span>Thêm sản phẩm</span>
+          </div>
+        </div>
+        <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Form</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Element</a></li>
+          </ol>
+        </div>
+      </div>
+      
+      <form class="form-valide" action="#" method="post">
+        <div class="row">
+          <div class="col-lg-9">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Thông tin sản phẩm</h4>
+              </div>
+              <div class="card-body">
+                <div class="basic-form">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="productCategory">Danh mục <span class="text-danger">*</span> </label>
+                      <select id="productCategory" name="categoryId" class="form-control default-select">
+                        <option value="" selected>Chọn danh mục</option>
+                        <option th:each="category : ${categoryList}"
+                                th:value="${category.id}"
+                                th:text="${category.name}">
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label for="productCode">Code <span class="text-danger">*</span></label>
+                      <input id="productCode" type="text" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label for="productName">Tên <span class="text-danger">*</span> </label>
+                      <input id="productName" type="text" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label for="productBasePrice">Giá (nghìn VND) <span class="text-danger">*</span> </label>
+                      <input id="productBasePrice" type="text" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group col-md-12">
+                      <label for="productDescription">Mô tả (tùy chọn)</label>
+                      <textarea id="productDescription" rows="5" class="form-control"
+                                placeholder="Mô tả sản phẩm "> </textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Thumbnail</h4>
+              </div>
+              <div class="card-body">
+                <div class="basic-form">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
+                        <input id="upload" type="file" onchange="readURL(this);" class="form-control border-0">
+                        <label id="upload-label" for="upload" class="font-weight-light text-muted">Choose file</label>
+                        <div class="input-group-append">
+                          <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
+                              class="fa fa-cloud-upload mr-2 text-muted"></i><small
+                              class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
+                        </div>
+                      </div>
+                      
+                      <!-- Uploaded image area-->
+                      <p class="font-italic text-grey text-center">The image uploaded will be rendered inside the box
+                        below.</p>
+                      <div class="image-area mt-4">
+                        <img id="imageResult" src="#" alt=""
+                             class="img-fluid rounded shadow-sm mx-auto d-block">
+                      </div>
+                    
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-lg-9">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Album sản phẩm</h4>
+              </div>
+              <div class="card-body">
+                <div class="basic-form">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="productMediaGallery">Image gallery</label>
+                      <input id="productMediaGallery" type="file" class="form-control" multiple
+                             data-preview-file-type="text">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-lg-9">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Sản phẩm chi tiết</h4>
+              </div>
+              <div class="card-body">
+                <div class="basic-form">
+                  <div id="product-details-container">
+                    <div class="form-row">
+                      <div class="form-group col-md-3">
+                        <label for="productMaterial">Chất liệu <span class="text-danger">*</span> </label>
+                        <select id="productMaterial" name="materialId" class="form-control default-select">
+                          <option value="" selected>Chọn chất liệu</option>
+                          <option th:each="material : ${materialList}"
+                                  th:value="${material.id}"
+                                  th:text="${material.name}">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label for="productColor">Màu sắc <span class="text-danger">*</span> </label>
+                        <select id="productColor" name="colorId" class="form-control default-select">
+                          <option value="" selected>Chọn màu</option>
+                          <option th:each="color : ${colorList}"
+                                  th:value="${color.id}"
+                                  th:text="${color.name}">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label for="productSize">Size <span class="text-danger">*</span> </label>
+                        <select id="productSize" name="sizeId" class="form-control default-select">
+                          <option value="" selected>Chọn size</option>
+                          <option th:each="size : ${sizeList}"
+                                  th:value="${size.id}"
+                                  th:text="${size.name}">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label for="stockQuantity">Số lượng <span class="text-danger">*</span></label>
+                        <input id="stockQuantity" type="text" class="form-control" placeholder="">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="button" id="add-row-btn" class="btn btn-primary mt-3">Add new row</button>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                  <button id="btn-add-product" type="button" class="btn btn-primary mt-3">Thêm mới</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</th:block>
+
+<!-- JS Section -->
+<th:block id="th-js">
+  <script>
+    ClassicEditor
+        .create(document.querySelector('#productDescription'), {
+          toolbar: [
+            'ckbox', 'imageUpload', '|', 'heading', '|', 'undo', 'redo', '|', 'bold', 'italic', '|',
+            'blockQuote', 'indent', 'link', '|', 'bulletedList', 'numberedList'
+          ],
+        })
+        .catch(error => {
+          console.error(error);
+        });
+  </script>
+  <script>
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function (e) {
+          $('#imageResult')
+              .attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    
+    $(function () {
+      $('#upload').on('change', function () {
+        readURL(input);
+      });
+    });
+    
+    /*  ==========================================
+        SHOW UPLOADED IMAGE NAME
+    * ========================================== */
+    var input = document.getElementById('upload');
+    var infoArea = document.getElementById('upload-label');
+    
+    input.addEventListener('change', showFileName);
+    
+    function showFileName(event) {
+      var input = event.srcElement;
+      var fileName = input.files[0].name;
+      infoArea.textContent = 'File name: ' + fileName;
+    }
+  </script>
+  <script>
+    $("#productMediaGallery").fileinput({
+      uploadAsync: false,
+      showUpload: false,
+      previewFileType: 'image',
+      initialPreviewAsData: false, // allows you to set a raw markup
+      overwriteInitial: false,
+    });
+  </script>
+  <script th:inline="javascript">
+    // Chuyển dữ liệu từ Thymeleaf sang JavaScript
+    const materialList = /*[[${materialList}]]*/ [];
+    const colorList = /*[[${colorList}]]*/ [];
+    const sizeList = /*[[${sizeList}]]*/ [];
+  </script>
+  <script>
+    document.getElementById("add-row-btn").addEventListener("click", function () {
+      const container = document.getElementById("product-details-container");
+      
+      // Hàm tạo thẻ <option> từ danh sách
+      const createOptions = (list) => {
+        return list.map(item => `<option value="${item.id}">${item.name}</option>`).join("");
+      };
+      
+      // Tạo nội dung cho hàng mới
+      const newRow = `
+            <div class="form-row">
+              <div class="form-group col-md-3">
+                <label for="productMaterial">Chất liệu <span class="text-danger">*</span> </label>
+                <select id="productMaterial" name="materialId" class="form-control default-select">
+                  <option value="" selected>Chọn chất liệu</option>
+                  ${createOptions(materialList)}
+                </select>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="productColor">Màu sắc <span class="text-danger">*</span> </label>
+                <select id="productColor" name="colorId" class="form-control default-select">
+                  <option value="" selected>Chọn màu</option>
+                  ${createOptions(colorList)}
+                </select>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="productSize">Size <span class="text-danger">*</span> </label>
+                <select id="productSize" name="sizeId" class="form-control default-select">
+                  <option value="" selected>Chọn size</option>
+                  ${createOptions(sizeList)}
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="stockQuantity">Số lượng <span class="text-danger">*</span></label>
+                <input id="stockQuantity" type="text" class="form-control" placeholder="">
+              </div>
+              <div class="form-group col-md-1 d-flex align-items-end">
+              <button type="button" class="btn btn-danger btn-delete mb-1">Delete</button>
+            </div>
+            </div>
+    `;
+      // Thêm hàng mới vào container
+      container.insertAdjacentHTML("beforeend", newRow);
+    });
+    
+    document.getElementById("product-details-container").addEventListener("click", function (e) {
+      if (e.target && e.target.classList.contains("btn-delete")) {
+        const row = e.target.closest(".form-row");
+        if (row) {
+          row.remove();
+        }
+      }
+    });
+  </script>
+  <script>
+    document.getElementById("btn-add-product").addEventListener("click", function () {
+      const productName = document.getElementById("productName").value;
+      const productCode = document.getElementById("productCode").value;
+      const basePrice = document.getElementById("productBasePrice").value;
+      const productDescription = document.getElementById("productDescription").value;
+      const categoryId = document.getElementById("productCategory").value;
+      
+      const detailsContainer = document.getElementById("product-details-container");
+      const detailRows = detailsContainer.querySelectorAll(".form-row");
+      
+      const products = [];
+      detailRows.forEach((row) => {
+        const materialId = row.querySelector('select[name="materialId"]').value;
+        const colorId = row.querySelector('select[name="colorId"]').value;
+        const sizeId = row.querySelector('select[name="sizeId"]').value;
+        const stockQuantity = row.querySelector('#stockQuantity').value;
+        
+        if (materialId && colorId && sizeId && stockQuantity) {
+          products.push({
+            productName,
+            productCode,
+            basePrice,
+            productDescription,
+            categoryId,
+            materialId,
+            colorId,
+            sizeId,
+            stockQuantity,
+          });
+        }
+      });
+      
+      console.log("Products added:", products);
+    });
+  
+  </script>
+</th:block>
+
+</body>
+</html>

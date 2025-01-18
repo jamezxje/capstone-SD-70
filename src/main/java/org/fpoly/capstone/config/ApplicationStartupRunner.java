@@ -22,22 +22,23 @@ import static org.fpoly.capstone.config.DataSeeder.*;
 @Transactional
 public class ApplicationStartupRunner implements CommandLineRunner {
 
-  private final UserRepository userRepository;
-  private final ColorRepository colorRepository;
-  private final CategoryRepository categoryRepository;
-  private final MaterialRepository materialRepository;
-  private final SizeRepository sizeRepository;
-  private final ProductRepository productRepository;
-  private final ProductDetailRepository productDetailRepository;
-  private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
+    private final ColorRepository colorRepository;
+    private final CategoryRepository categoryRepository;
+    private final MaterialRepository materialRepository;
+    private final SizeRepository sizeRepository;
+    private final ProductRepository productRepository;
+    private final ProductDetailRepository productDetailRepository;
+    private final ImageRepository imageRepository;
 
-  @Override
-  public void run(String... args) throws Exception {
+    @Override
+    public void run(String... args) throws Exception {
 
-    this.userRepository.saveAll(USER_LIST);
-    this.categoryRepository.saveAll(CATEGORY_LIST);
-    this.materialRepository.saveAll(MATERIAL_LIST);
-    this.sizeRepository.saveAll(SIZE_LIST);
+        this.userRepository.saveAll(USER_LIST);
+        this.categoryRepository.saveAll(CATEGORY_LIST);
+        this.materialRepository.saveAll(MATERIAL_LIST);
+        this.sizeRepository.saveAll(SIZE_LIST);
+        this.colorRepository.saveAll(COLOR_LIST);
 
-  }
+    }
 }
