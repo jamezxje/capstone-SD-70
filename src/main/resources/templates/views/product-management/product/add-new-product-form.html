@@ -79,48 +79,10 @@
         </div>
       </div>
       
-      <form class="form-valide" action="#" method="post">
+      <form class="form-valide" th:action="@{/dashboard/product-management/product}" th:object="${productModel}"
+            method="post" enctype="multipart/form-data">
+        <!--Thong tin san pham start-->
         <div class="row">
-          <div class="col-lg-9">
-            <div class="card">
-              <div class="card-header">
-                <h4 class="card-title">Thông tin sản phẩm</h4>
-              </div>
-              <div class="card-body">
-                <div class="basic-form">
-                  <div class="form-row">
-                    <div class="form-group col-md-12">
-                      <label for="productCategory">Danh mục <span class="text-danger">*</span> </label>
-                      <select id="productCategory" name="categoryId" class="form-control default-select">
-                        <option value="" selected>Chọn danh mục</option>
-                        <option th:each="category : ${categoryList}"
-                                th:value="${category.id}"
-                                th:text="${category.name}">
-                        </option>
-                      </select>
-                    </div>
-                    <div class="form-group col-md-4">
-                      <label for="productCode">Code <span class="text-danger">*</span></label>
-                      <input id="productCode" type="text" class="form-control" placeholder="">
-                    </div>
-                    <div class="form-group col-md-4">
-                      <label for="productName">Tên <span class="text-danger">*</span> </label>
-                      <input id="productName" type="text" class="form-control" placeholder="">
-                    </div>
-                    <div class="form-group col-md-4">
-                      <label for="productBasePrice">Giá (nghìn VND) <span class="text-danger">*</span> </label>
-                      <input id="productBasePrice" type="text" class="form-control" placeholder="">
-                    </div>
-                    <div class="form-group col-md-12">
-                      <label for="productDescription">Mô tả (tùy chọn)</label>
-                      <textarea id="productDescription" rows="5" class="form-control"
-                                placeholder="Mô tả sản phẩm "> </textarea>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="col-lg-3">
             <div class="card">
               <div class="card-header">
@@ -131,7 +93,8 @@
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
-                        <input id="upload" type="file" onchange="readURL(this);" class="form-control border-0">
+                        <input id="upload" type="file" name="featureImage" onchange="readURL(this);"
+                               class="form-control border-0">
                         <label id="upload-label" for="upload" class="font-weight-light text-muted">Choose file</label>
                         <div class="input-group-append">
                           <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
@@ -154,9 +117,112 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="row mt-4">
+          
           <div class="col-lg-9">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Thông tin sản phẩm</h4>
+              </div>
+              <div class="card-body">
+                <div class="basic-form">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="productCode">Code <span class="text-danger">*</span></label>
+                      <input id="productCode" type="text" name="code" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="productName">Tên <span class="text-danger">*</span> </label>
+                      <input id="productName" type="text" name="name" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group col-md-12">
+                      <label for="productDescription">Mô tả (tùy chọn)</label>
+                      <textarea id="productDescription" name="description" rows="5" class="form-control"
+                                placeholder="Mô tả sản phẩm "> </textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Thong tin san pham end-->
+        
+        <!--Chi tiet san pham start-->
+        <div class="row mt-3">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Sản phẩm chi tiết</h4>
+              </div>
+              <div class="card-body">
+                <div class="basic-form">
+                  <div id="product-details-container">
+                    <div class="form-row border-info">
+                      <div class="form-group col-md-2">
+                        <label for="productCategory">Danh mục <span class="text-danger">*</span> </label>
+                        <select id="productCategory" name="variants[0].categoryId" class="form-control default-select">
+                          <option value="" selected>Chọn danh mục</option>
+                          <option th:each="category : ${categoryList}"
+                                  th:value="${category.id}"
+                                  th:text="${category.name}">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="productMaterial">Chất liệu <span class="text-danger">*</span> </label>
+                        <select id="productMaterial" name="variants[0].materialId" class="form-control default-select">
+                          <option value="" selected>Chọn chất liệu</option>
+                          <option th:each="material : ${materialList}"
+                                  th:value="${material.id}"
+                                  th:text="${material.name}">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="productColor">Màu sắc <span class="text-danger">*</span> </label>
+                        <select id="productColor" name="variants[0].colorId" class="form-control default-select">
+                          <option value="" selected>Chọn màu</option>
+                          <option th:each="color : ${colorList}"
+                                  th:value="${color.id}"
+                                  th:text="${color.name}">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="productSize">Size <span class="text-danger">*</span> </label>
+                        <select id="productSize" name="variants[0].sizeId" class="form-control default-select">
+                          <option value="" selected>Chọn size</option>
+                          <option th:each="size : ${sizeList}"
+                                  th:value="${size.id}"
+                                  th:text="${size.name}">
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="stockQuantity">Số lượng <span class="text-danger">*</span></label>
+                        <input id="stockQuantity" name="variants[0].stockQuantity" type="text" class="form-control"
+                               placeholder="">
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="productBasePrice">Giá (nghìn VND) <span class="text-danger">*</span> </label>
+                        <input id="productBasePrice" name="variants[0].basePrice" type="text" class="form-control"
+                               placeholder="">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group d-flex justify-content-end">
+                    <button type="button" id="add-row-btn" class="btn btn-primary mt-3">Thêm chi tiết</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Chi tiet san pham end-->
+        
+        <!--Album san pham start-->
+        <div class="row mt-3">
+          <div class="col-lg-12">
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Album sản phẩm</h4>
@@ -166,72 +232,19 @@
                   <div class="form-row">
                     <div class="form-group col-md-12">
                       <label for="productMediaGallery">Image gallery</label>
-                      <input id="productMediaGallery" type="file" class="form-control" multiple
+                      <input id="productMediaGallery" name="images" type="file" class="form-control" multiple
                              data-preview-file-type="text">
                     </div>
                   </div>
+                  <div class="d-flex justify-content-end">
+                    <button id="btn-add-product" class="btn btn-primary mt-3">Thêm mới</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="row mt-4">
-          <div class="col-lg-9">
-            <div class="card">
-              <div class="card-header">
-                <h4 class="card-title">Sản phẩm chi tiết</h4>
-              </div>
-              <div class="card-body">
-                <div class="basic-form">
-                  <div id="product-details-container">
-                    <div class="form-row">
-                      <div class="form-group col-md-3">
-                        <label for="productMaterial">Chất liệu <span class="text-danger">*</span> </label>
-                        <select id="productMaterial" name="materialId" class="form-control default-select">
-                          <option value="" selected>Chọn chất liệu</option>
-                          <option th:each="material : ${materialList}"
-                                  th:value="${material.id}"
-                                  th:text="${material.name}">
-                          </option>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-3">
-                        <label for="productColor">Màu sắc <span class="text-danger">*</span> </label>
-                        <select id="productColor" name="colorId" class="form-control default-select">
-                          <option value="" selected>Chọn màu</option>
-                          <option th:each="color : ${colorList}"
-                                  th:value="${color.id}"
-                                  th:text="${color.name}">
-                          </option>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-3">
-                        <label for="productSize">Size <span class="text-danger">*</span> </label>
-                        <select id="productSize" name="sizeId" class="form-control default-select">
-                          <option value="" selected>Chọn size</option>
-                          <option th:each="size : ${sizeList}"
-                                  th:value="${size.id}"
-                                  th:text="${size.name}">
-                          </option>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-3">
-                        <label for="stockQuantity">Số lượng <span class="text-danger">*</span></label>
-                        <input id="stockQuantity" type="text" class="form-control" placeholder="">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <button type="button" id="add-row-btn" class="btn btn-primary mt-3">Add new row</button>
-                  </div>
-                </div>
-                <div class="d-flex justify-content-end">
-                  <button id="btn-add-product" type="button" class="btn btn-primary mt-3">Thêm mới</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!--Album san pham end-->
       </form>
     </div>
   </div>
@@ -299,8 +312,10 @@
     const materialList = /*[[${materialList}]]*/ [];
     const colorList = /*[[${colorList}]]*/ [];
     const sizeList = /*[[${sizeList}]]*/ [];
+    const categoryList = /*[[${categoryList}]]*/ [];
   </script>
   <script>
+    let variantIndex = 0;
     document.getElementById("add-row-btn").addEventListener("click", function () {
       const container = document.getElementById("product-details-container");
       
@@ -311,32 +326,45 @@
       
       // Tạo nội dung cho hàng mới
       const newRow = `
-            <div class="form-row">
-              <div class="form-group col-md-3">
+            <div class="form-row mt-3 border-info">
+            <div class="form-group col-md-4">
+                        <label for="productCategory">Danh mục <span class="text-danger">*</span> </label>
+                        <select id="productCategory" name="variants[${variantIndex}].categoryId" class="form-control default-select">
+                          <option value="" selected>Chọn danh mục</option>
+                          ${createOptions(categoryList)}
+                          </option>
+                        </select>
+                      </div>
+              <div class="form-group col-md-4">
                 <label for="productMaterial">Chất liệu <span class="text-danger">*</span> </label>
-                <select id="productMaterial" name="materialId" class="form-control default-select">
+                <select id="productMaterial" name="variants[${variantIndex}].materialId" class="form-control default-select">
                   <option value="" selected>Chọn chất liệu</option>
                   ${createOptions(materialList)}
                 </select>
               </div>
-              <div class="form-group col-md-3">
+              <div class="form-group col-md-4">
                 <label for="productColor">Màu sắc <span class="text-danger">*</span> </label>
-                <select id="productColor" name="colorId" class="form-control default-select">
+                <select id="productColor" name="variants[${variantIndex}].colorId" class="form-control default-select">
                   <option value="" selected>Chọn màu</option>
                   ${createOptions(colorList)}
                 </select>
               </div>
-              <div class="form-group col-md-3">
+              <div class="form-group col-md-4">
                 <label for="productSize">Size <span class="text-danger">*</span> </label>
-                <select id="productSize" name="sizeId" class="form-control default-select">
+                <select id="productSize" name="variants[${variantIndex}].sizeId" class="form-control default-select">
                   <option value="" selected>Chọn size</option>
                   ${createOptions(sizeList)}
                 </select>
               </div>
-              <div class="form-group col-md-2">
+              <div class="form-group col-md-4">
                 <label for="stockQuantity">Số lượng <span class="text-danger">*</span></label>
-                <input id="stockQuantity" type="text" class="form-control" placeholder="">
+                <input id="stockQuantity" type="text" name="variants[${variantIndex}].stockQuantity" class="form-control" placeholder="">
               </div>
+              <div class="form-group col-md-3">
+                        <label for="productBasePrice">Giá (nghìn VND) <span class="text-danger">*</span> </label>
+                        <input id="productBasePrice" name="variants[${variantIndex}].basePrice" type="text" class="form-control"
+                               placeholder="">
+                      </div>
               <div class="form-group col-md-1 d-flex align-items-end">
               <button type="button" class="btn btn-danger btn-delete mb-1">Delete</button>
             </div>
@@ -345,6 +373,7 @@
       // Thêm hàng mới vào container
       container.insertAdjacentHTML("beforeend", newRow);
     });
+    variantIndex++;
     
     document.getElementById("product-details-container").addEventListener("click", function (e) {
       if (e.target && e.target.classList.contains("btn-delete")) {

@@ -1,11 +1,12 @@
 package org.fpoly.capstone.service.payload.product;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,25 +14,26 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class ProductRequest {
 
-  private Integer id;
+    private String name;
+    private String code;
+    private MultipartFile featureImage;
+    private String featureImageURL;
+    private MultipartFile[] images;
+    private List<String> imageURLs;
+    private String description;
+    private List<ProductDetailRequest> variants;
 
-  @NotBlank(message = "Code is required")
-  private String code;
-
-  @NotBlank(message = "Name is required")
-  private String name;
-
-  @NotBlank(message = "Weight is required")
-  private String weight;
-
-  @NotBlank(message = "GSM Qualification is required")
-  private String gsmQualification;
-  
-  private String featureImageUrl;
-  private MultipartFile featureImage;
-  private String description;
-  private String sizeGuideUrl;
-  private MultipartFile sizeGuideImage;
-  private Boolean status;
+    @Getter
+    @Setter
+    public static class ProductDetailRequest {
+        private Long productId;
+        private Long categoryId;
+        private Long colorId;
+        private Long materialId;
+        private Long sizeId;
+        private Long stockQuantity;
+        private Double basePrice;
+        private Boolean status;
+    }
 
 }
