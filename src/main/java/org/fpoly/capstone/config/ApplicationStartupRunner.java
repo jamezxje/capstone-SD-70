@@ -39,6 +39,8 @@ public class ApplicationStartupRunner implements CommandLineRunner {
         this.materialRepository.saveAll(MATERIAL_LIST);
         this.sizeRepository.saveAll(SIZE_LIST);
         this.colorRepository.saveAll(COLOR_LIST);
+//        this.productRepository.saveAll(PRODUCT_LIST);
+//        this.productDetailRepository.saveAll(PRODUCT_DETAIL_LIST);
 
     }
 }

@@ -10,18 +10,18 @@ import java.util.List;
 
 public interface CategoryService {
 
-  List<Category> getAllCategory();
+    List<Category> getAllCategory();
 
-  Page<CategoryResponse> getAllCategory(Pageable pageable);
+    Page<CategoryResponse> getAllCategory(Pageable pageable);
 
-  Page<CategoryResponse> searchCategory(String name, Boolean status, Pageable pageable);
+    Page<CategoryResponse> searchCategory(String name, Boolean status, Pageable pageable);
 
-  void createCategory(CategoryRequest request);
+    void createCategory(CategoryRequest request);
 
-  void updateCategory(Integer categoryId, CategoryRequest request);
+    void updateCategory(Integer categoryId, CategoryRequest request);
 
-  void deleteCategory(Integer categoryId);
+    void deleteCategory(Integer categoryId);
 
-  CategoryResponse getCategoryById(Integer categoryId);
+    CategoryResponse getCategoryById(Integer categoryId);
 
 }

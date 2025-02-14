@@ -1,22 +1,22 @@
-package org.fpoly.capstone.service.payload.category;
+package org.fpoly.capstone.controller.payload.brand;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryRequest {
+public class BrandViewModel {
 
     private Integer id;
-
-    @NotBlank(message = "Name is required")
     private String name;
-
     private Boolean status;
+    private LocalDateTime createdOn;
+    private LocalDateTime updatedOn;
 
 }

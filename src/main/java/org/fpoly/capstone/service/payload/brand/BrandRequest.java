@@ -1,4 +1,4 @@
-package org.fpoly.capstone.service.payload.category;
+package org.fpoly.capstone.service.payload.brand;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryRequest {
+public class BrandRequest {
 
     private Integer id;
 

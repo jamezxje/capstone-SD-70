@@ -16,9 +16,9 @@
         
         <div class="card-header d-sm-flex d-block">
           <div class="mr-auto mb-sm-0 mb-3">
-            <h4 class="card-title font-w600 mb-2">Quản lý size</h4>
+            <h4 class="card-title font-w600 mb-2">Quản lý nhãn hàng</h4>
           </div>
-          <button type="button" data-toggle="modal" data-target="#createSizeModal"
+          <button type="button" data-toggle="modal" data-target="#createBrandModal"
                   class="btn btn-secondary ml-auto">+
             Thêm mới
           </button>
@@ -33,7 +33,7 @@
               <thead>
               <tr>
                 <th>#</th>
-                <th>Size</th>
+                <th>Danh mục</th>
                 <th>Trạng thái</th>
                 <th>Ngày tạo</th>
                 <th>Ngày thay đổi</th>
@@ -41,28 +41,28 @@
               </tr>
               </thead>
               <tbody>
-              <tr th:if="${#lists.isEmpty(sizes)}">
+              <tr th:if="${#lists.isEmpty(brands)}">
                 <td colspan="5" class="text-center"><h3>KHÔNG TÌM THẤY DỮ LIỆU</h3></td>
               </tr>
-              <tr th:each="size, index : ${sizes}">
+              <tr th:each="brand, index : ${brands}">
                 <td th:text="${index.index+1}"></td>
-                <td class="pr-0" th:text="${size.name}"></td>
+                <td class="pr-0" th:text="${brand.name}"></td>
                 <td>
-                  <span th:if="${size.status == false}"
+                  <span th:if="${brand.status == false}"
                         class="badge badge-danger">Không hoạt động</span>
-                  <span th:if="${size.status == true}"
+                  <span th:if="${brand.status == true}"
                         class="badge badge-success">Hoạt động</span>
                 </td>
-                <td th:text="${#temporals.format(size.createdOn, 'dd-MM-yyyy')}">Create Date</td>
-                <td th:text="${#temporals.format(size.updatedOn, 'dd-MM-yyyy')}">Modify Date</td>
+                <td th:text="${#temporals.format(brand.createdOn, 'dd-MM-yyyy')}">Create Date</td>
+                <td th:text="${#temporals.format(brand.updatedOn, 'dd-MM-yyyy')}">Modify Date</td>
                 <td>
                   <div class="d-flex action-button">
                     <button type="button" class="btn btn-info btn-xs light px-2"
                             data-toggle="modal"
-                            data-target="#editSizeModal"
-                            th:data-id="${size.id}"
-                            th:data-name="${size.name}"
-                            th:data-status="${size.status}">
+                            data-target="#editBrandModal"
+                            th:data-id="${brand.id}"
+                            th:data-name="${brand.name}"
+                            th:data-status="${brand.status}">
                       <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z"
@@ -71,8 +71,8 @@
                     </button>
                     <a href="#" class="ml-2 btn btn-xs px-2 light btn-danger"
                        data-toggle="modal"
-                       data-target="#deleteSizeModal"
-                       th:data-id="${size.id}">
+                       data-target="#deleteBrandModal"
+                       th:data-id="${brand.id}">
                       <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round"
                               stroke-linejoin="round"></path>
@@ -89,26 +89,26 @@
             <!--Table end-->
             
             <!--Navigation start-->
-            <div th:unless="${#lists.isEmpty(sizes)}" class="d-flex justify-content-end flex-wrap">
+            <div th:unless="${#lists.isEmpty(brands)}" class="d-flex justify-content-end flex-wrap">
               <nav>
                 <ul class="pagination pagination-gutter">
                   <li class="page-item page-indicator"
-                      th:classappend="${sizePage.hasPrevious()} ? '' : 'disabled'">
+                      th:classappend="${brandPage.hasPrevious()} ? '' : 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/size(page=${sizePage.number}, size=${sizePage.size}, name=${searchName}, status=${searchStatus})}">
+                       th:href="@{/dashboard/product-management/brand(page=${brandPage.number}, size=${brandPage.size}, name=${searchName}, status=${searchStatus})}">
                       <i class="la la-angle-left"></i></a>
                   </li>
-                  <li class="page-item" th:each="i : ${#numbers.sequence(1, sizePage.totalPages)}"
-                      th:classappend="${sizePage.number + 1 == i} ? 'active'">
+                  <li class="page-item" th:each="i : ${#numbers.sequence(1, brandPage.totalPages)}"
+                      th:classappend="${brandPage.number + 1 == i} ? 'active'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/size(page=${i}, size=${sizePage.size}, name=${searchName}, status=${searchStatus})}"
+                       th:href="@{/dashboard/product-management/brand(page=${i}, size=${brandPage.size}, name=${searchName}, status=${searchStatus})}"
                        th:text="${i}">
                     </a>
                   </li>
                   <li class="page-item page-indicator"
-                      th:classappend="${sizePage.hasNext()} ? '' : 'disabled'">
+                      th:classappend="${brandPage.hasNext()} ? '' : 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/size(page=${sizePage.number + 2}, size=${sizePage.size}, name=${searchName}, status=${searchStatus})}">
+                       th:href="@{/dashboard/product-management/brand(page=${brandPage.number + 2}, size=${brandPage.size}, name=${searchName}, status=${searchStatus})}">
                       <i class="la la-angle-right"></i></a>
                   </li>
                 </ul>
@@ -120,13 +120,13 @@
         </div>
         <!--Data table end-->
         
-        <!--Create size modal start-->
-        <div class="modal fade bd-example-modal-lg" id="createSizeModal" tabindex="-1" role="dialog"
+        <!--Create brand modal start-->
+        <div class="modal fade bd-example-modal-lg" id="createBrandModal" tabindex="-1" role="dialog"
              aria-hidden="true">
           <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Thêm size</h5>
+                <h5 class="modal-title">Thêm nhãn hàng</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span>&times;</span>
                 </button>
@@ -147,31 +147,31 @@
                         <div class="card">
                           <div class="card-body">
                             <div class="form-validation">
-                              <form th:action="@{/dashboard/product-management/size}"
+                              <form th:action="@{/dashboard/product-management/brand}"
                                     method="POST"
-                                    th:object="${sizeModel}">
+                                    th:object="${brandModel}">
                                 <div class="row">
                                   <div class="col-xl-12">
                                     <div class="form-group row">
                                       <label class="col-lg-4 col-form-label"
-                                             for="sizeName">
-                                        Tên size
+                                             for="brandName">
+                                        Tên nhãn hàng
                                       </label>
                                       <div class="col-lg-8">
                                         <input type="text" class="form-control"
-                                               id="sizeName" name="name"
+                                               id="brandName" name="name"
                                                placeholder="Nhập tên">
                                       </div>
                                     </div>
                                     <div class="form-group row">
                                       <label class="col-lg-4 col-form-label"
-                                             for="sizeStatus">
+                                             for="brandStatus">
                                         Trạng thái
                                         <span class="text-danger">*</span>
                                       </label>
                                       <div class="col-lg-8">
                                         <select class="form-control default-select"
-                                                id="sizeStatus" name="status">
+                                                id="brandStatus" name="status">
                                           <option th:value="true">Hoạt động</option>
                                           <option th:value="false">Không hoạt động</option>
                                         </select>
@@ -198,15 +198,15 @@
             </div>
           </div>
         </div>
-        <!--Create size modal end-->
+        <!--Create brand modal end-->
         
-        <!--Edit size modal start-->
-        <div class="modal fade bd-example-modal-lg" id="editSizeModal" tabindex="-1" role="dialog"
+        <!--Edit brand modal start-->
+        <div class="modal fade bd-example-modal-lg" id="editBrandModal" tabindex="-1" role="dialog"
              aria-hidden="true">
           <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Sửa size</h5>
+                <h5 class="modal-title">Sửa nhãn hàng</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span>&times;</span>
                 </button>
@@ -227,31 +227,31 @@
                         <div class="card">
                           <div class="card-body">
                             <div class="form-validation">
-                              <form th:action="@{/dashboard/product-management/size/update}"
+                              <form th:action="@{/dashboard/product-management/brand/update}"
                                     method="POST"
-                                    th:object="${editSizeModel}">
-                                <input type="hidden" id="sizeIdEdit" th:field="*{id}"/>
+                                    th:object="${editBrandModel}">
+                                <input type="hidden" id="brandIdEdit" th:field="*{id}"/>
                                 <div class="row">
                                   <div class="col-xl-12">
                                     <div class="form-group row">
                                       <label class="col-lg-4 col-form-label"
-                                             for="sizeNameEdit">
-                                        Tên size
+                                             for="brandNameEdit">
+                                        Tên nhãn hàng
                                       </label>
                                       <div class="col-lg-8">
                                         <input type="text" class="form-control"
-                                               id="sizeNameEdit" name="name"
+                                               id="brandNameEdit" name="name"
                                                placeholder="Nhập tên">
                                       </div>
                                     </div>
                                     <div class="form-group row">
                                       <label class="col-lg-4 col-form-label"
-                                             for="sizeStatusEdit">Trạng thái
+                                             for="brandStatusEdit">Trạng thái
                                         <span class="text-danger">*</span>
                                       </label>
                                       <div class="col-lg-8">
                                         <select class="form-control default-select"
-                                                id="sizeStatusEdit" th:field="*{status}">
+                                                id="brandStatusEdit" th:field="*{status}">
                                           <option th:value="true">Hoạt động</option>
                                           <option th:value="false">Không hoạt động</option>
                                         </select>
@@ -278,10 +278,10 @@
             </div>
           </div>
         </div>
-        <!--Edit size modal end-->
+        <!--Edit brand modal end-->
         
-        <!-- Delete size modal start -->
-        <div class="modal fade" id="deleteSizeModal" tabindex="-1" role="dialog"
+        <!-- Delete brand modal start -->
+        <div class="modal fade" id="deleteBrandModal" tabindex="-1" role="dialog"
              aria-labelledby="confirmDeleteModalLabel"
              aria-hidden="true">
           <div class="modal-dialog" role="document">
@@ -293,7 +293,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                Bạn chắc là muốn xóa size này chứ ?
+                Bạn chắc là muốn xóa nhãn hàng này chứ ?
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -304,7 +304,7 @@
             </div>
           </div>
         </div>
-        <!-- Delete size modal end -->
+        <!-- Delete brand modal end -->
       
       </div>
     </div>
@@ -312,7 +312,7 @@
 </th:block>
 <th:block id="th-js">
   <script>
-    $(document).on('click', '[data-target="#editSizeModal"]', function () {
+    $(document).on('click', '[data-target="#editBrandModal"]', function () {
       const button = $(this);
       
       // Fetch values from data attributes
@@ -323,18 +323,18 @@
       console.log("status :", status);
       
       // Populate the modal form fields
-      $('#sizeIdEdit').val(id);
-      $('#sizeNameEdit').val(name);
-      $('#sizeStatusEdit').val(String(status)).trigger('change')
+      $('#brandIdEdit').val(id);
+      $('#brandNameEdit').val(name);
+      $('#brandStatusEdit').val(String(status)).trigger('change')
     });
     
-    $('#editSizeModal').on('hidden.bs.modal', function () {
+    $('#editBrandModal').on('hidden.bs.modal', function () {
       $(this).find('form')[0].reset();
     });
     
-    $(document).on('click', '[data-target="#deleteSizeModal"]', function () {
-      const sizeId = $(this).data('id');
-      const formAction = `/dashboard/product-management/size/delete/${sizeId}`;
+    $(document).on('click', '[data-target="#deleteBrandModal"]', function () {
+      const brandId = $(this).data('id');
+      const formAction = `/dashboard/product-management/brand/delete/${brandId}`;
       $('#deleteTransactionForm').attr('action', formAction);
     });
   </script>

@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.fpoly.capstone.controller.payload.product.ProductViewModel;
-import org.fpoly.capstone.entity.Image;
 import org.fpoly.capstone.entity.Product;
 import org.fpoly.capstone.repository.ProductRepository;
 import org.fpoly.capstone.service.ProductDetailService;
@@ -15,8 +14,6 @@ import org.fpoly.capstone.service.payload.product.ProductResponse;
 import org.fpoly.capstone.service.payload.productdetail.ProductDetailRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Log4j2
 @Service
@@ -40,15 +37,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void createProduct(ProductRequest request) {
-        Image featureImage = this.filesStorageService.save(request.getFeatureImage());
-        List<Image> images = this.filesStorageService.saveAll(request.getImages());
-
         Product product = Product.builder()
                 .code(request.getCode())
                 .name(request.getName())
-                .featureImage(featureImage)
-                .images(images)
-                .description(request.getDescription()).build();
+                .status(Boolean.TRUE)
+                .build();
 
         Product savedProduct = this.productRepository.save(product);
 

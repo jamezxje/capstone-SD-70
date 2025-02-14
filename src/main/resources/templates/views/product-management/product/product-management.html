@@ -7,7 +7,6 @@
   <th:block id="th-css">
     <link rel="stylesheet" th:href="@{/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/assets/js/select.dataTables.min.css}">
-    <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
   </th:block>
 </head>
 <body>
@@ -15,186 +14,132 @@
 <th:block id="th-body">
   <div class="main-panel">
     <div class="content-wrapper mt-3">
-      <!-- Message alert-->
-      <div
-          th:insert="~{views/fragments/message-alert :: messageAlert}">
-      </div>
-
-      <!-- Search form -->
-      <div class="row">
-        <form th:action="@{/dashboard/product-management/product}" method="GET"
-              class="forms-sample col-12">
-          <div class="row">
-            <div class="form-group col-md-4">
-              <label for="code">Product Code</label>
-              <input type="text" class="form-control" id="code" name="code" th:value="${searchCode}"
-                     placeholder="Product Code">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="name">Product Name</label>
-              <input type="text" class="form-control" id="name" name="name" th:value="${searchName}"
-                     placeholder="Product Name">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="weight">Product Weight</label>
-              <input type="text" class="form-control" id="weight" name="weight"
-                     th:value="${searchWeight}"
-                     placeholder="Product Weight">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="gsmQualification">Product GSM Qualification</label>
-              <input type="text" class="form-control" id="gsmQualification" name="gsmQualification"
-                     th:value="${searchGsmQualification}"
-                     placeholder="Product GSM Qualification">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="status">Status</label>
-              <select id="status" name="status" class="form-select">
-                <option th:value="null" th:selected="${searchStatus == null}">All</option>
-                <option th:value="true" th:selected="${searchStatus == true}">Active</option>
-                <option th:value="false" th:selected="${searchStatus == false}">Inactive</option>
-              </select>
-            </div>
-            <div class="col-md-4 d-flex align-items-end mb-4">
-              <button type="submit" class="btn btn-primary mr-2">Search</button>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- Table displaying products -->
       <div class="row">
         <div class="col-sm-12">
-          <div class="d-flex justify-content-end">
-            <div
-                th:insert="~{views/product-management/product/component/product_create_modal :: productCreateModal}">
-            </div>
-          </div>
           <table class="table table-hover my-3">
             <thead>
             <tr>
               <th>Product code</th>
               <th>Name</th>
-              <th>Weight</th>
-              <th>GSM Qualification</th>
-              <th>Feature Image</th>
-              <th>Size guide</th>
+              <th>Feature image</th>
+              <th>Category</th>
+              <th>Material</th>
+              <th>Color</th>
+              <th>Size</th>
+              <th>Base Price</th>
+              <th>Stock Quantity</th>
               <th>Status</th>
-              <th>Create Date</th>
-              <th>Modify Date</th>
               <th>Action</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${#lists.isEmpty(products)}">
-              <td colspan="7" class="text-center"><h3>NO DATA FOUND</h3></td>
+            <tr th:if="${#lists.isEmpty(productDetails)}">
+              <td colspan="8" class="text-center"><h3>NO DATA FOUND</h3></td>
             </tr>
-            <tr th:each="product : ${products}">
-              <td th:text="${product.code}">Product Code</td>
-              <td th:text="${product.name}">Product Name</td>
-              <td th:text="${product.weight}">Product Weight</td>
-              <td th:text="${product.gsmQualification}">Product GSM Qualification</td>
+            <tr th:each="detail : ${productDetails}">
+              <td th:text="${detail.productCode}">Product Code</td>
+              <td th:text="${detail.productName}">Product Name</td>
               <td>
                 <div>
-                  <img th:src="@{'/'+ ${product.featureImageUrl}}"
-                       alt="Product Feature Image"
+                  <img th:src="@{'/'+ ${detail.featureImageUrl}}"
+                       alt="Product detail Feature Image"
                        style="width: 100%; height: 100%; border-radius: 0">
                 </div>
               </td>
-              <td>
-                <img th:src="@{'/'+ ${product.sizeGuideUrl}}"
-                     alt="Product Size Guide"
-                     style="width: 100%; height: 100%; border-radius: 0">
-              </td>
-              <td th:text="${product.status ? 'Active' : 'Inactive'}">Status</td>
-              <td th:text="${#temporals.format(product.createdOn, 'yyyy-MM-dd')}">Create Date</td>
-              <td th:text="${#temporals.format(product.updatedOn, 'yyyy-MM-dd')}">Modify Date</td>
+              <td th:text="${detail.categoryName}">Category</td>
+              <td th:text="${detail.materialName}">Material</td>
+              <td th:text="${detail.colorName}">Color</td>
+              <td th:text="${detail.sizeName}">Size</td>
+              <td th:text="${detail.basePrice}">Base Price</td>
+              <td th:text="${detail.stockQuantity}">Stock Quantity</td>
+              <td th:text="${detail.status ? 'Active' : 'Inactive'}">Status</td>
               <td>
                 <button type="button" class="btn btn-primary"
                         data-bs-toggle="modal"
-                        data-bs-target="#editProductModal"
-                        th:data-id="${product.id}"
-                        th:data-code="${product.code}"
-                        th:data-name="${product.name}"
-                        th:data-weight="${product.weight}"
-                        th:data-gsmQualification="${product.gsmQualification}"
-                        th:data-featureImageUrl="${product.featureImageUrl}"
-                        th:data-sizeGuideUrl="${product.sizeGuideUrl}"
-                        th:data-description="${product.description}"
-                        th:data-status="${product.status}">
+                        data-bs-target="#editProductDetailModal"
+                        th:data-product-detail-id="${detail.productDetailId}"
+                        th:data-product-id="${detail.productId}"
+                        th:data-color-id="${detail.colorId}"
+                        th:data-category-id="${detail.categoryId}"
+                        th:data-size-id="${detail.sizeId}"
+                        th:data-material-id="${detail.materialId}"
+                        th:data-basePrice="${detail.basePrice}"
+                        th:data-stockQuantity="${detail.stockQuantity}"
+                        th:data-image-urls="${#strings.arrayJoin(detail.imageUrls, ',')}"
+                        th:data-status="${detail.status}">
                   Edit
                 </button>
                 <a href="#"
                    class="btn"
-                   th:classappend="${product.status} ? 'btn-danger' : 'btn-success'"
-                   th:text="${product.status ? 'Inactive' : 'Active'}"
+                   th:classappend="${detail.status} ? 'btn-danger' : 'btn-success'"
+                   th:text="${detail.status ? 'Inactive' : 'Active'}"
                    data-bs-toggle="modal"
-                   data-bs-target="#updateProductStatusModal"
-                   th:data-id="${product.id}">
+                   data-bs-target="#updateProductDetailStatusModal"
+                   th:data-product-detail-id="${detail.productDetailId}">
                   Change status
                 </a>
                 <button type="button" class="btn btn-info"
                         data-bs-toggle="modal"
-                        data-bs-target="#productDetailModal"
-                        th:data-id="${product.id}"
-                        th:data-code="${product.code}"
-                        th:data-name="${product.name}"
-                        th:data-weight="${product.weight}"
-                        th:data-gsmQualification="${product.gsmQualification}"
-                        th:data-featureImageUrl="${product.featureImageUrl}"
-                        th:data-sizeGuideUrl="${product.sizeGuideUrl}"
-                        th:data-description="${product.description}"
-                        th:data-status="${product.status}">
-                  View Details
+                        data-bs-target="#viewProductDetailModal"
+                        th:data-product-detail-id="${detail.productDetailId}"
+                        th:data-product-id="${detail.productId}"
+                        th:data-color-id="${detail.colorId}"
+                        th:data-category-id="${detail.categoryId}"
+                        th:data-size-id="${detail.sizeId}"
+                        th:data-material-id="${detail.materialId}"
+                        th:data-basePrice="${detail.basePrice}"
+                        th:data-stockQuantity="${detail.stockQuantity}"
+                        th:data-image-urls="${#strings.arrayJoin(detail.imageUrls, ',')}"
+                        th:data-status="${detail.status}">
+                  View
                 </button>
               </td>
             </tr>
             </tbody>
           </table>
-
           <!-- Pagination -->
-          <div th:unless="${#lists.isEmpty(products)}">
+          <div th:unless="${#lists.isEmpty(productDetails)}">
             <div class="d-flex justify-content-end">
               <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                   <!-- First Page Button -->
-                  <li class="page-item" th:classappend="${productPage.number == 0} ? 'disabled'">
+                  <li class="page-item" th:classappend="${productDetailPage.number == 0} ? 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product(page=1, size=${productPage.size},code=${searchCode}, name=${name},weight=${searchWeight},gsmQualification=${searchGsmQualification}, status=${searchCode})}">
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}">
                       First
                     </a>
                   </li>
-
+                  
                   <!-- Previous Page Button -->
                   <li class="page-item"
-                      th:classappend="${productPage.hasPrevious()} ? '' : 'disabled'">
+                      th:classappend="${productDetailPage.hasPrevious()} ? '' : 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product(page=${productPage.number}, size=${productPage.size}, code=${searchCode}, name=${name},weight=${searchWeight},gsmQualification=${searchGsmQualification}, status=${searchCode})}">
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}">
                       Previous
                     </a>
                   </li>
-
+                  
                   <!-- Page Numbers -->
-                  <li class="page-item" th:each="i : ${#numbers.sequence(1, productPage.totalPages)}"
-                      th:classappend="${productPage.number + 1 == i} ? 'active'">
+                  <li class="page-item" th:each="i : ${#numbers.sequence(1, productDetailPage.totalPages)}"
+                      th:classappend="${productDetailPage.number + 1 == i} ? 'active'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product(page=${i}, size=${productPage.size}, code=${searchCode}, name=${name},weight=${searchWeight},gsmQualification=${searchGsmQualification}, status=${searchCode})}"
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}"
                        th:text="${i}">1</a>
                   </li>
-
+                  
                   <!-- Next Page Button -->
-                  <li class="page-item" th:classappend="${productPage.hasNext()} ? '' : 'disabled'">
+                  <li class="page-item" th:classappend="${productDetailPage.hasNext()} ? '' : 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product(page=${productPage.number + 2}, size=${productPage.size}, code=${searchCode}, name=${name},weight=${searchWeight},gsmQualification=${searchGsmQualification}, status=${searchCode})}">
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}">
                       Next
                     </a>
                   </li>
-
+                  
                   <!-- Last Page Button -->
                   <li class="page-item"
-                      th:classappend="${productPage.number + 1 == productPage.totalPages} ? 'disabled'">
+                      th:classappend="${productDetailPage.number + 1 == productDetailPage.totalPages} ? 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product(page=${productPage.totalPages}, size=${productPage.size}, code=${searchCode}, name=${name},weight=${searchWeight},gsmQualification=${searchGsmQualification}, status=${searchCode})}">
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, pageSize=${productDetailPage.size}, code=${searchCode}, name=${name},category=${searchCategoryId},material=${searchMaterialId}, color=${searchColorId},size = ${searchSizeId}, status=${searchCode})}">
                       Last
                     </a>
                   </li>
@@ -202,207 +147,6 @@
               </nav>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Edit Product Modal -->
-  <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg w-50">
-      <div class="modal-content">
-        <form th:action="@{/dashboard/product-management/product/update}" method="post"
-              enctype="multipart/form-data" th:object="${editProductModel}">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editModalLabel">Edit Product</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <input type="hidden" th:field="*{id}" id="editProductId">
-            <div class="row">
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="editProductCode" class="form-label">Product Code</label>
-                  <input type="text" th:field="*{code}" id="editProductCode" class="form-control">
-                  <div class="text-danger" th:if="${#fields.hasErrors('code')}"
-                       th:errors="*{code}"></div>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="editProductName" class="form-label">Product Name</label>
-                  <input type="text" th:field="*{name}" id="editProductName" class="form-control">
-                  <div class="text-danger" th:if="${#fields.hasErrors('name')}"
-                       th:errors="*{name}"></div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="editProductWeight" class="form-label">Weight</label>
-                  <input type="text" th:field="*{weight}" id="editProductWeight" class="form-control">
-                  <div class="text-danger" th:if="${#fields.hasErrors('weight')}"
-                       th:errors="*{weight}"></div>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="editGsmQualification" class="form-label">GSM Qualification</label>
-                  <input type="text" th:field="*{gsmQualification}" id="editGsmQualification"
-                         class="form-control">
-                  <div class="text-danger" th:if="${#fields.hasErrors('gsmQualification')}"
-                       th:errors="*{gsmQualification}"></div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="editFeatureImage" class="form-label">Feature Image</label>
-                  <div>
-                    <img id="featureImagePreview" src="" alt="Feature Image"
-                         style="width: 100px; height: 100px;"/>
-                  </div>
-                  <input type="file" th:field="*{featureImage}" class="form-control"
-                         id="editFeatureImage"
-                         name="featureImage">
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="mb-3">
-                  <label for="editSizeGuideImage" class="form-label">Size Guide Image</label>
-                  <div>
-                    <img id="sizeGuidePreview" src="" alt="Size Guide Image"
-                         style="width: 100px; height: 100px;"/>
-                  </div>
-                  <input type="file" th:field="*{sizeGuideImage}" class="form-control"
-                         id="editSizeGuideImage"
-                         name="sizeGuideImage">
-                </div>
-              </div>
-            </div>
-            <label for="editDescription" class="form-label">Description</label>
-            <textarea class="form-control" id="editDescription" name="description"
-                      th:field="*{description}"></textarea>
-            <script>
-                CKEDITOR.replace('editDescription');
-            </script>
-            <div class="mb-3">
-              <label for="editProductStatus" class="form-label">Status</label>
-              <select th:field="*{status}" id="editProductStatus" class="form-select">
-                <option th:value="true">Active</option>
-                <option th:value="false">Inactive</option>
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Product Detail Modal -->
-  <div class="modal fade" id="productDetailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg w-50">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="detailModalLabel">Product Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="detailProductId">
-          <div class="row">
-            <div class="col-6">
-              <div class="mb-3">
-                <label for="detailProductCode" class="form-label">Product Code</label>
-                <input type="text" id="detailProductCode" class="form-control" readonly>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="mb-3">
-                <label for="detailProductName" class="form-label">Product Name</label>
-                <input type="text" id="detailProductName" class="form-control" readonly>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6">
-              <div class="mb-3">
-                <label for="detailProductWeight" class="form-label">Weight</label>
-                <input type="text" id="detailProductWeight" class="form-control" readonly>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="mb-3">
-                <label for="detailGsmQualification" class="form-label">GSM Qualification</label>
-                <input type="text" id="detailGsmQualification" class="form-control" readonly>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6">
-              <div class="mb-3">
-                <label class="form-label">Feature Image</label>
-                <div>
-                  <img id="detailFeatureImagePreview" src="" alt="Feature Image"
-                       style="width: 100px; height: 100px;"/>
-                </div>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="mb-3">
-                <label class="form-label">Size Guide Image</label>
-                <div>
-                  <img id="detailSizeGuidePreview" src="" alt="Size Guide Image"
-                       style="width: 100px; height: 100px;"/>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label for="detailProductDescription" class="form-label">Description</label>
-            <textarea class="form-control" id="detailProductDescription" name="description"></textarea>
-            <script>
-                CKEDITOR.replace('detailProductDescription');
-            </script>
-          </div>
-          <div class="mb-3">
-            <label for="detailProductStatus" class="form-label">Status</label>
-            <input type="text" id="detailProductStatus" class="form-control" readonly>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- Delete Confirmation Modal -->
-  <div class="modal fade" id="updateProductStatusModal" tabindex="-1" aria-labelledby="deleteModalLabel"
-       aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteModalLabel">Update Product's Status</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure you want to change status of this product?</p>
-        </div>
-        <div class="modal-footer">
-          <form id="updateProductStatusForm"
-                th:action="@{/dashboard/product-management/product/update/status/{id}(id=0)}"
-                method="post">
-            <input type="hidden" id="deleteProductId">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-danger">Yes</button>
-          </form>
         </div>
       </div>
     </div>
@@ -417,124 +161,6 @@
   <script src="/assets/js/dashboardJS.js"></script>
   <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
   <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-  <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          var editProductModal = document.getElementById('editProductModal');
-
-          editProductModal.addEventListener('show.bs.modal', function (event) {
-              var button = event.relatedTarget;
-              var productId = button.getAttribute('data-id');
-              var productName = button.getAttribute('data-name');
-              var productCode = button.getAttribute('data-code');
-              var productWeight = button.getAttribute('data-weight');
-              var gsmQualification = button.getAttribute('data-gsmQualification');
-              var featureImageUrl = button.getAttribute('data-featureImageUrl');
-              var sizeGuideUrl = button.getAttribute('data-sizeGuideUrl');
-              var productDescription = button.getAttribute('data-description');
-              var productStatus = button.getAttribute('data-status') === 'true';
-
-              var modalProductId = editProductModal.querySelector('#editProductId');
-              var modalProductName = editProductModal.querySelector('#editProductName');
-              var modalProductCode = editProductModal.querySelector('#editProductCode');
-              var modalProductWeight = editProductModal.querySelector('#editProductWeight');
-              var modalGsmQualification = editProductModal.querySelector('#editGsmQualification');
-              var modalDescription = editProductModal.querySelector('#editDescription');
-              var modalFeatureImage = editProductModal.querySelector('#featureImagePreview');
-              var modalSizeGuideImage = editProductModal.querySelector('#sizeGuidePreview');
-              var modalProductStatus = editProductModal.querySelector('#editProductStatus');
-
-              modalProductId.value = productId;
-              modalProductCode.value = productCode;
-              modalProductName.value = productName;
-              modalProductWeight.value = productWeight;
-              modalGsmQualification.value = gsmQualification;
-              modalDescription.value = productDescription;
-              if (featureImageUrl) {
-                  modalFeatureImage.src = '/' + featureImageUrl;
-              } else {
-                  modalFeatureImage.src = '';
-              }
-
-              if (sizeGuideUrl) {
-                  modalSizeGuideImage.src = '/' + sizeGuideUrl;
-              } else {
-                  modalSizeGuideImage.src = '';
-              }
-
-              if (CKEDITOR.instances['editDescription']) {
-                  CKEDITOR.instances['editDescription'].setData(productDescription);
-              }
-
-              modalProductStatus.value = productStatus ? 'true' : 'false';
-          });
-
-          // Detail modal
-          var detailProductModal = document.getElementById('productDetailModal');
-
-          detailProductModal.addEventListener('show.bs.modal', function (event) {
-              var button = event.relatedTarget;
-              var productId = button.getAttribute('data-id');
-              var productName = button.getAttribute('data-name');
-              var productCode = button.getAttribute('data-code');
-              var productWeight = button.getAttribute('data-weight');
-              var gsmQualification = button.getAttribute('data-gsmQualification');
-              var featureImageUrl = button.getAttribute('data-featureImageUrl');
-              var sizeGuideUrl = button.getAttribute('data-sizeGuideUrl');
-              var productStatus = button.getAttribute('data-status') === 'true';
-              var productDescription = button.getAttribute('data-description');
-
-              var modalProductId = detailProductModal.querySelector('#detailProductId');
-              var modalProductCode = detailProductModal.querySelector('#detailProductCode');
-              var modalProductName = detailProductModal.querySelector('#detailProductName');
-              var modalProductWeight = detailProductModal.querySelector('#detailProductWeight');
-              var modalGsmQualification = detailProductModal.querySelector('#detailGsmQualification');
-              var modalFeatureImage = detailProductModal.querySelector('#detailFeatureImagePreview');
-              var modalSizeGuideImage = detailProductModal.querySelector('#detailSizeGuidePreview');
-              var modalProductStatus = detailProductModal.querySelector('#detailProductStatus');
-              var modalProductDescription = detailProductModal.querySelector('#detailProductDescription'); // Add reference for description
-
-
-              // Set the values in the detail modal
-              modalProductId.value = productId;
-              modalProductCode.value = productCode;
-              modalProductName.value = productName;
-              modalProductWeight.value = productWeight;
-              modalGsmQualification.value = gsmQualification;
-              modalProductStatus.value = productStatus ? 'Active' : 'Inactive';
-              modalProductDescription.value = productDescription; // Set the description
-
-
-              // Set image previews
-              if (featureImageUrl) {
-                  modalFeatureImage.src = '/' + featureImageUrl;
-              } else {
-                  modalFeatureImage.src = '';
-              }
-
-              if (sizeGuideUrl) {
-                  modalSizeGuideImage.src = '/' + sizeGuideUrl;
-              } else {
-                  modalSizeGuideImage.src = '';
-              }
-
-              if (CKEDITOR.instances['detailProductDescription']) {
-                  CKEDITOR.instances['detailProductDescription'].setData(productDescription);
-              }
-          });
-
-          var updateProductStatusModal = document.getElementById('updateProductStatusModal');
-
-          updateProductStatusModal.addEventListener('show.bs.modal', function (event) {
-              var button = event.relatedTarget;
-              var productId = button.getAttribute('data-id');
-
-              var updateStatusForm = document.getElementById('updateProductStatusForm');
-              var action = updateStatusForm.getAttribute('action');
-              updateStatusForm.setAttribute('action', action.replace('/0', '/' + productId));
-          });
-      })
-      ;
-  </script>
 </th:block>
 
 </body>

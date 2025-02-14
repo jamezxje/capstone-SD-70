@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.controller.payload.product.ProductModel;
+import org.fpoly.capstone.controller.payload.productdetail.ProductDetailViewModel;
 import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Color;
 import org.fpoly.capstone.entity.Material;
@@ -11,10 +12,16 @@ import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.service.CategoryService;
 import org.fpoly.capstone.service.ColorService;
 import org.fpoly.capstone.service.MaterialService;
+import org.fpoly.capstone.service.ProductDetailService;
 import org.fpoly.capstone.service.ProductService;
 import org.fpoly.capstone.service.SizeService;
 import org.fpoly.capstone.service.payload.product.ProductRequest;
+import org.fpoly.capstone.service.payload.productdetail.ProductDetailFilterRequest;
+import org.fpoly.capstone.service.payload.productdetail.ProductDetailResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,6 +44,7 @@ public class ProductController {
     private final ColorService colorService;
     private final SizeService sizeService;
     private final ProductService productService;
+    private final ProductDetailService productDetailService;
     private final ModelMapper modelMapper;
 
     @GetMapping("/add")
@@ -86,6 +94,69 @@ public class ProductController {
 //
 //    return PRODUCT_VIEW;
 //  }
+
+    @GetMapping
+    public String onOpenProductDetailView(@RequestParam(defaultValue = "1") int page,
+                                          @RequestParam(defaultValue = "10") int size,
+                                          @RequestParam(required = false) String searchCode,
+                                          @RequestParam(required = false) String searchName,
+                                          @RequestParam(required = false) Integer searchCategoryId,
+                                          @RequestParam(required = false) Integer searchMaterialId,
+                                          @RequestParam(required = false) Integer searchColorId,
+                                          @RequestParam(required = false) Integer searchSizeId,
+                                          @RequestParam(required = false) Boolean searchStatus,
+                                          Model model) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        // Create filter request for product details
+        ProductDetailFilterRequest filterRequest = new ProductDetailFilterRequest();
+        filterRequest.setCode(searchCode);
+        filterRequest.setName(searchName);
+        filterRequest.setCategoryId(searchCategoryId);
+        filterRequest.setSizeId(searchSizeId);
+        filterRequest.setMaterialId(searchMaterialId);
+        filterRequest.setColorId(searchColorId);
+        filterRequest.setStatus(searchStatus);
+
+        //Get list attribute
+//    List<Product> productList = this.productService.getAllProduct();
+        List<Category> categoryList = this.categoryService.getAllCategory();
+        List<Material> materialList = this.materialService.getAllMaterial();
+        List<Color> colorList = this.colorService.getAllColor();
+        List<Size> sizeList = this.sizeService.getAllSize();
+
+        // Get paginated product details
+        Page<ProductDetailResponse> productDetailPage = this.productDetailService
+                .searchProductDetail(filterRequest, pageable);
+
+        List<ProductDetailViewModel> viewModels = productDetailPage.getContent().stream()
+                .map(response -> {
+                    ProductDetailViewModel viewModel = this.modelMapper.map(response, ProductDetailViewModel.class);
+                    viewModel.setImages(response.getImages()); // Manually map images
+                    return viewModel;
+                })
+                .toList();
+
+        model.addAttribute("productDetails", viewModels);
+        model.addAttribute("productDetailPage", productDetailPage);
+        model.addAttribute("searchCode", searchCode);
+        model.addAttribute("searchName", searchName);
+        model.addAttribute("searchCategoryId", searchCategoryId);
+        model.addAttribute("searchMaterialId", searchMaterialId);
+        model.addAttribute("searchColorId", searchColorId);
+        model.addAttribute("searchSizeId", searchSizeId);
+        model.addAttribute("searchStatus", searchStatus);
+//    model.addAttribute("productDetailModel", new ProductDetailModel());
+//    model.addAttribute("editProductDetailModel", new ProductDetailModel());
+//    model.addAttribute("productList", productList);
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("materialList", materialList);
+        model.addAttribute("colorList", colorList);
+        model.addAttribute("sizeList", sizeList);
+
+        return "/views/product-management/product/product-management";
+    }
 
     @PostMapping
     public String createProduct(@Valid @ModelAttribute("productModel") ProductModel productModel,

@@ -16,8 +16,12 @@ import org.fpoly.capstone.repository.ProductRepository;
 import org.fpoly.capstone.repository.SizeRepository;
 import org.fpoly.capstone.service.ProductDetailService;
 import org.fpoly.capstone.service.common.FilesStorageService;
+import org.fpoly.capstone.service.payload.productdetail.ProductDetailFilterRequest;
 import org.fpoly.capstone.service.payload.productdetail.ProductDetailRequest;
+import org.fpoly.capstone.service.payload.productdetail.ProductDetailResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Log4j2
@@ -35,11 +39,11 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private final ModelMapper modelMapper;
     private static final String PRODUCT_DETAIL_NOT_FOUND_EXCEPTIONS = "Product detail not found with id: ";
 
-//  @Override
-//  public Page<ProductDetailResponse> searchProductDetail(ProductDetailFilterRequest filterRequest, Pageable pageable) {
-//    Page<ProductDetail> productDetails = this.productDetailRepository.findByFilter(filterRequest, pageable);
-//    return productDetails.map(ProductDetailResponse::toDTO);
-//  }
+    @Override
+    public Page<ProductDetailResponse> searchProductDetail(ProductDetailFilterRequest filterRequest, Pageable pageable) {
+        Page<ProductDetail> productDetails = this.productDetailRepository.findByFilter(filterRequest, pageable);
+        return productDetails.map(ProductDetailResponse::toDTO);
+    }
 
     @Override
     public void createProductDetail(ProductDetailRequest request) {

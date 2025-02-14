@@ -5,8 +5,6 @@
   <meta charset="UTF-8">
   <title>Title</title>
   <th:block id="th-css">
-    <link rel="stylesheet" th:href="@{/assets/vendor/pickadate/themes/default.css}">
-    <link rel="stylesheet" th:href="@{/assets/vendor/pickadate/themes/default.date.css}">
   </th:block>
 </head>
 <body>
@@ -14,201 +12,183 @@
 <th:block id="th-body">
   <div class="content-body">
     <div class="container-fluid">
-      <div class="form-head d-flex align-items-center flex-wrap mb-sm-5 mb-3">
-        <h2 class="font-w600 mb-0 text-black">Quản lý chất liệu</h2>
-      </div>
-      
-      <!--Search form start-->
-      <div class="col-xl-12 col-lg-12">
-        <div class="card-body">
-          <div class="basic-form">
-            <form th:action="@{/dashboard/product-management/material}" method="GET">
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="name">Tìm theo tên</label>
-                  <input id="name" type="text" name="name" th:value="${searchName}"
-                         class="form-control" placeholder="">
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="status">Tìm theo trạng thái</label>
-                  <select id="status" name="status" class="form-control default-select">
-                    <option th:value="null" th:selected="${searchStatus == null}">Tất cả</option>
-                    <option th:value="true" th:selected="${searchStatus == true}">Hoạt động</option>
-                    <option th:value="false" th:selected="${searchStatus == false}">Không hoạt động</option>
-                  </select>
-                </div>
-              </div>
-              <div class="d-flex justify-content-end flex-wrap">
-                <div>
-                  <button type="submit" class="btn btn-primary ">Tìm kiếm</button>
-                  <button type="button" data-toggle="modal" data-target="#createMaterialModal"
-                          class="btn btn-secondary ml-auto">
-                    + Thêm mới
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <!--Search form end-->
-    
-    </div>
-    
-    <!--Data table start-->
-    <div class="row">
-      <div class="col-xl-12">
-        <div class="table-responsive table-hover fs-14">
-          
-          <!--Table start-->
-          <table class="table display mb-4 dataTablesCard short-one card-table text-black" id="example5">
-            <thead>
-            <tr>
-              <th>#</th>
-              <th>Chất liệu</th>
-              <th>Trạng thái</th>
-              <th>Ngày tạo</th>
-              <th>Ngày thay đổi</th>
-              <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${#lists.isEmpty(materials)}">
-              <td colspan="5" class="text-center"><h3>KHÔNG TÌM THẤY DỮ LIỆU</h3></td>
-            </tr>
-            <tr th:each="material, index : ${materials}">
-              <td th:text="${index.index+1}"></td>
-              <td class="pr-0" th:text="${material.name}"></td>
-              <td>
-                  <span th:if="${material.status == false}"
-                        class="badge light badge-danger">Không hoạt động</span>
-                <span th:if="${material.status == true}"
-                      class="badge light badge-success">Hoạt động</span>
-              </td>
-              <td th:text="${#temporals.format(material.createdOn, 'dd-MM-yyyy')}">Create Date</td>
-              <td th:text="${#temporals.format(material.updatedOn, 'dd-MM-yyyy')}">Modify Date</td>
-              <td>
-                <div class="d-flex">
-                  <button type="button" class="btn btn-primary shadow btn-xs sharp mr-1"
-                          data-toggle="modal"
-                          data-target="#editMaterialModal"
-                          th:data-id="${material.id}"
-                          th:data-name="${material.name}"
-                          th:data-status="${material.status}">
-                    <i class="fa fa-pencil"></i>
-                  </button>
-                  <a href="#" class="btn btn-danger shadow btn-xs sharp"
-                     data-toggle="modal"
-                     data-target="#deleteMaterialModal"
-                     th:data-id="${material.id}">
-                    <i class="fa fa-trash"></i>
-                  </a>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <!--Table end-->
-          
-          <!--Navigation start-->
-          <div th:unless="${#lists.isEmpty(materials)}" class="d-flex justify-content-end flex-wrap">
-            <nav>
-              <ul class="pagination pagination-gutter">
-                <li class="page-item page-indicator"
-                    th:classappend="${materialPage.hasPrevious()} ? '' : 'disabled'">
-                  <a class="page-link"
-                     th:href="@{/dashboard/product-management/material(page=${materialPage.number}, size=${materialPage.size}, name=${searchName}, status=${searchStatus})}">
-                    <i class="la la-angle-left"></i></a>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(1, materialPage.totalPages)}"
-                    th:classappend="${materialPage.number + 1 == i} ? 'active'">
-                  <a class="page-link"
-                     th:href="@{/dashboard/product-management/material(page=${i}, size=${materialPage.size}, name=${searchName}, status=${searchStatus})}"
-                     th:text="${i}">
-                  </a>
-                </li>
-                <li class="page-item page-indicator"
-                    th:classappend="${materialPage.hasNext()} ? '' : 'disabled'">
-                  <a class="page-link"
-                     th:href="@{/dashboard/product-management/material(page=${materialPage.number + 2}, size=${materialPage.size}, name=${searchName}, status=${searchStatus})}">
-                    <i class="la la-angle-right"></i></a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <!--Navigation end-->
+      <div class="card">
         
-        </div>
-      </div>
-    </div>
-    <!--Data table end-->
-    
-    <!--Create material modal start-->
-    <div class="modal fade bd-example-modal-lg" id="createMaterialModal" tabindex="-1" role="dialog"
-         aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Thêm mới chất liệu</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span>&times;</span>
-            </button>
+        <div class="card-header d-sm-flex d-block">
+          <div class="mr-auto mb-sm-0 mb-3">
+            <h4 class="card-title font-w600 mb-2">Quản lý chất liệu</h4>
           </div>
-          <div class="modal-body">
-            <div>
-              <div>
-                <div class="row page-titles mx-0">
-                  <div class="col-sm-6 p-md-0">
-                    <div class="welcome-text">
-                      <h4>Chào mừng trở lại!</h4>
-                      <p class="mb-0">Chất liệu</p>
-                    </div>
+          <button type="button" data-toggle="modal" data-target="#createMaterialModal"
+                  class="btn btn-secondary ml-auto">+
+            Thêm mới
+          </button>
+        </div>
+        
+        <!--Data table start-->
+        <div class="card-body">
+          <div class="table-responsive">
+            
+            <!--Table start-->
+            <table class="table style-1">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>Chất liệu</th>
+                <th>Trạng thái</th>
+                <th>Ngày tạo</th>
+                <th>Ngày thay đổi</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:if="${#lists.isEmpty(materials)}">
+                <td colspan="5" class="text-center"><h3>KHÔNG TÌM THẤY DỮ LIỆU</h3></td>
+              </tr>
+              <tr th:each="material, index : ${materials}">
+                <td th:text="${index.index+1}"></td>
+                <td class="pr-0" th:text="${material.name}"></td>
+                <td>
+                  <span th:if="${material.status == false}"
+                        class="badge badge-danger">Không hoạt động</span>
+                  <span th:if="${material.status == true}"
+                        class="badge badge-success">Hoạt động</span>
+                </td>
+                <td th:text="${#temporals.format(material.createdOn, 'dd-MM-yyyy')}">Create Date</td>
+                <td th:text="${#temporals.format(material.updatedOn, 'dd-MM-yyyy')}">Modify Date</td>
+                <td>
+                  <div class="d-flex action-button">
+                    <button type="button" class="btn btn-info btn-xs light px-2"
+                            data-toggle="modal"
+                            data-target="#editMaterialModal"
+                            th:data-id="${material.id}"
+                            th:data-name="${material.name}"
+                            th:data-status="${material.status}">
+                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z"
+                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </button>
+                    <a href="#" class="ml-2 btn btn-xs px-2 light btn-danger"
+                       data-toggle="modal"
+                       data-target="#deleteMaterialModal"
+                       th:data-id="${material.id}">
+                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round"></path>
+                        <path
+                            d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
+                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </a>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="card">
-                      <div class="card-body">
-                        <div class="form-validation">
-                          <form th:action="@{/dashboard/product-management/material}"
-                                method="POST"
-                                th:object="${materialModel}">
-                            <div class="row">
-                              <div class="col-xl-12">
-                                <div class="form-group row">
-                                  <label class="col-lg-4 col-form-label"
-                                         for="materialName">
-                                    Tên chất liệu
-                                  </label>
-                                  <div class="col-lg-8">
-                                    <input type="text" class="form-control"
-                                           id="materialName" name="name"
-                                           placeholder="Nhập tên">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <!--Table end-->
+            
+            <!--Navigation start-->
+            <div th:unless="${#lists.isEmpty(materials)}" class="d-flex justify-content-end flex-wrap">
+              <nav>
+                <ul class="pagination pagination-gutter">
+                  <li class="page-item page-indicator"
+                      th:classappend="${materialPage.hasPrevious()} ? '' : 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/material(page=${materialPage.number}, size=${materialPage.size}, name=${searchName}, status=${searchStatus})}">
+                      <i class="la la-angle-left"></i></a>
+                  </li>
+                  <li class="page-item" th:each="i : ${#numbers.sequence(1, materialPage.totalPages)}"
+                      th:classappend="${materialPage.number + 1 == i} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/material(page=${i}, size=${materialPage.size}, name=${searchName}, status=${searchStatus})}"
+                       th:text="${i}">
+                    </a>
+                  </li>
+                  <li class="page-item page-indicator"
+                      th:classappend="${materialPage.hasNext()} ? '' : 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/material(page=${materialPage.number + 2}, size=${materialPage.size}, name=${searchName}, status=${searchStatus})}">
+                      <i class="la la-angle-right"></i></a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!--Navigation end-->
+          
+          </div>
+        </div>
+        <!--Data table end-->
+        
+        <!--Create material modal start-->
+        <div class="modal fade bd-example-modal-lg" id="createMaterialModal" tabindex="-1" role="dialog"
+             aria-hidden="true">
+          <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Thêm chất liệu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div>
+                  <div>
+                    <div class="row page-titles mx-0">
+                      <div class="col-sm-6 p-md-0">
+                        <div class="welcome-text">
+                          <h4>Chào mừng quay lại!</h4>
+                          <p class="mb-0">Danh mục</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="card">
+                          <div class="card-body">
+                            <div class="form-validation">
+                              <form th:action="@{/dashboard/product-management/material}"
+                                    method="POST"
+                                    th:object="${materialModel}">
+                                <div class="row">
+                                  <div class="col-xl-12">
+                                    <div class="form-group row">
+                                      <label class="col-lg-4 col-form-label"
+                                             for="materialName">
+                                        Tên chất liệu
+                                      </label>
+                                      <div class="col-lg-8">
+                                        <input type="text" class="form-control"
+                                               id="materialName" name="name"
+                                               placeholder="Nhập tên">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row">
+                                      <label class="col-lg-4 col-form-label"
+                                             for="materialStatus">
+                                        Trạng thái
+                                        <span class="text-danger">*</span>
+                                      </label>
+                                      <div class="col-lg-8">
+                                        <select class="form-control default-select"
+                                                id="materialStatus" name="status">
+                                          <option th:value="true">Hoạt động</option>
+                                          <option th:value="false">Không hoạt động</option>
+                                        </select>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                                <div class="form-group row">
-                                  <label class="col-lg-4 col-form-label"
-                                         for="materialStatus">Trạng thái
-                                    <span class="text-danger">*</span>
-                                  </label>
-                                  <div class="col-lg-8">
-                                    <select class="form-control default-select"
-                                            id="materialStatus" name="status">
-                                      <option th:value="true">Hoạt động</option>
-                                      <option th:value="false">Không hoạt động</option>
-                                    </select>
-                                  </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger light"
+                                          data-dismiss="modal">Close
+                                  </button>
+                                  <button type="submit" class="btn btn-primary">Save
+                                  </button>
                                 </div>
-                              </div>
+                              </form>
                             </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-danger light"
-                                      data-dismiss="modal">Close
-                              </button>
-                              <button type="submit" class="btn btn-primary">Save changes
-                              </button>
-                            </div>
-                          </form>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -218,77 +198,77 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!--Create material modal end-->
-    
-    <!--Edit material modal start-->
-    <div class="modal fade bd-example-modal-lg" id="editMaterialModal" tabindex="-1" role="dialog"
-         aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Sửa chất liệu</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span>&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div>
-              <div>
-                <div class="row page-titles mx-0">
-                  <div class="col-sm-6 p-md-0">
-                    <div class="welcome-text">
-                      <h4>Chào mừng quay trở lại!</h4>
-                      <p class="mb-0">Chất liệu </p>
+        <!--Create material modal end-->
+        
+        <!--Edit material modal start-->
+        <div class="modal fade bd-example-modal-lg" id="editMaterialModal" tabindex="-1" role="dialog"
+             aria-hidden="true">
+          <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Sửa chất liệu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div>
+                  <div>
+                    <div class="row page-titles mx-0">
+                      <div class="col-sm-6 p-md-0">
+                        <div class="welcome-text">
+                          <h4>Chào mừng quay lại!</h4>
+                          <p class="mb-0">Danh mục</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="card">
-                      <div class="card-body">
-                        <div class="form-validation">
-                          <form th:action="@{/dashboard/product-management/material/update}"
-                                method="POST"
-                                th:object="${editMaterialModel}">
-                            <input type="hidden" id="materialIdEdit" th:field="*{id}"/>
-                            <div class="row">
-                              <div class="col-xl-12">
-                                <div class="form-group row">
-                                  <label class="col-lg-4 col-form-label"
-                                         for="materialNameEdit">
-                                    Tên chất liêyj
-                                  </label>
-                                  <div class="col-lg-8">
-                                    <input type="text" class="form-control"
-                                           id="materialNameEdit" name="name"
-                                           placeholder="Nhập tên">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="card">
+                          <div class="card-body">
+                            <div class="form-validation">
+                              <form th:action="@{/dashboard/product-management/material/update}"
+                                    method="POST"
+                                    th:object="${editMaterialModel}">
+                                <input type="hidden" id="materialIdEdit" th:field="*{id}"/>
+                                <div class="row">
+                                  <div class="col-xl-12">
+                                    <div class="form-group row">
+                                      <label class="col-lg-4 col-form-label"
+                                             for="materialNameEdit">
+                                        Tên chất liệu
+                                      </label>
+                                      <div class="col-lg-8">
+                                        <input type="text" class="form-control"
+                                               id="materialNameEdit" name="name"
+                                               placeholder="Nhập tên">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row">
+                                      <label class="col-lg-4 col-form-label"
+                                             for="materialStatusEdit">Trạng thái
+                                        <span class="text-danger">*</span>
+                                      </label>
+                                      <div class="col-lg-8">
+                                        <select class="form-control default-select"
+                                                id="materialStatusEdit" th:field="*{status}">
+                                          <option th:value="true">Hoạt động</option>
+                                          <option th:value="false">Không hoạt động</option>
+                                        </select>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                                <div class="form-group row">
-                                  <label class="col-lg-4 col-form-label"
-                                         for="materialStatusEdit">Trạng thái
-                                    <span class="text-danger">*</span>
-                                  </label>
-                                  <div class="col-lg-8">
-                                    <select class="form-control default-select"
-                                            id="materialStatusEdit" th:field="*{status}">
-                                      <option th:value="true">Hoạt động</option>
-                                      <option th:value="false">Không hoạt động</option>
-                                    </select>
-                                  </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger light"
+                                          data-dismiss="modal">Close
+                                  </button>
+                                  <button type="submit" class="btn btn-primary">Save changes
+                                  </button>
                                 </div>
-                              </div>
+                              </form>
                             </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-danger light"
-                                      data-dismiss="modal">Close
-                              </button>
-                              <button type="submit" class="btn btn-primary">Save changes
-                              </button>
-                            </div>
-                          </form>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -298,45 +278,40 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!--Edit material modal end-->
-    
-    <!-- Delete material modal start -->
-    <div class="modal fade" id="deleteMaterialModal" tabindex="-1" role="dialog"
-         aria-labelledby="confirmDeleteModalLabel"
-         aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            Bạn chắc chưa?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <form id="deleteTransactionForm" method="post" action="">
-              <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+        <!--Edit material modal end-->
+        
+        <!-- Delete material modal start -->
+        <div class="modal fade" id="deleteMaterialModal" tabindex="-1" role="dialog"
+             aria-labelledby="confirmDeleteModalLabel"
+             aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Bạn chắc là muốn xóa chất liệu này chứ ?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form id="deleteTransactionForm" method="post" action="">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
+        <!-- Delete material modal end -->
+      
       </div>
     </div>
-    <!-- Delete material modal end -->
-  
   </div>
 </th:block>
 <th:block id="th-js">
-  <!-- Jquery Validation -->
-  <script th:src="@{/assets/vendor/jquery-validation/jquery.validate.min.js}"></script>
-  
-  <!-- Form Population Script -->
   <script>
-    //Edit material JS
     $(document).on('click', '[data-target="#editMaterialModal"]', function () {
       const button = $(this);
       
@@ -354,16 +329,14 @@
     });
     
     $('#editMaterialModal').on('hidden.bs.modal', function () {
-      $(this).find('form')[0].reset(); // Reset form fields
+      $(this).find('form')[0].reset();
     });
     
-    //Delete material JS
     $(document).on('click', '[data-target="#deleteMaterialModal"]', function () {
       const materialId = $(this).data('id');
       const formAction = `/dashboard/product-management/material/delete/${materialId}`;
       $('#deleteTransactionForm').attr('action', formAction);
     });
-  
   </script>
 </th:block>
 </body>

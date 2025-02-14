@@ -1,9 +1,7 @@
 package org.fpoly.capstone.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +11,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.fpoly.capstone.entity.base.BaseEntity;
 
-import java.util.List;
-
 @Builder
 @Getter
 @Setter
@@ -22,19 +18,13 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "product")
-public class Product extends BaseEntity {
-
-    @Column(name = "code")
-    private String code;
+@Table(name = "brand")
+public class Brand extends BaseEntity {
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "status")
     private Boolean status;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductDetail> variants;
 
 }
