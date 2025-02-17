@@ -34,7 +34,9 @@ public class CategoryController {
     private static final String CATEGORIES = "categories";
     private static final String CATEGORY_PAGE = "categoryPage";
     private static final String CATEGORY_VIEW = "/views/product-management/category/category-management";
-    private static final String SUCCESS_MESSAGE = "successMessage";
+    private static final String MESSAGE = "message";
+    private static final String TYPE_SUCCESS = "success";
+    private static final String TYPE_ERROR = "error";
 
     @GetMapping
     public String onOpenCategoryView(@RequestParam(defaultValue = "1") int page,
@@ -76,11 +78,11 @@ public class CategoryController {
         try {
             CategoryRequest categoryRequest = this.modelMapper.map(categoryModel, CategoryRequest.class);
             this.categoryService.createCategory(categoryRequest);
-            redirectAttributes.addFlashAttribute("message", "Add category success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm danh mục thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Add category fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm danh mục thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/category";
@@ -103,11 +105,11 @@ public class CategoryController {
 
             this.categoryService.updateCategory(editCategoryModel.getId(), categoryRequest);
 
-            redirectAttributes.addFlashAttribute("message", "Update category success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Sửa danh mục thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Update category fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Sửa danh mục thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/category";
@@ -123,11 +125,11 @@ public class CategoryController {
         try {
             this.categoryService.deleteCategory(id);
 
-            redirectAttributes.addFlashAttribute("message", "Delete category success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa danh mục thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Delete category fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa danh mục thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/category?page=" + page + "&size=" + size;

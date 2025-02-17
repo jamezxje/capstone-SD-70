@@ -34,7 +34,9 @@ public class ColorController {
     private static final String COLORS = "colors";
     private static final String COLOR_PAGE = "colorPage";
     private static final String COLOR_VIEW = "/views/product-management/color/color-management";
-    private static final String SUCCESS_MESSAGE = "successMessage";
+    private static final String MESSAGE = "message";
+    private static final String TYPE_SUCCESS = "success";
+    private static final String TYPE_ERROR = "error";
 
     @GetMapping
     public String onOpenColorView(@RequestParam(defaultValue = "1") int page,
@@ -76,11 +78,11 @@ public class ColorController {
         try {
             ColorRequest colorRequest = this.modelMapper.map(colorModel, ColorRequest.class);
             this.colorService.createColor(colorRequest);
-            redirectAttributes.addFlashAttribute("message", "Add color success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm màu sắc thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Add color fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm màu sắc thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/color";
@@ -103,11 +105,11 @@ public class ColorController {
 
             this.colorService.updateColor(editColorModel.getId(), colorRequest);
 
-            redirectAttributes.addFlashAttribute("message", "Update color success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Sửa màu sắc thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Update color fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Sửa màu sắc thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/color";
@@ -123,11 +125,11 @@ public class ColorController {
         try {
             this.colorService.deleteColor(id);
 
-            redirectAttributes.addFlashAttribute("message", "Delete color success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa màu sắc thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Delete color fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa màu sắc thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/color?page=" + page + "&size=" + size;

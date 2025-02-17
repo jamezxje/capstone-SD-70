@@ -34,7 +34,9 @@ public class SizeController {
     private static final String SIZES = "sizes";
     private static final String SIZE_PAGE = "sizePage";
     private static final String SIZE_VIEW = "/views/product-management/size/size-management";
-    private static final String SUCCESS_MESSAGE = "successMessage";
+    private static final String MESSAGE = "message";
+    private static final String TYPE_SUCCESS = "success";
+    private static final String TYPE_ERROR = "error";
 
     @GetMapping
     public String onOpenSizeView(@RequestParam(defaultValue = "1") int page,
@@ -76,11 +78,11 @@ public class SizeController {
         try {
             SizeRequest sizeRequest = this.modelMapper.map(sizeModel, SizeRequest.class);
             this.sizeService.createSize(sizeRequest);
-            redirectAttributes.addFlashAttribute("message", "Add size success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Add size success");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Add size fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Add size fail");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/size";
@@ -103,11 +105,11 @@ public class SizeController {
 
             this.sizeService.updateSize(editSizeModel.getId(), sizeRequest);
 
-            redirectAttributes.addFlashAttribute("message", "Update size success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Update size success");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Update size fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Update size fail");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/size";
@@ -123,11 +125,11 @@ public class SizeController {
         try {
             this.sizeService.deleteSize(id);
 
-            redirectAttributes.addFlashAttribute("message", "Delete size success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Delete size success");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Delete size fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Delete size fail");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/size?page=" + page + "&size=" + size;

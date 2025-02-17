@@ -34,7 +34,9 @@ public class MaterialController {
     private static final String MATERIALS = "materials";
     private static final String MATERIAL_PAGE = "materialPage";
     private static final String MATERIAL_VIEW = "/views/product-management/material/material-management";
-    private static final String SUCCESS_MESSAGE = "successMessage";
+    private static final String MESSAGE = "message";
+    private static final String TYPE_SUCCESS = "success";
+    private static final String TYPE_ERROR = "error";
 
     @GetMapping
     public String onOpenMaterialView(@RequestParam(defaultValue = "1") int page,
@@ -77,11 +79,11 @@ public class MaterialController {
             MaterialRequest materialRequest = this.modelMapper.map(materialModel, MaterialRequest.class);
             this.materialService.createMaterial(materialRequest);
 
-            redirectAttributes.addFlashAttribute("message", "Add material success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm chất liệu thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Add material fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm chất liệu thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/material";
@@ -104,11 +106,11 @@ public class MaterialController {
 
             this.materialService.updateMaterial(editMaterialModel.getId(), materialRequest);
 
-            redirectAttributes.addFlashAttribute("message", "Update material success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Sửa chất liệu thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Update material fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Sửa chất liệu thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/material";
@@ -124,11 +126,11 @@ public class MaterialController {
         try {
             this.materialService.deleteMaterial(id);
 
-            redirectAttributes.addFlashAttribute("message", "Delete material success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa chất liệu thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Delete material fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa chất liệu thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/material?page=" + page + "&size=" + size;

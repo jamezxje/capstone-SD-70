@@ -34,7 +34,9 @@ public class BrandController {
     private static final String BRANDS = "brands";
     private static final String BRAND_PAGE = "brandPage";
     private static final String BRAND_VIEW = "/views/product-management/brand/brand-management";
-    private static final String SUCCESS_MESSAGE = "successMessage";
+    private static final String MESSAGE = "message";
+    private static final String TYPE_SUCCESS = "success";
+    private static final String TYPE_ERROR = "error";
 
     @GetMapping
     public String onOpenBrandView(@RequestParam(defaultValue = "1") int page,
@@ -76,11 +78,11 @@ public class BrandController {
         try {
             BrandRequest brandRequest = this.modelMapper.map(brandModel, BrandRequest.class);
             this.brandService.createBrand(brandRequest);
-            redirectAttributes.addFlashAttribute("message", "Add brand success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm nhãn hàng thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Add brand fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm nhãn hàng thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/brand";
@@ -103,11 +105,11 @@ public class BrandController {
 
             this.brandService.updateBrand(editBrandModel.getId(), brandRequest);
 
-            redirectAttributes.addFlashAttribute("message", "Update brand success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Sửa nhãn hàng thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Update brand fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Sửa nhãn hàng thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/brand";
@@ -123,11 +125,11 @@ public class BrandController {
         try {
             this.brandService.deleteBrand(id);
 
-            redirectAttributes.addFlashAttribute("message", "Delete brand success");
-            redirectAttributes.addFlashAttribute("type", "success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa nhãn hàng thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Delete brand fail");
-            redirectAttributes.addFlashAttribute("type", "error");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa nhãn hàng thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
         return "redirect:/dashboard/product-management/brand?page=" + page + "&size=" + size;
@@ -148,5 +150,5 @@ public class BrandController {
 
         return BRAND_VIEW;
     }
-    
+
 }

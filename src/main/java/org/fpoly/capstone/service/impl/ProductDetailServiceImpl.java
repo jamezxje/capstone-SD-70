@@ -2,12 +2,15 @@ package org.fpoly.capstone.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.fpoly.capstone.entity.Brand;
 import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Color;
+import org.fpoly.capstone.entity.Image;
 import org.fpoly.capstone.entity.Material;
 import org.fpoly.capstone.entity.Product;
 import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.Size;
+import org.fpoly.capstone.repository.BrandRepository;
 import org.fpoly.capstone.repository.CategoryRepository;
 import org.fpoly.capstone.repository.ColorRepository;
 import org.fpoly.capstone.repository.MaterialRepository;
@@ -24,6 +27,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Log4j2
 @Service
 @RequiredArgsConstructor
@@ -32,6 +37,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private final ProductDetailRepository productDetailRepository;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final BrandRepository brandRepository;
     private final MaterialRepository materialRepository;
     private final ColorRepository colorRepository;
     private final SizeRepository sizeRepository;
@@ -47,11 +53,15 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     public void createProductDetail(ProductDetailRequest request) {
-        // Find associated entities and set them in ProductDetail
+        Image featureImage = this.filesStorageService.save(request.getFeatureImage());
+        List<Image> images = this.filesStorageService.saveAll(request.getImages());
+
         Product product = this.productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         Category category = this.categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
+        Brand brand = this.brandRepository.findById(request.getBrandId())
+                .orElseThrow(() -> new RuntimeException("Brand not found"));
         Color color = this.colorRepository.findById(request.getColorId())
                 .orElseThrow(() -> new RuntimeException("Color not found"));
         Material material = this.materialRepository.findById(request.getMaterialId())
@@ -59,15 +69,18 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         Size size = this.sizeRepository.findById(request.getSizeId())
                 .orElseThrow(() -> new RuntimeException("Size not found"));
 
-        // Set product detail fields
         ProductDetail productDetail = ProductDetail.builder()
                 .product(product)
                 .category(category)
+                .brand(brand)
                 .color(color)
                 .material(material)
                 .size(size)
                 .stockQuantity(request.getStockQuantity())
                 .basePrice(request.getBasePrice())
+                .featureImage(featureImage)
+                .images(images)
+                .description(request.getDescription())
                 .build();
 
         if (request.getStockQuantity() > 0) {
