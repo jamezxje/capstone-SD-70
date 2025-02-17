@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/layout/root_layout::rootLayoutFragment(~{::#th-css}, null, ~{::#th-body})}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Login Page</title>
+  <th:block id="th-css">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon.png">
+    <link th:href="@{/assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css}" rel="stylesheet">
+    <link th:href="@{/assets/css/style.css}" rel="stylesheet">
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  <div class="vh-100">
+    <div class="authincation h-100">
+      <div class="container h-100">
+        <div class="row justify-content-center h-100 align-items-center">
+          <div class="col-md-6">
+            <div class="authincation-content">
+              <div class="row no-gutters">
+                <div class="col-xl-12">
+                  <div class="auth-form">
+                    <div class="text-center mb-3">
+                      <img src="/assets/images/logo-full.png" alt="">
+                    </div>
+                    <h4 class="text-center mb-4">Sign in your account</h4>
+                    <div th:if="${param.error}">
+                      <div class="alert alert-danger">Invalid email or password</div>
+                    </div>
+                    <div th:if="${param.logout}">
+                      <div class="alert alert-success">You have been logged out</div>
+                    </div>
+                    <form th:action="@{/auth/login}" method="post">
+                      <div class="form-group">
+                        <label class="mb-1"><strong>Email</strong></label>
+                        <input type="email" name="username" class="form-control" placeholder="hello@example.com">
+                      </div>
+                      <div class="form-group">
+                        <label class="mb-1"><strong>Password</strong></label>
+                        <input type="password" name="password" class="form-control" placeholder="Password">
+                      </div>
+                      <div class="form-row d-flex justify-content-between mt-4 mb-2">
+                        <div class="form-group">
+                          <div class="custom-control custom-checkbox ml-1">
+                            <input type="checkbox" class="custom-control-input" id="basic_checkbox_1">
+                            <label class="custom-control-label" for="basic_checkbox_1">Remember my preference</label>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <a href="page-forgot-password.html">Forgot Password?</a>
+                        </div>
+                      </div>
+                      <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-block">Sign Me In</button>
+                      </div>
+                    </form>
+                    <div class="new-account mt-3">
+                      <p>Don't have an account? <a class="text-primary" th:href="@{/auth/register}">Sign up</a></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</th:block>
+
+</body>
+</html>
