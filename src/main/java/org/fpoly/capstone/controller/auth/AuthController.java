@@ -1,4 +1,4 @@
-package org.fpoly.capstone.controller;
+package org.fpoly.capstone.controller.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,5 +14,5 @@ public class AuthController {
     public String showLoginPage() {
         return "views/auth/login";
     }
-    
+
 }

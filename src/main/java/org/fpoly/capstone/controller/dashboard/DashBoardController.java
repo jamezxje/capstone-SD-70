@@ -1,4 +1,4 @@
-package org.fpoly.capstone.controller;
+package org.fpoly.capstone.controller.dashboard;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

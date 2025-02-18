@@ -16,13 +16,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserFromContext() {
-        
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetailsCustom userDetailsCustom)) {
             return null;
         }
-
 
         if (userDetailsCustom.getUser() == null) {
             return null;

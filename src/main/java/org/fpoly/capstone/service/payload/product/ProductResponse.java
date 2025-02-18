@@ -1,0 +1,27 @@
+package org.fpoly.capstone.service.payload.product;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductResponse {
+
+    private Long id;
+    private String code;
+    private String name;
+    private String featureImageUrl;
+    private String description;
+    private Boolean status;
+    private LocalDateTime createdOn;
+    private String createBy;
+    private LocalDateTime updatedOn;
+    private String updateBy;
+
+}
