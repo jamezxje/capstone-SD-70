@@ -2,6 +2,7 @@ package org.fpoly.capstone.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.entity.Category;
+import org.fpoly.capstone.entity.enum_status.CategoryStatus;
 import org.fpoly.capstone.exceptions.ResourceNotFoundException;
 import org.fpoly.capstone.repository.CategoryRepository;
 import org.fpoly.capstone.service.CategoryService;
@@ -42,6 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void createCategory(CategoryRequest request) {
         Category category = Category.builder()
                 .name(request.getName())
+                .status(CategoryStatus.DANG_SU_DUNG)
                 .build();
 
         Category savedCategory = this.categoryRepository.save(category);
@@ -55,6 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND_EXCEPTIONS + categoryId));
 
         existingCategory.setName(request.getName());
+        existingCategory.setStatus(request.getStatus());
 
         Category updatedCategory = this.categoryRepository.save(existingCategory);
 

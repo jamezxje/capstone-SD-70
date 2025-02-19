@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.fpoly.capstone.entity.enum_status.BrandStatus;
 
 @Getter
 @Setter
@@ -15,5 +16,7 @@ public class BrandModel {
 
     @NotBlank(message = "Name is required")
     private String name;
+
+    private BrandStatus status;
 
 }

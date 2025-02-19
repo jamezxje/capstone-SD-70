@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
 
-    @Query("SELECT new org.fpoly.capstone.service.payload.brand.BrandResponse(b.id, b.name) " +
+    @Query("SELECT new org.fpoly.capstone.service.payload.brand.BrandResponse(b.id, b.name, b.status) " +
             "FROM Brand b " +
             "WHERE (:name IS NULL OR LOWER(b.name) LIKE LOWER(CONCAT('%', :name, '%'))) ")
     Page<BrandResponse> findByFilter(@Param("name") String name, Pageable pageable);

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    @Query("SELECT new org.fpoly.capstone.service.payload.category.CategoryResponse(c.id, c.name) " +
+    @Query("SELECT new org.fpoly.capstone.service.payload.category.CategoryResponse(c.id, c.name, c.status) " +
             "FROM Category c " +
             "WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) ")
     Page<CategoryResponse> findByFilter(@Param("name") String name, Pageable pageable);

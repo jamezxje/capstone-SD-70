@@ -2,6 +2,7 @@ package org.fpoly.capstone.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.entity.Brand;
+import org.fpoly.capstone.entity.enum_status.BrandStatus;
 import org.fpoly.capstone.exceptions.ResourceNotFoundException;
 import org.fpoly.capstone.repository.BrandRepository;
 import org.fpoly.capstone.service.BrandService;
@@ -42,6 +43,7 @@ public class BrandServiceImpl implements BrandService {
     public void createBrand(BrandRequest request) {
         Brand brand = Brand.builder()
                 .name(request.getName())
+                .status(BrandStatus.DANG_SU_DUNG)
                 .build();
 
         Brand savedBrand = this.brandRepository.save(brand);
@@ -55,6 +57,7 @@ public class BrandServiceImpl implements BrandService {
                 .orElseThrow(() -> new ResourceNotFoundException(BRAND_NOT_FOUND_WITH_ID + brandId));
 
         existingBrand.setName(request.getName());
+        existingBrand.setStatus(request.getStatus());
 
         Brand updatedBrand = this.brandRepository.save(existingBrand);
 
