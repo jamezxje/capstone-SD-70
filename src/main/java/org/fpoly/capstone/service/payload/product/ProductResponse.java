@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.fpoly.capstone.entity.enum_status.ProductStatus;
 
 import java.time.LocalDateTime;
 
@@ -16,12 +17,12 @@ public class ProductResponse {
     private Long id;
     private String code;
     private String name;
-    private String featureImageUrl;
-    private String description;
-    private Boolean status;
-    private LocalDateTime createdOn;
+    private ProductStatus status;
+    private Long categoryId;
+    private String categoryName;
+    private LocalDateTime createDate;
     private String createBy;
-    private LocalDateTime updatedOn;
+    private LocalDateTime lastModifiedDate;
     private String updateBy;
 
 }

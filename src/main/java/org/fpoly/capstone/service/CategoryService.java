@@ -12,6 +12,8 @@ public interface CategoryService {
 
     List<Category> getAllCategory();
 
+    List<Category> getAllActiveCategory();
+
     Page<CategoryResponse> getAllCategory(Pageable pageable);
 
     Page<CategoryResponse> searchCategory(String name, Pageable pageable);

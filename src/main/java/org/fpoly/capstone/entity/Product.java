@@ -12,18 +12,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fpoly.capstone.common.CommonUtils;
 import org.fpoly.capstone.entity.enum_status.ProductStatus;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -49,12 +52,10 @@ public class Product {
     private ProductStatus status;
 
     @Column(name = "create_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate;
+    private LocalDateTime createDate;
 
     @Column(name = "last_modified_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     @Column(name = "created_by", length = 255)
     private String createdBy;
@@ -64,5 +65,22 @@ public class Product {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "product")
     List<ProductDetail> productDetails;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createDate == null) {
+            this.createDate = LocalDateTime.now();
+        }
+        this.createdBy = CommonUtils.getPrincipal();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        if (this.lastModifiedDate == null) {
+            this.lastModifiedDate = LocalDateTime.now();
+        }
+
+        this.updatedBy = CommonUtils.getPrincipal();
+    }
 
 }

@@ -4,15 +4,18 @@ import org.fpoly.capstone.entity.Brand;
 import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Color;
 import org.fpoly.capstone.entity.Material;
+import org.fpoly.capstone.entity.Product;
 import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.BrandStatus;
 import org.fpoly.capstone.entity.enum_status.CategoryStatus;
+import org.fpoly.capstone.entity.enum_status.ProductStatus;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +75,8 @@ public class DataSeeder {
             new Category(2L, "Áo La Liga", CategoryStatus.DANG_SU_DUNG),
             new Category(3L, "Áo Serie A", CategoryStatus.DANG_SU_DUNG),
             new Category(4L, "Áo Ligue 1", CategoryStatus.DANG_SU_DUNG),
-            new Category(5L, "Áo Bundesliga", CategoryStatus.DANG_SU_DUNG)
+            new Category(5L, "Áo Bundesliga", CategoryStatus.DANG_SU_DUNG),
+            new Category(6L, "Áo Khong su dung", CategoryStatus.NGUNG_SU_DUNG)
     );
 
     public static final List<Color> COLOR_LIST = List.of(
@@ -98,4 +102,18 @@ public class DataSeeder {
             new Size(4L, "XL"),
             new Size(5L, "XXL")
     );
+
+    public static final List<Product> PRODUCT_LIST = List.of(
+            new Product(null, CATEGORY_LIST.get(0), "PRD001", "Áo Manchester United", ProductStatus.DANG_SU_DUNG, LocalDateTime.now().minusDays(10), LocalDateTime.now().minusDays(5), "system", "system", null),
+            new Product(null, CATEGORY_LIST.get(1), "PRD002", "Áo Real Madrid", ProductStatus.DANG_SU_DUNG, LocalDateTime.now().minusDays(20), LocalDateTime.now().minusDays(10), "system", "system", null),
+            new Product(null, CATEGORY_LIST.get(2), "PRD003", "Áo AC Milan", ProductStatus.NGUNG_SU_DUNG, LocalDateTime.now().minusDays(30), LocalDateTime.now().minusDays(15), "system", "system", null),
+            new Product(null, CATEGORY_LIST.get(3), "PRD004", "Áo PSG", ProductStatus.DANG_SU_DUNG, LocalDateTime.now().minusDays(40), LocalDateTime.now().minusDays(20), "system", "system", null),
+            new Product(null, CATEGORY_LIST.get(4), "PRD005", "Áo Bayern Munich", ProductStatus.HET_SAN_PHAM, LocalDateTime.now().minusDays(50), LocalDateTime.now().minusDays(25), "system", "system", null),
+            new Product(null, CATEGORY_LIST.get(0), "PRD006", "Áo Liverpool", ProductStatus.DANG_SU_DUNG, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(2), "system", "system", null),
+            new Product(null, CATEGORY_LIST.get(1), "PRD007", "Áo Barcelona", ProductStatus.DANG_SU_DUNG, LocalDateTime.now().minusDays(15), LocalDateTime.now().minusDays(7), "system", "system", null),
+            new Product(null, CATEGORY_LIST.get(2), "PRD008", "Áo Juventus", ProductStatus.NGUNG_SU_DUNG, LocalDateTime.now().minusDays(25), LocalDateTime.now().minusDays(12), "system", "system", null),
+            new Product(null, CATEGORY_LIST.get(3), "PRD009", "Áo Monaco", ProductStatus.DANG_SU_DUNG, LocalDateTime.now().minusDays(35), LocalDateTime.now().minusDays(17), "system", "system", null),
+            new Product(null, CATEGORY_LIST.get(4), "PRD010", "Áo Dortmund", ProductStatus.HET_SAN_PHAM, LocalDateTime.now().minusDays(45), LocalDateTime.now().minusDays(22), "system", "system", null)
+    );
+
 }

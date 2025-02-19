@@ -29,6 +29,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> getAllActiveCategory() {
+        return this.categoryRepository.findAllActiveCategory();
+    }
+
+    @Override
     public Page<CategoryResponse> getAllCategory(Pageable pageable) {
         return this.categoryRepository.findAll(pageable)
                 .map(category -> this.modelMapper.map(category, CategoryResponse.class));
