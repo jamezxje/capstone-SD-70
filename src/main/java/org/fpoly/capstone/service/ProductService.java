@@ -13,6 +13,8 @@ public interface ProductService {
 
     List<Product> getAllProduct();
 
+    List<Product> getAllActiveProduct();
+
     Page<ProductResponse> getAllProduct(Pageable pageable);
 
     Page<ProductResponse> searchProduct(ProductFilterRequest request, Pageable pageable);

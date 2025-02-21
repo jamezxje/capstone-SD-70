@@ -1,0 +1,201 @@
+package org.fpoly.capstone.controller.dashboard;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.fpoly.capstone.controller.payload.product_detail.ProductDetailFilterModel;
+import org.fpoly.capstone.controller.payload.product_detail.ProductDetailModel;
+import org.fpoly.capstone.controller.payload.product_detail.ProductDetailViewModel;
+import org.fpoly.capstone.entity.Brand;
+import org.fpoly.capstone.entity.Category;
+import org.fpoly.capstone.entity.Color;
+import org.fpoly.capstone.entity.Material;
+import org.fpoly.capstone.entity.Product;
+import org.fpoly.capstone.entity.Size;
+import org.fpoly.capstone.service.BrandService;
+import org.fpoly.capstone.service.CategoryService;
+import org.fpoly.capstone.service.ColorService;
+import org.fpoly.capstone.service.MaterialService;
+import org.fpoly.capstone.service.ProductDetailService;
+import org.fpoly.capstone.service.ProductService;
+import org.fpoly.capstone.service.SizeService;
+import org.fpoly.capstone.service.payload.product_detail.ProductDetailFilterRequest;
+import org.fpoly.capstone.service.payload.product_detail.ProductDetailRequest;
+import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+
+@Slf4j
+@Controller
+@RequestMapping(path = "dashboard/product-management/product-detail")
+@RequiredArgsConstructor
+public class ProductDetailController {
+
+    private final CategoryService categoryService;
+    private final ProductService productService;
+    private final MaterialService materialService;
+    private final ColorService colorService;
+    private final SizeService sizeService;
+    private final BrandService brandService;
+    private final ProductDetailService productDetailService;
+    private final ModelMapper modelMapper;
+    private static final String PRODUCT_DETAILS = "productDetails";
+    private static final String PRODUCT_DETAIL_PAGE = "productDetailPage";
+    private static final String PRODUCT_DETAIL_VIEW = "/views/product-management/product-detail/product-detail-management";
+    private static final String MESSAGE = "message";
+    private static final String TYPE_SUCCESS = "success";
+    private static final String TYPE_ERROR = "error";
+
+    @GetMapping(path = "")
+    public String onOpenProductDetailView(@RequestParam(defaultValue = "1") int page,
+                                          @RequestParam(defaultValue = "10") int size,
+                                          ProductDetailFilterModel productDetailFilterModel,
+                                          Model model) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        ProductDetailFilterRequest request = this.modelMapper.map(productDetailFilterModel, ProductDetailFilterRequest.class);
+
+        Page<ProductDetailResponse> productDetailResponsePage = this.productDetailService.searchProductDetails(request, pageable);
+
+        List<ProductDetailViewModel> viewModels = productDetailResponsePage.getContent().stream()
+                .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
+                .toList();
+
+        model.addAttribute("request", request);
+        model.addAttribute(PRODUCT_DETAILS, viewModels);
+        model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailResponsePage);
+
+        return PRODUCT_DETAIL_VIEW;
+    }
+
+    @GetMapping(path = "add")
+    public String onOpenAddNewProductDetailView(Model model) {
+        List<Category> categoryList = this.categoryService.getAllActiveCategory();
+        List<Material> materialList = this.materialService.getAllMaterial();
+        List<Color> colorList = this.colorService.getAllColor();
+        List<Size> sizeList = this.sizeService.getAllSize();
+        List<Brand> brandList = this.brandService.getAllBrand();
+        List<Product> productList = this.productService.getAllActiveProduct();
+
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("materials", materialList);
+        model.addAttribute("colors", colorList);
+        model.addAttribute("sizes", sizeList);
+        model.addAttribute("brands", brandList);
+        model.addAttribute("products", productList);
+        model.addAttribute("productDetailModel", new ProductDetailModel());
+
+        return "/views/product-management/product-detail/add-new-product-detail-form";
+    }
+
+    @PostMapping(path = "add")
+    public String addNewProductDetail(@Valid @ModelAttribute("productDetailModel") ProductDetailModel productDetailModel,
+                                      BindingResult result,
+                                      @RequestParam(defaultValue = "1") int page,
+                                      @RequestParam(defaultValue = "10") int size,
+                                      Model model, RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            return this.handleProductDetailActionErrors(page, size, model);
+        }
+        try {
+            ProductDetailRequest productDetailRequest = this.modelMapper.map(productDetailModel, ProductDetailRequest.class);
+            this.productDetailService.createProductDetail(productDetailRequest);
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm chi tiết sản phẩm thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm chi tiết sản phẩm thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
+        }
+        return "redirect:/dashboard/product-management/product-detail";
+    }
+
+    private String handleProductDetailActionErrors(int page, int size, Model model) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Page<ProductDetailResponse> productDetailPage = this.productDetailService.getAllProductDetails(pageable);
+
+        List<ProductDetailViewModel> viewModels = productDetailPage.getContent().stream()
+                .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
+                .toList();
+
+        model.addAttribute(PRODUCT_DETAILS, viewModels);
+        model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailPage);
+
+        return PRODUCT_DETAIL_VIEW;
+    }
+
+    @GetMapping(path = "update/{productDetailId}")
+    public String onOpenUpdateProductDetailView(@PathVariable(value = "productDetailId") Long productDetailId,
+                                                Model model) {
+
+        ProductDetailResponse productDetailResponse = this.productDetailService.getProductDetailById(productDetailId);
+
+        ProductDetailModel updateProductDetailModel = this.modelMapper.map(productDetailResponse, ProductDetailModel.class);
+
+        List<Category> categoryList = this.categoryService.getAllActiveCategory();
+        List<Material> materialList = this.materialService.getAllMaterial();
+        List<Color> colorList = this.colorService.getAllColor();
+        List<Size> sizeList = this.sizeService.getAllSize();
+        List<Brand> brandList = this.brandService.getAllBrand();
+        List<Product> productList = this.productService.getAllActiveProduct();
+
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("materials", materialList);
+        model.addAttribute("colors", colorList);
+        model.addAttribute("sizes", sizeList);
+        model.addAttribute("brands", brandList);
+        model.addAttribute("products", productList);
+        model.addAttribute("productDetailModel", updateProductDetailModel);
+
+        return "/views/product-management/product-detail/update-product-detail-form";
+    }
+
+
+    @PostMapping(path = "update")
+    public String updateProductDetail(@Valid @ModelAttribute("productDetailModel") ProductDetailModel productDetailModel,
+                                      BindingResult result,
+                                      @RequestParam(defaultValue = "1") int page,
+                                      @RequestParam(defaultValue = "10") int size,
+                                      Model model, RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            return this.handleProductDetailActionErrors(page, size, model);
+        }
+
+        try {
+            // Map the product detail model to a request object
+            ProductDetailRequest productDetailRequest = this.modelMapper.map(productDetailModel, ProductDetailRequest.class);
+
+            // Call the service to update the product detail
+            this.productDetailService.updateProductDetail(productDetailModel.getId(), productDetailRequest);
+
+            // Add success message
+            redirectAttributes.addFlashAttribute(MESSAGE, "Cập nhật chi tiết sản phẩm thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
+
+        } catch (Exception e) {
+            // Handle exception and failure
+            redirectAttributes.addFlashAttribute(MESSAGE, "Cập nhật chi tiết sản phẩm thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
+        }
+
+        return "redirect:/dashboard/product-management/product-detail";
+    }
+
+
+}

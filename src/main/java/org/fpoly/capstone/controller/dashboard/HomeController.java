@@ -15,7 +15,7 @@ public class HomeController {
 
     private final UserService userService;
 
-    @GetMapping("/hello")
+    @GetMapping(path = "hello")
     public String redirectPage() {
 
         User user = this.userService.getUserFromContext();

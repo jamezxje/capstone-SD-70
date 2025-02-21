@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-@RequestMapping("/dashboard")
+@RequestMapping(path = "dashboard")
 @RequiredArgsConstructor
 public class DashBoardController {
-    @GetMapping({"/", ""})
+    @GetMapping(path = "")
     public String showDashBoard() {
         return "views/dashboard";
     }

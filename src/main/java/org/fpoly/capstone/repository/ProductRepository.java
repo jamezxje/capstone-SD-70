@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -19,5 +21,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             " AND (:#{#request.status} IS NULL OR p.status = :#{#request.status})" +
             " AND (:#{#request.categoryId} IS NULL OR p.category.id = :#{#request.categoryId})")
     Page<ProductResponse> findByFilter(ProductFilterRequest request, Pageable pageable);
+
+    @Query("SELECT p FROM Product  p WHERE p.status = org.fpoly.capstone.entity.enum_status.ProductStatus.DANG_SU_DUNG")
+    List<Product> findAllActiveProduct();
 
 }

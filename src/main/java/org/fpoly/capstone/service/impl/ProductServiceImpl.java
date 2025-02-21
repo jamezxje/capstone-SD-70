@@ -33,6 +33,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> getAllActiveProduct() {
+        return this.productRepository.findAllActiveProduct();
+    }
+
+    @Override
     public Page<ProductResponse> getAllProduct(Pageable pageable) {
         return this.productRepository.findAll(pageable)
                 .map(product -> this.modelMapper.map(product, ProductResponse.class));

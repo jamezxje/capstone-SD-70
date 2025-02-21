@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
 
@@ -16,5 +18,8 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
             "FROM Brand b " +
             "WHERE (:name IS NULL OR LOWER(b.name) LIKE LOWER(CONCAT('%', :name, '%'))) ")
     Page<BrandResponse> findByFilter(@Param("name") String name, Pageable pageable);
+
+    @Query("SELECT b FROM Brand  b WHERE b.status = org.fpoly.capstone.entity.enum_status.BrandStatus.DANG_SU_DUNG")
+    List<Brand> findAllActiveBrand();
 
 }
