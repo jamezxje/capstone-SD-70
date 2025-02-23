@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -84,6 +85,11 @@ public class ImageServiceImpl implements ImageService {
             log.error("An error occurred while updating feature image for product detail: {}", e.getMessage(), e);
             throw new RuntimeException("An error occurred while updating feature image for product detail: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<String> getImagesUrlByProductDetailId(Long productDetailId) {
+        return this.imageRepository.findImagesUrlByProductDetailId(productDetailId);
     }
 
     private boolean isFileNameExist(String fileName) {

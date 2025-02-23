@@ -149,6 +149,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Override
     public ProductDetailResponse getProductDetailById(Long productDetailId) {
         ProductDetailResponse existingProductDetail = this.productDetailRepository.findProductDetailById(productDetailId);
+        List<String> imagesUrlList = this.imageService.getImagesUrlByProductDetailId(productDetailId);
+        existingProductDetail.setImages(imagesUrlList);
         return existingProductDetail;
     }
 
