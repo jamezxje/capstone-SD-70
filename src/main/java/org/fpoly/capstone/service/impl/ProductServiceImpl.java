@@ -7,10 +7,13 @@ import org.fpoly.capstone.entity.enum_status.ProductStatus;
 import org.fpoly.capstone.exceptions.ResourceNotFoundException;
 import org.fpoly.capstone.repository.CategoryRepository;
 import org.fpoly.capstone.repository.ProductRepository;
+import org.fpoly.capstone.service.ImageService;
+import org.fpoly.capstone.service.ProductDetailService;
 import org.fpoly.capstone.service.ProductService;
 import org.fpoly.capstone.service.payload.product.ProductFilterRequest;
 import org.fpoly.capstone.service.payload.product.ProductRequest;
 import org.fpoly.capstone.service.payload.product.ProductResponse;
+import org.fpoly.capstone.service.payload.product_detail.ProductDetailRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +28,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final ProductDetailService productDetailService;
+    private final ImageService imageService;
     private static final String PRODUCT_NOT_FOUND_WITH_ID = "Product not found with id: ";
 
     @Override
@@ -49,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void createProduct(ProductRequest request) {
+    public void createProduct(ProductRequest request) throws Exception {
         Category category = this.categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
@@ -61,6 +66,19 @@ public class ProductServiceImpl implements ProductService {
                 .build();
 
         Product savedProduct = this.productRepository.save(product);
+
+        for (ProductRequest.ProductDetailRequest variantRequest : request.getProductVariantList()) {
+            variantRequest.setProductId(savedProduct.getId());
+            variantRequest.setBrandId(variantRequest.getBrandId());
+            variantRequest.setMaterialId(variantRequest.getMaterialId());
+            variantRequest.setGender(variantRequest.getGender());
+            variantRequest.setDescription(variantRequest.getDescription());
+            variantRequest.setColorId(variantRequest.getColorId());
+            variantRequest.setFeatureImage(variantRequest.getFeatureImage());
+            variantRequest.setImages(variantRequest.getImages());
+            ProductDetailRequest productDetailRequest = this.modelMapper.map(variantRequest, ProductDetailRequest.class);
+            this.productDetailService.createProductDetail(productDetailRequest);
+        }
 
         this.modelMapper.map(savedProduct, ProductResponse.class);
 

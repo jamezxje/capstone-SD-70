@@ -80,50 +80,27 @@ document.getElementById("add-row-btn").addEventListener("click", function () {
 
     // Tạo nội dung cho hàng mới
     const newRow = `
-            <div class="form-row mt-3 border-info">
-            <div class="form-group col-md-2">
-                        <label for="productCategory">Danh mục <span class="text-danger">*</span> </label>
-                        <select id="productCategory" name="variants[${variantIndex}].categoryId" class="form-control default-select" required>
-                          <option value="" selected>Chọn danh mục</option>
-                          ${createOptions(categoryList)}
-                          </option>
-                        </select>
-                      </div>
-              <div class="form-group col-md-2">
-                <label for="productMaterial">Chất liệu <span class="text-danger">*</span> </label>
-                <select id="productMaterial" name="variants[${variantIndex}].materialId" class="form-control default-select" required>
-                  <option value="" selected>Chọn chất liệu</option>
-                  ${createOptions(materialList)}
-                </select>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="productColor">Màu sắc <span class="text-danger">*</span> </label>
-                <select id="productColor" name="variants[${variantIndex}].colorId" class="form-control default-select" required>
-                  <option value="" selected>Chọn màu</option>
-                  ${createOptions(colorList)}
-                </select>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="productSize">Size <span class="text-danger">*</span> </label>
-                <select id="productSize" name="variants[${variantIndex}].sizeId" class="form-control default-select" required>
-                  <option value="" selected>Chọn size</option>
-                  ${createOptions(sizeList)}
-                </select>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="stockQuantity">Số lượng <span class="text-danger">*</span></label>
-                <input id="stockQuantity" type="text" name="variants[${variantIndex}].stockQuantity" class="form-control" placeholder="" required>
-              </div>
-              <div class="form-group col-md-1">
-                        <label for="productBasePrice">Giá (nghìn VND) <span class="text-danger">*</span> </label>
-                        <input id="productBasePrice" name="variants[${variantIndex}].basePrice" type="text" class="form-control"
-                               placeholder="" required>
-                      </div>
-              <div class="form-group col-md-1 d-flex align-items-end">
-              <button type="button" class="btn btn-danger btn-delete mb-1">Delete</button>
-            </div>
-            </div>
-    `;
+    <div class="form-row mt-3 border-info">
+      <div class="form-group col-md-3">
+        <label for="productSize">Size <span class="text-danger">*</span> </label>
+        <select id="productSize" name="productVariantList[${variantIndex}].sizeId" class="form-control default-select" required>
+          <option value="" selected>Chọn size</option>
+          ${createOptions(sizeList)}
+        </select>
+      </div>
+      <div class="form-group col-md-3">
+        <label for="quantity">Số lượng <span class="text-danger">*</span></label>
+        <input id="quantity" type="text" name="productVariantList[${variantIndex}].quantity" class="form-control" placeholder="" required>
+      </div>
+      <div class="form-group col-md-3">
+        <label for="price">Giá (nghìn VND) <span class="text-danger">*</span> </label>
+        <input id="price" name="productVariantList[${variantIndex}].price" type="text" class="form-control" placeholder="" required>
+      </div>
+      <div class="form-group col-md-3 d-flex align-items-end">
+        <button type="button" class="btn btn-danger btn-delete mb-1">Delete</button>
+      </div>
+    </div>
+`;
     // Thêm hàng mới vào container
     container.insertAdjacentHTML("beforeend", newRow);
 });

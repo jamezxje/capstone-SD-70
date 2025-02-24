@@ -64,7 +64,7 @@ public class Product {
     private String updatedBy;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "product")
-    List<ProductDetail> productDetails;
+    List<ProductDetail> productVariantList;
 
     @PrePersist
     public void prePersist() {

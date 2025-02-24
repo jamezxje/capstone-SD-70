@@ -19,7 +19,7 @@ public interface ProductService {
 
     Page<ProductResponse> searchProduct(ProductFilterRequest request, Pageable pageable);
 
-    void createProduct(ProductRequest request);
+    void createProduct(ProductRequest request) throws Exception;
 
     void updateProduct(Long productId, ProductRequest request);
 

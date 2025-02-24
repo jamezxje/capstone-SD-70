@@ -5,9 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.product.ProductFilterModel;
 import org.fpoly.capstone.controller.payload.product.ProductModel;
 import org.fpoly.capstone.controller.payload.product.ProductViewModel;
+import org.fpoly.capstone.entity.Brand;
 import org.fpoly.capstone.entity.Category;
+import org.fpoly.capstone.entity.Color;
+import org.fpoly.capstone.entity.Material;
+import org.fpoly.capstone.entity.Size;
+import org.fpoly.capstone.service.BrandService;
 import org.fpoly.capstone.service.CategoryService;
+import org.fpoly.capstone.service.ColorService;
+import org.fpoly.capstone.service.MaterialService;
+import org.fpoly.capstone.service.ProductDetailService;
 import org.fpoly.capstone.service.ProductService;
+import org.fpoly.capstone.service.SizeService;
 import org.fpoly.capstone.service.payload.product.ProductFilterRequest;
 import org.fpoly.capstone.service.payload.product.ProductRequest;
 import org.fpoly.capstone.service.payload.product.ProductResponse;
@@ -35,6 +44,11 @@ public class ProductController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final MaterialService materialService;
+    private final ColorService colorService;
+    private final SizeService sizeService;
+    private final BrandService brandService;
+    private final ProductDetailService productDetailService;
     private final ModelMapper modelMapper;
     private static final String PRODUCTS = "products";
     private static final String PRODUCT_PAGE = "productPage";
@@ -70,6 +84,24 @@ public class ProductController {
 
         return PRODUCT_VIEW;
 
+    }
+
+    @GetMapping(path = "add")
+    public String onOpenAddNewProductDetailView(Model model) {
+        List<Category> categoryList = this.categoryService.getAllActiveCategory();
+        List<Material> materialList = this.materialService.getAllMaterial();
+        List<Color> colorList = this.colorService.getAllColor();
+        List<Size> sizeList = this.sizeService.getAllSize();
+        List<Brand> brandList = this.brandService.getAllBrand();
+
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("materials", materialList);
+        model.addAttribute("colors", colorList);
+        model.addAttribute("sizes", sizeList);
+        model.addAttribute("brands", brandList);
+        model.addAttribute("productModel", new ProductModel());
+
+        return "/views/product-management/product/add-new-product-form";
     }
 
     @PostMapping
