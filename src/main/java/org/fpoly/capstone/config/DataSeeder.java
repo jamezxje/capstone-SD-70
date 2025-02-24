@@ -84,7 +84,13 @@ public class DataSeeder {
             new Color(2L, "Đỏ"),
             new Color(3L, "Tím"),
             new Color(4L, "Vàng"),
-            new Color(5L, "Lục")
+            new Color(5L, "Lục"),
+            new Color(6L, "Xanh than"),
+            new Color(7L, "Be"),
+            new Color(8L, "Xám"),
+            new Color(9L, "Đen"),
+            new Color(10L, "Trắng"),
+            new Color(11L, "Cam")
     );
 
     public static final List<Material> MATERIAL_LIST = List.of(

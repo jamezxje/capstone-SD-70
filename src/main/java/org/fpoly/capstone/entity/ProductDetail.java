@@ -69,7 +69,7 @@ public class ProductDetail {
     @Column(name = "status")
     private ProductVariantStatus status;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @Column(name = "create_date")
