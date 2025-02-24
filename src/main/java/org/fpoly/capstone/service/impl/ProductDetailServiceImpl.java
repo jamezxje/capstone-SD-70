@@ -49,15 +49,15 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Transactional
     public void createProductDetail(ProductDetailRequest request) throws Exception {
         Product product = this.productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
         Brand brand = this.brandRepository.findById(request.getBrandId())
-                .orElseThrow(() -> new RuntimeException("Brand not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Brand not found"));
         Color color = this.colorRepository.findById(request.getColorId())
-                .orElseThrow(() -> new RuntimeException("Color not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Color not found"));
         Material material = this.materialRepository.findById(request.getMaterialId())
-                .orElseThrow(() -> new RuntimeException("Material not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Material not found"));
         Size size = this.sizeRepository.findById(request.getSizeId())
-                .orElseThrow(() -> new RuntimeException("Size not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Size not found"));
 
         ProductDetail productDetail = new ProductDetail();
         productDetail.setProduct(product);
@@ -89,15 +89,15 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 .orElseThrow(() -> new EntityNotFoundException("Product detail not found"));
 
         Product product = this.productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
         Brand brand = this.brandRepository.findById(request.getBrandId())
-                .orElseThrow(() -> new RuntimeException("Brand not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Brand not found"));
         Color color = this.colorRepository.findById(request.getColorId())
-                .orElseThrow(() -> new RuntimeException("Color not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Color not found"));
         Material material = this.materialRepository.findById(request.getMaterialId())
-                .orElseThrow(() -> new RuntimeException("Material not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Material not found"));
         Size size = this.sizeRepository.findById(request.getSizeId())
-                .orElseThrow(() -> new RuntimeException("Size not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Size not found"));
 
         productDetail.setProduct(product);
         productDetail.setBrand(brand);
@@ -125,9 +125,18 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             }
         }
 
-
         this.productDetailRepository.save(productDetail);
 
+    }
+
+    @Override
+    public void deleteProductDetail(Long productDetailId) {
+        ProductDetail productDetail = this.productDetailRepository.findById(productDetailId)
+                .orElseThrow(() -> new EntityNotFoundException("Product detail not found"));
+
+        productDetail.setStatus(ProductVariantStatus.NGUNG_SU_DUNG);
+
+        this.productDetailRepository.save(productDetail);
     }
 
     @Override
@@ -141,7 +150,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         Page<ProductDetailResponse> page = this.productDetailRepository.findByFilter(request, pageable);
         page.forEach(response -> {
             List<String> images = this.productDetailRepository.findImagesByProductDetailId(response.getId());
-            response.setImages(images);
+            response.setImagesUrl(images);
         });
         return page;
     }
@@ -150,7 +159,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     public ProductDetailResponse getProductDetailById(Long productDetailId) {
         ProductDetailResponse existingProductDetail = this.productDetailRepository.findProductDetailById(productDetailId);
         List<String> imagesUrlList = this.imageService.getImagesUrlByProductDetailId(productDetailId);
-        existingProductDetail.setImages(imagesUrlList);
+        existingProductDetail.setImagesUrl(imagesUrlList);
         return existingProductDetail;
     }
 

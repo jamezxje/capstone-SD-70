@@ -7,6 +7,7 @@ import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,6 +26,7 @@ public class ProductDetailModel {
     private MultipartFile featureImage;
     private String featureImageUrl;
     private MultipartFile[] images;
+    private List<String> imagesUrl;
     private String description;
 
 }

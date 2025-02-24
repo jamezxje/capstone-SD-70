@@ -2,7 +2,7 @@ package org.fpoly.capstone.controller.dashboard;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailFilterModel;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailModel;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailViewModel;
@@ -39,7 +39,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-@Slf4j
+@Log4j2
 @Controller
 @RequestMapping(path = "dashboard/product-management/product-detail")
 @RequiredArgsConstructor
@@ -75,9 +75,23 @@ public class ProductDetailController {
                 .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
                 .toList();
 
+        List<Category> categoryList = this.categoryService.getAllActiveCategory();
+        List<Material> materialList = this.materialService.getAllMaterial();
+        List<Color> colorList = this.colorService.getAllColor();
+        List<Size> sizeList = this.sizeService.getAllSize();
+        List<Brand> brandList = this.brandService.getAllBrand();
+        List<Product> productList = this.productService.getAllActiveProduct();
+
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("materials", materialList);
+        model.addAttribute("colors", colorList);
+        model.addAttribute("sizes", sizeList);
+        model.addAttribute("brands", brandList);
+        model.addAttribute("products", productList);
         model.addAttribute("request", request);
         model.addAttribute(PRODUCT_DETAILS, viewModels);
         model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailResponsePage);
+        model.addAttribute("editProductDetailModel", new ProductDetailModel());
 
         return PRODUCT_DETAIL_VIEW;
     }
@@ -195,6 +209,26 @@ public class ProductDetailController {
         }
 
         return "redirect:/dashboard/product-management/product-detail";
+    }
+
+    @PostMapping(path = "delete/{productDetailId}")
+    public String deleteProduct(@PathVariable Long productDetailId,
+                                @RequestParam(defaultValue = "1") int page,
+                                @RequestParam(defaultValue = "10") int size,
+                                RedirectAttributes redirectAttributes) {
+
+        try {
+            this.productDetailService.deleteProductDetail(productDetailId);
+
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa chi tiết sản phẩm thành công");
+            redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa chi tiết sản phẩm thất bại");
+            redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
+        }
+
+        return "redirect:/dashboard/product-management/product-detail?page=" + page + "&size=" + size;
+
     }
 
 

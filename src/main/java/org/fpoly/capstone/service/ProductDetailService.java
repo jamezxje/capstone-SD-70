@@ -12,6 +12,8 @@ public interface ProductDetailService {
 
     void updateProductDetail(Long productDetailId, ProductDetailRequest request) throws Exception;
 
+    void deleteProductDetail(Long productDetailId);
+
     Page<ProductDetailResponse> getAllProductDetails(Pageable pageable);
 
     Page<ProductDetailResponse> searchProductDetails(ProductDetailFilterRequest request, Pageable pageable);

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Management</title>
+  <th:block id="th-css">
+    <link rel="stylesheet" th:href="@{/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css}">
+    <link rel="stylesheet" th:href="@{/css/product-management/product/add-new-product.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/js/select.dataTables.min.css}">
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  <div class="content-body">
+    <div class="container-fluid">
+      <div class="row page-titles mx-0">
+        <div class="col-sm-6 p-md-0">
+          <div class="welcome-text">
+            <h4>Hi, welcome back!</h4>
+            <span>Thêm sản phẩm</span>
+          </div>
+        </div>
+        <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Form</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Element</a></li>
+          </ol>
+        </div>
+      </div>
+      
+      <form class="form-create-product-detail" th:action="@{/dashboard/product-management/product-detail/add}"
+            th:object="${productDetailModel}"
+            method="post" enctype="multipart/form-data">
+        <!--Thong tin san pham start-->
+        <div class="row">
+          <div class="col-lg-3">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Thumbnail</h4>
+              </div>
+              <div class="card-body">
+                <div class="basic-form">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
+                        <input id="upload" type="file" name="featureImage" onchange="readURL(this);"
+                               class="form-control border-0" required>
+                        <label id="upload-label" for="upload" class="font-weight-light text-muted">Choose file</label>
+                        <div class="input-group-append">
+                          <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
+                              class="fa fa-cloud-upload mr-2 text-muted"></i><small
+                              class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
+                        </div>
+                      </div>
+                      
+                      <!-- Uploaded image area-->
+                      <p class="font-italic text-grey text-center">The image uploaded will be rendered inside the box
+                        below.</p>
+                      <div class="image-area mt-4">
+                        <img id="imageResult" src="#" alt=""
+                             class="img-fluid rounded shadow-sm mx-auto d-block">
+                      </div>
+                    
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-9">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Thông tin sản phẩm</h4>
+              </div>
+              <div class="card-body">
+                <div class="basic-form">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="productId">Sản phẩm <span class="text-danger">*</span> </label>
+                      <select id="productId" name="productId" class="form-control"
+                              required>
+                        <option value="" selected>Chọn sản phẩm</option>
+                        <option th:each="product : ${products}"
+                                th:value="${product.id}"
+                                th:text="${product.name}">
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="brandId">Brand<span class="text-danger">*</span> </label>
+                      <select id="brandId" name="brandId" class="form-control"
+                              required>
+                        <option value="" selected>Chọn brand</option>
+                        <option th:each="brand : ${brands}"
+                                th:value="${brand.id}"
+                                th:text="${brand.name}">
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="materialId">Chất liệu<span class="text-danger">*</span> </label>
+                      <select id="materialId" name="materialId" class="form-control"
+                              required>
+                        <option value="" selected>Chọn chất liệu</option>
+                        <option th:each="material : ${materials}"
+                                th:value="${material.id}"
+                                th:text="${material.name}">
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="colorId">Màu sắc<span class="text-danger">*</span> </label>
+                      <select id="colorId" name="colorId" class="form-control"
+                              required>
+                        <option value="" selected>Chọn màu sắc</option>
+                        <option th:each="color : ${colors}"
+                                th:value="${color.id}"
+                                th:text="${color.name}">
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="sizeId">Size<span class="text-danger">*</span> </label>
+                      <select id="sizeId" name="sizeId" class="form-control"
+                              required>
+                        <option value="" selected>Chọn size</option>
+                        <option th:each="size : ${sizes}"
+                                th:value="${size.id}"
+                                th:text="${size.name}">
+                        </option>
+                      </select>
+                    </div>
+                    
+                    <div class="form-group col-md-6">
+                      <label for="gender">Size<span class="text-danger">*</span> </label>
+                      <select id="gender" name="gender" class="form-control"
+                              required>
+                        <option value="" selected>Chọn giới tính</option>
+                        <option
+                            th:each="gender : ${T(org.fpoly.capstone.entity.enum_status.Gender).values()}"
+                            th:value="${gender}" th:text="${gender}">
+                        </option>
+                      </select>
+                    </div>
+                    
+                    <div class="form-group col-md-6">
+                      <label for="quantity">Số lượng <span class="text-danger">*</span></label>
+                      <input id="quantity" type="number" name="quantity" class="form-control" placeholder="" required>
+                    </div>
+                    
+                    <div class="form-group col-md-6">
+                      <label for="price">Giá tiền (VND) <span class="text-danger">*</span></label>
+                      <input id="price" type="number" name="price" class="form-control" placeholder="" required>
+                    </div>
+                    
+                    <div class="form-group col-md-12">
+                      <label for="description">Mô tả (tùy chọn)</label>
+                      <textarea id="description" name="description" rows="5" class="form-control"
+                                placeholder="Mô tả sản phẩm "> </textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Thong tin san pham end-->
+        
+        <!--Album san pham start-->
+        <div class="row mt-3">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Album sản phẩm</h4>
+              </div>
+              <div class="card-body">
+                <div class="basic-form">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="productMediaGallery">Image gallery</label>
+                      <input id="productMediaGallery" name="images" type="file" class="form-control" multiple
+                             data-preview-file-type="text">
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <button id="btn-add-product" class="btn btn-primary mt-3">Thêm mới</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Album san pham end-->
+      </form>
+    </div>
+  </div>
+
+</th:block>
+
+<!-- JS Section -->
+<th:block id="th-js">
+  <script th:src="@{/assets/vendor/jquery-validation/jquery.validate.min.js}"></script>
+  <script>
+    (function ($) {
+      "use strict"
+      
+      jQuery(".form-create-product").validate({
+        ignore: [],
+        errorClass: "invalid-feedback animated fadeInUp",
+        errorElement: "div",
+        errorPlacement: function (e, a) {
+          jQuery(a).parents(".form-group").append(e)
+        },
+        highlight: function (e) {
+          jQuery(e).closest(".form-group").removeClass("is-invalid").addClass("is-invalid")
+        },
+        success: function (e) {
+          jQuery(e).closest(".form-group").removeClass("is-invalid"), jQuery(e).remove()
+        },
+      });
+      
+    })(jQuery);
+    
+    ClassicEditor
+        .create(document.querySelector('#productDescription'), {
+          toolbar: [
+            'ckbox', 'imageUpload', '|', 'heading', '|', 'undo', 'redo', '|', 'bold', 'italic', '|',
+            'blockQuote', 'indent', 'link', '|', 'bulletedList', 'numberedList'
+          ],
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function (e) {
+          $('#imageResult')
+              .attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    
+    $(function () {
+      $('#upload').on('change', function () {
+        readURL(input);
+      });
+    });
+    
+    /*  ==========================================
+        SHOW UPLOADED IMAGE NAME
+    * ========================================== */
+    var input = document.getElementById('upload');
+    var infoArea = document.getElementById('upload-label');
+    
+    input.addEventListener('change', showFileName);
+    
+    function showFileName(event) {
+      var input = event.srcElement;
+      var fileName = input.files[0].name;
+      infoArea.textContent = 'File name: ' + fileName;
+    }
+    
+    $("#productMediaGallery").fileinput({
+      uploadAsync: false,
+      showUpload: false,
+      previewFileType: 'image',
+      initialPreviewAsData: false, // allows you to set a raw markup
+      overwriteInitial: false,
+    });
+    
+    let variantIndex = 0;
+    document.getElementById("add-row-btn").addEventListener("click", function () {
+      const container = document.getElementById("product-details-container");
+      
+      // Hàm tạo thẻ <option> từ danh sách
+      const createOptions = (list) => {
+        return list.map(item => `<option value="${item.id}">${item.name}</option>`).join("");
+      };
+      
+      // Tạo nội dung cho hàng mới
+      const newRow = `
+            <div class="form-row mt-3 border-info">
+            <div class="form-group col-md-2">
+                        <label for="productCategory">Danh mục <span class="text-danger">*</span> </label>
+                        <select id="productCategory" name="variants[${variantIndex}].categoryId" class="form-control default-select" required>
+                          <option value="" selected>Chọn danh mục</option>
+                          ${createOptions(categoryList)}
+                          </option>
+                        </select>
+                      </div>
+              <div class="form-group col-md-2">
+                <label for="productMaterial">Chất liệu <span class="text-danger">*</span> </label>
+                <select id="productMaterial" name="variants[${variantIndex}].materialId" class="form-control default-select" required>
+                  <option value="" selected>Chọn chất liệu</option>
+                  ${createOptions(materialList)}
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="productColor">Màu sắc <span class="text-danger">*</span> </label>
+                <select id="productColor" name="variants[${variantIndex}].colorId" class="form-control default-select" required>
+                  <option value="" selected>Chọn màu</option>
+                  ${createOptions(colorList)}
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="productSize">Size <span class="text-danger">*</span> </label>
+                <select id="productSize" name="variants[${variantIndex}].sizeId" class="form-control default-select" required>
+                  <option value="" selected>Chọn size</option>
+                  ${createOptions(sizeList)}
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="stockQuantity">Số lượng <span class="text-danger">*</span></label>
+                <input id="stockQuantity" type="text" name="variants[${variantIndex}].stockQuantity" class="form-control" placeholder="" required>
+              </div>
+              <div class="form-group col-md-1">
+                        <label for="productBasePrice">Giá (nghìn VND) <span class="text-danger">*</span> </label>
+                        <input id="productBasePrice" name="variants[${variantIndex}].basePrice" type="text" class="form-control"
+                               placeholder="" required>
+                      </div>
+              <div class="form-group col-md-1 d-flex align-items-end">
+              <button type="button" class="btn btn-danger btn-delete mb-1">Delete</button>
+            </div>
+            </div>
+    `;
+      // Thêm hàng mới vào container
+      container.insertAdjacentHTML("beforeend", newRow);
+    });
+    variantIndex++;
+    
+    document.getElementById("product-details-container").addEventListener("click", function (e) {
+      if (e.target && e.target.classList.contains("btn-delete")) {
+        const row = e.target.closest(".form-row");
+        if (row) {
+          row.remove();
+        }
+      }
+    });
+    
+    document.getElementById("btn-add-product").addEventListener("click", function () {
+      const productName = document.getElementById("productName").value;
+      const productCode = document.getElementById("productCode").value;
+      const basePrice = document.getElementById("productBasePrice").value;
+      const productDescription = document.getElementById("productDescription").value;
+      const categoryId = document.getElementById("productCategory").value;
+      
+      const detailsContainer = document.getElementById("product-details-container");
+      const detailRows = detailsContainer.querySelectorAll(".form-row");
+      
+      const products = [];
+      detailRows.forEach((row) => {
+        const materialId = row.querySelector('select[name="materialId"]').value;
+        const colorId = row.querySelector('select[name="colorId"]').value;
+        const sizeId = row.querySelector('select[name="sizeId"]').value;
+        const stockQuantity = row.querySelector('#stockQuantity').value;
+        
+        if (materialId && colorId && sizeId && stockQuantity) {
+          products.push({
+            productName,
+            productCode,
+            basePrice,
+            productDescription,
+            categoryId,
+            materialId,
+            colorId,
+            sizeId,
+            stockQuantity,
+          });
+        }
+      });
+      
+      console.log("Products added:", products);
+    });
+  
+  </script>
+</th:block>
+
+</body>
+</html>

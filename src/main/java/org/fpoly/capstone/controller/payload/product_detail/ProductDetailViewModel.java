@@ -34,7 +34,7 @@ public class ProductDetailViewModel {
     private BigDecimal price;
     private ProductVariantStatus status;
     private String description;
-    private String featureImage;
-    private List<String> images;
+    private String featureImageUrl;
+    private List<String> imagesUrl;
 
 }

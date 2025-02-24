@@ -34,10 +34,10 @@ public class ProductDetailResponse {
     private BigDecimal price;
     private ProductVariantStatus status;
     private String description;
-    private String featureImage;
-    private List<String> images;
+    private String featureImageUrl;
+    private List<String> imagesUrl;
 
-    public ProductDetailResponse(Long id, Long productId, String productName, Long categoryId, String categoryName, Long brandId, String brandName, Long sizeId, String sizeName, Long colorId, String colorName, Long materialId, String materialName, Gender gender, Integer quantity, BigDecimal price, ProductVariantStatus status, String description, String featureImage) {
+    public ProductDetailResponse(Long id, Long productId, String productName, Long categoryId, String categoryName, Long brandId, String brandName, Long sizeId, String sizeName, Long colorId, String colorName, Long materialId, String materialName, Gender gender, Integer quantity, BigDecimal price, ProductVariantStatus status, String description, String featureImageUrl) {
         this.id = id;
         this.productId = productId;
         this.productName = productName;
@@ -56,6 +56,6 @@ public class ProductDetailResponse {
         this.price = price;
         this.status = status;
         this.description = description;
-        this.featureImage = featureImage;
+        this.featureImageUrl = featureImageUrl;
     }
 }
