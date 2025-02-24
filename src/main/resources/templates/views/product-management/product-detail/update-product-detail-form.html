@@ -63,7 +63,7 @@
                         below.</p>
                       <!-- Thumbnail -->
                       <div class="image-area mt-4">
-                        <img th:src="${productDetailModel.featureImageUrl}"
+                        <img id="imageResult" th:src="${productDetailModel.featureImageUrl}"
                              alt="Existing Thumbnail" class="img-fluid rounded shadow-sm mx-auto d-block">
                       </div>
                     
@@ -82,7 +82,7 @@
               <div class="card-body">
                 <div class="basic-form">
                   <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="productId">Sản phẩm <span class="text-danger">*</span> </label>
                       <select id="productId" name="productId" class="form-control" th:field="*{productId}"
                               required>
@@ -93,7 +93,7 @@
                         </option>
                       </select>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="brandId">Brand<span class="text-danger">*</span> </label>
                       <select id="brandId" name="brandId" class="form-control" th:field="*{brandId}"
                               required>
@@ -104,7 +104,7 @@
                         </option>
                       </select>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="materialId">Chất liệu<span class="text-danger">*</span> </label>
                       <select id="materialId" name="materialId" class="form-control" th:field="*{materialId}"
                               required>
@@ -115,7 +115,7 @@
                         </option>
                       </select>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="colorId">Màu sắc<span class="text-danger">*</span> </label>
                       <select id="colorId" name="colorId" class="form-control" th:field="*{colorId}"
                               required>
@@ -126,7 +126,7 @@
                         </option>
                       </select>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="sizeId">Size<span class="text-danger">*</span> </label>
                       <select id="sizeId" name="sizeId" class="form-control" th:field="*{sizeId}"
                               required>
@@ -138,7 +138,7 @@
                       </select>
                     </div>
                     
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="gender">Size<span class="text-danger">*</span> </label>
                       <select id="gender" name="gender" class="form-control" th:field="*{gender}"
                               required>
@@ -150,7 +150,7 @@
                       </select>
                     </div>
                     
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label>Status<span class="text-danger">*</span> </label>
                       <select class="form-control"
                               id="status" name="status" th:field="*{status}">
@@ -162,13 +162,13 @@
                     
                     </div>
                     
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="quantity">Số lượng <span class="text-danger">*</span></label>
                       <input id="quantity" type="number" th:field="*{quantity}" name="quantity" class="form-control"
                              placeholder="" required>
                     </div>
                     
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="price">Giá tiền (VND) <span class="text-danger">*</span></label>
                       <input id="price" type="number" name="price" th:field="*{price}" class="form-control"
                              placeholder="" required>
@@ -218,7 +218,7 @@
                   </div>
                   
                   <div class="d-flex justify-content-end">
-                    <button id="btn-update-product" class="btn btn-primary mt-3">Thêm mới</button>
+                    <button id="btn-update-product" class="btn btn-primary mt-3">Update</button>
                   </div>
                 </div>
               </div>
@@ -306,110 +306,6 @@
       previewFileType: 'image',
       initialPreviewAsData: false, // allows you to set a raw markup
       overwriteInitial: false,
-    });
-    
-    let variantIndex = 0;
-    document.getElementById("add-row-btn").addEventListener("click", function () {
-      const container = document.getElementById("product-details-container");
-      
-      // Hàm tạo thẻ <option> từ danh sách
-      const createOptions = (list) => {
-        return list.map(item => `<option value="${item.id}">${item.name}</option>`).join("");
-      };
-      
-      // Tạo nội dung cho hàng mới
-      const newRow = `
-            <div class="form-row mt-3 border-info">
-            <div class="form-group col-md-2">
-                        <label for="productCategory">Danh mục <span class="text-danger">*</span> </label>
-                        <select id="productCategory" name="variants[${variantIndex}].categoryId" class="form-control default-select" required>
-                          <option value="" selected>Chọn danh mục</option>
-                          ${createOptions(categoryList)}
-                          </option>
-                        </select>
-                      </div>
-              <div class="form-group col-md-2">
-                <label for="productMaterial">Chất liệu <span class="text-danger">*</span> </label>
-                <select id="productMaterial" name="variants[${variantIndex}].materialId" class="form-control default-select" required>
-                  <option value="" selected>Chọn chất liệu</option>
-                  ${createOptions(materialList)}
-                </select>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="productColor">Màu sắc <span class="text-danger">*</span> </label>
-                <select id="productColor" name="variants[${variantIndex}].colorId" class="form-control default-select" required>
-                  <option value="" selected>Chọn màu</option>
-                  ${createOptions(colorList)}
-                </select>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="productSize">Size <span class="text-danger">*</span> </label>
-                <select id="productSize" name="variants[${variantIndex}].sizeId" class="form-control default-select" required>
-                  <option value="" selected>Chọn size</option>
-                  ${createOptions(sizeList)}
-                </select>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="stockQuantity">Số lượng <span class="text-danger">*</span></label>
-                <input id="stockQuantity" type="text" name="variants[${variantIndex}].stockQuantity" class="form-control" placeholder="" required>
-              </div>
-              <div class="form-group col-md-1">
-                        <label for="productBasePrice">Giá (nghìn VND) <span class="text-danger">*</span> </label>
-                        <input id="productBasePrice" name="variants[${variantIndex}].basePrice" type="text" class="form-control"
-                               placeholder="" required>
-                      </div>
-              <div class="form-group col-md-1 d-flex align-items-end">
-              <button type="button" class="btn btn-danger btn-delete mb-1">Delete</button>
-            </div>
-            </div>
-    `;
-      // Thêm hàng mới vào container
-      container.insertAdjacentHTML("beforeend", newRow);
-    });
-    variantIndex++;
-    
-    document.getElementById("product-details-container").addEventListener("click", function (e) {
-      if (e.target && e.target.classList.contains("btn-delete")) {
-        const row = e.target.closest(".form-row");
-        if (row) {
-          row.remove();
-        }
-      }
-    });
-    
-    document.getElementById("btn-add-product").addEventListener("click", function () {
-      const productName = document.getElementById("productName").value;
-      const productCode = document.getElementById("productCode").value;
-      const basePrice = document.getElementById("productBasePrice").value;
-      const productDescription = document.getElementById("productDescription").value;
-      const categoryId = document.getElementById("productCategory").value;
-      
-      const detailsContainer = document.getElementById("product-details-container");
-      const detailRows = detailsContainer.querySelectorAll(".form-row");
-      
-      const products = [];
-      detailRows.forEach((row) => {
-        const materialId = row.querySelector('select[name="materialId"]').value;
-        const colorId = row.querySelector('select[name="colorId"]').value;
-        const sizeId = row.querySelector('select[name="sizeId"]').value;
-        const stockQuantity = row.querySelector('#stockQuantity').value;
-        
-        if (materialId && colorId && sizeId && stockQuantity) {
-          products.push({
-            productName,
-            productCode,
-            basePrice,
-            productDescription,
-            categoryId,
-            materialId,
-            colorId,
-            sizeId,
-            stockQuantity,
-          });
-        }
-      });
-      
-      console.log("Products added:", products);
     });
   
   </script>
