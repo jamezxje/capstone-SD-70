@@ -11,7 +11,6 @@ import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 import org.fpoly.capstone.repository.BrandRepository;
-import org.fpoly.capstone.repository.CategoryRepository;
 import org.fpoly.capstone.repository.ColorRepository;
 import org.fpoly.capstone.repository.MaterialRepository;
 import org.fpoly.capstone.repository.ProductDetailRepository;
@@ -25,6 +24,7 @@ import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,106 +37,88 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private final ModelMapper modelMapper;
     private final ProductDetailRepository productDetailRepository;
     private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
     private final MaterialRepository materialRepository;
     private final ColorRepository colorRepository;
     private final SizeRepository sizeRepository;
     private final ImageService imageService;
+
     private static final String PRODUCT_DETAIL_NOT_FOUND_WITH_ID = "Product detail not found with id: ";
 
-    @Override
-    @Transactional
-    public void createProductDetail(ProductDetailRequest request) throws Exception {
-        Product product = this.productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-        Brand brand = this.brandRepository.findById(request.getBrandId())
-                .orElseThrow(() -> new EntityNotFoundException("Brand not found"));
-        Color color = this.colorRepository.findById(request.getColorId())
-                .orElseThrow(() -> new EntityNotFoundException("Color not found"));
-        Material material = this.materialRepository.findById(request.getMaterialId())
-                .orElseThrow(() -> new EntityNotFoundException("Material not found"));
-        Size size = this.sizeRepository.findById(request.getSizeId())
-                .orElseThrow(() -> new EntityNotFoundException("Size not found"));
-
-        ProductDetail productDetail = new ProductDetail();
-        productDetail.setProduct(product);
-        productDetail.setBrand(brand);
-        productDetail.setColor(color);
-        productDetail.setMaterial(material);
-        productDetail.setSize(size);
-        productDetail.setGender(request.getGender());
-        productDetail.setQuantity(request.getQuantity());
-        productDetail.setPrice(request.getPrice());
-        productDetail.setStatus(ProductVariantStatus.DANG_SU_DUNG);
-        productDetail.setDescription(request.getDescription());
-
-        // Lưu ảnh thumbnail
-        this.imageService.updateFeatureImageForProductDetail(productDetail, request.getFeatureImage());
-
-        // Lưu các ảnh chi tiết
-        for (MultipartFile imageFile : request.getImages()) {
-            this.imageService.saveImageToProductDetail(productDetail, imageFile);
-        }
-
-        // Lưu sản phẩm chi tiết vào cơ sở dữ liệu
-        this.productDetailRepository.save(productDetail);
+    // Helper method giúp tìm entity theo id
+    private <T> T findEntityById(Long id, JpaRepository<T, Long> repository, String errorMessage) {
+        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorMessage + id));
     }
 
-    @Override
-    public void updateProductDetail(Long productDetailId, ProductDetailRequest request) throws Exception {
-        ProductDetail productDetail = this.productDetailRepository.findById(productDetailId)
-                .orElseThrow(() -> new EntityNotFoundException("Product detail not found"));
-
-        Product product = this.productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-        Brand brand = this.brandRepository.findById(request.getBrandId())
-                .orElseThrow(() -> new EntityNotFoundException("Brand not found"));
-        Color color = this.colorRepository.findById(request.getColorId())
-                .orElseThrow(() -> new EntityNotFoundException("Color not found"));
-        Material material = this.materialRepository.findById(request.getMaterialId())
-                .orElseThrow(() -> new EntityNotFoundException("Material not found"));
-        Size size = this.sizeRepository.findById(request.getSizeId())
-                .orElseThrow(() -> new EntityNotFoundException("Size not found"));
-
-        productDetail.setProduct(product);
-        productDetail.setBrand(brand);
-        productDetail.setColor(color);
-        productDetail.setMaterial(material);
-        productDetail.setSize(size);
-        productDetail.setGender(request.getGender());
-        productDetail.setQuantity(request.getQuantity());
-        productDetail.setPrice(request.getPrice());
-        productDetail.setStatus(request.getStatus());
-        productDetail.setDescription(request.getDescription());
-
-        if (request.getFeatureImage() != null && !request.getFeatureImage().isEmpty()) {
-            // Handle the image upload logic here
-            this.imageService.updateFeatureImageForProductDetail(productDetail, request.getFeatureImage());
-
+    //Helper method xử lý hình ành
+    private void handleImageUpload(ProductDetail productDetail, MultipartFile featureImage, MultipartFile[] images) throws Exception {
+        if (featureImage != null && !featureImage.isEmpty()) {
+            this.imageService.updateFeatureImageForProductDetail(productDetail, featureImage);
         }
 
-        if (request.getImages() != null && request.getImages().length > 0) {
-            // Handle multiple image upload logic here
-            for (MultipartFile imageFile : request.getImages()) {
+        if (images != null && images.length > 0) {
+            for (MultipartFile imageFile : images) {
                 if (imageFile != null && !imageFile.isEmpty()) {
                     this.imageService.saveImageToProductDetail(productDetail, imageFile);
                 }
             }
         }
+    }
+
+    //Helper method giúp set các thuộc tính vào chi tiết sản phẩm
+    private void setCommonProductDetailProperties(ProductDetail productDetail, ProductDetailRequest request) {
+        Product product = findEntityById(request.getProductId(), productRepository, "Product not found");
+        Brand brand = findEntityById(request.getBrandId(), brandRepository, "Brand not found");
+        Color color = findEntityById(request.getColorId(), colorRepository, "Color not found");
+        Material material = findEntityById(request.getMaterialId(), materialRepository, "Material not found");
+        Size size = findEntityById(request.getSizeId(), sizeRepository, "Size not found");
+
+        productDetail.setProduct(product);
+        productDetail.setBrand(brand);
+        productDetail.setColor(color);
+        productDetail.setMaterial(material);
+        productDetail.setSize(size);
+        productDetail.setGender(request.getGender());
+        productDetail.setQuantity(request.getQuantity());
+        productDetail.setPrice(request.getPrice());
+        productDetail.setDescription(request.getDescription());
+    }
+
+    @Override
+    @Transactional
+    public void createProductDetail(ProductDetailRequest request) throws Exception {
+        ProductDetail productDetail = new ProductDetail();
+
+        this.setCommonProductDetailProperties(productDetail, request);
+
+        productDetail.setStatus(ProductVariantStatus.DANG_SU_DUNG);  // Trạng thái mặc định khi tạo mới
+
+        this.handleImageUpload(productDetail, request.getFeatureImage(), request.getImages());
 
         this.productDetailRepository.save(productDetail);
+    }
 
+    @Override
+    @Transactional
+    public void updateProductDetail(Long productDetailId, ProductDetailRequest request) throws Exception {
+        ProductDetail existingProductDetail = findEntityById(productDetailId, productDetailRepository, PRODUCT_DETAIL_NOT_FOUND_WITH_ID);
+
+        this.setCommonProductDetailProperties(existingProductDetail, request);
+
+        existingProductDetail.setStatus(request.getStatus());
+
+        this.handleImageUpload(existingProductDetail, request.getFeatureImage(), request.getImages());
+
+        this.productDetailRepository.save(existingProductDetail);
     }
 
     @Override
     public void deleteProductDetail(Long productDetailId) {
-        ProductDetail productDetail = this.productDetailRepository.findById(productDetailId)
-                .orElseThrow(() -> new EntityNotFoundException("Product detail not found"));
+        ProductDetail existingProductDetail = findEntityById(productDetailId, productDetailRepository, PRODUCT_DETAIL_NOT_FOUND_WITH_ID);
 
-        productDetail.setStatus(ProductVariantStatus.NGUNG_SU_DUNG);
+        existingProductDetail.setStatus(ProductVariantStatus.NGUNG_SU_DUNG); //soft delete: chuyển trạng thái sang ngừng sử dụng
 
-        this.productDetailRepository.save(productDetail);
+        this.productDetailRepository.save(existingProductDetail);
     }
 
     @Override
@@ -162,5 +144,4 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         existingProductDetail.setImagesUrl(imagesUrlList);
         return existingProductDetail;
     }
-
 }
