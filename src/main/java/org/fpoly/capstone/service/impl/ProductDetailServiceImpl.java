@@ -16,6 +16,7 @@ import org.fpoly.capstone.repository.MaterialRepository;
 import org.fpoly.capstone.repository.ProductDetailRepository;
 import org.fpoly.capstone.repository.ProductRepository;
 import org.fpoly.capstone.repository.SizeRepository;
+import org.fpoly.capstone.repository.specification.ProductDetailSpecification;
 import org.fpoly.capstone.service.ImageService;
 import org.fpoly.capstone.service.ProductDetailService;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailFilterRequest;
@@ -67,11 +68,11 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     //Helper method giúp set các thuộc tính vào chi tiết sản phẩm
     private void setCommonProductDetailProperties(ProductDetail productDetail, ProductDetailRequest request) {
-        Product product = findEntityById(request.getProductId(), productRepository, "Product not found");
-        Brand brand = findEntityById(request.getBrandId(), brandRepository, "Brand not found");
-        Color color = findEntityById(request.getColorId(), colorRepository, "Color not found");
-        Material material = findEntityById(request.getMaterialId(), materialRepository, "Material not found");
-        Size size = findEntityById(request.getSizeId(), sizeRepository, "Size not found");
+        Product product = this.findEntityById(request.getProductId(), this.productRepository, "Product not found");
+        Brand brand = this.findEntityById(request.getBrandId(), this.brandRepository, "Brand not found");
+        Color color = this.findEntityById(request.getColorId(), this.colorRepository, "Color not found");
+        Material material = this.findEntityById(request.getMaterialId(), this.materialRepository, "Material not found");
+        Size size = this.findEntityById(request.getSizeId(), this.sizeRepository, "Size not found");
 
         productDetail.setProduct(product);
         productDetail.setBrand(brand);
@@ -101,7 +102,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Override
     @Transactional
     public void updateProductDetail(Long productDetailId, ProductDetailRequest request) throws Exception {
-        ProductDetail existingProductDetail = findEntityById(productDetailId, productDetailRepository, PRODUCT_DETAIL_NOT_FOUND_WITH_ID);
+        ProductDetail existingProductDetail = this.findEntityById(productDetailId, this.productDetailRepository, PRODUCT_DETAIL_NOT_FOUND_WITH_ID);
 
         this.setCommonProductDetailProperties(existingProductDetail, request);
 
@@ -114,7 +115,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     public void deleteProductDetail(Long productDetailId) {
-        ProductDetail existingProductDetail = findEntityById(productDetailId, productDetailRepository, PRODUCT_DETAIL_NOT_FOUND_WITH_ID);
+        ProductDetail existingProductDetail = this.findEntityById(productDetailId, this.productDetailRepository, PRODUCT_DETAIL_NOT_FOUND_WITH_ID);
 
         existingProductDetail.setStatus(ProductVariantStatus.NGUNG_SU_DUNG); //soft delete: chuyển trạng thái sang ngừng sử dụng
 
@@ -129,12 +130,33 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     public Page<ProductDetailResponse> searchProductDetails(ProductDetailFilterRequest request, Pageable pageable) {
-        Page<ProductDetailResponse> page = this.productDetailRepository.findByFilter(request, pageable);
-        page.forEach(response -> {
-            List<String> images = this.productDetailRepository.findImagesByProductDetailId(response.getId());
-            response.setImagesUrl(images);
-        });
-        return page;
+        return this.productDetailRepository.findAll(
+                ProductDetailSpecification.filterByRequest(request), pageable
+        ).map(this::convertToResponse);
+    }
+
+    private ProductDetailResponse convertToResponse(ProductDetail productDetail) {
+        return new ProductDetailResponse(
+                productDetail.getId(),
+                productDetail.getProduct().getId(),
+                productDetail.getProduct().getName(),
+                productDetail.getProduct().getCategory().getId(),
+                productDetail.getProduct().getCategory().getName(),
+                productDetail.getBrand().getId(),
+                productDetail.getBrand().getName(),
+                productDetail.getSize().getId(),
+                productDetail.getSize().getName(),
+                productDetail.getColor().getId(),
+                productDetail.getColor().getName(),
+                productDetail.getMaterial().getId(),
+                productDetail.getMaterial().getName(),
+                productDetail.getGender(),
+                productDetail.getQuantity(),
+                productDetail.getPrice(),
+                productDetail.getStatus(),
+                productDetail.getDescription(),
+                productDetail.getFeatureImage()
+        );
     }
 
     @Override

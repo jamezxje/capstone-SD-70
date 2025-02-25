@@ -23,6 +23,104 @@
             Thêm mới
           </a>
         </div>
+        <!--        Search form start-->
+        <div class="card-body">
+          <div class="basic-form">
+            <form th:action="@{/dashboard/product-management/product-detail}" method="GET" id="searchForm">
+              <div class="form-row">
+                <div class="form-group col-md-3">
+                  <label>Name</label>
+                  <input id="searchName" type="text" name="productName" class="form-control"
+                         th:value="${request.productName}"
+                         placeholder="Nhập tên sản phẩm tìm hiếm">
+                </div>
+                <div class="form-group col-md-3">
+                  <label for="searchCategoryId">Category</label>
+                  <select class="form-control" id="searchCategoryId" name="categoryId">
+                    <option value="" selected>Danh mục</option>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.id}"
+                            th:text="${category.name}"
+                            th:selected="${category.id == request.categoryId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Brand</label>
+                  <select id="searchBrandId" class="form-control" name="brandId">
+                    <option value="" selected>Brand</option>
+                    <option th:each="brand : ${brands}"
+                            th:value="${brand.id}"
+                            th:text="${brand.name}"
+                            th:selected="${brand.id == request.brandId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Màu sắc</label>
+                  <select id="searchColorId" class="form-control" name="colorId">
+                    <option value="" selected>Màu sắc</option>
+                    <option th:each="color : ${colors}"
+                            th:value="${color.id}"
+                            th:text="${color.name}"
+                            th:selected="${color.id == request.colorId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Chất liệu</label>
+                  <select id="searchMaterialId" class="form-control" name="materialId">
+                    <option value="" selected>Chất liệu</option>
+                    <option th:each="material : ${materials}"
+                            th:value="${material.id}"
+                            th:text="${material.name}"
+                            th:selected="${material.id == request.materialId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Size</label>
+                  <select id="searchSizeId" class="form-control" name="sizeId">
+                    <option value="" selected>Size</option>
+                    <option th:each="size : ${sizes}"
+                            th:value="${size.id}"
+                            th:text="${size.name}"
+                            th:selected="${size.id == request.sizeId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Min price</label>
+                  <input id="searchMinPrice" type="number" name="minPrice" class="form-control"
+                         th:value="${request.minPrice}"
+                         placeholder="Nhập giá nhỏ nhất">
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Max price</label>
+                  <input id="searchMaxPrice" type="number" name="maxPrice" class="form-control"
+                         th:value="${request.maxPrice}"
+                         placeholder="Nhập giá lớn nhất">
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Trạng thái</label>
+                  <select id="searchStatus" class="form-control" name="status">
+                    <option value="" selected>Trạng thái</option>
+                    <option
+                        th:each="statusOpt : ${T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).values()}"
+                        th:value="${statusOpt}" th:text="${statusOpt}"
+                        th:selected="${statusOpt == request.status}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                <button type="button" class="btn btn-secondary ml-2" onclick="clearForm()">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!--        Search form end-->
         <!--Data table start-->
         <div class="card-body">
           <div class="table-responsive">
@@ -113,20 +211,20 @@
                   <li class="page-item page-indicator"
                       th:classappend="${productDetailPage.hasPrevious()} ? '' : 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product-detail(page=${productDetailPage.number}, size=${productDetailPage.size}, categoryId=${request.categoryId}, status=${request.status})}">
+                       th:href="@{/dashboard/product-management/product-detail(page = ${productDetailPage.number}, size = ${productDetailPage.size}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}">
                       <i class="la la-angle-left"></i></a>
                   </li>
                   <li class="page-item" th:each="i : ${#numbers.sequence(1, productDetailPage.totalPages)}"
                       th:classappend="${productDetailPage.number + 1 == i} ? 'active'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product-detail(page=${i}, size=${productDetailPage.size}, categoryId=${request.categoryId}, status=${request.status})}"
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, size=${productDetailPage.size}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}"
                        th:text="${i}">
                     </a>
                   </li>
                   <li class="page-item page-indicator"
                       th:classappend="${productDetailPage.hasNext()} ? '' : 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product-detail(page=${productDetailPage.number + 2}, size=${productDetailPage.size}, categoryId=${request.categoryId}, status=${request.status})}">
+                       th:href="@{/dashboard/product-management/product-detail(page=${productDetailPage.number + 2}, size=${productDetailPage.size}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}">
                       <i class="la la-angle-right"></i></a>
                   </li>
                 </ul>
@@ -175,6 +273,41 @@
       const formAction = `/dashboard/product-management/product-detail/delete/${productDetailId}`;
       $('#deleteTransactionForm').attr('action', formAction);
     });
+    
+    document.addEventListener('DOMContentLoaded', function () {
+      window.clearForm = function () {
+        // Lấy các phần tử form theo id
+        const searchCategory = document.getElementById('searchCategoryId');
+        const searchProductName = document.getElementById('searchName');
+        const searchBrand = document.getElementById('searchBrandId');
+        const searchColor = document.getElementById('searchColorId');
+        const searchMaterial = document.getElementById('searchMaterialId');
+        const searchSize = document.getElementById('searchSizeId');
+        const searchMinPrice = document.getElementById('searchMinPrice');
+        const searchMaxPrice = document.getElementById('searchMaxPrice');
+        const searchStatus = document.getElementById('searchStatus');
+        
+        // Đặt lại giá trị cho các trường input và select
+        searchCategory.value = ""; // Xóa lựa chọn Category
+        searchProductName.value = ""; // Xóa tên sản phẩm
+        searchBrand.value = ""; // Xóa lựa chọn Brand
+        searchColor.value = ""; // Xóa lựa chọn Màu sắc
+        searchMaterial.value = ""; // Xóa lựa chọn Chất liệu
+        searchSize.value = ""; // Xóa lựa chọn Size
+        searchMinPrice.value = ""; // Xóa giá Min
+        searchMaxPrice.value = ""; // Xóa giá Max
+        searchStatus.value = ""; // Xóa lựa chọn Trạng thái
+        
+        // Nếu muốn chọn lại giá trị mặc định cho các dropdown
+        searchCategory.selectedIndex = 0; // Đặt lại chọn mặc định cho Category
+        searchBrand.selectedIndex = 0; // Đặt lại chọn mặc định cho Brand
+        searchColor.selectedIndex = 0; // Đặt lại chọn mặc định cho Color
+        searchMaterial.selectedIndex = 0; // Đặt lại chọn mặc định cho Material
+        searchSize.selectedIndex = 0; // Đặt lại chọn mặc định cho Size
+        searchStatus.selectedIndex = 0; // Đặt lại chọn mặc định cho Status
+      };
+    });
+  
   </script>
 </th:block>
 </body>

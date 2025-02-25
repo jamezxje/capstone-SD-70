@@ -6,6 +6,7 @@ import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long> {
+public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long>, JpaSpecificationExecutor<ProductDetail> {
 
     @Query("SELECT new org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse(" +
             "pd.id, " +
@@ -44,7 +45,6 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
             "AND (:#{#request.materialId} IS NULL OR pd.material.id = :#{#request.materialId}) " +
             "AND (:#{#request.sizeId} IS NULL OR pd.size.id = :#{#request.sizeId}) " +
             "AND (:#{#request.gender} IS NULL OR pd.gender = :#{#request.gender}) " +
-            "AND (:#{#request.quantity} IS NULL OR pd.quantity = :#{#request.quantity}) " +
             "AND (:#{#request.status} IS NULL OR pd.status = :#{#request.status})")
     Page<ProductDetailResponse> findByFilter(ProductDetailFilterRequest request, Pageable pageable);
 
