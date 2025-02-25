@@ -71,6 +71,8 @@ $("#productMediaGallery").fileinput({
 
 let variantIndex = 0;
 document.getElementById("add-row-btn").addEventListener("click", function () {
+    variantIndex++;
+
     const container = document.getElementById("product-details-container");
 
     // Hàm tạo thẻ <option> từ danh sách
@@ -104,7 +106,7 @@ document.getElementById("add-row-btn").addEventListener("click", function () {
     // Thêm hàng mới vào container
     container.insertAdjacentHTML("beforeend", newRow);
 });
-variantIndex++;
+
 
 document.getElementById("product-details-container").addEventListener("click", function (e) {
     if (e.target && e.target.classList.contains("btn-delete")) {
@@ -115,37 +117,3 @@ document.getElementById("product-details-container").addEventListener("click", f
     }
 });
 
-document.getElementById("btn-add-product").addEventListener("click", function () {
-    const productName = document.getElementById("productName").value;
-    const productCode = document.getElementById("productCode").value;
-    const basePrice = document.getElementById("productBasePrice").value;
-    const productDescription = document.getElementById("productDescription").value;
-    const categoryId = document.getElementById("productCategory").value;
-
-    const detailsContainer = document.getElementById("product-details-container");
-    const detailRows = detailsContainer.querySelectorAll(".form-row");
-
-    const products = [];
-    detailRows.forEach((row) => {
-        const materialId = row.querySelector('select[name="materialId"]').value;
-        const colorId = row.querySelector('select[name="colorId"]').value;
-        const sizeId = row.querySelector('select[name="sizeId"]').value;
-        const stockQuantity = row.querySelector('#stockQuantity').value;
-
-        if (materialId && colorId && sizeId && stockQuantity) {
-            products.push({
-                productName,
-                productCode,
-                basePrice,
-                productDescription,
-                categoryId,
-                materialId,
-                colorId,
-                sizeId,
-                stockQuantity,
-            });
-        }
-    });
-
-    console.log("Products added:", products);
-});

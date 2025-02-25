@@ -3,6 +3,7 @@ package org.fpoly.capstone.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Product;
+import org.fpoly.capstone.entity.enum_status.Gender;
 import org.fpoly.capstone.entity.enum_status.ProductStatus;
 import org.fpoly.capstone.exceptions.ResourceNotFoundException;
 import org.fpoly.capstone.repository.CategoryRepository;
@@ -18,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -67,15 +69,24 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct = this.productRepository.save(product);
 
+        List<ProductRequest.ProductDetailRequest> productDetailRequestList = request.getProductVariantList();
+        Long brandVariantId = productDetailRequestList.get(0).getBrandId();
+        Long materialVariantId = productDetailRequestList.get(0).getMaterialId();
+        Gender genderVariant = productDetailRequestList.get(0).getGender();
+        String descriptionVariant = productDetailRequestList.get(0).getDescription();
+        Long colorVariantId = productDetailRequestList.get(0).getColorId();
+        MultipartFile featureImageVariant = productDetailRequestList.get(0).getFeatureImage();
+        MultipartFile[] imagesVariant = productDetailRequestList.get(0).getImages();
+
         for (ProductRequest.ProductDetailRequest variantRequest : request.getProductVariantList()) {
             variantRequest.setProductId(savedProduct.getId());
-            variantRequest.setBrandId(variantRequest.getBrandId());
-            variantRequest.setMaterialId(variantRequest.getMaterialId());
-            variantRequest.setGender(variantRequest.getGender());
-            variantRequest.setDescription(variantRequest.getDescription());
-            variantRequest.setColorId(variantRequest.getColorId());
-            variantRequest.setFeatureImage(variantRequest.getFeatureImage());
-            variantRequest.setImages(variantRequest.getImages());
+            variantRequest.setBrandId(brandVariantId);
+            variantRequest.setMaterialId(materialVariantId);
+            variantRequest.setGender(genderVariant);
+            variantRequest.setDescription(descriptionVariant);
+            variantRequest.setColorId(colorVariantId);
+            variantRequest.setFeatureImage(featureImageVariant);
+            variantRequest.setImages(imagesVariant);
             ProductDetailRequest productDetailRequest = this.modelMapper.map(variantRequest, ProductDetailRequest.class);
             this.productDetailService.createProductDetail(productDetailRequest);
         }
