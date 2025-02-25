@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 public class ProductDetailFilterRequest {
 
     private Long categoryId;
-    private Long productId;
     private String productName;
     private Long brandId;
     private Long colorId;

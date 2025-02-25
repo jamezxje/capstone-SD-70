@@ -58,4 +58,5 @@ public class ProductDetailResponse {
         this.description = description;
         this.featureImageUrl = featureImageUrl;
     }
+
 }

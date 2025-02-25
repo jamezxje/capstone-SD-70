@@ -68,11 +68,16 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     //Helper method giúp set các thuộc tính vào chi tiết sản phẩm
     private void setCommonProductDetailProperties(ProductDetail productDetail, ProductDetailRequest request) {
-        Product product = this.findEntityById(request.getProductId(), this.productRepository, "Product not found");
-        Brand brand = this.findEntityById(request.getBrandId(), this.brandRepository, "Brand not found");
-        Color color = this.findEntityById(request.getColorId(), this.colorRepository, "Color not found");
-        Material material = this.findEntityById(request.getMaterialId(), this.materialRepository, "Material not found");
-        Size size = this.findEntityById(request.getSizeId(), this.sizeRepository, "Size not found");
+        Product product = this.findEntityById(request.getProductId(),
+                this.productRepository, "Product not found");
+        Brand brand = this.findEntityById(request.getBrandId(),
+                this.brandRepository, "Brand not found");
+        Color color = this.findEntityById(request.getColorId(),
+                this.colorRepository, "Color not found");
+        Material material = this.findEntityById(request.getMaterialId(),
+                this.materialRepository, "Material not found");
+        Size size = this.findEntityById(request.getSizeId(),
+                this.sizeRepository, "Size not found");
 
         productDetail.setProduct(product);
         productDetail.setBrand(brand);
@@ -102,7 +107,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Override
     @Transactional
     public void updateProductDetail(Long productDetailId, ProductDetailRequest request) throws Exception {
-        ProductDetail existingProductDetail = this.findEntityById(productDetailId, this.productDetailRepository, PRODUCT_DETAIL_NOT_FOUND_WITH_ID);
+        ProductDetail existingProductDetail = this.findEntityById(productDetailId,
+                this.productDetailRepository, PRODUCT_DETAIL_NOT_FOUND_WITH_ID);
 
         this.setCommonProductDetailProperties(existingProductDetail, request);
 
@@ -131,8 +137,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Override
     public Page<ProductDetailResponse> searchProductDetails(ProductDetailFilterRequest request, Pageable pageable) {
         return this.productDetailRepository.findAll(
-                ProductDetailSpecification.filterByRequest(request), pageable
-        ).map(this::convertToResponse);
+                        ProductDetailSpecification
+                                .filterByRequest(request), pageable)
+                .map(this::convertToResponse);
     }
 
     private ProductDetailResponse convertToResponse(ProductDetail productDetail) {
@@ -166,4 +173,5 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         existingProductDetail.setImagesUrl(imagesUrlList);
         return existingProductDetail;
     }
+
 }

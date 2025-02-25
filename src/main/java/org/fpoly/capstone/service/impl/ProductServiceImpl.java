@@ -69,6 +69,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct = this.productRepository.save(product);
 
+        //Lấy ra các thuộc tính chung của sản phẩm chi tiết
         List<ProductRequest.ProductDetailRequest> productDetailRequestList = request.getProductVariantList();
         Long brandVariantId = productDetailRequestList.get(0).getBrandId();
         Long materialVariantId = productDetailRequestList.get(0).getMaterialId();
@@ -78,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
         MultipartFile featureImageVariant = productDetailRequestList.get(0).getFeatureImage();
         MultipartFile[] imagesVariant = productDetailRequestList.get(0).getImages();
 
+        // Lọc qua list các biến thể, với mỗi biến thể sẽ tạo thêm một sản phẩm chi tiết
         for (ProductRequest.ProductDetailRequest variantRequest : request.getProductVariantList()) {
             variantRequest.setProductId(savedProduct.getId());
             variantRequest.setBrandId(brandVariantId);

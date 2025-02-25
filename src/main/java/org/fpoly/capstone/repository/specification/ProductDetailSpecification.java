@@ -16,10 +16,6 @@ public class ProductDetailSpecification {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("product").get("category").get("id"), request.getCategoryId()));
             }
 
-            if (request.getProductId() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("product").get("id"), request.getProductId()));
-            }
-
             if (request.getBrandId() != null) {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("brand").get("id"), request.getBrandId()));
             }
