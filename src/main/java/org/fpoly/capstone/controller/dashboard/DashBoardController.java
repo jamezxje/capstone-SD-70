@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class DashBoardController {
     @GetMapping(path = "")
     public String showDashBoard() {
-        return "views/dashboard";
+        return "views/admin-dashboard/dashboard";
     }
+    
 }

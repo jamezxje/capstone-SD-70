@@ -33,7 +33,7 @@ public class BrandController {
     private final ModelMapper modelMapper;
     private static final String BRANDS = "brands";
     private static final String BRAND_PAGE = "brandPage";
-    private static final String BRAND_VIEW = "/views/product-management/brand/brand-management";
+    private static final String BRAND_VIEW = "/views/admin-dashboard/product-management/brand/brand-management";
     private static final String MESSAGE = "message";
     private static final String TYPE_SUCCESS = "success";
     private static final String TYPE_ERROR = "error";

@@ -33,7 +33,7 @@ public class MaterialController {
     private final ModelMapper modelMapper;
     private static final String MATERIALS = "materials";
     private static final String MATERIAL_PAGE = "materialPage";
-    private static final String MATERIAL_VIEW = "/views/product-management/material/material-management";
+    private static final String MATERIAL_VIEW = "/views/admin-dashboard/product-management/material/material-management";
     private static final String MESSAGE = "message";
     private static final String TYPE_SUCCESS = "success";
     private static final String TYPE_ERROR = "error";

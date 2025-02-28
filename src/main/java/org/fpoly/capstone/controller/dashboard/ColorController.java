@@ -33,7 +33,7 @@ public class ColorController {
     private final ModelMapper modelMapper;
     private static final String COLORS = "colors";
     private static final String COLOR_PAGE = "colorPage";
-    private static final String COLOR_VIEW = "/views/product-management/color/color-management";
+    private static final String COLOR_VIEW = "/views/admin-dashboard/product-management/color/color-management";
     private static final String MESSAGE = "message";
     private static final String TYPE_SUCCESS = "success";
     private static final String TYPE_ERROR = "error";

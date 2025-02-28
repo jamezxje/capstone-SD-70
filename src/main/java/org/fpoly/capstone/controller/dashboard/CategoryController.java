@@ -33,7 +33,7 @@ public class CategoryController {
     private final ModelMapper modelMapper;
     private static final String CATEGORIES = "categories";
     private static final String CATEGORY_PAGE = "categoryPage";
-    private static final String CATEGORY_VIEW = "/views/product-management/category/category-management";
+    private static final String CATEGORY_VIEW = "/views/admin-dashboard/product-management/category/category-management";
     private static final String MESSAGE = "message";
     private static final String TYPE_SUCCESS = "success";
     private static final String TYPE_ERROR = "error";

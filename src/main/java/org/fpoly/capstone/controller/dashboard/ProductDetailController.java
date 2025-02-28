@@ -55,7 +55,7 @@ public class ProductDetailController {
     private final ModelMapper modelMapper;
     private static final String PRODUCT_DETAILS = "productDetails";
     private static final String PRODUCT_DETAIL_PAGE = "productDetailPage";
-    private static final String PRODUCT_DETAIL_VIEW = "/views/product-management/product-detail/product-detail-management";
+    private static final String PRODUCT_DETAIL_VIEW = "/views/admin-dashboard/product-management/product-detail/product-detail-management";
     private static final String MESSAGE = "message";
     private static final String TYPE_SUCCESS = "success";
     private static final String TYPE_ERROR = "error";
@@ -113,7 +113,7 @@ public class ProductDetailController {
         model.addAttribute("products", productList);
         model.addAttribute("productDetailModel", new ProductDetailModel());
 
-        return "/views/product-management/product-detail/add-new-product-detail-form";
+        return "/views/admin-dashboard/product-management/product-detail/add-new-product-detail-form";
     }
 
     @PostMapping(path = "add")
@@ -176,7 +176,7 @@ public class ProductDetailController {
         model.addAttribute("products", productList);
         model.addAttribute("productDetailModel", updateProductDetailModel);
 
-        return "/views/product-management/product-detail/update-product-detail-form";
+        return "/views/admin-dashboard/product-management/product-detail/update-product-detail-form";
     }
 
     @GetMapping(path = "detail/{productDetailId}")
@@ -202,7 +202,7 @@ public class ProductDetailController {
         model.addAttribute("products", productList);
         model.addAttribute("productDetailViewModel", productDetailViewModel);
 
-        return "/views/product-management/product-detail/view-product-detail-form";
+        return "/views/admin-dashboard/product-management/product-detail/view-product-detail-form";
     }
 
 

@@ -52,7 +52,7 @@ public class ProductController {
     private final ModelMapper modelMapper;
     private static final String PRODUCTS = "products";
     private static final String PRODUCT_PAGE = "productPage";
-    private static final String PRODUCT_VIEW = "/views/product-management/product/product-management";
+    private static final String PRODUCT_VIEW = "/views/admin-dashboard/product-management/product/product-management";
     private static final String MESSAGE = "message";
     private static final String TYPE_SUCCESS = "success";
     private static final String TYPE_ERROR = "error";
@@ -101,7 +101,7 @@ public class ProductController {
         model.addAttribute("brands", brandList);
         model.addAttribute("productModel", new ProductModel());
 
-        return "/views/product-management/product/add-new-product-form";
+        return "/views/admin-dashboard/product-management/product/add-new-product-form";
     }
 
     @PostMapping

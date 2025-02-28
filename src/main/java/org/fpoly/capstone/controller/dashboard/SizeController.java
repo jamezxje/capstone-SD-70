@@ -33,7 +33,7 @@ public class SizeController {
     private final ModelMapper modelMapper;
     private static final String SIZES = "sizes";
     private static final String SIZE_PAGE = "sizePage";
-    private static final String SIZE_VIEW = "/views/product-management/size/size-management";
+    private static final String SIZE_VIEW = "/views/admin-dashboard/product-management/size/size-management";
     private static final String MESSAGE = "message";
     private static final String TYPE_SUCCESS = "success";
     private static final String TYPE_ERROR = "error";
@@ -76,10 +76,10 @@ public class SizeController {
         try {
             SizeRequest sizeRequest = this.modelMapper.map(sizeModel, SizeRequest.class);
             this.sizeService.createSize(sizeRequest);
-            redirectAttributes.addFlashAttribute(MESSAGE, "Add size success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm mới size thành công");
             redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(MESSAGE, "Add size fail");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Thêm mới size thất bại");
             redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
@@ -103,10 +103,10 @@ public class SizeController {
 
             this.sizeService.updateSize(editSizeModel.getId(), sizeRequest);
 
-            redirectAttributes.addFlashAttribute(MESSAGE, "Update size success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Update size thành công");
             redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(MESSAGE, "Update size fail");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Update size thất bại");
             redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
@@ -123,10 +123,10 @@ public class SizeController {
         try {
             this.sizeService.deleteSize(id);
 
-            redirectAttributes.addFlashAttribute(MESSAGE, "Delete size success");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa size thành công");
             redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(MESSAGE, "Delete size fail");
+            redirectAttributes.addFlashAttribute(MESSAGE, "Xóa size thất bại");
             redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
 
