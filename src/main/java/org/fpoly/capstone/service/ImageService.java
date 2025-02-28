@@ -15,4 +15,8 @@ public interface ImageService {
 
     List<String> getImagesUrlByProductDetailId(Long productDetailId);
 
+    void deleteImage(String imageUrl);
+
+    void deleteImageByProductDetailId(Long productDetailId);
+
 }

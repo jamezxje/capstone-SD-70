@@ -163,7 +163,7 @@
                 <td th:text="${productDetail.colorName}"></td>
                 <td th:text="${productDetail.sizeName}"></td>
                 <td th:text="${productDetail.quantity}"></td>
-                <td th:text="${productDetail.price}"></td>
+                <td th:text="${#numbers.formatDecimal(productDetail.price, 0, 'POINT', 0, 'POINT')} + ' VND'"></td>
                 <td>
                   <span
                       th:if="${productDetail.status == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).DANG_SU_DUNG}"
@@ -177,7 +177,17 @@
                 </td>
                 <td>
                   <div class="d-flex action-button">
-                    <a type="button" class="btn btn-info btn-xs light px-2"
+                    <a type="button" class="btn btn-secondary btn-xs light px-2"
+                       th:href="@{/dashboard/product-management/product-detail/detail/{id}(id=${productDetail.id})}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                           class="lucide lucide-eye">
+                        <path
+                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </a>
+                    <a type="button" class="ml-2 btn btn-info btn-xs light px-2"
                        th:href="@{/dashboard/product-management/product-detail/update/{id}(id=${productDetail.id})}">
                       <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path

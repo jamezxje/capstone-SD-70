@@ -6,9 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Login Page</title>
   <th:block id="th-css">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon.png">
-    <link th:href="@{/assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css}" rel="stylesheet">
-    <link th:href="@{/assets/css/style.css}" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/admin-dashboard/images/favicon.png">
+    <link th:href="@{/assets/admin-dashboard/vendor/bootstrap-select/dist/css/bootstrap-select.min.css}"
+          rel="stylesheet">
+    <link th:href="@{/assets/admin-dashboard/css/style.css}" rel="stylesheet">
   </th:block>
 </head>
 <body>
@@ -24,7 +25,7 @@
                 <div class="col-xl-12">
                   <div class="auth-form">
                     <div class="text-center mb-3">
-                      <img src="/assets/images/logo-full.png" alt="">
+                      <img src="/assets/admin-dashboard/images/logo-full.png" alt="">
                     </div>
                     <h4 class="text-center mb-4">Sign in your account</h4>
                     <div th:if="${param.error}">

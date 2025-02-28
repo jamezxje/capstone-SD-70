@@ -179,6 +179,32 @@ public class ProductDetailController {
         return "/views/product-management/product-detail/update-product-detail-form";
     }
 
+    @GetMapping(path = "detail/{productDetailId}")
+    public String onOpenDetailProductDetailView(@PathVariable(value = "productDetailId") Long productDetailId,
+                                                Model model) {
+
+        ProductDetailResponse productDetailResponse = this.productDetailService.getProductDetailById(productDetailId);
+
+        ProductDetailViewModel productDetailViewModel = this.modelMapper.map(productDetailResponse, ProductDetailViewModel.class);
+
+        List<Category> categoryList = this.categoryService.getAllActiveCategory();
+        List<Material> materialList = this.materialService.getAllMaterial();
+        List<Color> colorList = this.colorService.getAllColor();
+        List<Size> sizeList = this.sizeService.getAllSize();
+        List<Brand> brandList = this.brandService.getAllBrand();
+        List<Product> productList = this.productService.getAllActiveProduct();
+
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("materials", materialList);
+        model.addAttribute("colors", colorList);
+        model.addAttribute("sizes", sizeList);
+        model.addAttribute("brands", brandList);
+        model.addAttribute("products", productList);
+        model.addAttribute("productDetailViewModel", productDetailViewModel);
+
+        return "/views/product-management/product-detail/view-product-detail-form";
+    }
+
 
     @PostMapping(path = "update")
     public String updateProductDetail(@Valid @ModelAttribute("productDetailModel") ProductDetailModel productDetailModel,

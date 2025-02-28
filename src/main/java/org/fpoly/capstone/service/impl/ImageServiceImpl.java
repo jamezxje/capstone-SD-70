@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2  // Lombok annotation for log4j2 logging
+@Log4j2
 public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
@@ -91,6 +91,79 @@ public class ImageServiceImpl implements ImageService {
     public List<String> getImagesUrlByProductDetailId(Long productDetailId) {
         return this.imageRepository.findImagesUrlByProductDetailId(productDetailId);
     }
+
+    @Override
+    public void deleteImage(String imageUrl) {
+        try {
+            // Extract the public_id from the image URL (you need to store public_id when uploading images)
+            String publicId = this.extractPublicIdFromUrl(imageUrl);
+            log.info("Extracted Public ID: {}", publicId);
+
+            if (publicId != null) {
+                log.info("Deleting image from Cloudinary. Public ID: {}", publicId);
+
+                // Delete image from Cloudinary using the public ID
+                Map<String, Object> result = this.cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+
+                // Check the result for successful deletion
+                if ("ok".equals(result.get("result"))) {
+                    log.info("Image deleted successfully from Cloudinary. Public ID: {}", publicId);
+                } else {
+                    log.error("Failed to delete image from Cloudinary. Public ID: {}", publicId);
+                }
+            } else {
+                log.warn("No public ID found for image URL: {}", imageUrl);
+            }
+        } catch (Exception e) {
+            log.error("An error occurred while deleting image from Cloudinary: {}", e.getMessage(), e);
+            throw new RuntimeException("An error occurred while deleting image from Cloudinary: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void deleteImageByProductDetailId(Long productDetailId) {
+        try {
+            // Retrieve the ProductDetail entity
+            ProductDetail productDetail = this.productDetailRepository.findById(productDetailId)
+                    .orElseThrow(() -> new RuntimeException("ProductDetail not found with ID: " + productDetailId));
+
+            // Loop through each image associated with the product detail and delete it
+            for (Image image : productDetail.getImages()) {
+                // Deleting image from Cloudinary
+                this.deleteImage(image.getUrl());
+            }
+
+            // After deleting the images from Cloudinary, remove the references from ProductDetail
+//            productDetail.setImages(List.of()); // Clear the image list
+//            this.productDetailRepository.save(productDetail); // Save the ProductDetail with an empty image list
+
+            log.info("Successfully deleted all images for ProductDetail ID: {}", productDetailId);
+        } catch (Exception e) {
+            log.error("An error occurred while deleting images for ProductDetail ID: {}", productDetailId, e);
+            throw new RuntimeException("An error occurred while deleting images for ProductDetail ID: " + productDetailId, e);
+        }
+    }
+
+
+    private String extractPublicIdFromUrl(String imageUrl) {
+        if (imageUrl != null && imageUrl.contains("/image/upload/")) {
+            // Extract part after /image/upload/
+            String[] parts = imageUrl.split("/image/upload/");
+            if (parts.length > 1) {
+                // After /image/upload/, the publicId is typically the next part before the version info (v1740468688)
+                String publicIdWithExtension = parts[1].split("\\?")[0]; // Split to remove query parameters
+
+                // The publicId is the part after the version (v1740468688), so we split by "/"
+                String[] publicIdParts = publicIdWithExtension.split("/");
+                String publicId = publicIdParts[publicIdParts.length - 1].split("\\.")[0]; // This gives the actual public ID
+
+                return publicId;
+            }
+        }
+        log.error("Invalid URL format or no /image/upload/ path found. URL: {}", imageUrl); // Log invalid URL case
+        return null;
+    }
+
 
     private boolean isFileNameExist(String fileName) {
         try {

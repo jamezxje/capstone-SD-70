@@ -12,6 +12,7 @@ import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 import org.fpoly.capstone.repository.BrandRepository;
 import org.fpoly.capstone.repository.ColorRepository;
+import org.fpoly.capstone.repository.ImageRepository;
 import org.fpoly.capstone.repository.MaterialRepository;
 import org.fpoly.capstone.repository.ProductDetailRepository;
 import org.fpoly.capstone.repository.ProductRepository;
@@ -43,6 +44,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private final ColorRepository colorRepository;
     private final SizeRepository sizeRepository;
     private final ImageService imageService;
+    private final ImageRepository imageRepository;
 
     private static final String PRODUCT_DETAIL_NOT_FOUND_WITH_ID = "Product detail not found with id: ";
 

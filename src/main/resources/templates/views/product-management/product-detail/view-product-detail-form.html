@@ -32,43 +32,40 @@
       
       <form class="form-update-product-detail"
             th:action="@{/dashboard/product-management/product-detail/update}"
-            th:object="${productDetailModel}" method="post" enctype="multipart/form-data">
+            th:object="${productDetailViewModel}" method="post" enctype="multipart/form-data">
         
         <input type="hidden" th:field="*{id}"/>
         <!--Thong tin san pham start-->
         <div class="row">
+          <!-- Feature Image Section -->
           <div class="col-lg-3">
-            <div class="card">
-              <div class="card-header">
-                <h4 class="card-title">Thumbnail</h4>
-              </div>
-              <div class="card-body">
-                <div class="basic-form">
-                  <div class="form-row">
-                    <div class="form-group col-md-12">
-                      <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
-                        <input id="upload" th:field="*{featureImage}" type="file" name="featureImage"
-                               onchange="readURL(this);"
-                               class="form-control border-0">
-                        <label id="upload-label" for="upload" class="font-weight-light text-muted">Choose file</label>
-                        <div class="input-group-append">
-                          <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
-                              class="fa fa-cloud-upload mr-2 text-muted"></i><small
-                              class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
-                        </div>
-                      </div>
-                      
-                      <!-- Uploaded image area-->
-                      <p class="font-italic text-grey text-center">The image uploaded will be rendered inside the box
-                        below.</p>
-                      <!-- Thumbnail -->
-                      <div class="image-area mt-4">
-                        <img id="imageResult" th:src="${productDetailModel.featureImageUrl}"
-                             alt="Existing Thumbnail" class="img-fluid rounded shadow-sm mx-auto d-block">
-                      </div>
-                    
+            <div class="ecommerce-gallery" data-mdb-ecommerce-gallery-init data-mdb-zoom-effect="true"
+                 data-mdb-auto-height="true">
+              <div class="row py-3 shadow-5">
+                <!-- Main Image -->
+                <div class="col-12 mb-1">
+                  <div class="lightbox" data-mdb-lightbox-init>
+                    <!-- Main product image that will change when a thumbnail is clicked -->
+                    <img id="main-feature-image"
+                         th:src="${productDetailViewModel.featureImageUrl}"
+                         alt="Gallery image 1"
+                         class="ecommerce-gallery-main-img active w-100"/>
+                  </div>
+                </div>
+                
+                <!-- Thumbnail Images -->
+                <div class="col-12 mt-1">
+                  <div class="d-flex">
+                    <!-- Loop through your image URLs -->
+                    <div th:each="imageUrl : ${productDetailViewModel.imagesUrl}" class="thumb-item">
+                      <img th:src="@{${imageUrl}}"
+                           alt="Gallery image"
+                           class="thumbnail-img w-100"
+                           th:data-src="${imageUrl}"
+                           onclick="changeMainImage(this)"/>
                     </div>
                   </div>
+                
                 </div>
               </div>
             </div>
@@ -84,7 +81,7 @@
                   <div class="form-row">
                     <div class="form-group col-md-4">
                       <label for="productId">Sản phẩm <span class="text-danger">*</span> </label>
-                      <select id="productId" name="productId" class="form-control" th:field="*{productId}"
+                      <select id="productId" name="productId" class="form-control" th:field="*{productId}" disabled
                               required>
                         <option value="" selected>Chọn sản phẩm</option>
                         <option th:each="product : ${products}"
@@ -95,7 +92,7 @@
                     </div>
                     <div class="form-group col-md-4">
                       <label for="brandId">Brand<span class="text-danger">*</span> </label>
-                      <select id="brandId" name="brandId" class="form-control" th:field="*{brandId}"
+                      <select id="brandId" name="brandId" class="form-control" th:field="*{brandId}" disabled
                               required>
                         <option value="" selected>Chọn brand</option>
                         <option th:each="brand : ${brands}"
@@ -106,7 +103,7 @@
                     </div>
                     <div class="form-group col-md-4">
                       <label for="materialId">Chất liệu<span class="text-danger">*</span> </label>
-                      <select id="materialId" name="materialId" class="form-control" th:field="*{materialId}"
+                      <select id="materialId" name="materialId" class="form-control" th:field="*{materialId}" disabled
                               required>
                         <option value="" selected>Chọn chất liệu</option>
                         <option th:each="material : ${materials}"
@@ -117,7 +114,7 @@
                     </div>
                     <div class="form-group col-md-4">
                       <label for="colorId">Màu sắc<span class="text-danger">*</span> </label>
-                      <select id="colorId" name="colorId" class="form-control" th:field="*{colorId}"
+                      <select id="colorId" name="colorId" class="form-control" th:field="*{colorId}" disabled
                               required>
                         <option value="" selected>Chọn màu sắc</option>
                         <option th:each="color : ${colors}"
@@ -128,7 +125,7 @@
                     </div>
                     <div class="form-group col-md-4">
                       <label for="sizeId">Size<span class="text-danger">*</span> </label>
-                      <select id="sizeId" name="sizeId" class="form-control" th:field="*{sizeId}"
+                      <select id="sizeId" name="sizeId" class="form-control" th:field="*{sizeId}" disabled
                               required>
                         <option value="" selected>Chọn size</option>
                         <option th:each="size : ${sizes}"
@@ -141,7 +138,7 @@
                     <div class="form-group col-md-4">
                       <label for="gender">Size<span class="text-danger">*</span> </label>
                       <select id="gender" name="gender" class="form-control" th:field="*{gender}"
-                              required>
+                              required disabled>
                         <option value="" selected>Chọn giới tính</option>
                         <option
                             th:each="gender : ${T(org.fpoly.capstone.entity.enum_status.Gender).values()}"
@@ -153,7 +150,7 @@
                     <div class="form-group col-md-4">
                       <label>Status<span class="text-danger">*</span> </label>
                       <select class="form-control"
-                              id="status" name="status" th:field="*{status}">
+                              id="status" name="status" th:field="*{status}" disabled>
                         <option
                             th:each="statusOpt : ${T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).values()}"
                             th:value="${statusOpt}" th:text="${statusOpt}">
@@ -165,20 +162,22 @@
                     <div class="form-group col-md-4">
                       <label for="quantity">Số lượng <span class="text-danger">*</span></label>
                       <input id="quantity" type="number" th:field="*{quantity}" name="quantity" class="form-control"
+                             readonly
                              placeholder="" required>
                     </div>
                     
                     <div class="form-group col-md-4">
                       <label for="price">Giá tiền (VND) <span class="text-danger">*</span></label>
-                      <input id="price" type="number" name="price" th:field="*{price}" class="form-control"
+                      <input id="price" type="number" name="price" th:field="*{price}" class="form-control" readonly
                              placeholder="" required>
                     </div>
                     
                     <div class="form-group col-md-12">
                       <label for="description">Mô tả (tùy chọn)</label>
-                      <textarea id="description" name="description" rows="5" class="form-control"
+                      <textarea id="description" name="description" rows="5" class="form-control" readonly
                                 th:field="*{description}"
-                                placeholder="Mô tả sản phẩm "> </textarea>
+                                placeholder="Mô tả sản phẩm ">
+                      </textarea>
                     </div>
                   </div>
                 </div>
@@ -187,46 +186,6 @@
           </div>
         </div>
         <!--Thong tin san pham end-->
-        
-        <!-- Album san pham start -->
-        <div class="row mt-3">
-          <div class="col-lg-12">
-            <div class="card">
-              <div class="card-header">
-                <h4 class="card-title">Album sản phẩm</h4>
-              </div>
-              <div class="card-body">
-                <div class="basic-form">
-                  <div class="form-row">
-                    <div class="form-group col-md-12">
-                      <label for="productMediaGallery">Image gallery</label>
-                      <input id="productMediaGallery" name="images" type="file" class="form-control" multiple
-                             th:field="*{images}"
-                             data-preview-file-type="text">
-                    </div>
-                  </div>
-                  
-                  <!-- Display Images from the imagesUrl list -->
-                  <div class="form-group col-md-12">
-                    <label>Existing Images</label>
-                    <div class="d-flex flex-wrap">
-                      <div th:each="imageUrl : ${productDetailModel.imagesUrl}" class="image-thumbnail mx-2 my-2">
-                        <img th:src="@{${imageUrl}}" alt="Product Image" class="img-thumbnail"
-                             style="width: 150px; height: 150px;">
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="d-flex justify-content-end">
-                    <button id="btn-update-product" class="btn btn-primary mt-3">Update</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Album san pham end -->
-      
       </form>
     </div>
   </div>
@@ -240,7 +199,7 @@
     (function ($) {
       "use strict"
       
-      jQuery(".form-update-product-detail").validate({
+      jQuery(".form-create-product").validate({
         ignore: [],
         errorClass: "invalid-feedback animated fadeInUp",
         errorElement: "div",
@@ -308,6 +267,18 @@
       overwriteInitial: false,
     });
   
+  </script>
+  <script>
+    function changeMainImage(thumbnail) {
+      // Get the image URL from the data-src attribute
+      var newSrc = thumbnail.getAttribute('data-src');
+      
+      // Get the main feature image element
+      var mainImage = document.getElementById('main-feature-image');
+      
+      // Change the source of the main image to the clicked thumbnail's image
+      mainImage.src = newSrc;
+    }
   </script>
 </th:block>
 
