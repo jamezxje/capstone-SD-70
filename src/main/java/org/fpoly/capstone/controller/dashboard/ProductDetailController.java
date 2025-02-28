@@ -6,12 +6,6 @@ import lombok.extern.log4j.Log4j2;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailFilterModel;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailModel;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailViewModel;
-import org.fpoly.capstone.entity.Brand;
-import org.fpoly.capstone.entity.Category;
-import org.fpoly.capstone.entity.Color;
-import org.fpoly.capstone.entity.Material;
-import org.fpoly.capstone.entity.Product;
-import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.service.BrandService;
 import org.fpoly.capstone.service.CategoryService;
 import org.fpoly.capstone.service.ColorService;
@@ -53,12 +47,22 @@ public class ProductDetailController {
     private final BrandService brandService;
     private final ProductDetailService productDetailService;
     private final ModelMapper modelMapper;
+
     private static final String PRODUCT_DETAILS = "productDetails";
     private static final String PRODUCT_DETAIL_PAGE = "productDetailPage";
     private static final String PRODUCT_DETAIL_VIEW = "/views/admin-dashboard/product-management/product-detail/product-detail-management";
     private static final String MESSAGE = "message";
     private static final String TYPE_SUCCESS = "success";
     private static final String TYPE_ERROR = "error";
+
+    private void addCommonAttributes(Model model) {
+        model.addAttribute("categories", this.categoryService.getAllActiveCategory());
+        model.addAttribute("materials", this.materialService.getAllMaterial());
+        model.addAttribute("colors", this.colorService.getAllColor());
+        model.addAttribute("sizes", this.sizeService.getAllSize());
+        model.addAttribute("brands", this.brandService.getAllBrand());
+        model.addAttribute("products", this.productService.getAllActiveProduct());
+    }
 
     @GetMapping(path = "")
     public String onOpenProductDetailView(@RequestParam(defaultValue = "1") int page,
@@ -75,19 +79,8 @@ public class ProductDetailController {
                 .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
                 .toList();
 
-        List<Category> categoryList = this.categoryService.getAllActiveCategory();
-        List<Material> materialList = this.materialService.getAllMaterial();
-        List<Color> colorList = this.colorService.getAllColor();
-        List<Size> sizeList = this.sizeService.getAllSize();
-        List<Brand> brandList = this.brandService.getAllBrand();
-        List<Product> productList = this.productService.getAllActiveProduct();
+        this.addCommonAttributes(model);
 
-        model.addAttribute("categories", categoryList);
-        model.addAttribute("materials", materialList);
-        model.addAttribute("colors", colorList);
-        model.addAttribute("sizes", sizeList);
-        model.addAttribute("brands", brandList);
-        model.addAttribute("products", productList);
         model.addAttribute("request", request);
         model.addAttribute(PRODUCT_DETAILS, viewModels);
         model.addAttribute(PRODUCT_DETAIL_PAGE, productDetailResponsePage);
@@ -98,19 +91,8 @@ public class ProductDetailController {
 
     @GetMapping(path = "add")
     public String onOpenAddNewProductDetailView(Model model) {
-        List<Category> categoryList = this.categoryService.getAllActiveCategory();
-        List<Material> materialList = this.materialService.getAllMaterial();
-        List<Color> colorList = this.colorService.getAllColor();
-        List<Size> sizeList = this.sizeService.getAllSize();
-        List<Brand> brandList = this.brandService.getAllBrand();
-        List<Product> productList = this.productService.getAllActiveProduct();
+        this.addCommonAttributes(model);
 
-        model.addAttribute("categories", categoryList);
-        model.addAttribute("materials", materialList);
-        model.addAttribute("colors", colorList);
-        model.addAttribute("sizes", sizeList);
-        model.addAttribute("brands", brandList);
-        model.addAttribute("products", productList);
         model.addAttribute("productDetailModel", new ProductDetailModel());
 
         return "/views/admin-dashboard/product-management/product-detail/add-new-product-detail-form";
@@ -161,19 +143,8 @@ public class ProductDetailController {
 
         ProductDetailModel updateProductDetailModel = this.modelMapper.map(productDetailResponse, ProductDetailModel.class);
 
-        List<Category> categoryList = this.categoryService.getAllActiveCategory();
-        List<Material> materialList = this.materialService.getAllMaterial();
-        List<Color> colorList = this.colorService.getAllColor();
-        List<Size> sizeList = this.sizeService.getAllSize();
-        List<Brand> brandList = this.brandService.getAllBrand();
-        List<Product> productList = this.productService.getAllActiveProduct();
+        this.addCommonAttributes(model);
 
-        model.addAttribute("categories", categoryList);
-        model.addAttribute("materials", materialList);
-        model.addAttribute("colors", colorList);
-        model.addAttribute("sizes", sizeList);
-        model.addAttribute("brands", brandList);
-        model.addAttribute("products", productList);
         model.addAttribute("productDetailModel", updateProductDetailModel);
 
         return "/views/admin-dashboard/product-management/product-detail/update-product-detail-form";
@@ -187,19 +158,8 @@ public class ProductDetailController {
 
         ProductDetailViewModel productDetailViewModel = this.modelMapper.map(productDetailResponse, ProductDetailViewModel.class);
 
-        List<Category> categoryList = this.categoryService.getAllActiveCategory();
-        List<Material> materialList = this.materialService.getAllMaterial();
-        List<Color> colorList = this.colorService.getAllColor();
-        List<Size> sizeList = this.sizeService.getAllSize();
-        List<Brand> brandList = this.brandService.getAllBrand();
-        List<Product> productList = this.productService.getAllActiveProduct();
+        this.addCommonAttributes(model);
 
-        model.addAttribute("categories", categoryList);
-        model.addAttribute("materials", materialList);
-        model.addAttribute("colors", colorList);
-        model.addAttribute("sizes", sizeList);
-        model.addAttribute("brands", brandList);
-        model.addAttribute("products", productList);
         model.addAttribute("productDetailViewModel", productDetailViewModel);
 
         return "/views/admin-dashboard/product-management/product-detail/view-product-detail-form";
@@ -218,18 +178,13 @@ public class ProductDetailController {
         }
 
         try {
-            // Map the product detail model to a request object
             ProductDetailRequest productDetailRequest = this.modelMapper.map(productDetailModel, ProductDetailRequest.class);
 
-            // Call the service to update the product detail
             this.productDetailService.updateProductDetail(productDetailModel.getId(), productDetailRequest);
 
-            // Add success message
             redirectAttributes.addFlashAttribute(MESSAGE, "Cập nhật chi tiết sản phẩm thành công");
             redirectAttributes.addFlashAttribute("type", TYPE_SUCCESS);
-
         } catch (Exception e) {
-            // Handle exception and failure
             redirectAttributes.addFlashAttribute(MESSAGE, "Cập nhật chi tiết sản phẩm thất bại");
             redirectAttributes.addFlashAttribute("type", TYPE_ERROR);
         }
@@ -256,6 +211,5 @@ public class ProductDetailController {
         return "redirect:/dashboard/product-management/product-detail?page=" + page + "&size=" + size;
 
     }
-
-
+    
 }
