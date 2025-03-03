@@ -30,7 +30,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +63,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         }
 
         if (images != null && images.length > 0) {
+            this.imageService.deleteImageByProductDetailId(productDetail.getId());
             for (MultipartFile imageFile : images) {
                 if (imageFile != null && !imageFile.isEmpty()) {
                     this.imageService.saveImageToProductDetail(productDetail, imageFile);
@@ -174,6 +178,27 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         List<String> imagesUrlList = this.imageService.getImagesUrlByProductDetailId(productDetailId);
         existingProductDetail.setImagesUrl(imagesUrlList);
         return existingProductDetail;
+    }
+
+    @Override
+    public List<ProductDetailResponse> getAvailableProductDetail() {
+        List<ProductDetailResponse> productDetailResponseList = this.productDetailRepository.findAllAvailableProductDetail();
+
+        Map<Long, ProductDetailResponse> groupedProducts = new HashMap<>();
+
+        // Iterate over the products and pick the first product for each id_product
+        for (ProductDetailResponse pd : productDetailResponseList) {
+            if (!groupedProducts.containsKey(pd.getProductId())) {
+                groupedProducts.put(pd.getProductId(), pd);
+            }
+        }
+
+        List<ProductDetailResponse> productUserResponses = groupedProducts.values().stream()
+                .map(response -> this.modelMapper.map(response, ProductDetailResponse.class))
+                .collect(Collectors.toList());
+
+        return productUserResponses;
+
     }
 
 }

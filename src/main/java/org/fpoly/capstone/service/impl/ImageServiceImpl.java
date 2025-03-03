@@ -123,19 +123,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void deleteImageByProductDetailId(Long productDetailId) {
         try {
-            // Retrieve the ProductDetail entity
-            ProductDetail productDetail = this.productDetailRepository.findById(productDetailId)
-                    .orElseThrow(() -> new RuntimeException("ProductDetail not found with ID: " + productDetailId));
-
-            // Loop through each image associated with the product detail and delete it
-            for (Image image : productDetail.getImages()) {
-                // Deleting image from Cloudinary
-                this.deleteImage(image.getUrl());
-            }
-
-            // After deleting the images from Cloudinary, remove the references from ProductDetail
-//            productDetail.setImages(List.of()); // Clear the image list
-//            this.productDetailRepository.save(productDetail); // Save the ProductDetail with an empty image list
+            this.imageRepository.deleteImagesByProductDetailId(productDetailId);
 
             log.info("Successfully deleted all images for ProductDetail ID: {}", productDetailId);
         } catch (Exception e) {

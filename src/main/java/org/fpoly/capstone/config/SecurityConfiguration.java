@@ -33,6 +33,7 @@ public class SecurityConfiguration {
             "/img/**",
             "/uploads/**",
             "/details/**",
+            "/shop/**",
     };
 
     @Bean

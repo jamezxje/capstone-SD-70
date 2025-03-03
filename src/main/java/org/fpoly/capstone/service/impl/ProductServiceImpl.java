@@ -3,10 +3,12 @@ package org.fpoly.capstone.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Product;
+import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.enum_status.Gender;
 import org.fpoly.capstone.entity.enum_status.ProductStatus;
 import org.fpoly.capstone.exceptions.ResourceNotFoundException;
 import org.fpoly.capstone.repository.CategoryRepository;
+import org.fpoly.capstone.repository.ProductDetailRepository;
 import org.fpoly.capstone.repository.ProductRepository;
 import org.fpoly.capstone.service.ImageService;
 import org.fpoly.capstone.service.ProductDetailService;
@@ -14,6 +16,7 @@ import org.fpoly.capstone.service.ProductService;
 import org.fpoly.capstone.service.payload.product.ProductFilterRequest;
 import org.fpoly.capstone.service.payload.product.ProductRequest;
 import org.fpoly.capstone.service.payload.product.ProductResponse;
+import org.fpoly.capstone.service.payload.product.ProductUserResponse;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -21,13 +24,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductDetailRepository productDetailRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     private final ProductDetailService productDetailService;
@@ -129,6 +136,47 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + productId));
 
         return this.modelMapper.map(existingProduct, ProductResponse.class);
+    }
+
+    @Override
+    public List<ProductUserResponse> getProductForOnlineUser() {
+        // Fetch all product details
+        List<ProductDetail> productDetails = this.productDetailRepository.findAll();
+
+        // Group the product details by id_product
+        Map<Long, ProductDetail> groupedProducts = new HashMap<>();
+
+        // Iterate over the products and pick the first product for each id_product
+        for (ProductDetail pd : productDetails) {
+            if (!groupedProducts.containsKey(pd.getProduct().getId())) {
+                groupedProducts.put(pd.getProduct().getId(), pd);
+            }
+        }
+
+        // Convert the map of grouped products to a list of ProductUserResponse
+        List<ProductUserResponse> productUserResponses = groupedProducts.values().stream()
+                .map(this::convertToProductUserResponse)
+                .collect(Collectors.toList());
+
+        return productUserResponses;
+    }
+
+    private ProductUserResponse convertToProductUserResponse(ProductDetail pd) {
+        return new ProductUserResponse(
+                pd.getProduct().getId(),
+                pd.getId(),
+                pd.getProduct().getCode(),
+                pd.getProduct().getName(),
+                pd.getProduct().getStatus(),
+                pd.getProduct().getCategory().getName(),
+                pd.getBrand().getName(),
+                pd.getColor().getName(),
+                pd.getMaterial().getName(),
+                pd.getGender(),
+                pd.getPrice(),
+                pd.getDescription(),
+                pd.getFeatureImage()
+        );
     }
 
 }

@@ -4,6 +4,7 @@ import org.fpoly.capstone.entity.Product;
 import org.fpoly.capstone.service.payload.product.ProductFilterRequest;
 import org.fpoly.capstone.service.payload.product.ProductRequest;
 import org.fpoly.capstone.service.payload.product.ProductResponse;
+import org.fpoly.capstone.service.payload.product.ProductUserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -26,5 +27,7 @@ public interface ProductService {
     void deleteProduct(Long productId);
 
     ProductResponse getProductById(Long productId);
+
+    List<ProductUserResponse> getProductForOnlineUser();
 
 }

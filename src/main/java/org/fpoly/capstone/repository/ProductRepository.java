@@ -3,6 +3,7 @@ package org.fpoly.capstone.repository;
 import org.fpoly.capstone.entity.Product;
 import org.fpoly.capstone.service.payload.product.ProductFilterRequest;
 import org.fpoly.capstone.service.payload.product.ProductResponse;
+import org.fpoly.capstone.service.payload.product.ProductUserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,5 +25,24 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product  p WHERE p.status = org.fpoly.capstone.entity.enum_status.ProductStatus.DANG_SU_DUNG")
     List<Product> findAllActiveProduct();
+
+    @Query("SELECT new org.fpoly.capstone.service.payload.product.ProductUserResponse(" +
+            "    p.id ," +
+            "    pd.id ," +
+            "    p.code," +
+            "    p.name," +
+            "    p.status," +
+            "    p.category.name," +
+            "    pd.brand.name," +
+            "    pd.color.name," +
+            "    pd.material.name," +
+            "    pd.gender," +
+            "    pd.price," +
+            "    pd.description," +
+            "    pd.featureImage)" +
+            "FROM Product p " +
+            "JOIN ProductDetail pd ON p.id = pd.product.id")
+    List<ProductUserResponse> getProductForOnlineUser();
+
 
 }
