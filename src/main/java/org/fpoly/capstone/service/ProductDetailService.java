@@ -23,4 +23,6 @@ public interface ProductDetailService {
     ProductDetailResponse getProductDetailById(Long productDetailId);
 
     List<ProductDetailResponse> getAvailableProductDetail();
+
+    List<ProductDetailResponse> findRelatedProductDetail(Long productDetailId, Long brandId);
 }

@@ -25,6 +25,7 @@ import org.fpoly.capstone.service.payload.product_detail.ProductDetailRequest;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -182,23 +182,32 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     public List<ProductDetailResponse> getAvailableProductDetail() {
-        List<ProductDetailResponse> productDetailResponseList = this.productDetailRepository.findAllAvailableProductDetail();
+        List<ProductDetailResponse> availableProductDetailResponseList =
+                this.productDetailRepository.findAllAvailableProductDetail();
 
+        return this.mapProductDetailsToResponse(availableProductDetailResponseList);
+    }
+
+    @Override
+    public List<ProductDetailResponse> findRelatedProductDetail(Long productDetailId, Long brandId) {
+        List<ProductDetailResponse> relatedProductDetailResponseList =
+                this.productDetailRepository.findRelatedProductDetail(productDetailId, brandId, PageRequest.ofSize(10));
+
+        return this.mapProductDetailsToResponse(relatedProductDetailResponseList);
+    }
+
+    private List<ProductDetailResponse> mapProductDetailsToResponse(List<ProductDetailResponse> productDetailResponseList) {
         Map<Long, ProductDetailResponse> groupedProducts = new HashMap<>();
 
-        // Iterate over the products and pick the first product for each id_product
         for (ProductDetailResponse pd : productDetailResponseList) {
             if (!groupedProducts.containsKey(pd.getProductId())) {
                 groupedProducts.put(pd.getProductId(), pd);
             }
         }
 
-        List<ProductDetailResponse> productUserResponses = groupedProducts.values().stream()
+        return groupedProducts.values().stream()
                 .map(response -> this.modelMapper.map(response, ProductDetailResponse.class))
-                .collect(Collectors.toList());
-
-        return productUserResponses;
-
+                .toList();
     }
 
 }
