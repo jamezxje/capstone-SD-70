@@ -1,14 +1,21 @@
 package org.fpoly.capstone.controller.user_online;
 
 import lombok.RequiredArgsConstructor;
+import org.fpoly.capstone.controller.payload.cart.AddProductToCartModel;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailViewModel;
+import org.fpoly.capstone.entity.Size;
+import org.fpoly.capstone.service.CartService;
 import org.fpoly.capstone.service.ProductDetailService;
+import org.fpoly.capstone.service.SizeService;
+import org.fpoly.capstone.service.payload.cart.AddProductToCartRequest;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -20,6 +27,8 @@ public class OnlineProductController {
 
     private final ModelMapper modelMapper;
     private final ProductDetailService productDetailService;
+    private final SizeService sizeService;
+    private final CartService cartService;
 
     @GetMapping(path = "")
     public String onOpenProductView(Model model) {
@@ -38,6 +47,8 @@ public class OnlineProductController {
     @GetMapping(path = "{productId}")
     public String onOpenProductDetailView(@PathVariable(value = "productId") Long productId, Model model) {
 
+        List<Size> sizeList = this.sizeService.getAllSize();
+
         ProductDetailResponse productDetailResponse = this.productDetailService.getProductDetailById(productId);
 
         ProductDetailViewModel productDetailViewModel = this.modelMapper.map(productDetailResponse, ProductDetailViewModel.class);
@@ -51,7 +62,23 @@ public class OnlineProductController {
         model.addAttribute("product", productDetailViewModel);
         model.addAttribute("productUserResponseList", viewModels);
         model.addAttribute("relatedProductDetailList", relatedProductDetailResponsePage);
+        model.addAttribute("sizeList", sizeList);
+        model.addAttribute("addProductToCartModel", new AddProductToCartModel());
 
         return "/views/user-online-view/product-detail";
+    }
+
+    @PostMapping(path = "add-to-cart")
+    public String onAddingProductToCart(@ModelAttribute("addProductToCartModel") AddProductToCartModel addProductToCartModel,
+                                        Model model) {
+
+        try {
+            AddProductToCartRequest addProductToCartRequest = this.modelMapper.map(addProductToCartModel, AddProductToCartRequest.class);
+            this.cartService.addToCart(addProductToCartRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/shop";
     }
 }

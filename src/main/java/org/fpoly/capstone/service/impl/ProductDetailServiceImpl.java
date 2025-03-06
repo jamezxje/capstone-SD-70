@@ -196,6 +196,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         return this.mapProductDetailsToResponse(relatedProductDetailResponseList);
     }
 
+    @Override
+    public ProductDetail findProductDetailByIdAndSize(Long productId, Long sizeId) {
+        ProductDetail existingProductDetail = this.productDetailRepository.findProductDetailByIdAndSize(productId, sizeId);
+        return existingProductDetail;
+    }
+
     private List<ProductDetailResponse> mapProductDetailsToResponse(List<ProductDetailResponse> productDetailResponseList) {
         Map<Long, ProductDetailResponse> groupedProducts = new HashMap<>();
 

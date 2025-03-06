@@ -1,5 +1,6 @@
 package org.fpoly.capstone.service;
 
+import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailFilterRequest;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailRequest;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
@@ -25,4 +26,6 @@ public interface ProductDetailService {
     List<ProductDetailResponse> getAvailableProductDetail();
 
     List<ProductDetailResponse> findRelatedProductDetail(Long productDetailId, Long brandId);
+
+    ProductDetail findProductDetailByIdAndSize(Long productId, Long sizeId);
 }

@@ -106,5 +106,10 @@ public class ProductDetail {
 
         this.updatedBy = CommonUtils.getPrincipal();
     }
+    
+    @Override
+    public int hashCode() {
+        return this.getClass().hashCode(); // Avoid circular reference in hashCode
+    }
 
 }

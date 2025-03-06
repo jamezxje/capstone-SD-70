@@ -1,0 +1,59 @@
+package org.fpoly.capstone.controller.user_online;
+
+import lombok.RequiredArgsConstructor;
+import org.fpoly.capstone.controller.payload.cart.AddProductToCartModel;
+import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
+import org.fpoly.capstone.service.CartDetailService;
+import org.fpoly.capstone.service.CartService;
+import org.fpoly.capstone.service.payload.cart.AddProductToCartRequest;
+import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+
+@Controller
+@RequestMapping(path = "cart")
+@PreAuthorize("hasRole('CUSTOMER')")
+@RequiredArgsConstructor
+public class CartController {
+
+    private final CartService cartService;
+    private final CartDetailService cartDetailService;
+    private final ModelMapper modelMapper;
+
+    @GetMapping(path = "")
+    public String onOpenCartView(Model model) {
+
+
+        List<CartDetailResponse> cartDetailResponseList = this.cartDetailService.findCartDetailByUserId();
+
+        List<CartDetailViewModel> viewModels = cartDetailResponseList.stream()
+                .map(response -> this.modelMapper.map(response, CartDetailViewModel.class))
+                .toList();
+
+        model.addAttribute("cartDetailList", viewModels);
+
+        return "/views/user-online-view/cart-management";
+    }
+
+    @PostMapping(path = "")
+    public String onAddingProductToCart(@ModelAttribute("addProductToCartModel") AddProductToCartModel addProductToCartModel,
+                                        Model model) {
+
+        try {
+            AddProductToCartRequest addProductToCartRequest = this.modelMapper.map(addProductToCartModel, AddProductToCartRequest.class);
+            this.cartService.addToCart(addProductToCartRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/cart";
+    }
+}
