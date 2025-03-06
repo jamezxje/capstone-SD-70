@@ -801,6 +801,20 @@
       </div>
     </div>
   </div>
+  
+  <!-- Newsletter Popup -->
+  <div class="newsletter-wrap" id="popup-container">
+    <div id="popup-window">
+      <a class="btn closepopup"><i class="icon icon anm anm-times-l"></i></a>
+      <!-- Modal content-->
+      <div class="display-table splash-bg">
+        <div class="newsletter-left">
+          <h2>Please select size before add to cart</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Newsletter Popup -->
 
 </th:block>
 
@@ -848,6 +862,46 @@
         }
         var lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
         lightBox.init();
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#product_form_10508262282').on('submit', function (event) {
+        // Check if any size is selected
+        if ($('input[name="sizeId"]:checked').length === 0) {
+          event.preventDefault(); // Prevent form submission
+          
+          // Show modal
+          var pageHeight = $(document).height();
+          if (!$('#modalOverly').length) {
+            $('<div id="modalOverly"></div>').insertBefore('body');
+          }
+          
+          $('#modalOverly').css("height", pageHeight).fadeIn();
+          $('#popup-container').fadeIn();
+          
+          // Close popup when clicking on close button
+          $('.closepopup').on('click', function () {
+            $('#popup-container').fadeOut();
+            $('#modalOverly').fadeOut();
+          });
+          
+          // Close modal if clicked outside
+          $(document).mouseup(function (e) {
+            var container = $('#popup-container');
+            if (!container.is(e.target) && container.has(e.target).length === 0) {
+              container.fadeOut();
+              $('#modalOverly').fadeOut();
+            }
+          });
+          
+          // Cookie check (requires jQuery.cookie plugin)
+          if ($.cookie('noShowWelcome')) {
+            $('#popup-container').hide();
+            $('#active-popup').hide();
+          }
+        }
       });
     });
   </script>

@@ -1,12 +1,18 @@
 package org.fpoly.capstone.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.fpoly.capstone.entity.CartDetail;
+import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.repository.CartDetailRepository;
+import org.fpoly.capstone.repository.ProductDetailRepository;
 import org.fpoly.capstone.service.CartDetailService;
+import org.fpoly.capstone.service.ProductDetailService;
 import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
+import org.fpoly.capstone.service.payload.cart_detail.CartDetailUpdateRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +23,8 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     private final CartDetailRepository cartDetailRepository;
     private final UserService userService;
+    private final ProductDetailService productDetailService;
+    private final ProductDetailRepository productDetailRepository;
 
     @Override
     public List<CartDetailResponse> findCartDetailByUserId() {
@@ -29,6 +37,36 @@ public class CartDetailServiceImpl implements CartDetailService {
 
         Long userId = loggedUser.getId();
 
-        return cartDetailRepository.findCartDetailByUserId(userId);
+        return this.cartDetailRepository.findCartDetailByUserId(userId);
+    }
+
+    @Override
+    @Transactional
+    public void updateCartDetail(List<CartDetailUpdateRequest> requests) {
+
+        for (CartDetailUpdateRequest request : requests) {
+
+            if (request.getQuantity() == null || request.getQuantity() <= 0) {
+                throw new IllegalArgumentException("Quantity must be greater than 0.");
+            }
+
+            ProductDetail productDetail = this.productDetailRepository
+                    .findById(request.getProductDetailId())
+                    .orElseThrow(() -> new EntityNotFoundException("Product detail not found with id:" + request.getProductDetailId()));
+
+            if (request.getQuantity() > productDetail.getQuantity()) {
+                throw new RuntimeException("Not enough quantity");
+            }
+
+            CartDetail cartDetail = this.cartDetailRepository
+                    .findById(request.getCartDetailId())
+                    .orElseThrow(() -> new EntityNotFoundException("Cart detail not found with id:" + request.getCartDetailId()));
+
+            cartDetail.setQuantity(request.getQuantity());
+
+            this.cartDetailRepository.save(cartDetail);
+            
+        }
+
     }
 }
