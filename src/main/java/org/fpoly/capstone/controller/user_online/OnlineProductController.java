@@ -2,12 +2,19 @@ package org.fpoly.capstone.controller.user_online;
 
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.cart.AddProductToCartModel;
+import org.fpoly.capstone.controller.payload.product_detail.ProductDetailFilterModel;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailViewModel;
 import org.fpoly.capstone.entity.Size;
+import org.fpoly.capstone.service.BrandService;
 import org.fpoly.capstone.service.CartService;
+import org.fpoly.capstone.service.CategoryService;
+import org.fpoly.capstone.service.ColorService;
+import org.fpoly.capstone.service.MaterialService;
 import org.fpoly.capstone.service.ProductDetailService;
+import org.fpoly.capstone.service.ProductService;
 import org.fpoly.capstone.service.SizeService;
 import org.fpoly.capstone.service.payload.cart.AddProductToCartRequest;
+import org.fpoly.capstone.service.payload.product_detail.ProductDetailFilterRequest;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -29,17 +36,30 @@ public class OnlineProductController {
     private final ProductDetailService productDetailService;
     private final SizeService sizeService;
     private final CartService cartService;
+    private final CategoryService categoryService;
+    private final ProductService productService;
+    private final MaterialService materialService;
+    private final ColorService colorService;
+    private final BrandService brandService;
+
 
     @GetMapping(path = "")
-    public String onOpenProductView(Model model) {
+    public String onOpenProductView(ProductDetailFilterModel productDetailFilterModel, Model model) {
 
-        List<ProductDetailResponse> productDetailResponsePage = this.productDetailService.getAvailableProductDetail();
+        ProductDetailFilterRequest request = this.modelMapper.map(productDetailFilterModel, ProductDetailFilterRequest.class);
+
+        List<ProductDetailResponse> productDetailResponsePage = this.productDetailService.searchAvailableProductDetail(request);
 
         List<ProductDetailViewModel> viewModels = productDetailResponsePage.stream()
                 .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
                 .toList();
 
         model.addAttribute("productUserResponseList", viewModels);
+        model.addAttribute("categoryList", this.categoryService.getAllActiveCategory());
+        model.addAttribute("materialList", this.materialService.getAllMaterial());
+        model.addAttribute("colorList", this.colorService.getAllColor());
+        model.addAttribute("brandList", this.brandService.getAllBrand());
+
 
         return "/views/user-online-view/products-page";
     }

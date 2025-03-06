@@ -24,4 +24,6 @@ public class Color {
 
     private String name;
 
+    private String code;
+
 }

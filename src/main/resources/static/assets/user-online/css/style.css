@@ -2814,6 +2814,10 @@ a.quick-view {
     background-color: #F0E68C;
 }
 
+.filterBox .filter-color .darkBlue {
+    background-color: #00008B;
+}
+
 .sidebar .sidebar_widget.categories .sub-level {
     position: relative;
 }

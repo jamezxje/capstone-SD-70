@@ -80,17 +80,17 @@ public class DataSeeder {
     );
 
     public static final List<Color> COLOR_LIST = List.of(
-            new Color(1L, "Xanh"),
-            new Color(2L, "Đỏ"),
-            new Color(3L, "Tím"),
-            new Color(4L, "Vàng"),
-            new Color(5L, "Lục"),
-            new Color(6L, "Xanh than"),
-            new Color(7L, "Be"),
-            new Color(8L, "Xám"),
-            new Color(9L, "Đen"),
-            new Color(10L, "Trắng"),
-            new Color(11L, "Cam")
+            new Color(1L, "Xanh", "blue"),
+            new Color(2L, "Đỏ", "red"),
+            new Color(3L, "Tím", "blueviolet"),
+            new Color(4L, "Vàng", "yellow"),
+            new Color(5L, "Lục", "green"),
+            new Color(6L, "Xanh than", "darkblue"),
+            new Color(7L, "Be", "khaki"),
+            new Color(8L, "Xám", "gray"),
+            new Color(9L, "Đen", "black"),
+            new Color(10L, "Trắng", "white"),
+            new Color(11L, "Cam", "orange")
     );
 
     public static final List<Material> MATERIAL_LIST = List.of(

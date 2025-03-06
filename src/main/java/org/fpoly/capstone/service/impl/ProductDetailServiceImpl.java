@@ -17,6 +17,7 @@ import org.fpoly.capstone.repository.MaterialRepository;
 import org.fpoly.capstone.repository.ProductDetailRepository;
 import org.fpoly.capstone.repository.ProductRepository;
 import org.fpoly.capstone.repository.SizeRepository;
+import org.fpoly.capstone.repository.specification.FrontProductDetailSpecification;
 import org.fpoly.capstone.repository.specification.ProductDetailSpecification;
 import org.fpoly.capstone.service.ImageService;
 import org.fpoly.capstone.service.ProductDetailService;
@@ -186,6 +187,16 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 this.productDetailRepository.findAllAvailableProductDetail();
 
         return this.mapProductDetailsToResponse(availableProductDetailResponseList);
+    }
+
+    @Override
+    public List<ProductDetailResponse> searchAvailableProductDetail(ProductDetailFilterRequest request) {
+        List<ProductDetailResponse> productDetailResponseList = this.productDetailRepository.findAll(
+                        FrontProductDetailSpecification
+                                .filterByRequest(request)).stream().map(this::convertToResponse)
+                .toList();
+
+        return this.mapProductDetailsToResponse(productDetailResponseList);
     }
 
     @Override
