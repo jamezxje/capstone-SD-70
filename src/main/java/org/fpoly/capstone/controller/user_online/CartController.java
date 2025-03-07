@@ -32,7 +32,6 @@ public class CartController {
     @GetMapping(path = "")
     public String onOpenCartView(Model model) {
 
-
         List<CartDetailResponse> cartDetailResponseList = this.cartDetailService.findCartDetailByUserId();
 
         List<CartDetailViewModel> viewModels = cartDetailResponseList.stream()

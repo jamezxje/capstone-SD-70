@@ -9,6 +9,6 @@ public interface CartDetailService {
 
     List<CartDetailResponse> findCartDetailByUserId();
 
-    void updateCartDetail(List<CartDetailUpdateRequest> requests);
+    void updateCartDetail(CartDetailUpdateRequest request);
 
 }

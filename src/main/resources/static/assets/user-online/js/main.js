@@ -933,20 +933,68 @@
     ------------------------------------*/
     function qnt_incre() {
         $(".qtyBtn").on("click", function () {
-            var qtyField = $(this).parent(".qtyField"),
-                oldValue = $(qtyField).find(".qty").val(),
-                newVal = 1;
+            var qtyField = $(this).closest(".qtyField"),
+                qtyInput = $(qtyField).find(".qty"),
+                oldValue = parseInt(qtyInput.val()),
+                newVal = oldValue;
 
             if ($(this).is(".plus")) {
-                newVal = parseInt(oldValue) + 1;
-            } else if (oldValue > 1) {
-                newVal = parseInt(oldValue) - 1;
+                newVal = oldValue + 1;
+            } else if ($(this).is(".minus") && oldValue > 1) {
+                newVal = oldValue - 1;
             }
-            $(qtyField).find(".qty").val(newVal);
+            qtyInput.val(newVal);
+            updateCart(qtyInput);
         });
     }
 
     qnt_incre();
+
+    /*----------------------------------
+    26. Update cart
+  ------------------------------------*/
+    function updateCart(qtyInput) {
+        const cartDetailId = $(qtyInput).closest("tr").find(".cartDetailId").val();
+        const updatedQuantity = $(qtyInput).val();
+        const productDetailId = $(qtyInput).closest("tr").find(".productDetailId").val(); // Get the productDetailId
+
+        // Log the details to the console
+        console.log('cartDetailId:', cartDetailId);
+        console.log('updatedQuantity:', updatedQuantity);
+        console.log('productDetailId:', productDetailId);
+
+        // Validation: quantity must be greater than 0
+        if (updatedQuantity <= 0) {
+            alert('Quantity must be greater than 0');
+            return;
+        }
+
+        const updatedCartItem = {
+            cartDetailId: cartDetailId,
+            productDetailId: productDetailId,
+            quantity: updatedQuantity
+        };
+
+        // Send an AJAX request to the server to update the cart
+        fetch('/cart/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedCartItem)  // Sending the updated cart item in an array
+        })
+            .then(response => response.json())
+            .then(data => {
+
+                window.location.href = '/cart';
+                // Handle success (you could update the UI, total price, etc.)
+                console.log('Cart updated successfully', data);
+            })
+            .catch(error => {
+                // Handle error
+                console.error('Error updating cart:', error);
+            });
+    }
 
     /*----------------------------------
       27. Visitor Fake Message

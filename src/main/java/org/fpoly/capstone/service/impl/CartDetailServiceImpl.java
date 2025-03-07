@@ -42,30 +42,27 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     @Override
     @Transactional
-    public void updateCartDetail(List<CartDetailUpdateRequest> requests) {
+    public void updateCartDetail(CartDetailUpdateRequest request) {
 
-        for (CartDetailUpdateRequest request : requests) {
+        if (request.getQuantity() == null || request.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than 0.");
+        }
 
-            if (request.getQuantity() == null || request.getQuantity() <= 0) {
-                throw new IllegalArgumentException("Quantity must be greater than 0.");
-            }
+        ProductDetail productDetail = this.productDetailRepository
+                .findById(request.getProductDetailId())
+                .orElseThrow(() -> new EntityNotFoundException("Product detail not found with id:" + request.getProductDetailId()));
 
-            ProductDetail productDetail = this.productDetailRepository
-                    .findById(request.getProductDetailId())
-                    .orElseThrow(() -> new EntityNotFoundException("Product detail not found with id:" + request.getProductDetailId()));
+        if (request.getQuantity() > productDetail.getQuantity()) {
+            throw new RuntimeException("Not enough quantity");
+        }
 
-            if (request.getQuantity() > productDetail.getQuantity()) {
-                throw new RuntimeException("Not enough quantity");
-            }
+        CartDetail cartDetail = this.cartDetailRepository
+                .findById(request.getCartDetailId())
+                .orElseThrow(() -> new EntityNotFoundException("Cart detail not found with id:" + request.getCartDetailId()));
 
-            CartDetail cartDetail = this.cartDetailRepository
-                    .findById(request.getCartDetailId())
-                    .orElseThrow(() -> new EntityNotFoundException("Cart detail not found with id:" + request.getCartDetailId()));
-
+        if (request.getQuantity() != cartDetail.getQuantity()) {
             cartDetail.setQuantity(request.getQuantity());
-
             this.cartDetailRepository.save(cartDetail);
-            
         }
 
     }

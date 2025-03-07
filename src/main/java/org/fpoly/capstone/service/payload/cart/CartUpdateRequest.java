@@ -1,4 +1,4 @@
-package org.fpoly.capstone.controller.payload.cart_detail;
+package org.fpoly.capstone.service.payload.cart;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartDetailUpdateModel {
+public class CartUpdateRequest {
 
+    private Long cartId;
     private Long cartDetailId;
     private Long productDetailId;
     private Integer quantity;

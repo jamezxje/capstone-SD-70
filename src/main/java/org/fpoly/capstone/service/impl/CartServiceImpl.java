@@ -106,4 +106,30 @@ public class CartServiceImpl implements CartService {
 
     }
 
+    @Override
+    public void updateCart() {
+        // get logged customer
+        User loggedUser = this.userService.getUserFromContext();
+
+        if (loggedUser == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+
+        for (CartDetail cartDetail : cart.getCartDetails()) {
+            CartDetail existingCartDetail = cart.getCartDetails().stream()
+                    .filter(detail -> detail.getProductDetail().getId().equals(cartDetail.getProductDetail().getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (existingCartDetail != null && existingCartDetail.getQuantity() != cartDetail.getQuantity()) {
+                // Only update the item if the quantity has changed
+                existingCartDetail.setQuantity(cartDetail.getQuantity());
+                // Save the updated item to the cart or database
+                this.cartDetailRepository.save(existingCartDetail);
+            }
+        }
+    }
+
 }

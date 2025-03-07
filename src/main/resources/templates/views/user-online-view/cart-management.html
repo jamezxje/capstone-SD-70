@@ -34,37 +34,41 @@
                 <th class="action">&nbsp;</th>
               </tr>
               </thead>
-              <form th:action="@{/cart/update}" method="post" th:object="${cartUpdateModel}">
+              <form action="#" method="post" id="cartForm">
                 <tbody>
                 <tr class="cart__row border-bottom line1 cart-flex border-top" th:each="cart: ${cartDetailList}">
                   <td class="cart__image-wrapper cart-flex-item">
-                    <a th:href="@{/shop/{id}(id= ${cart.productDetailId})}"><img class="cart__image"
-                                                                                 th:src="${cart.productFeatureImageUrl}"
-                                                                                 alt="Elastic Waist Dress - Navy / Small"></a>
+                    <input type="text" hidden th:value="${cart.productDetailId}" class="productDetailId">
+                    <input type="text" hidden th:value="${cart.id}" class="cartDetailId">
+                    <a th:href="@{/shop/{id}(id= ${cart.productDetailId})}">
+                      <img class="cart__image" th:src="${cart.productFeatureImageUrl}"
+                           alt="Elastic Waist Dress - Navy / Small">
+                    </a>
                   </td>
                   <td class="cart__meta small--text-left cart-flex-item">
                     <div class="list-view-item__title">
                       <a th:href="@{/shop/{id}(id= ${cart.productDetailId})}" th:text="${cart.productName}">Elastic
-                        Waist
-                        Dress </a>
+                        Waist Dress</a>
                     </div>
-                    
                     <div class="cart__meta-text">
                       Color: [[${cart.colorName}]]<br>Size: [[${cart.sizeName}]]<br>
                     </div>
                   </td>
                   <td class="cart__price-wrapper cart-flex-item">
-                  <span class="money"
-                        th:text="${#numbers.formatDecimal(cart.price, 0, 'POINT', 0, 'POINT')} + ' VND'">$735.00</span>
+                    <span class="money"
+                          th:text="${#numbers.formatDecimal(cart.price, 0, 'POINT', 0, 'POINT')} + ' VND'">$735.00</span>
                   </td>
                   <td class="cart__update-wrapper cart-flex-item text-right">
                     <div class="cart__qty text-center">
                       <div class="qtyField">
-                        <a class="qtyBtn minus" href="javascript:void(0);"><i class="icon icon-minus"></i></a>
-                        <input class="cart__qty-input qty" type="text" name="updates[]" id="qty"
-                               th:value="${cart.quantity}"
+                        <button class="qtyBtn minus">
+                          <i class="icon icon-minus"></i>
+                        </button>
+                        <input class="cart__qty-input qty" type="text" name="updates[]" th:value="${cart.quantity}"
                                pattern="[0-9]*">
-                        <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a>
+                        <button class="qtyBtn plus">
+                          <i class="icon icon-plus"></i>
+                        </button>
                       </div>
                     </div>
                   </td>
@@ -73,27 +77,25 @@
                                th:text="${#numbers.formatDecimal(cart.subtotal, 0, 'POINT', 0, 'POINT')} + ' VND'">$735.00</span>
                     </div>
                   </td>
-                  <td class="text-center small--hide"><a href="#" class="btn btn--secondary cart__remove"
-                                                         title="Remove tem"><i
-                      class="icon icon anm anm-times-l"></i></a>
+                  <td class="text-center small--hide">
+                    <a href="#" class="btn btn--secondary cart__remove" title="Remove item"><i
+                        class="icon icon anm anm-times-l"></i></a>
                   </td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                  <td colspan="3" class="text-left"><a th:href="@{/shop}"
-                                                       class="btn btn-secondary btn--small cart-continue">Continue
-                    shopping</a></td>
+                  <td colspan="3" class="text-left">
+                    <a th:href="@{/shop}" class="btn btn-secondary btn--small cart-continue">Continue shopping</a>
+                  </td>
                   <td colspan="3" class="text-right">
                     <button type="submit" name="clear" class="btn btn-secondary btn--small  small--hide">Clear Cart
-                    </button>
-                    <button type="submit" name="update" class="btn btn-secondary btn--small cart-continue ml-2">Update
-                      Cart
                     </button>
                   </td>
                 </tr>
                 </tfoot>
               </form>
+            
             </table>
           </form>
         </div>
@@ -404,6 +406,8 @@
 </th:block>
 
 </body>
+<script>
+</script>
 <th:block id="th-js">
 </th:block>
 </html>
