@@ -950,6 +950,22 @@
 
     qnt_incre();
 
+    // Listen for 'Enter' key and prevent form submission, trigger cart update
+    $(".cart__qty-input").on("keydown", function (e) {
+        if (e.key === "Enter") {
+            // e.preventDefault(); // Prevent form submission
+
+            const qtyInput = $(this); // Keep the input element
+            const enteredValue = parseInt(qtyInput.val());
+
+            // Log the value of the input when Enter is pressed
+            console.log('Quantity entered:', qtyInput.val());
+
+            updateCart(qtyInput); // Trigger cart update
+        }
+    });
+
+
     /*----------------------------------
     26. Update cart
   ------------------------------------*/
@@ -986,7 +1002,7 @@
             .then(response => response.json())
             .then(data => {
 
-                window.location.href = '/cart';
+                window.location.reload();
                 // Handle success (you could update the UI, total price, etc.)
                 console.log('Cart updated successfully', data);
             })
