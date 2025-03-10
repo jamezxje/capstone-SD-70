@@ -1,6 +1,5 @@
 package org.fpoly.capstone.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,7 +47,7 @@ public class Cart {
     @Column(name = "updated_by", length = 255)
     private String updatedBy;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
+    @OneToMany(mappedBy = "cart")
     private Set<CartDetail> cartDetails;  // Cascade removed to prevent cascading all changes
 
     @PrePersist

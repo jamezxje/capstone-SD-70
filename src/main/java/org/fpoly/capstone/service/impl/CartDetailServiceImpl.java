@@ -9,7 +9,6 @@ import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.repository.CartDetailRepository;
 import org.fpoly.capstone.repository.ProductDetailRepository;
 import org.fpoly.capstone.service.CartDetailService;
-import org.fpoly.capstone.service.ProductDetailService;
 import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailUpdateRequest;
@@ -23,12 +22,10 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     private final CartDetailRepository cartDetailRepository;
     private final UserService userService;
-    private final ProductDetailService productDetailService;
     private final ProductDetailRepository productDetailRepository;
 
     @Override
     public List<CartDetailResponse> findCartDetailByUserId() {
-        // get logged customer
         User loggedUser = this.userService.getUserFromContext();
 
         if (loggedUser == null) {
@@ -65,5 +62,14 @@ public class CartDetailServiceImpl implements CartDetailService {
             this.cartDetailRepository.save(cartDetail);
         }
 
+    }
+
+    @Override
+    public void deleteCartDetail(Long cartDetailId) {
+        CartDetail cartDetail = this.cartDetailRepository
+                .findById(cartDetailId)
+                .orElseThrow(() -> new EntityNotFoundException("Cart detail not found with id:" + cartDetailId));
+
+        this.cartDetailRepository.delete(cartDetail);
     }
 }

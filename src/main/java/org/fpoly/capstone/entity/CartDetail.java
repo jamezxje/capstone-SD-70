@@ -1,6 +1,5 @@
 package org.fpoly.capstone.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,7 +35,7 @@ public class CartDetail {
     @JoinColumn(name = "id_product_detail", referencedColumnName = "id")
     private ProductDetail productDetail;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cart", referencedColumnName = "id")
     private Cart cart;
 

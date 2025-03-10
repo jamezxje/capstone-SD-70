@@ -78,7 +78,8 @@
                     </div>
                   </td>
                   <td class="text-center small--hide">
-                    <a href="#" class="btn btn--secondary cart__remove" title="Remove item"><i
+                    <a th:href="@{/cart/delete/{id}(id=${cart.id})}" class="btn btn--secondary cart__remove"
+                       title="Remove item"><i
                         class="icon icon anm anm-times-l"></i></a>
                   </td>
                 </tr>

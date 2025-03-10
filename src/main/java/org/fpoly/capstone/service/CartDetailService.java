@@ -11,4 +11,6 @@ public interface CartDetailService {
 
     void updateCartDetail(CartDetailUpdateRequest request);
 
+    void deleteCartDetail(Long cartDetailId);
+
 }
