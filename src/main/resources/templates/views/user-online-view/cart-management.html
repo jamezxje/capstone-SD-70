@@ -89,10 +89,10 @@
                   <td colspan="3" class="text-left">
                     <a th:href="@{/shop}" class="btn btn-secondary btn--small cart-continue">Continue shopping</a>
                   </td>
-                  <td colspan="3" class="text-right">
-                    <button type="submit" name="clear" class="btn btn-secondary btn--small  small--hide">Clear Cart
-                    </button>
-                  </td>
+                  <!--                  <td colspan="3" class="text-right">-->
+                  <!--                    <button type="submit" name="clear" class="btn btn-secondary btn&#45;&#45;small  small&#45;&#45;hide">Clear Cart-->
+                  <!--                    </button>-->
+                  <!--                  </td>-->
                 </tr>
                 </tfoot>
               </form>
@@ -104,279 +104,42 @@
         
         <div class="container mt-4">
           <div class="row">
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
-              <h5>Discount Codes</h5>
-              <form action="#" method="post">
-                <div class="form-group">
-                  <label for="address_zip">Enter your coupon code if you have one.</label>
-                  <input type="text" name="coupon">
-                </div>
-                <div class="actionRow">
-                  <div><input type="button" class="btn btn-secondary btn--small" value="Apply Coupon"></div>
-                </div>
-              </form>
-            </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
+            <div class="col-12 col-sm-12 col-md-4 col-lg-6 mb-4">
               <h5>Estimate Shipping and Tax</h5>
               <form action="#" method="post">
                 <div class="form-group">
-                  <label for="address_country">Country</label>
-                  <select id="address_country" name="address[country]" data-default="United States">
-                    <option value="Belgium" data-provinces="[]">Belgium</option>
-                    <option value="---" data-provinces="[]">---</option>
-                    <option value="Afghanistan" data-provinces="[]">Afghanistan</option>
-                    <option value="Aland Islands" data-provinces="[]">Åland Islands</option>
-                    <option value="Albania" data-provinces="[]">Albania</option>
-                    <option value="Algeria" data-provinces="[]">Algeria</option>
-                    <option value="Andorra" data-provinces="[]">Andorra</option>
-                    <option value="Angola" data-provinces="[]">Angola</option>
-                    <option value="Anguilla" data-provinces="[]">Anguilla</option>
-                    <option value="Antigua And Barbuda" data-provinces="[]">Antigua &amp; Barbuda</option>
-                    <option value="Armenia" data-provinces="[]">Armenia</option>
-                    <option value="Aruba" data-provinces="[]">Aruba</option>
-                    <option value="Austria" data-provinces="[]">Austria</option>
-                    <option value="Azerbaijan" data-provinces="[]">Azerbaijan</option>
-                    <option value="Bahamas" data-provinces="[]">Bahamas</option>
-                    <option value="Bahrain" data-provinces="[]">Bahrain</option>
-                    <option value="Bangladesh" data-provinces="[]">Bangladesh</option>
-                    <option value="Barbados" data-provinces="[]">Barbados</option>
-                    <option value="Belarus" data-provinces="[]">Belarus</option>
-                    <option value="Belgium" data-provinces="[]">Belgium</option>
-                    <option value="Belize" data-provinces="[]">Belize</option>
-                    <option value="Benin" data-provinces="[]">Benin</option>
-                    <option value="Bermuda" data-provinces="[]">Bermuda</option>
-                    <option value="Bhutan" data-provinces="[]">Bhutan</option>
-                    <option value="Bolivia" data-provinces="[]">Bolivia</option>
-                    <option value="Bosnia And Herzegovina" data-provinces="[]">Bosnia &amp; Herzegovina</option>
-                    <option value="Botswana" data-provinces="[]">Botswana</option>
-                    <option value="Bouvet Island" data-provinces="[]">Bouvet Island</option>
-                    <option value="British Indian Ocean Territory" data-provinces="[]">British Indian Ocean Territory
-                    </option>
-                    <option value="Virgin Islands, British" data-provinces="[]">British Virgin Islands</option>
-                    <option value="Brunei" data-provinces="[]">Brunei</option>
-                    <option value="Bulgaria" data-provinces="[]">Bulgaria</option>
-                    <option value="Burkina Faso" data-provinces="[]">Burkina Faso</option>
-                    <option value="Burundi" data-provinces="[]">Burundi</option>
-                    <option value="Cambodia" data-provinces="[]">Cambodia</option>
-                    <option value="Republic of Cameroon" data-provinces="[]">Cameroon</option>
-                    <option value="Cape Verde" data-provinces="[]">Cape Verde</option>
-                    <option value="Bonaire, Sint Eustatius and Saba" data-provinces="[]">Caribbean Netherlands</option>
-                    <option value="Cayman Islands" data-provinces="[]">Cayman Islands</option>
-                    <option value="Central African Republic" data-provinces="[]">Central African Republic</option>
-                    <option value="Chad" data-provinces="[]">Chad</option>
-                    <option value="Chile" data-provinces="[]">Chile</option>
-                    <option value="Comoros" data-provinces="[]">Comoros</option>
-                    <option value="Congo" data-provinces="[]">Congo - Brazzaville</option>
-                    <option value="Congo, The Democratic Republic Of The" data-provinces="[]">Congo - Kinshasa</option>
-                    <option value="Cook Islands" data-provinces="[]">Cook Islands</option>
-                    <option value="Costa Rica" data-provinces="[]">Costa Rica</option>
-                    <option value="Croatia" data-provinces="[]">Croatia</option>
-                    <option value="Cuba" data-provinces="[]">Cuba</option>
-                    <option value="Curaçao" data-provinces="[]">Curaçao</option>
-                    <option value="Cyprus" data-provinces="[]">Cyprus</option>
-                    <option value="Czech Republic" data-provinces="[]">Czech Republic</option>
-                    <option value="Côte d'Ivoire" data-provinces="[]">Côte d'Ivoire</option>
-                    <option value="Denmark" data-provinces="[]">Denmark</option>
-                    <option value="Djibouti" data-provinces="[]">Djibouti</option>
-                    <option value="Dominica" data-provinces="[]">Dominica</option>
-                    <option value="Dominican Republic" data-provinces="[]">Dominican Republic</option>
-                    <option value="Finland" data-provinces="[]">Finland</option>
-                    <option value="France" data-provinces="[]">France</option>
-                    <option value="French Guiana" data-provinces="[]">French Guiana</option>
-                    <option value="French Polynesia" data-provinces="[]">French Polynesia</option>
-                    <option value="French Southern Territories" data-provinces="[]">French Southern Territories</option>
-                    <option value="Gabon" data-provinces="[]">Gabon</option>
-                    <option value="Gambia" data-provinces="[]">Gambia</option>
-                    <option value="Georgia" data-provinces="[]">Georgia</option>
-                    <option value="Germany" data-provinces="[]">Germany</option>
-                    <option value="Ghana" data-provinces="[]">Ghana</option>
-                    <option value="Gibraltar" data-provinces="[]">Gibraltar</option>
-                    <option value="Greece" data-provinces="[]">Greece</option>
-                    <option value="Greenland" data-provinces="[]">Greenland</option>
-                    <option value="Jersey" data-provinces="[]">Jersey</option>
-                    <option value="Jordan" data-provinces="[]">Jordan</option>
-                    <option value="Kazakhstan" data-provinces="[]">Kazakhstan</option>
-                    <option value="Kenya" data-provinces="[]">Kenya</option>
-                    <option value="Kiribati" data-provinces="[]">Kiribati</option>
-                    <option value="Kosovo" data-provinces="[]">Kosovo</option>
-                    <option value="Kuwait" data-provinces="[]">Kuwait</option>
-                    <option value="Kyrgyzstan" data-provinces="[]">Kyrgyzstan</option>
-                    <option value="Lao People's Democratic Republic" data-provinces="[]">Laos</option>
-                    <option value="Latvia" data-provinces="[]">Latvia</option>
-                    <option value="Lebanon" data-provinces="[]">Lebanon</option>
-                    <option value="Lesotho" data-provinces="[]">Lesotho</option>
-                    <option value="Liberia" data-provinces="[]">Liberia</option>
-                    <option value="Libyan Arab Jamahiriya" data-provinces="[]">Libya</option>
-                    <option value="Liechtenstein" data-provinces="[]">Liechtenstein</option>
-                    <option value="Lithuania" data-provinces="[]">Lithuania</option>
-                    <option value="Luxembourg" data-provinces="[]">Luxembourg</option>
-                    <option value="Macao" data-provinces="[]">Macau SAR China</option>
-                    <option value="Macedonia, Republic Of" data-provinces="[]">Macedonia</option>
-                    <option value="Madagascar" data-provinces="[]">Madagascar</option>
-                    <option value="Malawi" data-provinces="[]">Malawi</option>
-                    <option value="Monaco" data-provinces="[]">Monaco</option>
-                    <option value="Mongolia" data-provinces="[]">Mongolia</option>
-                    <option value="Montenegro" data-provinces="[]">Montenegro</option>
-                    <option value="Montserrat" data-provinces="[]">Montserrat</option>
-                    <option value="Morocco" data-provinces="[]">Morocco</option>
-                    <option value="Mozambique" data-provinces="[]">Mozambique</option>
-                    <option value="Myanmar" data-provinces="[]">Myanmar (Burma)</option>
-                    <option value="Namibia" data-provinces="[]">Namibia</option>
-                    <option value="Nauru" data-provinces="[]">Nauru</option>
-                    <option value="Nepal" data-provinces="[]">Nepal</option>
-                    <option value="Netherlands" data-provinces="[]">Netherlands</option>
-                    <option value="Samoa" data-provinces="[]">Samoa</option>
-                    <option value="San Marino" data-provinces="[]">San Marino</option>
-                    <option value="Sao Tome And Principe" data-provinces="[]">São Tomé &amp; Príncipe</option>
-                    <option value="Saudi Arabia" data-provinces="[]">Saudi Arabia</option>
-                    <option value="Senegal" data-provinces="[]">Senegal</option>
-                    <option value="Serbia" data-provinces="[]">Serbia</option>
-                    <option value="Seychelles" data-provinces="[]">Seychelles</option>
-                    <option value="Sierra Leone" data-provinces="[]">Sierra Leone</option>
-                    <option value="Singapore" data-provinces="[]">Singapore</option>
-                    <option value="Sint Maarten" data-provinces="[]">Sint Marteen</option>
-                    <option value="Slovakia" data-provinces="[]">Slovakia</option>
-                    <option value="Slovenia" data-provinces="[]">Slovenia</option>
-                    <option value="Solomon Islands" data-provinces="[]">Solomon Islands</option>
-                    <option value="Sri Lanka" data-provinces="[]">Sri Lanka</option>
-                    <option value="Saint Barthélemy" data-provinces="[]">St. Barthélemy</option>
-                    <option value="Saint Helena" data-provinces="[]">St. Helena</option>
-                    <option value="Saint Kitts And Nevis" data-provinces="[]">St. Kitts &amp; Nevis</option>
-                    <option value="Saint Lucia" data-provinces="[]">St. Lucia</option>
-                    <option value="Saint Martin" data-provinces="[]">St. Martin</option>
-                    <option value="Saint Pierre And Miquelon" data-provinces="[]">St. Pierre &amp; Miquelon</option>
-                    <option value="St. Vincent" data-provinces="[]">St. Vincent &amp; Grenadines</option>
-                    <option value="Sudan" data-provinces="[]">Sudan</option>
-                    <option value="Suriname" data-provinces="[]">Suriname</option>
-                    <option value="Svalbard And Jan Mayen" data-provinces="[]">Svalbard &amp; Jan Mayen</option>
-                    <option value="Swaziland" data-provinces="[]">Swaziland</option>
-                    <option value="Sweden" data-provinces="[]">Sweden</option>
-                    <option value="Switzerland" data-provinces="[]">Switzerland</option>
-                    <option value="Syria" data-provinces="[]">Syria</option>
-                    <option value="Taiwan" data-provinces="[]">Taiwan</option>
-                    <option value="Tajikistan" data-provinces="[]">Tajikistan</option>
-                    <option value="Timor Leste" data-provinces="[]">Timor-Leste</option>
-                    <option value="Togo" data-provinces="[]">Togo</option>
-                    <option value="Tokelau" data-provinces="[]">Tokelau</option>
-                    <option value="Tonga" data-provinces="[]">Tonga</option>
-                    <option value="Trinidad and Tobago" data-provinces="[]">Trinidad &amp; Tobago</option>
-                    <option value="Tunisia" data-provinces="[]">Tunisia</option>
-                    <option value="Turkey" data-provinces="[]">Turkey</option>
-                    <option value="Turkmenistan" data-provinces="[]">Turkmenistan</option>
-                    <option value="Turks and Caicos Islands" data-provinces="[]">Turks &amp; Caicos Islands</option>
-                    <option value="Tuvalu" data-provinces="[]">Tuvalu</option>
-                    <option value="United States Minor Outlying Islands" data-provinces="[]">U.S. Outlying Islands
-                    </option>
-                    <option value="Uganda" data-provinces="[]">Uganda</option>
-                    <option value="Ukraine" data-provinces="[]">Ukraine</option>
-                    <option value="United Arab Emirates">United Arab Emirates</option>
-                    <option value="United Kingdom" data-provinces="[]">United Kingdom</option>
-                    <option value="United States">United States</option>
-                    <option value="Uruguay" data-provinces="[]">Uruguay</option>
-                    <option value="Uzbekistan" data-provinces="[]">Uzbekistan</option>
-                    <option value="Vanuatu" data-provinces="[]">Vanuatu</option>
-                    <option value="Holy See (Vatican City State)" data-provinces="[]">Vatican City</option>
-                    <option value="Venezuela" data-provinces="[]">Venezuela</option>
-                    <option value="Vietnam" data-provinces="[]">Vietnam</option>
-                    <option value="Wallis And Futuna" data-provinces="[]">Wallis &amp; Futuna</option>
-                    <option value="Western Sahara" data-provinces="[]">Western Sahara</option>
-                    <option value="Yemen" data-provinces="[]">Yemen</option>
-                    <option value="Zambia" data-provinces="[]">Zambia</option>
-                    <option value="Zimbabwe" data-provinces="[]">Zimbabwe</option>
-                  </select>
-                </div>
-                
-                <div class="form-group">
-                  <label>State</label>
+                  <label>Tỉnh / Thành Phố</label>
                   <select id="address_province" name="address[province]" data-default="">
-                    <option value="Alabama">Alabama</option>
-                    <option value="Alaska">Alaska</option>
-                    <option value="American Samoa">American Samoa</option>
-                    <option value="Arizona">Arizona</option>
-                    <option value="Arkansas">Arkansas</option>
-                    <option value="California">California</option>
-                    <option value="Colorado">Colorado</option>
-                    <option value="Connecticut">Connecticut</option>
-                    <option value="Delaware">Delaware</option>
-                    <option value="District of Columbia">District of Columbia</option>
-                    <option value="Federated States of Micronesia">Federated States of Micronesia</option>
-                    <option value="Florida">Florida</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Guam">Guam</option>
-                    <option value="Hawaii">Hawaii</option>
-                    <option value="Idaho">Idaho</option>
-                    <option value="Illinois">Illinois</option>
-                    <option value="Indiana">Indiana</option>
-                    <option value="Iowa">Iowa</option>
-                    <option value="Kansas">Kansas</option>
-                    <option value="Kentucky">Kentucky</option>
-                    <option value="Louisiana">Louisiana</option>
-                    <option value="Maine">Maine</option>
-                    <option value="Marshall Islands">Marshall Islands</option>
-                    <option value="Maryland">Maryland</option>
-                    <option value="Massachusetts">Massachusetts</option>
-                    <option value="Michigan">Michigan</option>
-                    <option value="Minnesota">Minnesota</option>
-                    <option value="Mississippi">Mississippi</option>
-                    <option value="Missouri">Missouri</option>
-                    <option value="Montana">Montana</option>
-                    <option value="Nebraska">Nebraska</option>
-                    <option value="Nevada">Nevada</option>
-                    <option value="New Hampshire">New Hampshire</option>
-                    <option value="New Jersey">New Jersey</option>
-                    <option value="New Mexico">New Mexico</option>
-                    <option value="New York">New York</option>
-                    <option value="North Carolina">North Carolina</option>
-                    <option value="North Dakota">North Dakota</option>
-                    <option value="Northern Mariana Islands">Northern Mariana Islands</option>
-                    <option value="Ohio">Ohio</option>
-                    <option value="Oklahoma">Oklahoma</option>
-                    <option value="Oregon">Oregon</option>
-                    <option value="Palau">Palau</option>
-                    <option value="Pennsylvania">Pennsylvania</option>
-                    <option value="Puerto Rico">Puerto Rico</option>
-                    <option value="Rhode Island">Rhode Island</option>
-                    <option value="South Carolina">South Carolina</option>
-                    <option value="South Dakota">South Dakota</option>
-                    <option value="Tennessee">Tennessee</option>
-                    <option value="Texas">Texas</option>
-                    <option value="Utah">Utah</option>
-                    <option value="Vermont">Vermont</option>
-                    <option value="Virgin Islands">Virgin Islands</option>
-                    <option value="Virginia">Virginia</option>
-                    <option value="Washington">Washington</option>
-                    <option value="West Virginia">West Virginia</option>
-                    <option value="Wisconsin">Wisconsin</option>
-                    <option value="Wyoming">Wyoming</option>
-                    <option value="Armed Forces Americas">Armed Forces Americas</option>
-                    <option value="Armed Forces Europe">Armed Forces Europe</option>
-                    <option value="Armed Forces Pacific">Armed Forces Pacific</option>
                   </select>
                 </div>
+                
                 <div class="form-group">
-                  <label for="address_zip">Postal/Zip Code</label>
-                  <input type="text" id="address_zip" name="address[zip]">
+                  <label>Quận / Huyện</label>
+                  <select id="address_district" name="address[district]" data-default="">
+                  </select>
                 </div>
                 
+                <div class="form-group">
+                  <label>Phường / Xã</label>
+                  <select id="address_ward" name="address[ward]" data-default="">
+                  </select>
+                </div>
                 <div class="actionRow">
-                  <div><input type="button" class="btn btn-secondary btn--small" value="Calculate shipping"></div>
+                  <div><input type="button" class="btn btn-secondary btn--small" value="Calculate shipping"
+                              onclick="calculateShipping()"></div>
                 </div>
               </form>
             </div>
             
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
+            <div class="col-12 col-sm-12 col-md-4 col-lg-6 cart__footer">
               <div class="solid-border">
                 <div class="row border-bottom pb-2">
                   <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
                   <span class="col-12 col-sm-6 text-right"><span class="money">$735.00</span></span>
                 </div>
                 <div class="row border-bottom pb-2 pt-2">
-                  <span class="col-12 col-sm-6 cart__subtotal-title">Tax</span>
-                  <span class="col-12 col-sm-6 text-right">$10.00</span>
-                </div>
-                <div class="row border-bottom pb-2 pt-2">
                   <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
-                  <span class="col-12 col-sm-6 text-right">Free shipping</span>
+                  <span class="col-12 col-sm-6 text-right" id="shipping-cost">Free shipping</span>
                 </div>
                 <div class="row border-bottom pb-2 pt-2">
                   <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
@@ -389,8 +152,10 @@
                     I agree with the terms and conditions
                   </label>
                 </p>
-                <input type="submit" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout"
-                       value="Proceed To Checkout" disabled="disabled">
+                <a th:href="@{/checkout}" type="submit" name="checkout" id="cartCheckout"
+                   class="btn btn--small-wide checkout"
+                   value="Proceed To Checkout" disabled="disabled">Proceed To Checkout
+                </a>
                 <div class="paymnet-img"><img src="assets/user-online/images/payment-img.jpg" alt="Payment"></div>
                 <p><a href="#;">Checkout with Multiple Addresses</a></p>
               </div>
@@ -407,8 +172,241 @@
 </th:block>
 
 </body>
-<script>
-</script>
 <th:block id="th-js">
+  <script th:src="@{/assets/user-online/js/vendor/jquery-3.3.1.min.js}"></script>
+  <script>
+    // Function to fetch provinces from the API using AJAX with a custom header 'token'
+    function fetchProvinces() {
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/province",
+        method: "GET",  // HTTP method (GET)
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe"  // Custom header 'token' with value '123'
+        },
+        success: function (data) {
+          // Log the response data to the console
+          console.log(data);  // This will log the entire response data
+          
+          // Get the provinces from the response
+          const provinces = data.data;
+          
+          // Log just the provinces to the console
+          console.log(provinces);  // This will log only the province list
+          
+          // Get the province select element
+          const provinceSelect = document.getElementById("address_province");
+          
+          // Clear existing options (optional)
+          provinceSelect.innerHTML = "";
+          
+          // Add default "Select Province" option
+          const defaultOption = document.createElement("option");
+          defaultOption.text = "Select Province";
+          provinceSelect.appendChild(defaultOption);
+          
+          // Loop through the provinces and append them to the select element
+          provinces.forEach(province => {
+            const option = document.createElement("option");
+            option.value = province.ProvinceID;
+            option.text = province.ProvinceName;
+            provinceSelect.appendChild(option);
+          });
+        },
+        error: function (xhr, status, error) {
+          // Handle errors here
+          console.error("Error fetching provinces:", status, error);
+        }
+      });
+    }
+    
+    // Call the fetchProvinces function on page load
+    $(document).ready(function () {
+      fetchProvinces();
+    });
+  </script>
+  
+  <script>
+    // Function to fetch districts based on selected province_id
+    function fetchDistricts(provinceId) {
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/district",
+        method: "GET",  // POST method to send the province_id in the request body
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe"  // Custom header with 'token' as 123
+        },
+        contentType: "application/json",  // Ensure the request body is JSON
+        data: {
+          province_id: provinceId  // Send the province_id as a query parameter
+        },
+        success: function (data) {
+          // Log the response data to the console
+          console.log(data);  // This will log the entire response data
+          
+          // Get the districts from the response
+          const districts = data.data;
+          
+          // Log just the districts to the console
+          console.log(districts);  // This will log only the district list
+          
+          // Get the district select element
+          const districtSelect = document.getElementById("address_district");
+          
+          // Clear existing options (optional)
+          districtSelect.innerHTML = "";
+          
+          // Add default "Select District" option
+          const defaultOption = document.createElement("option");
+          defaultOption.text = "Select District";
+          districtSelect.appendChild(defaultOption);
+          
+          // Loop through the districts and append them to the select element
+          districts.forEach(district => {
+            const option = document.createElement("option");
+            option.value = district.DistrictID;
+            option.text = district.DistrictName;
+            districtSelect.appendChild(option);
+          });
+        },
+        error: function (xhr, status, error) {
+          // Handle errors here
+          console.error("Error fetching districts:", status, error);
+        }
+      });
+    }
+    
+    // Event listener to trigger fetching districts when a province is selected
+    $(document).ready(function () {
+      // Fetch districts when a province is selected
+      $('#address_province').on('change', function () {
+        const selectedProvinceId = $(this).val();  // Get the selected province ID
+        console.log("province id: " + selectedProvinceId);
+        if (selectedProvinceId) {
+          fetchDistricts(selectedProvinceId);  // Call fetchDistricts function with the selected province ID
+        }
+      });
+    });
+  </script>
+  
+  <script>
+    // Function to fetch wards based on selected district_id
+    function fetchWards(districtId) {
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/ward",  // Use the correct endpoint for wards
+        method: "GET",  // GET method to pass parameters in the URL
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe"  // Custom header with 'token' as 123
+        },
+        data: {
+          district_id: districtId  // Send the district_id as a query parameter
+        },
+        success: function (data) {
+          // Log the response data to the console
+          console.log(data);  // This will log the entire response data
+          
+          // Get the wards from the response
+          const wards = data.data;
+          
+          // Log just the wards to the console
+          console.log(wards);  // This will log only the ward list
+          
+          // Get the ward select element
+          const wardSelect = document.getElementById("address_ward");
+          
+          // Clear existing options (optional)
+          wardSelect.innerHTML = "";
+          
+          // Add default "Select Ward" option
+          const defaultOption = document.createElement("option");
+          defaultOption.text = "Select Ward";
+          wardSelect.appendChild(defaultOption);
+          
+          // Loop through the wards and append them to the select element
+          wards.forEach(ward => {
+            const option = document.createElement("option");
+            option.value = ward.WardCode;  // Assuming WardCode is the ID of the ward
+            option.text = ward.WardName;  // Assuming WardName is the name of the ward
+            wardSelect.appendChild(option);
+          });
+        },
+        error: function (xhr, status, error) {
+          // Handle errors here
+          console.error("Error fetching wards:", status, error);
+        }
+      });
+    }
+    
+    // Event listener to trigger fetching wards when a district is selected
+    $(document).ready(function () {
+      // Fetch wards when a district is selected
+      $('#address_district').on('change', function () {
+        const selectedDistrictId = $(this).val();  // Get the selected district ID
+        if (selectedDistrictId) {
+          fetchWards(selectedDistrictId);  // Call fetchWards function with the selected district ID
+        }
+      });
+    });
+  </script>
+  
+  <script>
+    // Function to calculate shipping
+    function calculateShipping() {
+      // Get selected district and ward values
+      const selectedDistrictId = document.getElementById("address_district").value;
+      const selectedWardCode = document.getElementById("address_ward").value;
+      
+      console.log(" selectedDistrictId : " + selectedDistrictId);
+      console.log(" selectedWardCode : " + selectedWardCode);
+      
+      // If no district or ward is selected, alert the user
+      if (!selectedDistrictId || !selectedWardCode) {
+        alert("Please select both district and ward.");
+        return;
+      }
+      
+      // Prepare the request body
+      const requestBody = {
+        "service_id": 53321,
+        "insurance_value": 500000,
+        "coupon": null,
+        "from_district_id": 3440, // You may need to replace this with actual "from" district ID
+        "to_district_id": selectedDistrictId,
+        "to_ward_code": selectedWardCode,
+        "height": 15,
+        "length": 15,
+        "weight": 1000,
+        "width": 15
+      };
+      
+      // Make the AJAX request
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee",  // API URL
+        method: "GET",  // POST method for body data
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe",  // Token in header
+          "shop_id": "5677097 "  // Shop ID in header
+        },
+        contentType: "application/json",  // Sending JSON in the body
+        data: requestBody,  // Convert request body to JSON string
+        success: function (response) {
+          // Check if the API returns a 'total' value
+          if (response && response.data && response.data.total) {
+            // Set the total shipping cost
+            const totalShippingCost = response.data.total;
+            
+            // Update the shipping cost display
+            document.getElementById("shipping-cost").textContent = totalShippingCost + " VND";  // Assuming the response is in VND
+          } else {
+            // Handle cases where there's no valid 'total' field in the response
+            alert("Error calculating shipping. Please try again later.");
+          }
+        },
+        error: function (xhr, status, error) {
+          // Handle error
+          console.error("Error fetching shipping fee:", status, error);
+          alert("Failed to calculate shipping. Please try again later.");
+        }
+      });
+    }
+  </script>
 </th:block>
 </html>

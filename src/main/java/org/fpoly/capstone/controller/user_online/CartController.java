@@ -34,6 +34,12 @@ public class CartController {
     @GetMapping(path = "")
     public String onOpenCartView(Model model) {
 
+        User loggedUser = this.userService.getUserFromContext();
+
+        if (loggedUser == null) {
+            return "/views/user-online-view/auth/login";
+        }
+
         List<CartDetailResponse> cartDetailResponseList = this.cartDetailService.findCartDetailByUserId();
 
         List<CartDetailViewModel> viewModels = cartDetailResponseList.stream()
