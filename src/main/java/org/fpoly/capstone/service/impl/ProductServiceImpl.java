@@ -1,6 +1,7 @@
 package org.fpoly.capstone.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Product;
 import org.fpoly.capstone.entity.ProductDetail;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -82,7 +84,6 @@ public class ProductServiceImpl implements ProductService {
         Long materialVariantId = productDetailRequestList.get(0).getMaterialId();
         Gender genderVariant = productDetailRequestList.get(0).getGender();
         String descriptionVariant = productDetailRequestList.get(0).getDescription();
-        Long colorVariantId = productDetailRequestList.get(0).getColorId();
         MultipartFile featureImageVariant = productDetailRequestList.get(0).getFeatureImage();
         MultipartFile[] imagesVariant = productDetailRequestList.get(0).getImages();
 
@@ -93,11 +94,12 @@ public class ProductServiceImpl implements ProductService {
             variantRequest.setMaterialId(materialVariantId);
             variantRequest.setGender(genderVariant);
             variantRequest.setDescription(descriptionVariant);
-            variantRequest.setColorId(colorVariantId);
             variantRequest.setFeatureImage(featureImageVariant);
             variantRequest.setImages(imagesVariant);
+            log.info("Processing variant request: {}", variantRequest);
             ProductDetailRequest productDetailRequest = this.modelMapper.map(variantRequest, ProductDetailRequest.class);
             this.productDetailService.createProductDetail(productDetailRequest);
+            log.info("Created ProductDetail: {}", productDetailRequest);
         }
 
         this.modelMapper.map(savedProduct, ProductResponse.class);

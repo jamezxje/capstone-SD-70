@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Setter
 public class ProductDetailFilterModel {
 
+    private Long productId;
     private Long categoryId;
     private String productName;
     private Long brandId;

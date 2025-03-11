@@ -83,6 +83,13 @@ document.getElementById("add-row-btn").addEventListener("click", function () {
     // Tạo nội dung cho hàng mới
     const newRow = `
     <div class="form-row mt-3 border-info">
+    <div class="form-group col-md-3">
+        <label for="productColor">Màu sắc <span class="text-danger">*</span> </label>
+        <select id="productColor" name="productVariantList[${variantIndex}].colorId" class="form-control default-select" required>
+          <option value="" selected>Chọn màu</option>
+          ${createOptions(colorList)}
+        </select>
+      </div>
       <div class="form-group col-md-3">
         <label for="productSize">Size <span class="text-danger">*</span> </label>
         <select id="productSize" name="productVariantList[${variantIndex}].sizeId" class="form-control default-select" required>

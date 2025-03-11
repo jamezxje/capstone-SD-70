@@ -98,17 +98,6 @@
                       <input id="productName" type="text" name="name" class="form-control" placeholder="" required>
                     </div>
                     <div class="form-group col-md-4">
-                      <label for="colorId">Màu sắc<span class="text-danger">*</span> </label>
-                      <select id="colorId" name="productVariantList[0].colorId" class="form-control"
-                              required>
-                        <option value="" selected>Chọn màu sắc</option>
-                        <option th:each="color : ${colors}"
-                                th:value="${color.id}"
-                                th:text="${color.name}">
-                        </option>
-                      </select>
-                    </div>
-                    <div class="form-group col-md-4">
                       <label for="brandId">Brand<span class="text-danger">*</span> </label>
                       <select id="brandId" name="productVariantList[0].brandId" class="form-control"
                               required>
@@ -166,6 +155,20 @@
                 <div class="basic-form">
                   <div id="product-details-container">
                     <div class="form-row border-info">
+                      
+                      <div class="form-group col-md-3">
+                        <label for="colorId">Màu sắc<span class="text-danger">*</span> </label>
+                        <select id="colorId" name="productVariantList[0].colorId" class="form-control"
+                                required>
+                          <option value="" selected>Chọn màu sắc</option>
+                          <option th:each="color : ${colors}"
+                                  th:value="${color.id}"
+                                  th:text="${color.name}">
+                          </option>
+                        </select>
+                      </div>
+                      
+                      
                       <div class="form-group col-md-3">
                         <label for="sizeId">Size<span class="text-danger">*</span> </label>
                         <select id="sizeId" name="productVariantList[0].sizeId" class="form-control"
@@ -239,6 +242,7 @@
 <th:block id="th-js">
   <script th:inline="javascript">
     const sizeList = /*[[${sizes}]]*/ [];
+    const colorList = /*[[${colors}]]*/ [];
   </script>
   <script th:src="@{/assets/admin-dashboard/vendor/jquery-validation/jquery.validate.min.js}"></script>
   <script th:src="@{/js/product-management/product/add-new-product.js}"></script>

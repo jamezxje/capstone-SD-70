@@ -221,20 +221,20 @@
                   <li class="page-item page-indicator"
                       th:classappend="${productDetailPage.hasPrevious()} ? '' : 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product-detail(page = ${productDetailPage.number}, size = ${productDetailPage.size}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}">
+                       th:href="@{/dashboard/product-management/product-detail(page = ${productDetailPage.number}, size = ${productDetailPage.size}, productId = ${request.productId}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}">
                       <i class="la la-angle-left"></i></a>
                   </li>
                   <li class="page-item" th:each="i : ${#numbers.sequence(1, productDetailPage.totalPages)}"
                       th:classappend="${productDetailPage.number + 1 == i} ? 'active'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product-detail(page=${i}, size=${productDetailPage.size}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}"
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, size=${productDetailPage.size}, productId = ${request.productId}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}"
                        th:text="${i}">
                     </a>
                   </li>
                   <li class="page-item page-indicator"
                       th:classappend="${productDetailPage.hasNext()} ? '' : 'disabled'">
                     <a class="page-link"
-                       th:href="@{/dashboard/product-management/product-detail(page=${productDetailPage.number + 2}, size=${productDetailPage.size}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}">
+                       th:href="@{/dashboard/product-management/product-detail(page=${productDetailPage.number + 2}, size=${productDetailPage.size}, productId = ${request.productId}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}">
                       <i class="la la-angle-right"></i></a>
                   </li>
                 </ul>

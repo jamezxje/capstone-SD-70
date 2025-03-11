@@ -12,6 +12,10 @@ public class ProductDetailSpecification {
         return (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.conjunction();
 
+            if (request.getProductId() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("product").get("id"), request.getProductId()));
+            }
+
             if (request.getCategoryId() != null) {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("product").get("category").get("id"), request.getCategoryId()));
             }
