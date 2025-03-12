@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ColorRepository extends JpaRepository<Color, Long> {
 
@@ -16,5 +18,8 @@ public interface ColorRepository extends JpaRepository<Color, Long> {
             "FROM Color c " +
             "WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) ")
     Page<ColorResponse> findByFilter(@Param("name") String name, Pageable pageable);
+
+    @Query("SELECT pd.color FROM ProductDetail pd where pd.product.id = :productId")
+    List<Color> findSizesByProductId(@Param("productId") Long productId);
 
 }

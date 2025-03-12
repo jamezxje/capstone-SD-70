@@ -90,7 +90,8 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
             "AND pd.brand.id = :brandId AND pd.id NOT IN (:productDetailId) ")
     List<ProductDetailResponse> findRelatedProductDetail(@Param("productDetailId") Long productDetailId, @Param("brandId") Long brandId, Pageable pageable);
 
-    @Query("SELECT pd FROM ProductDetail pd WHERE pd.product.id = :productId AND pd.size.id = :sizeId")
-    ProductDetail findProductDetailByIdAndSize(@Param("productId") Long productId, @Param("sizeId") Long sizeId);
+    @Query("SELECT pd FROM ProductDetail pd WHERE pd.product.id = :productId AND pd.size.id = :sizeId AND pd.color.id = :colorId")
+    ProductDetail findProductDetailByIdAndSizeAndColor(@Param("productId") Long productId, @Param("sizeId") Long sizeId,
+                                                       @Param("colorId") Long colorId);
 
 }

@@ -78,4 +78,9 @@ public class ColorServiceImpl implements ColorService {
         return this.modelMapper.map(color, ColorResponse.class);
     }
 
+    @Override
+    public List<Color> getColorsByProductId(Long productId) {
+        return this.colorRepository.findSizesByProductId(productId);
+    }
+
 }

@@ -29,5 +29,5 @@ public interface ProductDetailService {
 
     List<ProductDetailResponse> findRelatedProductDetail(Long productDetailId, Long brandId);
 
-    ProductDetail findProductDetailByIdAndSize(Long productId, Long sizeId);
+    ProductDetail findProductDetailByIdAndSizeAndColor(Long productId, Long sizeId, Long colorId);
 }

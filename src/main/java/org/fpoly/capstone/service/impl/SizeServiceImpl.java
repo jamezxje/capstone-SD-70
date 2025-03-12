@@ -77,4 +77,9 @@ public class SizeServiceImpl implements SizeService {
         return this.modelMapper.map(size, SizeResponse.class);
     }
 
+    @Override
+    public List<Size> getSizesByProductId(Long productId) {
+        return this.sizeRepository.findSizesByProductId(productId);
+    }
+
 }

@@ -208,8 +208,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     }
 
     @Override
-    public ProductDetail findProductDetailByIdAndSize(Long productId, Long sizeId) {
-        ProductDetail existingProductDetail = this.productDetailRepository.findProductDetailByIdAndSize(productId, sizeId);
+    public ProductDetail findProductDetailByIdAndSizeAndColor(Long productId, Long sizeId, Long colorId) {
+        ProductDetail existingProductDetail = this.productDetailRepository.findProductDetailByIdAndSizeAndColor(productId, sizeId, colorId);
         return existingProductDetail;
     }
 

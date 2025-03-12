@@ -24,4 +24,6 @@ public interface ColorService {
 
     ColorResponse getColorById(Integer colorId);
 
+    List<Color> getColorsByProductId(Long productId);
+
 }

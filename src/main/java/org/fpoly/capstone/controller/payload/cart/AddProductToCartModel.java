@@ -13,6 +13,7 @@ public class AddProductToCartModel {
 
     private Long productId;
     private Long sizeId;
+    private Long colorId;
     private Integer quantity;
 
 }

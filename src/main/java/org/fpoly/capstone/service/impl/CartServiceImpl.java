@@ -43,11 +43,11 @@ public class CartServiceImpl implements CartService {
 
         //find product detail by productId and sizeId from request
         ProductDetail productDetailRequest = this.productDetailService
-                .findProductDetailByIdAndSize(request.getProductId(), request.getSizeId());
+                .findProductDetailByIdAndSizeAndColor(request.getProductId(), request.getSizeId(), request.getColorId());
 
         if (productDetailRequest == null) {
-            log.error("Product detail not found for Product ID: {} and Size ID: {}", request.getProductId(), request.getSizeId());
-            throw new EntityNotFoundException("Product detail not found for the given product and size.");
+            log.error("Product detail not found for Product ID: {} and Size ID: {} and ColorId: {}", request.getProductId(), request.getSizeId(), request.getColorId());
+            throw new EntityNotFoundException("Product detail not found for the given product and size and color.");
         }
 
         //check if quantity from request is valid or not
@@ -74,7 +74,7 @@ public class CartServiceImpl implements CartService {
                 .findFirst()
                 .orElse(null);
 
-        //if the product is firt added to cart
+        //if the product is first added to cart
         if (existingCartDetail == null) {
             existingCartDetail = new CartDetail();
             existingCartDetail.setProductDetail(productDetailRequest);

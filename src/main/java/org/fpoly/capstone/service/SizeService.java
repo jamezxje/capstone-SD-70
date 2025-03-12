@@ -24,4 +24,6 @@ public interface SizeService {
 
     SizeResponse getSizeById(Integer sizeId);
 
+    List<Size> getSizesByProductId(Long productId);
+
 }

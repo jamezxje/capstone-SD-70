@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.cart.AddProductToCartModel;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailFilterModel;
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailViewModel;
+import org.fpoly.capstone.entity.Color;
 import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.service.BrandService;
 import org.fpoly.capstone.service.CartService;
@@ -64,25 +65,27 @@ public class OnlineProductController {
         return "/views/user-online-view/products-page";
     }
 
-    @GetMapping(path = "{productId}")
-    public String onOpenProductDetailView(@PathVariable(value = "productId") Long productId, Model model) {
+    @GetMapping(path = "{productDetailId}")
+    public String onOpenProductDetailView(@PathVariable(value = "productDetailId") Long productDetailId, Model model) {
 
-        List<Size> sizeList = this.sizeService.getAllSize();
-
-        ProductDetailResponse productDetailResponse = this.productDetailService.getProductDetailById(productId);
+        ProductDetailResponse productDetailResponse = this.productDetailService.getProductDetailById(productDetailId);
 
         ProductDetailViewModel productDetailViewModel = this.modelMapper.map(productDetailResponse, ProductDetailViewModel.class);
 
-        List<ProductDetailResponse> relatedProductDetailResponsePage = this.productDetailService.findRelatedProductDetail(productId, productDetailViewModel.getBrandId());
+        List<ProductDetailResponse> relatedProductDetailResponsePage = this.productDetailService.findRelatedProductDetail(productDetailId, productDetailViewModel.getBrandId());
 
         List<ProductDetailViewModel> viewModels = relatedProductDetailResponsePage.stream()
                 .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
                 .toList();
 
+        List<Size> sizeList = this.sizeService.getSizesByProductId(productDetailViewModel.getProductId());
+        List<Color> colorList = this.colorService.getColorsByProductId(productDetailViewModel.getProductId());
+
         model.addAttribute("product", productDetailViewModel);
         model.addAttribute("productUserResponseList", viewModels);
         model.addAttribute("relatedProductDetailList", relatedProductDetailResponsePage);
         model.addAttribute("sizeList", sizeList);
+        model.addAttribute("colorList", colorList);
         model.addAttribute("addProductToCartModel", new AddProductToCartModel());
 
         return "/views/user-online-view/product-detail";
