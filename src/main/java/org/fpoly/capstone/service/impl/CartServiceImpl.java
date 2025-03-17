@@ -10,7 +10,6 @@ import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.repository.CartDetailRepository;
 import org.fpoly.capstone.repository.CartRepository;
-import org.fpoly.capstone.repository.ProductDetailRepository;
 import org.fpoly.capstone.service.CartService;
 import org.fpoly.capstone.service.ProductDetailService;
 import org.fpoly.capstone.service.UserService;
@@ -28,7 +27,6 @@ public class CartServiceImpl implements CartService {
     private final UserService userService;
     private final CartRepository cartRepository;
     private final CartDetailRepository cartDetailRepository;
-    private final ProductDetailRepository productDetailRepository;
     private final ProductDetailService productDetailService;
 
     @Override
@@ -41,7 +39,7 @@ public class CartServiceImpl implements CartService {
             throw new EntityNotFoundException("User not found");
         }
 
-        //find product detail by productId and sizeId from request
+        //find product detail by productId and sizeId and colorId from request
         ProductDetail productDetailRequest = this.productDetailService
                 .findProductDetailByIdAndSizeAndColor(request.getProductId(), request.getSizeId(), request.getColorId());
 
