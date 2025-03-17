@@ -7,6 +7,35 @@
   <link rel="stylesheet" th:href="@{/assets/user-online/css/style.css}">
   <th:block id="th-css">
     <link rel="stylesheet" th:href="@{/assets/user-online/css/style.css}">
+    <style>
+      
+      .swatch-element.size-swacthes {
+        position: relative;
+        z-index: 10; /* Make sure it's above other elements */
+      }
+      
+      .swatchInput {
+        pointer-events: all; /* Ensure the radio buttons are clickable */
+      }
+      
+      
+      /* Make sure the entire swatch element with class 'disable' is unclickable */
+      .swatch-element.disable {
+        pointer-events: none; /* Prevent all interactions */
+        opacity: 0.5; /* Make it appear disabled by reducing opacity */
+      }
+      
+      /* Optionally, you can change the appearance of the radio button itself */
+      .swatch-element.disable .swatchInput {
+        cursor: not-allowed; /* Change the cursor to indicate the element is not clickable */
+      }
+      
+      /* Optional: Style the label to make it visually appear disabled */
+      .swatch-element.disable label {
+        color: #ccc; /* Change the label color to indicate it's disabled */
+      }
+    
+    </style>
   </th:block>
 </head>
 <body>
@@ -80,93 +109,63 @@
                       class="spr-badge-caption">6 reviews</span></a></div>
                 </div>
                 <p class="product-single__price product-single__price-product-template">
-                  <span class="visually-hidden">Regular price</span>
-                  <s id="ComparePrice-product-template"><span class="money">$600.00</span></s>
                   <span
                       class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
                                                 <span id="ProductPrice-product-template"><span
                                                     class="money"
                                                     th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'POINT')} + ' VND'">$500.00</span></span>
                                             </span>
-                  <span class="discount-badge"> <span class="devider">|</span>&nbsp;
-                                                <span>You Save</span>
-                                                <span id="SaveAmount-product-template"
-                                                      class="product-single__save-amount">
-                                                <span class="money">$100.00</span>
-                                                </span>
-                                                <span class="off">(<span>16</span>%)</span>
-                                            </span>
                 </p>
-                <div class="orderMsg" data-user="23" data-time="24">
-                  <img src="assets/images/order-icon.jpg" alt=""/> <strong class="items">5</strong> sold in last <strong
-                    class="time">26</strong> hours
-                </div>
               </div>
-              <div class="product-single__description rte">
-                <ul>
-                  <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit</li>
-                  <li>Sed ut perspiciatis unde omnis iste natus error sit</li>
-                  <li>Neque porro quisquam est qui dolorem ipsum quia dolor</li>
-                  <li>Lorem Ipsum is not simply random text.</li>
-                </ul>
-              </div>
-              <div id="quantity_message">Hurry! Only <span class="items">4</span> left in stock.</div>
               <form method="post" th:action="@{/cart}" id="product_form_10508262282"
                     accept-charset="UTF-8" class="product-form product-form-product-template hidedropdown"
                     enctype="multipart/form-data" th:object="${addProductToCartModel}">
                 <input type="text" hidden="true" name="productId" th:value="${product.productId}">
+                
                 <div class="swatch clearfix swatch-0 option1" data-option-index="0">
                   <div class="product-form__item">
-                    <label class="header">Color: <span class="slVariant"
-                                                       th:text="${product.colorName}">Red</span></label>
-                  </div>
-                </div>
-                <div class="swatch clearfix swatch-1 option2" data-option-index="1">
-                  
-                  <div class="product-form__item">
-                    <label class="header">Color: <span class="slVariant"></span></label>
-                    <!-- Lặp qua danh sách size và hiển thị chúng -->
-                    <div th:each="color : ${colorList}"
-                         class="swatch-element"
-                         th:classappend="${' ' + color.id + ' available'}"
-                         data-value="[[${size.name}]]">
+                    <label class="header">Color: <span class="slVariant">Red</span></label>
+                    <!-- Loop through color list -->
+                    <div th:each="color : ${colorList}" class="swatch-element color"
+                         th:classappend="' ' + ${color.id} + ' available'" data-value="[[${color.name}]]">
                       <input class="swatchInput"
-                             th:id="'swatch-1-' + ${color.id}"
+                             th:id="'swatch-0-' + ${color.id}"
                              type="radio"
-                             name="colorId"
+                             name="option-0 colorId"
                              th:field="*{colorId}"
                              th:value="${color.id}">
                       <label class="swatchLbl medium rectangle"
-                             th:for="'swatch-1-' + ${color.id}"
-                             th:title="${color.name}"
-                             th:text="${color.name}">S</label>
+                             th:for="'swatch-0-' + ${color.id}"
+                             th:title="${color.name}" th:text="${color.name}"></label>
                     </div>
                   </div>
-                  
+                </div>
+                
+                <div class="swatch clearfix swatch-1 option2" data-option-index="1">
                   <div class="product-form__item">
-                    <label class="header">Size: <span class="slVariant"></span></label>
-                    <!-- Lặp qua danh sách size và hiển thị chúng -->
-                    <div th:each="size : ${sizeList}"
-                         class="swatch-element"
-                         th:classappend="${' ' + size.id + ' available'}"
+                    <label class="header">Size: <span class="slVariant">XS</span></label>
+                    <!-- Loop through size list -->
+                    <div th:each="size : ${sizeList}" class="swatch-element size-swacthes"
+                         th:classappend="' ' + ${size.id} + ' available'"
                          data-value="[[${size.name}]]">
                       <input class="swatchInput"
                              th:id="'swatch-1-' + ${size.id}"
                              type="radio"
-                             name="sizeId"
+                             name="option-1 sizeId"
                              th:field="*{sizeId}"
                              th:value="${size.id}">
                       <label class="swatchLbl medium rectangle"
                              th:for="'swatch-1-' + ${size.id}"
                              th:title="${size.name}"
-                             th:text="${size.name}">S</label>
+                             th:text="${size.name}"></label>
                     </div>
                   </div>
-                
-                
                 </div>
-                <p class="infolinks"><a href="#sizechart" class="sizelink btn"> Size Guide</a> <a href="#productInquiry"
-                                                                                                  class="emaillink btn">
+                
+                
+                <p class="infolinks"><a href="#sizechart" class="sizelink btn"> Size Guide</a> <a
+                    href="#productInquiry"
+                    class="emaillink btn">
                   Ask About this Product</a></p>
                 <!-- Product Action -->
                 <div class="product-action clearfix">
@@ -188,7 +187,8 @@
                   </div>
                   <div class="shopify-payment-button" data-shopify="payment-button">
                     <button type="button"
-                            class="shopify-payment-button__button shopify-payment-button__button--unbranded">Buy it now
+                            class="shopify-payment-button__button shopify-payment-button__button--unbranded">Buy it
+                      now
                     </button>
                   </div>
                 </div>
@@ -211,7 +211,8 @@
                     </a>
                     <a target="_blank" href="#" class="btn btn--small btn--secondary btn--share share-twitter"
                        title="Tweet on Twitter">
-                      <i class="fa fa-twitter" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Tweet</span>
+                      <i class="fa fa-twitter" aria-hidden="true"></i> <span class="share-title"
+                                                                             aria-hidden="true">Tweet</span>
                     </a>
                     <a href="#" title="Share on google+" class="btn btn--small btn--secondary btn--share">
                       <i class="fa fa-google-plus" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Google+</span>
@@ -222,7 +223,8 @@
                     </a>
                     <a href="#" class="btn btn--small btn--secondary btn--share share-pinterest" title="Share by Email"
                        target="_blank">
-                      <i class="fa fa-envelope" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Email</span>
+                      <i class="fa fa-envelope" aria-hidden="true"></i> <span class="share-title"
+                                                                              aria-hidden="true">Email</span>
                     </a>
                   </div>
                 </div>
@@ -392,7 +394,8 @@
                               class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i
                               class="font-13 fa fa-star"></i></span></span>
                           <h3 class="spr-review-header-title">Lorem ipsum dolor sit amet</h3>
-                          <span class="spr-review-header-byline"><strong>dsacc</strong> on <strong>Apr 09, 2019</strong></span>
+                          <span
+                              class="spr-review-header-byline"><strong>dsacc</strong> on <strong>Apr 09, 2019</strong></span>
                         </div>
                         <div class="spr-review-content">
                           <p class="spr-review-content-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
@@ -824,7 +827,7 @@
     </div>
   </div>
   
-  <!-- Newsletter Popup -->
+  <!-- Size required Popup -->
   <div class="newsletter-wrap" id="popup-container">
     <div id="popup-window">
       <a class="btn closepopup"><i class="icon icon anm anm-times-l"></i></a>
@@ -836,7 +839,7 @@
       </div>
     </div>
   </div>
-  <!-- End Newsletter Popup -->
+  <!-- End Size Required Popup -->
 
 </th:block>
 
@@ -846,6 +849,7 @@
   <!-- Photoswipe Gallery -->
   <script th:src="@{/assets/user-online/js/vendor/photoswipe.min.js}"></script>
   <script th:src="@{/assets/user-online/js/vendor/photoswipe-ui-default.min.js}"></script>
+  <script th:src="@{/assets/user-online/js/vendor/jquery-3.3.1.min.js}"></script>
   <script>
     $(function () {
       var $pswp = $('.pswp')[0],
@@ -927,5 +931,69 @@
       });
     });
   </script>
+  <script th:inline="javascript">
+    const productDetailIdReceived = /*[[${productDetailId}]]*/ [];
+  </script>
+  <script>
+    $(document).ready(function () {
+      // Attach the event listener dynamically to the size radio buttons
+      $('input[type="radio"][name="sizeId"]').on('change', function () {
+        const selectedSizeId = $(this).val();  // Get the selected sizeId
+        console.log("Selected sizeId: ", selectedSizeId);  // Log the selected sizeId
+        
+        // Optionally, log the label text for the selected size
+        const selectedSizeLabel = $(this).closest('.size-swacthes').find('label').text();
+        console.log("Selected Size Name: ", selectedSizeLabel);  // Log the selected size name
+      });
+      
+      // Attach event listener for color change
+      $('input[type="radio"][name="colorId"]').on('change', function () {
+        const selectedColorId = $(this).val();  // Get the selected colorId
+        if (selectedColorId) {
+          updateSizesForColor(selectedColorId);  // Call function with selected colorId
+        }
+      });
+    });
+    
+    function updateSizesForColor(colorId) {
+      console.log("productDetailIdReceived: " + productDetailIdReceived);
+      $.ajax({
+        url: "/shop/" + productDetailIdReceived + "/available-sizes?colorId=" + colorId,  // Corrected URL formatting
+        method: "GET",
+        contentType: "application/json",
+        success: function (sizes) {
+          console.log(sizes);
+          const sizeElements = $('.size-swacthes');
+          console.log("All size elements: ", sizeElements);
+          
+          sizeElements.each(function () {
+            const sizeElement = $(this);  // Wrap the size element in a jQuery object
+            const sizeId = sizeElement.find('input').val(); // Get the size ID from the input element
+            const sizeLabel = sizeElement.find('label'); // Get the label for the size
+            
+            console.log("Size Id: ", sizeId);
+            
+            // Check if this size is available for the selected color
+            if (sizes.includes(parseInt(sizeId))) {
+              console.log("available sizeElement.find('input'): ", sizeElement.find('input'));
+              sizeElement.find('input').prop('disabled', false); // Enable the radio button
+              sizeElement.removeClass("disable");
+              sizeElement.addClass("available");
+            } else {
+              console.log("disable sizeElement.find('input'): ", sizeElement.find('input'));
+              sizeElement.find('input').prop('disabled', true); // Disable the radio button
+              sizeElement.removeClass("available");
+              sizeElement.addClass("disable");
+            }
+          });
+        },
+        error: function (xhr, status, error) {
+          console.error("Error fetching size by colorId:", status, error);
+        }
+      });
+    }
+  
+  </script>
+
 </th:block>
 </html>

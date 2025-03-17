@@ -25,8 +25,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(path = "/shop")
@@ -78,7 +81,7 @@ public class OnlineProductController {
                 .map(response -> this.modelMapper.map(response, ProductDetailViewModel.class))
                 .toList();
 
-        List<Size> sizeList = this.sizeService.getSizesByProductId(productDetailViewModel.getProductId());
+        List<Size> sizeList = this.sizeService.getAllSize();
         List<Color> colorList = this.colorService.getColorsByProductId(productDetailViewModel.getProductId());
 
         model.addAttribute("product", productDetailViewModel);
@@ -86,10 +89,27 @@ public class OnlineProductController {
         model.addAttribute("relatedProductDetailList", relatedProductDetailResponsePage);
         model.addAttribute("sizeList", sizeList);
         model.addAttribute("colorList", colorList);
+        model.addAttribute("productDetailId", productDetailId);
         model.addAttribute("addProductToCartModel", new AddProductToCartModel());
 
         return "/views/user-online-view/product-detail";
     }
+
+    @GetMapping(path = "{productDetailId}/available-sizes")
+    @ResponseBody
+    public List<Long> getAvailableSizes(@PathVariable Long productDetailId, @RequestParam Long colorId) {
+
+        ProductDetailResponse productDetailResponse = this.productDetailService.getProductDetailById(productDetailId);
+
+        // Assuming you have a service to get sizes for the given product and color
+        List<Size> availableSizes = this.sizeService.getAvailableSizesByColor(productDetailResponse.getProductId(), colorId);
+
+        // Convert the list of available sizes to just their IDs
+        return availableSizes.stream()
+                .map(Size::getId)
+                .collect(Collectors.toList());
+    }
+
 
     @PostMapping(path = "add-to-cart")
     public String onAddingProductToCart(@ModelAttribute("addProductToCartModel") AddProductToCartModel addProductToCartModel,

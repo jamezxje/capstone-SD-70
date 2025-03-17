@@ -82,4 +82,9 @@ public class SizeServiceImpl implements SizeService {
         return this.sizeRepository.findSizesByProductId(productId);
     }
 
+    @Override
+    public List<Size> getAvailableSizesByColor(Long productId, Long colorId) {
+        return this.sizeRepository.findSizesByProductIdAndColorId(productId, colorId);
+    }
+
 }

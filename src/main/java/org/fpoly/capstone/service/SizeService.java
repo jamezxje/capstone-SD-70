@@ -26,4 +26,5 @@ public interface SizeService {
 
     List<Size> getSizesByProductId(Long productId);
 
+    List<Size> getAvailableSizesByColor(Long productId, Long colorId);
 }
