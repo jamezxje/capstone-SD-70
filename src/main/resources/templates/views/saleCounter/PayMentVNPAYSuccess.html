@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <th:block id="th-css">
+    <link rel="stylesheet" th:href="@{/assets/css/sale/paymentVNPAYSuccess.css}"/>
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  <div class="content-body">
+    <h1 style="color: green; font-size: 36px; font-weight: 600">Thanh toán thành công!</h1>
+    <p style="color: black; font-size: 18px ; margin-top: 10px">Đơn hàng của bạn đã được thanh toán thành công. Cảm ơn bạn đã mua hàng!</p>
+    <p><a href="/sale-counter" id="changeSale">Quay lại trang bán hàng</a> </p>
+    <canvas id="fireworks"></canvas>
+  </div>
+  </div>
+</th:block>
+
+</body>
+<th:block id="th-js">
+  <script type="text/javascript" th:src="@{/assets/js/sale/paymentVNPAYSuccess.js}"></script>
+</th:block>
+</html>

@@ -28,6 +28,6 @@ public class HomeController {
 
         log.info("User role customer: {}", user.getRoles());
 
-        return "views/hello";
+        return "PayMentVNPAYSuccess";
     }
 }
