@@ -1,0 +1,60 @@
+package org.fpoly.capstone.service.impl;
+
+import lombok.RequiredArgsConstructor;
+import org.fpoly.capstone.entity.Bill;
+import org.fpoly.capstone.entity.BillDetail;
+import org.fpoly.capstone.entity.Cart;
+import org.fpoly.capstone.entity.CartDetail;
+import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.entity.enum_status.BillStatus;
+import org.fpoly.capstone.entity.enum_status.BillType;
+import org.fpoly.capstone.repository.BillDetailRespository;
+import org.fpoly.capstone.repository.BillRespository;
+import org.fpoly.capstone.repository.CartRepository;
+import org.fpoly.capstone.service.BillService;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class BillServiceImpl implements BillService {
+
+    private final BillDetailRespository billDetailRespository;
+    private final BillRespository billRespository;
+    private final CartRepository cartRepository;
+
+    @Override
+    public void saveToBillForOnlineUser(Cart cart) {
+        Bill bill = new Bill();
+
+        User customer = cart.getUser();
+        bill.setUser(customer);
+        bill.setType(BillType.ONLINE);
+        bill.setStatus(BillStatus.CHO_XAC_NHAN);
+
+        double totalPrice = cart.getCartDetails().stream()
+                .mapToDouble(detail -> detail.getPrice().doubleValue() * detail.getQuantity())
+                .sum();
+        bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
+
+        List<BillDetail> billDetailList = new ArrayList<>();
+        for (CartDetail cartDetail : cart.getCartDetails()) {
+            BillDetail billDetail = new BillDetail();
+            billDetail.setBill(bill);
+            billDetail.setProductDetail(cartDetail.getProductDetail());
+            billDetail.setQuantity(cartDetail.getQuantity());
+            billDetail.setPrice(cartDetail.getPrice());
+            this.billDetailRespository.save(billDetail);
+            billDetailList.add(billDetail);
+        }
+
+        bill.setBillDetailList(billDetailList);
+        this.cartRepository.deleteById(cart.getId());
+        this.billRespository.save(bill);
+
+    }
+
+}

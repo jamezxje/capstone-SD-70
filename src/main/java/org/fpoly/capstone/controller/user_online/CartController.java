@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.cart.AddProductToCartModel;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
 import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.service.CartDetailService;
 import org.fpoly.capstone.service.CartService;
 import org.fpoly.capstone.service.UserService;
@@ -27,6 +28,7 @@ import java.util.List;
 public class CartController {
 
     private final CartService cartService;
+    private final CartRepository cartRepository;
     private final CartDetailService cartDetailService;
     private final ModelMapper modelMapper;
     private final UserService userService;
@@ -47,6 +49,7 @@ public class CartController {
                 .toList();
 
         model.addAttribute("cartDetailList", viewModels);
+        model.addAttribute("cart", this.cartRepository.findCartByUserId(loggedUser.getId()));
 
         return "/views/user-online-view/cart-management";
     }

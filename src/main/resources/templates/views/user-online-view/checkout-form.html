@@ -182,7 +182,8 @@
           </div>
         </div>
         
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+        
+        <form class="col-xl-6 col-lg-6 col-md-6 col-sm-12" th:action="@{/bill/save}" method="POST">
           <div class="your-order-payment">
             <div class="your-order">
               <h2 class="order-title mb-4">Your Order</h2>
@@ -214,7 +215,8 @@
                   </tr>
                   <tr>
                     <td colspan="4" class="text-right">Total</td>
-                    <td>$845.00</td>
+                    <td th:text="${#numbers.formatDecimal(shoppingCart.totalPrice, 0, 'POINT', 0, 'POINT')}">$845.00
+                    </td>
                   </tr>
                   </tfoot>
                 </table>
@@ -234,8 +236,10 @@
                       </div>
                       <div id="collapseOne" class="collapse" data-parent="#accordion">
                         <div class="card-body">
-                          <p class="no-margin font-15">Make your payment directly into our bank account. Please use your
-                            Order ID as the payment reference. Your order won't be shipped until the funds have cleared
+                          <p class="no-margin font-15">Make your payment directly into our bank account. Please use
+                            your
+                            Order ID as the payment reference. Your order won't be shipped until the funds have
+                            cleared
                             in our account.</p>
                         </div>
                       </div>
@@ -246,7 +250,8 @@
                       </div>
                       <div id="collapseTwo" class="collapse" data-parent="#accordion">
                         <div class="card-body">
-                          <p class="no-margin font-15">Please send your cheque to Store Name, Store Street, Store Town,
+                          <p class="no-margin font-15">Please send your cheque to Store Name, Store Street, Store
+                            Town,
                             Store State / County, Store Postcode.</p>
                         </div>
                       </div>
@@ -323,7 +328,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   

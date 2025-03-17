@@ -16,6 +16,7 @@ import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.service.payload.cart.AddProductToCartRequest;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -89,6 +90,14 @@ public class CartServiceImpl implements CartService {
             log.info("Updated existing product in cart. Product ID: {}, Size ID: {}, New Quantity: {}",
                     request.getProductId(), request.getSizeId(), existingCartDetail.getQuantity());
         }
+
+        // Calculate total price for the cart
+        double totalPrice = cartDetails.stream()
+                .mapToDouble(detail -> detail.getPrice().doubleValue() * detail.getQuantity())
+                .sum();
+
+        // Set total price to cart
+        cart.setTotalPrice(BigDecimal.valueOf(totalPrice));
 
         try {
             // Attempt to save Cart

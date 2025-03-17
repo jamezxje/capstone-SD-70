@@ -2,7 +2,10 @@ package org.fpoly.capstone.controller.user_online;
 
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
+import org.fpoly.capstone.entity.Cart;
 import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.repository.CartRepository;
+import org.fpoly.capstone.service.BillService;
 import org.fpoly.capstone.service.CartDetailService;
 import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
@@ -10,20 +13,23 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
-@RequestMapping(path = "checkout")
+@RequestMapping(path = "bill")
 @RequiredArgsConstructor
 public class BillController {
 
     private final CartDetailService cartDetailService;
+    private final BillService billService;
+    private final CartRepository cartRepository;
     private final ModelMapper modelMapper;
     private final UserService userService;
 
-    @GetMapping(path = "")
+    @GetMapping(path = "checkout")
     public String onOpenCheckoutView(Model model) {
 
         User loggedUser = this.userService.getUserFromContext();
@@ -36,7 +42,16 @@ public class BillController {
 
         model.addAttribute("cartDetailList", viewModels);
         model.addAttribute("loggedUser", loggedUser);
+        model.addAttribute("shoppingCart", this.cartRepository.findCartByUserId(loggedUser.getId()));
 
         return "/views/user-online-view/checkout-form";
+    }
+
+    @PostMapping("save")
+    public String save(Model model) {
+        User loggedUser = this.userService.getUserFromContext();
+        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+        this.billService.saveToBillForOnlineUser(cart);
+        return null;
     }
 }

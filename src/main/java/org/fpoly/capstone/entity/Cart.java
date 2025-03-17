@@ -17,6 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fpoly.capstone.common.CommonUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -34,6 +35,9 @@ public class Cart {
     @OneToOne(fetch = FetchType.LAZY) // Changed to LAZY
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     private User user;
+
+    @Column(name = "total_price")
+    private BigDecimal totalPrice;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
