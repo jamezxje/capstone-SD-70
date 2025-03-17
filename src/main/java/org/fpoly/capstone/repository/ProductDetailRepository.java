@@ -94,4 +94,7 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     ProductDetail findProductDetailByIdAndSizeAndColor(@Param("productId") Long productId, @Param("sizeId") Long sizeId,
                                                        @Param("colorId") Long colorId);
 
+    @Query("SELECT pd FROM ProductDetail pd WHERE pd.product.id = :productId")
+    List<ProductDetail> findByProductId(@Param("productId") Long productId);
+
 }
