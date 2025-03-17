@@ -57,4 +57,9 @@ public class BillServiceImpl implements BillService {
 
     }
 
+    @Override
+    public List<Bill> findBillsByCustomerId(Long customerId) {
+        return this.billRespository.getBillByCustomerId(customerId);
+    }
+
 }

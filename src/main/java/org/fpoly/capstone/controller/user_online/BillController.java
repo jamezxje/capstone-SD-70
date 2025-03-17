@@ -2,6 +2,7 @@ package org.fpoly.capstone.controller.user_online;
 
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
+import org.fpoly.capstone.entity.Bill;
 import org.fpoly.capstone.entity.Cart;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.repository.CartRepository;
@@ -48,10 +49,18 @@ public class BillController {
     }
 
     @PostMapping("save")
-    public String save(Model model) {
+    public String onSaveBill(Model model) {
         User loggedUser = this.userService.getUserFromContext();
         Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
         this.billService.saveToBillForOnlineUser(cart);
-        return null;
+        return "redirect:/bill";
+    }
+
+    @GetMapping(path = "")
+    public String onOpenBillView(Model model) {
+        User loggedUser = this.userService.getUserFromContext();
+        List<Bill> billList = this.billService.findBillsByCustomerId(loggedUser.getId());
+        model.addAttribute("billList", billList);
+        return "/views/user-online-view/bill/bill-management";
     }
 }
