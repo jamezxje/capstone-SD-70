@@ -1,17 +1,6 @@
 package org.fpoly.capstone.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +10,7 @@ import org.fpoly.capstone.entity.enum_status.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -38,7 +28,7 @@ public class Bill {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "id_employee", referencedColumnName = "id")
+    @JoinColumn(name = "id_employss", referencedColumnName = "id")
     private User employee;
 
     @Column(name = "phone_number")
@@ -47,7 +37,7 @@ public class Bill {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "user_name")
+    @Column(name = "use_name")
     private String userName;
 
     @Column(name = "email")
@@ -109,5 +99,8 @@ public class Bill {
 
     @Column(name = "updated_by")
     private String updatedBy;
+
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<VoucherDetail> voucherDetailList;
 
 }

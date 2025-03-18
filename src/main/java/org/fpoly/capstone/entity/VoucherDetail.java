@@ -1,5 +1,6 @@
 package org.fpoly.capstone.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,7 +37,7 @@ public class VoucherDetail {
     @JoinColumn(name = "id_voucher", referencedColumnName = "id")
     private Voucher voucher;
 
-    @Column(name = "befor_price")
+    @Column(name = "before_price")
     private BigDecimal beforePrice;
 
     @Column(name = "after_price")

@@ -1,18 +1,6 @@
 package org.fpoly.capstone.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,21 +14,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "full_name", length = 30)
+    @Column(name = "full_name", length = 100)
     private String fullName;
 
-    @Column(name = "date_or_birth")
+    @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(name = "phone_number", length = 10)
+    @Column(name = "phone_number", length = 15)
     private String phoneNumber;
 
     @Column(name = "email", length = 255)
@@ -49,17 +37,17 @@ public class User {
     @Column(name = "gender")
     private Boolean gender;
 
-    @Column(name = "avatar", length = 255)
+    @Column(name = "avata", length = 255)
     private String avatar;
 
-    @Column(name = "citizen_identity", length = 200)
+    @Column(name = "citizen_identity", length = 20)
     private String citizenIdentity;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private UserStatus status;
 
-    @Column(name = "password")
+    @Column(name = "password", length = 60)
     private String password;
 
     @Enumerated(EnumType.STRING)
