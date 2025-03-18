@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Hóa đơn</title>
+    <th:block id="th-css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+
+        <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>
+        <style>
+            .progress-bar-custom {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                padding: 20px 0;
+            }
+            .progress-step {
+                width: 25%;
+                text-align: center;
+                position: relative;
+            }
+            .progress-step::before {
+                content: '';
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                width: 100%;
+                height: 5px;
+                background: lightgray;
+                z-index: -1;
+            }
+            .progress-step:first-child::before {
+                width: 50%;
+                left: 50%;
+            }
+            .progress-step:last-child::before {
+                width: 50%;
+                left: 0;
+            }
+            .progress-step.active .icon {
+                background: blue;
+                color: white;
+            }
+            .icon {
+                width: 40px;
+                height: 40px;
+                line-height: 40px;
+                border-radius: 50%;
+                background: lightgray;
+                display: inline-block;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #f5f5f5;
+            }
+            .table-container {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 10px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background: #ff7f00;
+                color: white;
+            }
+            .delete-btn {
+                background: red;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+            .order-container {
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 20px;
+                background: #fff;
+            }
+            .order-header h2 {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .order-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #f8f9fa;
+                padding: 10px;
+                border-radius: 5px;
+            }
+            .order-info, .customer-info {
+                width: 48%;
+            }
+            .order-content {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 0;
+            }
+            .status-label {
+                background: #007bff;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+            .type-label {
+                background: #6f42c1;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+            .order-buttons {
+                display: flex;
+                gap: 10px;
+            }
+            .btn {
+                padding: 8px 15px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .btn-update {
+                background-color: #007bff;
+                color: white;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .order-content {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 10px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<th:block id="th-body">
+    <div class="content-body">
+        <div class="container-fluid">
+            <div class="order-container">
+
+                <div class="timeline">
+                    <div class="timeline-item" id="waiting-confirmation">
+                        <div class="icon">📜</div>
+                        <div class="text">Chờ xác nhận</div>
+                        <div class="date">16:37:35 23-12-2023</div>
+                    </div>
+                    <div class="timeline-item" id="confirmed" style="display: none;">
+                        <div class="icon">✅</div>
+                        <div class="text">Đã xác nhận</div>
+                        <div class="date">16:39:28 23-12-2023</div>
+                    </div>
+                    <div class="timeline-item" id="waiting-shipping" style="display: none;">
+                        <div class="icon">🚚</div>
+                        <div class="text">Chờ vận chuyển</div>
+                        <div class="date">16:39:47 23-12-2023</div>
+                    </div>
+                    <div class="timeline-item" id="shipping" style="display: none;">
+                        <div class="icon">🚛</div>
+                        <div class="text">Đang vận chuyển</div>
+                        <div class="date">16:40:10 23-12-2023</div>
+                    </div>
+                    <div class="timeline-item" id="paid" style="display: none;">
+                        <div class="icon">💳</div>
+                        <div class="text">Thanh toán</div>
+                        <div class="date">16:40:15 23-12-2023</div>
+                    </div>
+                    <div class="timeline-item" id="completed" style="display: none;">
+                        <div class="icon">🎉</div>
+                        <div class="text">Hoàn thành</div>
+                        <div class="date">16:40:15 23-12-2023</div>
+                    </div>
+                    <div class="timeline-item" id="cancel" style="display: none;">
+                        <div class="icon">❌</div>
+                        <div class="text">Đã hủy</div>
+                        <div class="date">16:40:15 23-12-2023</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: start; gap: 10px;">
+                    <button id="changeStatusButton" class="btn btn-primary">Chuyển trạng thái</button>
+                    <button class="btn btn-danger" id="cancelBill">Hủy</button>
+                    <button type="button" class="btn btn-primary">
+                        Lịch Sử
+                    </button>
+                </div>
+
+                <div id="confirmModalStatus" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h4>Xác nhận chuyển trạng thái</h4>
+                        <p>Vui lòng nhập lý do chuyển trạng thái (tối thiểu 5 chữ):</p>
+                        <textarea id="confirmationReason" rows="4" cols="50"></textarea>
+                        <br>
+                        <button id="confirmButton">Xác nhận</button>
+                    </div>
+                </div>
+                <div id="cancelModalStatus" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h4>Xác nhận chuyển trạng thái</h4>
+                        <p>Vui lòng nhập hủy (tối thiểu 20 chữ):</p>
+                        <textarea id="cancelmationReason" rows="4" cols="50"></textarea>
+                        <br>
+                        <button id="cancelButton">Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="order-container">
+                    <div class="order-header">
+                        <h2>Thông tin đơn hàng: <span id="billId"></span></h2>
+                        <div class="order-buttons">
+                            <button class="btn btn-update" id="changeInfor">Thay đổi</button>
+                        </div>
+                    </div>
+                    <div class="order-content">
+                        <div class="order-info">
+                            <p><strong>Trạng thái:</strong>
+                                <span class="status-label">
+                    <span id="status"></span>
+                </span>
+                            </p>
+
+                            <p><strong>Loại:</strong> <span id="type"></span></p>
+                            <p><strong>Địa chỉ:</strong> <span id="address"></span></p>
+                            <p><strong>Ghi chú:</strong> <span id="note"></span></p>
+                        </div>
+                        <div class="customer-info">
+                            <p><strong>Tên Khách hàng:</strong> <span id="customerName"></span></p>
+                            <p><strong>Số điện thoại:</strong> <span id="phoneNumber"></span></p>
+                            <p><strong>Thời gian dự kiến nhận:</strong> <span id="shipDate"></span></p>
+                        </div>
+                    </div>
+                </div><br>
+            </div>
+
+            <!--Modal change ìnor-->
+            <div id="changeAddressModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+
+                    <h4>Thay đổi thông tin</h4>
+
+                    <div id="changeAddressForm">
+                        <label for="customerNameModal">Tên khách hàng:</label>
+                        <input type="text" id="customerNameModal" ><br>
+
+                        <label for="phoneNumberModal">Số điện thoại:</label>
+                        <input type="text" id="phoneNumberModal" ><br>
+
+                        <label for="citySelectModal">Thành phố:</label>
+                        <select id="citySelectModal">
+                            <option value="">Chọn</option>
+                        </select><br>
+
+                        <label for="districtSelectModal">Huyện:</label>
+                        <select id="districtSelectModal">
+                            <option value="">Chọn</option>
+
+                        </select><br>
+
+                        <label for="wardSelectModal">Xã:</label>
+                        <select id="wardSelectModal">
+                            <option value="">Chọn</option>
+
+                        </select><br>
+
+                        <label for="detailAddressModal">Địa chỉ chi tiết:</label>
+                        <input type="text" id="detailAddressModal"><br>
+                       <div style="display: none" id="shipform">
+                           <label >Tiền ship:</label>
+                           <input type="text" id="totalShip"><br>
+                           <label > Ngày nhận:</label>
+                           <input type="text" id="confirm-day"><br>
+                       </div>
+
+                        <button id="btn-changeInfor">Lưu thay đổi</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Size</th>
+                        <th>Màu sắc</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
+                        <th>Tổng tiền</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="detailsp, index : ${billDetailsp}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${detailsp.productName}"></td>
+                        <td th:text="${detailsp.size}"></td>
+                        <td th:text="${detailsp.color}"></td>
+                        <td th:text="${detailsp.quantity}"></td>
+                        <td th:text="${#numbers.formatDecimal(detailsp.price, 0, 'COMMA', 3, 'POINT')} + ' VND'"></td>
+                        <td th:text="${#numbers.formatDecimal(detailsp.price, 0, 'COMMA', 3, 'POINT')} * ${detailsp.quantity} +' VND'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form th:action="@{/bill/detail/{id}/confirm(id=${bill.id})}" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmModalLabel">Xác nhận</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="billId" th:value="${bill.id}" />
+                                <input type="hidden" name="newStatus" id="newStatusInput" />
+
+                                <div class="mb-3">
+                                    <label for="noteInput" class="form-label">Ghi chú</label>
+                                    <textarea class="form-control" id="noteInput" name="note" rows="3" placeholder="Nhập ghi chú..."></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+                <div  th:each="vcdetail, index : ${voucherDetail}" class="card p-3 mt-3" style="width: 450px; border: 2px solid #ccc; border-radius: 10px;">
+                    <h5><b>Tổng tiền hàng :</b> <span class="text-primary" th:text="${#numbers.formatDecimal(vcdetail.beforePrice, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
+                    <h5><b>Phí vận chuyển :</b> <span th:text="${#numbers.formatDecimal(shippingFee, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
+                    <h5><b>Voucher giảm giá :</b> <span th:text="${#numbers.formatDecimal(cdetail.discountPrice, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
+                    <h5><b>Tổng tiền giảm :</b> <span th:text="${#numbers.formatDecimal(cdetail.discountPrice, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
+                    <hr>
+                    <h4><b>Tổng tiền thanh toán:</b> <span class="text-danger" th:text="${#numbers.formatDecimal(cdetail.afterPrice, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h4>
+                </div>
+            
+        </div>
+    </div>
+
+
+
+</th:block>
+<th:block id="th-js">
+    <th:block id="th-js">
+        <script type="text/javascript" th:src="@{/assets/js/bill/billDetail.js}"></script>
+    </th:block>
+    <script>
+        function confirmUpdate() {
+            if (confirm("Bạn có chắc chắn muốn cập nhật trạng thái đơn hàng?")) {
+                document.getElementById("confirmForm").submit();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+        var confirmModal = document.getElementById("confirmModal");
+        confirmModal.addEventListener("show.bs.modal", function (event) {
+            var button = event.relatedTarget; // Button được click
+            var newStatus = button.getAttribute("data-status"); // Lấy trạng thái mới
+            document.getElementById("newStatusInput").value = newStatus;
+        });
+        });
+        
+    </script>
+</th:block>
+</body>
+</html>

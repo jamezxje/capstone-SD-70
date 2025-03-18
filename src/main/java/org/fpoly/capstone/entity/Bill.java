@@ -1,5 +1,6 @@
 package org.fpoly.capstone.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,13 +33,16 @@ public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "code")
+    private String code;
     @ManyToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id")
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "id_employee", referencedColumnName = "id")
+    @JsonBackReference
     private User employee;
 
     @Column(name = "phone_number")
