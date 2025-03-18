@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fpoly.capstone.entity.enum_status.AddressStatus;
@@ -24,12 +25,17 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "address")
 public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID) // Dành cho UUID
+//    @Column(length = 36, updatable = false, nullable = false)
+//    private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user", referencedColumnName = "id")
@@ -50,6 +56,11 @@ public class Address {
     @Column(name = "ward_code", length = 255)
     private String wardCode;
 
+//    @Column(name = "province_id", length = 50)
+//    private Integer provinceId;
+//
+//    @Column(name = "to_district_id", length = 50)
+//    private Integer toDistrictId;
     @Column(name = "province_id", length = 50)
     private String provinceId;
 

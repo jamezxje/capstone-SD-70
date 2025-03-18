@@ -32,11 +32,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID) // Dành cho UUID
+//    @Column(length = 36, updatable = false, nullable = false)
+//    private String id;
+//    private String id = UUID.randomUUID().toString();
 
     @Column(name = "full_name", length = 30)
     private String fullName;
 
-    @Column(name = "date_or_birth")
+    @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
@@ -82,5 +87,5 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Address> addresses;
-
 }
+
