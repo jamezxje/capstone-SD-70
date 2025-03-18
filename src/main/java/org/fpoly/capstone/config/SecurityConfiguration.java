@@ -31,6 +31,7 @@ public class SecurityConfiguration {
             "/vnpay-success/**" ,
             "/customerPage/**" ,
             "/createCustomerBill/**" ,
+            "/searchCustomer/**" ,
             "/payment-success/**" ,
             "/sendInvoice/**",
             "/address-user/**" ,

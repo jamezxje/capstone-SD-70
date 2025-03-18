@@ -30,6 +30,7 @@ function createInvoiceTab(invoiceNumber, invoiceData) {
         const codeSelectBill = this.getAttribute('data-code');
         console.log("Hóa đơn  chọn: ", selectedInvoiceId);
         fetchProductsForAllBills(selectedInvoiceId)
+        fetchVouchers(currentPageVoucher);
         console.log("InvoiCoumt", invoiceCount);
         invoiceCodeLocal = codeSelectBill
         idBill = selectedInvoiceId;
@@ -514,6 +515,7 @@ function addProductToInvoice(id, name, size, color, quantity, price) {
     document.getElementById('amount').innerText = formatVND(totalAmount) + "đ";
     document.getElementById('input-payment').value = formatVND(totalAmount) + "đ";
     getVoucherInBill(totalBill);
+    fetchVouchers(currentPageVoucher);
     console.log('Check totoal Bill', totalBill)
 }
 
@@ -578,6 +580,7 @@ function addProductToInvoice1(id, name, size, color, quantity, price) {
     document.getElementById('amount').innerText = formatVND(totalAmount) + "đ";
     document.getElementById('input-payment').value = formatVND(totalAmount) + "đ";
     getVoucherInBill(totalBill);
+    fetchVouchers(currentPageVoucher);
     console.log('Check totoal Bill', totalBill)
 }
 
@@ -1099,7 +1102,6 @@ document.getElementById('districtSelect').addEventListener('change', function ()
     const selectOption = this.options[this.selectedIndex];
     districtName = selectOption.textContent || selectOption.innerText;
     console.log("Check distric", districtID);
-
     if (districtID) {
         fetchProvinceWard(districtID);
     } else {
@@ -1438,7 +1440,6 @@ function fetchAllAddressCustomer(idCustomer) {
 }
 
 let idDistrictChose = null, idWardCodeChose = null;
-
 function displayAddress(addresses) {
     const addressListContainer = document.getElementById('addressList');
 
@@ -1505,7 +1506,8 @@ function displayAddress(addresses) {
             console.log("Huyen", district)
             console.log("xa", ward)
             idDistrictChose = district;
-            idWardCodeChose = ward
+            idWardCodeChose = ward;
+
             fetchProvinceDistricts(province)
             fetchProvinceWard(district)
             document.getElementById('nameCustomer').value = fullName;
@@ -1538,7 +1540,6 @@ document.getElementById('btn-exit-product').addEventListener('click', () => {
 function checkName() {
     const nameCustomer = document.getElementById("nameCustomer").value;
     const nameCustomerError = document.getElementById("nameCustomerError");
-    const nameRegex = /^[a-zA-Z\s]*$/;
 
     if (!nameCustomer) {
         nameCustomerError.innerText = "Vui lòng nhập tên";
@@ -1546,10 +1547,6 @@ function checkName() {
         return false;
     } else if (nameCustomer.length < 3) {
         nameCustomerError.innerText = "Vui lòng nhập tên trên 3 ký tự"
-        nameCustomerError.style.display = "block";
-        return false;
-    } else if (!nameRegex.test(nameCustomer)) {
-        nameCustomerError.innerText = "Vui lòng không nhập ký tự đặc biệt"
         nameCustomerError.style.display = "block";
         return false;
     } else {
@@ -1596,11 +1593,14 @@ function checkProvince() {
 function checkDistrict() {
     let districtSelect = document.getElementById("districtSelect").value;
     const districtSelectError = document.getElementById("districtSelectError");
-    if (!districtSelect) {
+    if (!idDistrictChose ) {
+        console.log("chay 1")
         districtSelectError.innerText = "Vui lòng chọn Quận/Huyện";
         districtSelectError.style.display = "block";
         return false;
-    } else {
+    }
+
+    else {
         districtSelectError.innerText = "";
         districtSelectError.style.display = "none";
         return true;
@@ -1610,9 +1610,7 @@ function checkDistrict() {
 function checkWard() {
     let wardSelect = document.getElementById("wardSelect").value;
     const wardSelectError = document.getElementById("wardSelectError");
-    console.log("Check ward select", wardSelect);
-
-    if (!wardSelect) {
+    if (!idWardCodeChose ) {
         wardSelectError.innerText = "Vui lòng chọn xã/phường";
         wardSelectError.style.display = "block";
         return false;
@@ -1635,16 +1633,19 @@ function checkFullAddress() {
         addressValueError.innerText = 'Vui lòng nhập tối thiểu 10 chữ';
         addressValueError.style.display = 'block';
         return false;
-    } else if (!nameRegex.test(addressValue)) {
-        addressValueError.innerText = 'Vui lòng không nhập ký tự dặc biệt';
-        addressValueError.style.display = 'block';
-        return false;
-    } else {
+    }  else {
         addressValueError.innerText = "";
         addressValueError.style.display = 'none';
         return true;
     }
 }
+document.getElementById("provinceSelect").addEventListener('change', checkProvince);
+document.getElementById("districtSelect").addEventListener('change', checkDistrict);
+document.getElementById("wardSelect").addEventListener('change', checkWard);
+
+document.getElementById("nameCustomer").addEventListener('input', checkName);
+document.getElementById("numberPhoneCustomer").addEventListener('input', checkPhone);
+document.getElementById("addressValue").addEventListener('input', checkFullAddress);
 
 function attachChooseProductEvent() {
     document.querySelectorAll('.chose-product').forEach(button => {
@@ -1826,13 +1827,7 @@ document.getElementById('btn-bank').addEventListener('click', function () {
         });
 });
 
-document.getElementById("provinceSelect").addEventListener('change', checkProvince);
-document.getElementById("districtSelect").addEventListener('change', checkDistrict);
-document.getElementById("wardSelect").addEventListener('change', checkWard);
 
-document.getElementById("nameCustomer").addEventListener('input', checkName);
-document.getElementById("numberPhoneCustomer").addEventListener('input', checkPhone);
-document.getElementById("addressValue").addEventListener('input', checkFullAddress);
 
 
 document.getElementById('closeModalADDCustomer').style.display = 'none'
@@ -2043,9 +2038,12 @@ let currentPageVoucher = 0;
 const pageSizeVoucher = 5;
 
 function fetchVouchers(page = 0) {
-    axios.get(`/getAllVoucher?page=${page}&size=${pageSizeVoucher}`)
+    const totalAmount = totalBill;
+    console.log("Check totalamount" , totalAmount)
+    axios.get(`/getAllVoucher?totalAmount=${totalAmount}&page=${page}&size=${pageSizeVoucher}`)
         .then((response) => {
             const data = response.data;
+            console.log("Data voucher" , data)
             const vouchers = data.content;
             const totalPages = data.totalPages;
             updateVoucherTable(vouchers);
@@ -2059,16 +2057,21 @@ function fetchVouchers(page = 0) {
 function updateVoucherTable(vouchers) {
     const tbody = document.querySelector('#voucherTable tbody');
     tbody.innerHTML = '';
+    let formatINT = (amount) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(amount);
+    };
 
     vouchers.forEach((voucher, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${index + 1}</td>
             <td>${voucher.name}</td>
-            <td>${formatVND(voucher.value)}</td>
-               <td>${voucher.quantity}</td>
-            <td>${voucher.minimumBill}</td>
-         
+            <td>${formatINT(voucher.value)}</td>
+            <td>${formatINT(voucher.minimumBill)}</td>
+                <td>${voucher.quantity}</td>
             <td>${new Date(voucher.startDate).toLocaleDateString()}</td>
             <td>${new Date(voucher.endDate).toLocaleDateString()}</td>
             <td>
@@ -2127,3 +2130,53 @@ function updatePaginationVoucher(totalPages, currentPage) {
     }
 }
 fetchVouchers(currentPageVoucher);
+
+function searchCustomer() {
+ let search = document.getElementById('inputSearchCustomer').value;
+ axios.get('/searchCustomer' , {
+     params : {
+         searchQuery : search
+     }
+ })
+     .then(response => {
+         const data = response.data;
+         console.log("data search" , response.data)
+         const customerTableBody = document.getElementById('customerTable');
+         customerTableBody.innerHTML = '';
+
+         if (data.length === 0) {
+             const noResultsRow = document.createElement('tr');
+             noResultsRow.innerHTML = '<td colspan="5">No customers found.</td>';
+             customerTableBody.appendChild(noResultsRow);
+         } else {
+             data.forEach((customer, index) => {
+                 const row = document.createElement('tr');
+                 row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${customer.fullName}</td>
+                    <td>${customer.numberPhone}</td>
+                    <td>${customer.email}</td>
+                    <td>
+                        <button class="btnChose_customer" data-id="${customer.id}" data-fullName="${customer.fullName}" data-phone="${customer.numberPhone}" data-email="${customer.email}">
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                    </td>
+                `;
+                 customerTableBody.appendChild(row);
+             });
+         }
+         attachChoseCustomer();
+     })
+     .catch(error => {
+         console.log("error" , error)
+     })
+}
+
+document.getElementById('inputSearchCustomer').addEventListener('input' , function () {
+    let search = document.getElementById("inputSearchCustomer").value.trim();
+    if (search) {
+        searchCustomer();
+    } else {
+        fetchCustomers(currentPage);
+    }
+})

@@ -406,23 +406,39 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public Page<VoucherRequest1> findAllVoucherPage(int page, int size) {
+    public Page<VoucherRequest1> findAllVoucherPage(Integer totalAmount , int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Object[]> results = voucherRepository.findAllVoucherRequests(pageable);
+        Page<Object[]> results = voucherRepository.findAllVoucherRequests(totalAmount , pageable);
         List<VoucherRequest1> voucherRequests = new ArrayList<>();
         for (Object[] result : results ){
             Long id = (Long) result[0];
             String code = (String) result[1];
             String name = (String) result[2];
             BigDecimal value = (BigDecimal) result[3];
-            Integer quantity = (Integer) result[4];
-            Integer minimumbill = (Integer) result[5];
+            Integer minimumbill = (Integer) result[4];
+            Integer quantity = (Integer) result[5];
             Date startDate = (Date) result[6];
             Date endDate = (Date) result[7];
-            VoucherRequest1 voucherRequest = new VoucherRequest1(id , code , name , value , quantity , minimumbill , startDate , endDate);
+            VoucherRequest1 voucherRequest = new VoucherRequest1(id , code , name , value , minimumbill , quantity , startDate , endDate);
             voucherRequests.add(voucherRequest);
         }
        return new PageImpl<>(voucherRequests , pageable , results.getTotalElements());
+    }
+
+    @Override
+    public List<GetAllCusomter> searchCustomer(String searchQuery) {
+        List<Object[]> results = customerRepository.searchBySearchQuery(searchQuery);
+        List<GetAllCusomter> cusomters = new ArrayList<>();
+        for (Object[] result : results) {
+            Long id = (Long) result[0];
+            String fullName = (String) result[1];
+            String phoneNumber = (String) result[2];
+            String email = (String) result[3];
+            Date lastModifiedDate = (Date) result[4];
+            GetAllCusomter getAllCusomter = new GetAllCusomter(id, fullName, phoneNumber, email, lastModifiedDate);
+            cusomters.add(getAllCusomter);
+        }
+        return cusomters;
     }
 
     @Override

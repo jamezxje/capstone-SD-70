@@ -15,18 +15,21 @@ import java.util.List;
 public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     List<Voucher> findAll();
     @Query("""
-            SELECT v.id as id , 
-             v.code as code ,
-             v.name as name ,
-             v.value as value ,
-             v.minimumBill as minimumBill ,
-             v.quantity as quantity ,
-             v.startDate as startDate ,
-             v.endDate as endDate 
-             FROM Voucher v where v.status = 'DA_SU_DUNG'
-                         order by v.lastModifiedDate desc
-            """)
-Page<Object[]> findAllVoucherRequests(Pageable pageable);
+    SELECT v.id as id , 
+           v.code as code ,
+           v.name as name ,
+           v.value as value ,
+           v.minimumBill as minimumBill ,
+           v.quantity as quantity ,
+           v.startDate as startDate ,
+           v.endDate as endDate 
+    FROM Voucher v 
+    WHERE v.status = 'DA_SU_DUNG' 
+      AND v.minimumBill <= :totalAmount
+    ORDER BY v.lastModifiedDate DESC
+""")
+    Page<Object[]> findAllVoucherRequests(@Param("totalAmount") int totalAmount, Pageable pageable);
+
     @Query("""
     SELECT 
         v.id as id,

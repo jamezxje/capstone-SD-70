@@ -16,8 +16,8 @@ public class VoucherRequest1 {
     private String code;
     private String name;
     private BigDecimal value;
-    private Integer quantity;
     private Integer minimumBill;
+    private Integer quantity;
     private Date startDate;
     private Date endDate;
 

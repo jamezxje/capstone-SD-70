@@ -39,5 +39,7 @@ public interface BillService {
 
     Page<GetAllCusomter> findALlCustomerPage(int page , int size);
 
-    Page<VoucherRequest1> findAllVoucherPage(int page , int size);
+    Page<VoucherRequest1> findAllVoucherPage(Integer totalAmount , int page , int size);
+
+    List<GetAllCusomter> searchCustomer(String searchQuery);
 }

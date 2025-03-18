@@ -100,8 +100,10 @@ public class BillControllerApi {
 
     @GetMapping("/getAllVoucher")
     public Page<VoucherRequest1> listVoucher(@RequestParam(defaultValue = "0")int page ,
-                                             @RequestParam(defaultValue = "5")int size) {
-      return billService.findAllVoucherPage(page, size);
+                                             @RequestParam(defaultValue = "5")int size,
+                                             @RequestParam Integer totalAmount
+    ) {
+      return billService.findAllVoucherPage(totalAmount , page, size);
 
     }
 
@@ -137,6 +139,11 @@ public class BillControllerApi {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         return billService.findALlCustomerPage(page, size);
+    }
+    @GetMapping("/searchCustomer")
+    public List<GetAllCusomter> searchCustomer( @RequestParam(value = "searchQuery", required = false) String searchQuery
+                                                ){
+        return billService.searchCustomer(searchQuery);
     }
 
 
