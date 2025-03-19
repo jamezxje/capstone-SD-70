@@ -32,6 +32,8 @@ private BillDetailRepository billDetailRepository;
             helper.setText(htmlContent, true);
             mailSender.send(mimeMessage);
             System.out.println("Email sent");
+            System.out.println("Email đã được gửi đến: " + to);
+
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("Email Failed");

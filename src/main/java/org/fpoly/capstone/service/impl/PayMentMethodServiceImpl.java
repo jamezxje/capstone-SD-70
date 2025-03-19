@@ -3,21 +3,16 @@ package org.fpoly.capstone.service.impl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.fpoly.capstone.constant.MessageError;
 import org.fpoly.capstone.constant.VnPayConstant;
 import org.fpoly.capstone.dto.vnpay.CreatePayMentMethodRequest;
 import org.fpoly.capstone.dto.vnpay.OrderInFor;
 import org.fpoly.capstone.dto.vnpay.PayMentVnPayResponse;
-import org.fpoly.capstone.entity.Bill;
-import org.fpoly.capstone.entity.BillHistory;
-import org.fpoly.capstone.entity.Voucher;
-import org.fpoly.capstone.entity.VoucherDetail;
+import org.fpoly.capstone.entity.*;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.BillType;
 import org.fpoly.capstone.entity.enum_status.PaymentMethod;
-import org.fpoly.capstone.repository.BillHistoryRepository;
-import org.fpoly.capstone.repository.BillRepository;
-import org.fpoly.capstone.repository.VoucherDetailReponsitory;
-import org.fpoly.capstone.repository.VoucherRepository;
+import org.fpoly.capstone.repository.*;
 import org.fpoly.capstone.service.EmailService;
 import org.fpoly.capstone.service.PaymentMethodService;
 import org.fpoly.capstone.utils.Config;
@@ -49,6 +44,8 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
     private VoucherRepository voucherRepository;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private UserRepository userRepository;
     @Override
     public String payWithVnpay(CreatePayMentMethodRequest payModel, HttpServletRequest request) throws UnsupportedEncodingException {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
@@ -118,33 +115,41 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 try {
                     deliveryDate = dateFormat.parse(deliveryDateStr);
                 } catch (Exception e) {
-                    // Xử lý lỗi khi ngày không hợp lệ
                     System.out.println("Ngày không hợp lệ: " + deliveryDateStr);
                 }
             }
             Optional<Bill> billOptional = billRepository.findByCode(billCode);
+
+
             if (billOptional.isPresent()) {
+
                 Bill bill = billOptional.get();
                 Long idVoucher = response.getIdVoucher();
                 Long idBill = response.getIdBill();
                 Optional<Bill> idBillOptional = billRepository.findById(idBill);
+                Optional<User> optionalUser = userRepository.findById(response.getIdUser());
                 if (!idBillOptional.isPresent()) {
-                    throw new RuntimeException("Bill not found");
+                    throw new RuntimeException(MessageError.BILL_NULL.getMessage());
                 }
+                if (!optionalUser.isPresent()) {
+                    throw new RuntimeException(MessageError.EMAIL_NULL.getMessage());
+                }
+                User user = optionalUser.get();
                 Bill billId = idBillOptional.get();
+                bill.setUser(user);
                 bill.setLastModifiedDate(Calendar.getInstance().getTime());
                 bill.setTotalMoney(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() - 2)));  // Chuyển đổi tiền
-                    bill.setMethod(PaymentMethod.CHUYEN_KHOAN);
-                    bill.setUserName(response.getUserName());
+                bill.setMethod(PaymentMethod.CHUYEN_KHOAN);
+                bill.setUserName(response.getUserName());
                 System.out.println("Láy username " + response.getUserName());
                 System.out.println("Lay email " + bill.getEmail());
                 System.out.println("lay phone" + bill.getPhoneNumber());
-                    bill.setPhoneNumber(response.getPhoneNumber());
-                    bill.setEmail(response.getEmail());
-                    bill.setAddress(response.getAddress());
-                    bill.setItemDiscount(response.getItemDiscount());
-                    bill.setMoneyShip(response.getMoneyShip());
-                    bill.setNote("Thanh toán thành công VNPay");
+                bill.setPhoneNumber(response.getPhoneNumber());
+                bill.setEmail(response.getEmail());
+                bill.setAddress(response.getAddress());
+                bill.setItemDiscount(response.getItemDiscount());
+                bill.setMoneyShip(response.getMoneyShip());
+                bill.setNote("Thanh toán thành công VNPay");
                 System.out.println("Cehck ngggayf ship" + response.getDeliveryDate());
                 if (deliveryDate != null) {
                     bill.setShipDate(deliveryDate);
@@ -162,46 +167,47 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                         .user(bill.getEmployee())
                         .build());
 
-           response.getVoucherDetails().forEach(voucher -> {
-               Optional<Voucher> vouchers = voucherRepository.findById(idVoucher);
-               if (!vouchers.isPresent()) {
-                   throw new RuntimeException("Voucher not found");
-               }
-               if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().getTime() < Calendar.getInstance().getTimeInMillis()){
-                   throw new RuntimeException("Voucher end date is less than current date");
-               }
-               vouchers.get().setQuantity(vouchers.get().getQuantity() - 1);
-               voucherRepository.save(vouchers.get());
-               VoucherDetail voucherDetail = VoucherDetail.builder()
-                       .voucher(vouchers.get())
-                       .bill(billId)
-                       .afterPrice(new BigDecimal(voucher.getAfterVoucher()))
-                       .beforePrice(new BigDecimal(voucher.getBeforVoucher()))
-                       .discountPrice(new BigDecimal(voucher.getDiscountVoucher()))
-                       .build();
-               voucherDetailReponsitory.save(voucherDetail);
-           });
-                try {
-                    if (bill.getEmail() != null) {
-                        sendInVoiceEmail(bill);
-                    }else{
-                        System.out.println("No send Mail is email Null ");
+                response.getVoucherDetails().forEach(voucher -> {
+                    Optional<Voucher> vouchers = voucherRepository.findById(idVoucher);
+                    if (!vouchers.isPresent()) {
+                        throw new RuntimeException("Voucher not found");
                     }
-
+                    if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().getTime() < Calendar.getInstance().getTimeInMillis()) {
+                        throw new RuntimeException("Voucher end date is less than current date");
+                    }
+                    vouchers.get().setQuantity(vouchers.get().getQuantity() - 1);
+                    voucherRepository.save(vouchers.get());
+                    VoucherDetail voucherDetail = VoucherDetail.builder()
+                            .voucher(vouchers.get())
+                            .bill(billId)
+                            .afterPrice(new BigDecimal(voucher.getAfterVoucher()))
+                            .beforePrice(new BigDecimal(voucher.getBeforVoucher()))
+                            .discountPrice(new BigDecimal(voucher.getDiscountVoucher()))
+                            .build();
+                    voucherDetailReponsitory.save(voucherDetail);
+                    System.out.println("okoko");
+                });
+                try {
+                   if (bill.getEmail() != null) {
+                       emailService.sendEmail(bill.getEmail() , "Thannh toán hóa đơn" ,emailService.generateHtmlContent(bill) );
+                   }else {
+                       System.out.println("Email null no send");
+                   }
                 } catch (MessagingException e) {
                     throw new RuntimeException(e);
                 }
-                return true;
             }
         }
-        return false;
+        return true;
     }
 
     private void sendInVoiceEmail(Bill bill) throws MessagingException {
-        String subject = "Hóa đơn thanh toán CAPSTONE";
-        String reciprient = bill.getEmail();
-        String htmlContent = emailService.generateHtmlContent(bill);
-        emailService.sendEmail(reciprient , subject , htmlContent);
+        System.out.println("Check gửi mail " + bill.getEmail());
+        System.out.println("Gửi email đến: " );
+        System.out.println("Chủ đề email: " );
+        System.out.println("Nội dung email: ");
+
+        emailService.sendEmail(bill.getEmail(), "Thanh toán hóa đơn ", emailService.generateHtmlContent(bill));
     }
 
 }

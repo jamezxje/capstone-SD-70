@@ -1798,7 +1798,8 @@ document.getElementById('btn-bank').addEventListener('click', function () {
     };
     const nameCustomer = document.getElementById('nameCustomer').value;
     const phoneCustomer = document.getElementById('numberPhoneCustomer').value;
-    localStorage.setItem('idUser', idCusomter);
+    let idCustomerPay = idCusomter || "13";
+    localStorage.setItem('idUser', idCustomerPay);
     localStorage.setItem('userName', nameCustomer);
     localStorage.setItem('note', "Office");
     localStorage.setItem('phoneNumber', phoneCustomer);

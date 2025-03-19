@@ -128,18 +128,18 @@ document.getElementById('changeSale').addEventListener('click' , function (){
         axios.post('/vnpay-success', response)
             .then(response => {
                 console.log("Thanh toán thành công", response.data)
-                localStorage.removeItem('idUser');
-                localStorage.removeItem('userName');
-                localStorage.removeItem('note');
-                localStorage.removeItem('phoneNumber');
-                localStorage.removeItem('email');
-                localStorage.removeItem('openDelivery');
-                localStorage.removeItem('itemDiscount');
-                localStorage.removeItem('moneyShip');
-                localStorage.removeItem('type');
-                localStorage.removeItem('address');
-                localStorage.removeItem('deliveryDate');
-                localStorage.removeItem('voucherDetails');
+                // localStorage.removeItem('idUser');
+                // localStorage.removeItem('userName');
+                // localStorage.removeItem('note');
+                // localStorage.removeItem('phoneNumber');
+                // localStorage.removeItem('email');
+                // localStorage.removeItem('openDelivery');
+                // localStorage.removeItem('itemDiscount');
+                // localStorage.removeItem('moneyShip');
+                // localStorage.removeItem('type');
+                // localStorage.removeItem('address');
+                // localStorage.removeItem('deliveryDate');
+                // localStorage.removeItem('voucherDetails');
             })
             .catch(error => {
                 console.log("Error in save", error)

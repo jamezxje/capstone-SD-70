@@ -465,10 +465,13 @@ public class BillServiceImpl implements BillService {
         ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         return Date.from(instant.atZone(zoneId).toInstant());
     }
-    private void sendInVoiceEmail(Bill bill) throws MessagingException {
+    public void sendInVoiceEmail(Bill bill) throws MessagingException {
         String subject = "Hóa đơn thanh toán CAPSTONE";
         String reciprient = bill.getEmail();
         String htmlContent = emailService.generateHtmlContent(bill);
+        System.out.println("Gửi email đến: " + reciprient);
+        System.out.println("Chủ đề email: " + subject);
+        System.out.println("Nội dung email: " + htmlContent);
         emailService.sendEmail(reciprient , subject , htmlContent);
     }
 }
