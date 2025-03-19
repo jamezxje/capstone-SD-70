@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/dashboard")
+@RequestMapping("/staff-management")
 public class EmployeeController {
 
     @Autowired
@@ -34,18 +34,18 @@ public class EmployeeController {
     @Autowired
     private AddressService addressService;
 
-    @GetMapping("/employee")
+    @GetMapping
     public String listEmployees(Model model) {
         List<User> employees = employeeService.getAllEmployees(); // Lấy danh sách nhân viên có ROLE_USER
         model.addAttribute("employees", employees);
         return "views/users/employee/employee-list";
     }
 
-    @GetMapping("/employee/detail/{id}")
+    @GetMapping("/detail/{id}")
     public String employeeDetail(@PathVariable Long id, Model model) {
         User employee = employeeService.getEmployeeById(id);
         if (employee == null) {
-            return "redirect:/dashboard/employee";
+            return "redirect:/staff-management";
         }
 
         Address defaultAddress = addressService.getDefaultAddress(employee.getId());
@@ -55,7 +55,7 @@ public class EmployeeController {
         return "views/users/employee/employee-detail";
     }
 
-    @GetMapping("/employee/view-add")
+    @GetMapping("/view-add")
     public String showAddForm(Model model) {
 //        EmployeeDTO employeeDTO = new EmployeeDTO();
         User employee = new User();
@@ -66,7 +66,7 @@ public class EmployeeController {
         return "views/users/employee/employee-create";
     }
 
-    @PostMapping("/employee/add")
+    @PostMapping("/add")
     public String saveEmployee(@Valid @ModelAttribute EmployeeDTO employeeDTO,
                                @ModelAttribute AddressDTO addressDTO,
                                @RequestParam("avatarFile") MultipartFile avatarFile) {
@@ -104,14 +104,14 @@ public class EmployeeController {
         // Lưu vào database
         employeeService.createEmployee(employeeDTO,addressDTO,avatarFile);
 
-        return "redirect:/dashboard/employee";
+        return "redirect:/staff-management";
     }
 
-    @GetMapping("/employee/view-update/{id}")
+    @GetMapping("/view-update/{id}")
     public String viewupdateEmployee(@PathVariable Long id, Model model) {
         User employee = employeeService.getEmployeeById(id);
         if (employee == null) {
-            return "redirect:/dashboard/employee";
+            return "redirect:/staff-management";
         }
         Address defaultAddress = addressService.getDefaultAddress(employee.getId());
         model.addAttribute("employee", employee);
@@ -119,7 +119,7 @@ public class EmployeeController {
         return "views/users/employee/employee-update";
     }
 
-    @PostMapping("/employee/update/{id}")
+    @PostMapping("/update/{id}")
     public String updateEmployee(@PathVariable Long id,
                                  @ModelAttribute User employee,
                                  @ModelAttribute Address address,
@@ -127,7 +127,7 @@ public class EmployeeController {
         User existingEmployee = employeeService.getEmployeeById(id);
 
         if (existingEmployee == null) {
-            return "redirect:/dashboard/employee";
+            return "redirect:/staff-management";
         }
 
         // Cập nhật thông tin nhân viên
@@ -167,10 +167,10 @@ public class EmployeeController {
         addressService.saveAddress(existingAddress != null ? existingAddress : address);
         employeeService.saveEmployee(existingEmployee);
 
-        return "redirect:/dashboard/employee";
+        return "redirect:/staff-management";
     }
 
-    @GetMapping("/employee/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String softDeleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         User employee = employeeService.getEmployeeById(id);
         if (employee != null) {
@@ -180,6 +180,6 @@ public class EmployeeController {
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy nhân viên.");
         }
-        return "redirect:/dashboard/employee";
+        return "redirect:/staff-management";
     }
 }

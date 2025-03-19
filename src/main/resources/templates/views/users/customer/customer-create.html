@@ -1,68 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      th:fragment="appLayoutFragment(cssResources, jsResources, pageContent)">
+      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- SEO & Meta Data -->
-    <meta name="keywords" content="">
-    <meta name="author" content="">
-    <meta name="robots" content="">
-    <meta name="flash-message" th:content="${message}">
-    <meta name="flash-type" th:content="${type}">
-    <meta name="description" content="Zenix - Crypto Admin Dashboard">
-    <meta property="og:title" content="Zenix - Crypto Admin Dashboard">
-    <meta property="og:description" content="Zenix - Crypto Admin Dashboard">
-    <meta property="og:image" content="https://zenix.dexignzone.com/xhtml/social-image.png">
-    <meta name="format-detection" content="telephone=no">
-
-    <!-- Title -->
-    <title>Jude Bellingham</title>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/images/favicon.jpg}">
-
-    <!-- jQuery (load first) -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-    <!-- CSS -->
-    <link rel="stylesheet" th:href="@{/assets/vendor/pickadate/themes/default.css}">
-    <link rel="stylesheet" th:href="@{/assets/vendor/pickadate/themes/default.date.css}">
-    <link rel="stylesheet" th:href="@{/assets/vendor/chartist/css/chartist.min.css}">
-    <link rel="stylesheet" th:href="@{/assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css}">
-    <link rel="stylesheet" th:href="@{/assets/vendor/owl-carousel/owl.carousel.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/style.css}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.min.css"
-          crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.5.0/css/fileinput.min.css" media="all"
-          rel="stylesheet" type="text/css"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap5-toggle@5.1.1/css/bootstrap5-toggle.min.css" rel="stylesheet">
-
-    <!-- Dynamic CSS -->
-    <th:block th:replace="${cssResources} ?: ~{}"></th:block>
-
-    <!-- JavaScript -->
+    <meta charset="UTF-8">
+    <title>Quản lý khách hàng</title>
+    <th:block id="th-css"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
-<div id="preloader">
-    <div class="sk-three-bounce">
-        <div class="sk-child sk-bounce1"></div>
-        <div class="sk-child sk-bounce2"></div>
-        <div class="sk-child sk-bounce3"></div>
-    </div>
-</div>
-<div id="main-wrapper">
-    <th:block th:replace="~{views/fragments/nav_header::navHeaderFragment}"></th:block>
-    <th:block th:replace="~{views/fragments/chatbox::chatboxFragment}"></th:block>
-    <th:block th:replace="~{views/fragments/header::headerFragment}"></th:block>
-    <th:block th:replace="~{views/fragments/side_bar::sidebarFragment}"></th:block>
-
+<th:block id="th-body">
     <div class="content-body">
         <div class="container-fluid">
             <!-- Add Project -->
@@ -73,7 +19,7 @@
                         <div class="card-header">
                             <h4 class="card-title">Thêm khách hàng</h4>
                             <div>
-                                <a class="btn btn-primary mr-2" href="/dashboard/customer">Hủy</a>
+                                <a class="btn btn-primary mr-2" href="/customer-management">Hủy</a>
                                 <button type="submit" class="btn btn-primary">Thêm khách hàng</button>
                             </div>
                         </div>
@@ -81,7 +27,7 @@
                             <div class="form-validation">
                                 <form class="form-valide"
                                       method="post"
-                                      th:action="@{/dashboard/customer/add}"
+                                      th:action="@{/customer-management/add}"
                                       th:object="${customer}"
                                       enctype="multipart/form-data">
                                     <div class="row">
@@ -254,8 +200,7 @@
             </div>
         </div>
     </div>
-    <th:block th:replace="~{views/fragments/footer::footerFragment}"></th:block>
-</div>
+</th:block>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';
