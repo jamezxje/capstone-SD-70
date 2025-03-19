@@ -31,7 +31,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -172,7 +171,8 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                     if (!vouchers.isPresent()) {
                         throw new RuntimeException("Voucher not found");
                     }
-                    if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().getTime() < Calendar.getInstance().getTimeInMillis()) {
+                    if (vouchers.get().getQuantity() <= 0 &&
+                            vouchers.get().getEndDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() < System.currentTimeMillis()) {
                         throw new RuntimeException("Voucher end date is less than current date");
                     }
                     vouchers.get().setQuantity(vouchers.get().getQuantity() - 1);

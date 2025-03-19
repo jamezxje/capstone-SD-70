@@ -103,7 +103,7 @@ document.getElementById("add-row-btn").addEventListener("click", function () {
       </div>
       <div class="form-group col-md-3">
         <label for="price">Giá (nghìn VND) <span class="text-danger">*</span> </label>
-        <input id="price" name="productVariantList[${variantIndex}].price" type="text" class="form-control" placeholder="" required>
+        <input id="price" oninput="formatCurrency(event)" name="productVariantList[${variantIndex}].price" type="text" class="form-control" placeholder="" required>
       </div>
       <div class="form-group col-md-3 d-flex align-items-end">
         <button type="button" class="btn btn-danger btn-delete mb-1">Delete</button>

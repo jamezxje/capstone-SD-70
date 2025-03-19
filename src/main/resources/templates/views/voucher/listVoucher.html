@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
 
 <head>
   <meta charset="utf-8">
@@ -13,72 +13,72 @@
 <th:block id="th-body">
   <div class="content-body">
     <div class="container-fluid">
-
+      
       <div class="card">
-
+        
         <form th:action="@{/dashboard/product-management/voucher/search}" method="get">
-        <div class="row m-5">
-          <div class="col-md-5 mb-3">
-            <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên tìm kiếm">
-          </div>
-
-          <div class="mb-3">
-
-            <select class="form-control" id="status" name="status">
-              <option value="">Chọn trạng thái</option>
-              <option th:each="status : ${status}"
-                      th:value="${status}"
-                      th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
+          <div class="row m-5">
+            <div class="col-md-5 mb-3">
+              <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên tìm kiếm">
+            </div>
+            
+            <div class="mb-3">
+              
+              <select class="form-control" id="status" name="status">
+                <option value="">Chọn trạng thái</option>
+                <option th:each="status : ${status}"
+                        th:value="${status}"
+                        th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
                             (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}">
-
-              </option>
-            </select>
+                
+                </option>
+              </select>
+            </div>
+            
+            <!--          <div class="mb-3 ml-3">-->
+            <!--            <input type="datetime-local" class="form-control" id="createBy" name="createBy">-->
+            <!--          </div>-->
+          
           </div>
-
-<!--          <div class="mb-3 ml-3">-->
-<!--            <input type="datetime-local" class="form-control" id="createBy" name="createBy">-->
-<!--          </div>-->
-
-        </div>
-
-        <div class="mr-5 d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-        </div>
-      </form>
-
+          
+          <div class="mr-5 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+          </div>
+        </form>
+        
         <div class="card-header d-sm-flex d-block">
           <div class="mr-auto mb-sm-0 mb-3">
             <h4 class="card-title mb-2">Danh sách Voucher</h4>
           </div>
-
-
-<!--          <form th:action="@{/dashboard/product-management/voucher/search}" method="get">-->
-<!--                    <div class="input-group search-area right d-lg-inline-flex d-none">-->
-<!--                      <input type="text" class="form-control" id="name" name="name" placeholder="Tìm kiếm...">-->
-<!--                      <div class="input-group-append">-->
-<!--          									<span class="input-group-text">-->
-<!--          										<a href="javascript:void(0)">-->
-<!--          											<button class="border border-gray-300" type="submit"><i class="flaticon-381-search-2"></i></button>-->
-<!--          										</a>-->
-<!--          									</span>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--          </form>-->
+          
+          
+          <!--          <form th:action="@{/dashboard/product-management/voucher/search}" method="get">-->
+          <!--                    <div class="input-group search-area right d-lg-inline-flex d-none">-->
+          <!--                      <input type="text" class="form-control" id="name" name="name" placeholder="Tìm kiếm...">-->
+          <!--                      <div class="input-group-append">-->
+          <!--          									<span class="input-group-text">-->
+          <!--          										<a href="javascript:void(0)">-->
+          <!--          											<button class="border border-gray-300" type="submit"><i class="flaticon-381-search-2"></i></button>-->
+          <!--          										</a>-->
+          <!--          									</span>-->
+          <!--                      </div>-->
+          <!--                    </div>-->
+          <!--          </form>-->
           <a th:href="@{/dashboard/product-management/voucher/create}" class="btn btn-info">+ Thêm voucher</a>
         </div>
         <div class="card-body">
           <div class="table-responsive">
             <script>
               // Định dạng tiền tệ cho giá trị voucher khi trang tải
-              document.addEventListener("DOMContentLoaded", function() {
-                  const valueElements = document.querySelectorAll('.voucher-value');
-                  valueElements.forEach(function (element) {
-                      const value = parseFloat(element.innerText.replace(/\D/g, ''));  // Loại bỏ các ký tự không phải số
-                      element.innerText = new Intl.NumberFormat('vi-VN').format(value) + ' VND';
-                  });
+              document.addEventListener("DOMContentLoaded", function () {
+                const valueElements = document.querySelectorAll('.voucher-value');
+                valueElements.forEach(function (element) {
+                  const value = parseFloat(element.innerText.replace(/\D/g, ''));  // Loại bỏ các ký tự không phải số
+                  element.innerText = new Intl.NumberFormat('vi-VN').format(value) + ' VND';
+                });
               });
             </script>
-
+            
             <table class="table table-bordered table-hover" id="ListDatatableView" border="1">
               <thead>
               <tr>
@@ -91,7 +91,7 @@
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
                 <th>STATUS</th>
-
+                
                 <th>ACTION</th>
               </tr>
               </thead>
@@ -109,18 +109,18 @@
                 </td>
                 <td>
                   <div
-                    th:text="${voucher.name}">
+                      th:text="${voucher.name}">
                   </div>
                 </td>
                 <td>
                   <div th:text="${voucher.createDate}">
-
+                  
                   </div>
                 </td>
                 <td>
                   <div th:text="${voucher.quantity}"></div>
                 </td>
-                <td class="voucher-value"  th:text="${voucher.value}"></td>
+                <td class="voucher-value" th:text="${voucher.value}"></td>
                 <td>
                   <div th:text="${voucher.startDate}">
                   </div>
@@ -129,7 +129,7 @@
                   <div th:text="${voucher.endDate}">
                   </div>
                 </td>
-
+                
                 <td>
                   <div th:if="${voucher.status == voucher.status.ACTIVE}">
                     <h6 class="text-primary"><span class="badge badge-success">Hoạt động</span></h6>
@@ -143,25 +143,31 @@
                 </td>
                 <td>
                   <div class="d-flex action-button">
-                    <a th:href="@{/dashboard/product-management/voucher/{id}(id=${voucher.id})}" class="btn btn-info btn-xs light px-2">
+                    <a th:href="@{/dashboard/product-management/voucher/{id}(id=${voucher.id})}"
+                       class="btn btn-info btn-xs light px-2">
                       <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path
+                            d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z"
+                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                       </svg>
                     </a>
                     <a th:href="@{/dashboard/product-management/voucher/delete/{id}(id=${voucher.id})}"
                        class="ml-2 btn btn-xs px-2 light btn-danger"
                        onclick="return confirm('Bạn có chắc chắn muốn xóa voucher này?');">
                       <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round"></path>
+                        <path
+                            d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
+                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                       </svg>
-
+                    
                     </a>
-
+                  
                   </div>
                 </td>
               </tr>
-
+              
               </tbody>
             </table>
             <th:block th:if="${!voucherPage.isEmpty()}">
@@ -169,20 +175,26 @@
                 <ul class="pagination">
                   <!-- Nút Previous -->
                   <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage != null ? currentPage - 1 : 1})}" aria-label="Previous">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage != null ? currentPage - 1 : 1})}"
+                       aria-label="Previous">
                       <span aria-hidden="true">&laquo;</span>
                     </a>
                   </li>
-
+                  
                   <!-- Hiển thị danh sách các trang -->
                   <li th:each="i : ${#numbers.sequence(1, totalPages != null ? totalPages : 1)}"
                       th:classappend="${i == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${i})}" th:text="${i}"></a>
+                    <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${i})}"
+                       th:text="${i}"></a>
                   </li>
-
+                  
                   <!-- Nút Next -->
-                  <li class="page-item" th:classappend="${currentPage != null && currentPage + 1 == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage != null ? currentPage + 1 : 1})}" aria-label="Next">
+                  <li class="page-item"
+                      th:classappend="${currentPage != null && currentPage + 1 == totalPages} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage != null ? currentPage + 1 : 1})}"
+                       aria-label="Next">
                       <span aria-hidden="true">&raquo;</span>
                     </a>
                   </li>

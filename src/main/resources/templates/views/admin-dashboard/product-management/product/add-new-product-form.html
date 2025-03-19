@@ -188,6 +188,7 @@
                         <label for="price">Giá tiền (VND) <span class="text-danger">*</span></label>
                         <input id="price" type="number" name="productVariantList[0].price"
                                class="form-control"
+                               oninput="formatCurrency(event)"
                                placeholder="" required>
                       </div>
                     </div>
@@ -242,6 +243,22 @@
   </script>
   <script th:src="@{/assets/admin-dashboard/vendor/jquery-validation/jquery.validate.min.js}"></script>
   <script th:src="@{/js/product-management/product/add-new-product.js}"></script>
+  <script>
+    function formatCurrency(event) {
+      let input = event.target;
+      let value = input.value;
+      
+      // Xóa tất cả ký tự không phải là số
+      value = value.replace(/\D/g, '');
+      
+      // Định dạng thành tiền tệ với dấu phân cách hàng nghìn
+      let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
+      
+      // Cập nhật lại giá trị trong input
+      input.value = formattedValue;
+    }
+  
+  </script>
 </th:block>
 
 </body>

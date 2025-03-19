@@ -1,6 +1,7 @@
 package org.fpoly.capstone.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -21,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 public class SecurityConfiguration {
 
     @Bean("messageSource")
-    public MessageSource getMessageSource(){
+    public MessageSource getMessageSource() {
         ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
         ms.setDefaultEncoding("utf-8");
         ms.setBasename("classpath:i18n/voucher");

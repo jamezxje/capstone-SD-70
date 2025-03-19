@@ -61,18 +61,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.fpoly.capstone.entity.Bill;
-import org.fpoly.capstone.repository.BillRepository;
-import org.fpoly.capstone.service.BillService;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -252,7 +243,8 @@ public class BillServiceImpl implements BillService {
             if (!vouchers.isPresent()) {
                 throw new RuntimeException("Voucher not found");
             }
-            if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().getTime() < Calendar.getInstance().getTimeInMillis()) {
+            if (vouchers.get().getQuantity() <= 0 &&
+                    vouchers.get().getEndDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() < System.currentTimeMillis()) {
                 throw new RuntimeException("Voucher end date is less than current date");
             }
             vouchers.get().setQuantity(vouchers.get().getQuantity() - 1);
@@ -565,12 +557,12 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<Long> findAllById() {
-        return billRepository.findByAllIds();
+        return this.billRepository.findByAllIds();
     }
 
     @Override
     public Bill findById(Long id) {
-        Bill bill = billRepository.findById(id).orElseThrow();
+        Bill bill = this.billRepository.findById(id).orElseThrow();
         return bill;
     }
 }
