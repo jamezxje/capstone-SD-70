@@ -5,6 +5,9 @@ import org.fpoly.capstone.entity.Bill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.fpoly.capstone.entity.Bill;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,5 +39,8 @@ SELECT b.id FROM Bill b where b.vnpTransaction = :code
 
     Page<Bill> findAll(Pageable pageable);
     Optional<Bill> findById(long id);
+
+    @Query("select b.id from Bill b")
+    List<Long> findByAllIds();
 
 }

@@ -20,6 +20,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,6 +35,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.List;
 import java.util.List;
 
@@ -128,6 +130,9 @@ public class Bill {
 
     @Column(name = "updated_by")
     private String updatedBy;
+
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<VoucherDetail> voucherDetailList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bill")
     private List<BillDetail> billDetailList;

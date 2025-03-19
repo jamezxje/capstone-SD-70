@@ -65,6 +65,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.fpoly.capstone.entity.Bill;
+import org.fpoly.capstone.repository.BillRepository;
+import org.fpoly.capstone.service.BillService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -555,5 +563,15 @@ public class BillServiceImpl implements BillService {
         return this.billRespository.getBillByCustomerId(customerId);
     }
 
-    
+    @Override
+    public List<Long> findAllById() {
+        return billRepository.findByAllIds();
+    }
+
+    @Override
+    public Bill findById(Long id) {
+        Bill bill = billRepository.findById(id).orElseThrow();
+        return bill;
+    }
 }
+

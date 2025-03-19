@@ -6,4 +6,7 @@ public interface UserService {
 
     User getUserFromContext();
 
+    String getName();
+
+
 }
