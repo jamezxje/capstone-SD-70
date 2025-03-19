@@ -2,6 +2,8 @@ package org.fpoly.capstone.repository;
 
 import org.fpoly.capstone.dto.bill.GetAllCusomter;
 import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.entity.enum_status.UserRole;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,6 +48,7 @@ public interface CustomerRepository extends JpaRepository<User, Long> {
             @Param("searchQuery") String searchQuery
     );
 
-
+    List<User> findByRoles(UserRole role);
+    User findByEmail(String email);
 
 }
