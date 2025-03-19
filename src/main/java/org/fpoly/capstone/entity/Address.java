@@ -51,10 +51,10 @@ public class Address {
     private String wardCode;
 
     @Column(name = "province_id", length = 50)
-    private String provinceId;
+    private Integer provinceId;
 
     @Column(name = "to_district_id", length = 50)
-    private String toDistrictId;
+    private Integer toDistrictId;
 
     @Column(name = "full_name", length = 50)
     private String fullName;

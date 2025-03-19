@@ -17,9 +17,13 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fpoly.capstone.common.CommonUtils;
 import org.fpoly.capstone.common.CommonUtils;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.BillType;
@@ -27,13 +31,16 @@ import org.fpoly.capstone.entity.enum_status.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "bill")
 public class Bill {
 
@@ -41,12 +48,17 @@ public class Bill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "code")
+    private String code;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user", referencedColumnName = "id")
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "id_employee", referencedColumnName = "id")
+    @JsonBackReference
     private User employee;
 
     @Column(name = "phone_number")
@@ -81,7 +93,7 @@ public class Bill {
 
     @Column(name = "completion_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date completionDate;
+    private LocalDateTime completionDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
@@ -122,6 +134,7 @@ public class Bill {
     @PrePersist
     public void prePersist() {
         if (this.createDate == null) {
+            this.completionDate = LocalDateTime.now();
             this.createDate = LocalDateTime.now();
         }
         this.createdBy = CommonUtils.getPrincipal();
@@ -140,5 +153,4 @@ public class Bill {
     public int hashCode() {
         return this.getClass().hashCode();
     }
-
 }

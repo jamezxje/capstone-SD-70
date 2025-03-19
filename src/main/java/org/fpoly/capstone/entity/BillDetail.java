@@ -14,7 +14,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
@@ -26,6 +28,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "bill_detail")
 public class BillDetail {
 
@@ -70,4 +73,13 @@ public class BillDetail {
         return this.getClass().hashCode();
     }
 
+@PrePersist
+    protected void onCreate() {
+    this.createDate = new Date();
+    this.lastModifiedDate = new Date();
+}
+@PreUpdate
+    protected void onUpdate() {
+    this.lastModifiedDate = new Date();
+}
 }

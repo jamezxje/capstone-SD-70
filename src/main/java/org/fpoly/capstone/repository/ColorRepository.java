@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public interface ColorRepository extends JpaRepository<Color, Long> {
+    List<Color> findAll();
 
     @Query("SELECT new org.fpoly.capstone.service.payload.color.ColorResponse(c.id, c.name) " +
             "FROM Color c " +

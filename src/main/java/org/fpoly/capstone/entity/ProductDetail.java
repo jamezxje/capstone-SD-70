@@ -1,5 +1,6 @@
 package org.fpoly.capstone.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,6 +38,7 @@ public class ProductDetail {
 
     @ManyToOne
     @JoinColumn(name = "id_product", referencedColumnName = "id")
+    @JsonBackReference
     private Product product;
 
     @ManyToOne
@@ -85,6 +87,7 @@ public class ProductDetail {
     private String updatedBy;
 
     @OneToMany(mappedBy = "productDetail")
+    @JsonBackReference
     private List<Image> images;
 
     @Column(name = "feature_image", length = 255)

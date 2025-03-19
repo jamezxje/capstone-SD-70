@@ -16,17 +16,17 @@ public class CommonCotroller {
 
     @GetMapping("/hello")
     public String redirectPage() {
+
         User user = this.userService.getUserFromContext();
 
         if (user.getRoles().equals(UserRole.ROLE_ADMIN)) {
-            log.info("User role: {}", user.getRoles());
+            log.info("User role admin: {}", user.getRoles());
 
             return "redirect:/dashboard";
-        } else if (user.getRoles().equals(UserRole.ROLE_CUSTOMER)) {
-            log.info("User role: {}", user.getRoles());
-
-            return "redirect:/";
         }
-        return "redirect:/";
+
+        log.info("User role customer: {}", user.getRoles());
+
+        return "PayMentVNPAYSuccess";
     }
 }

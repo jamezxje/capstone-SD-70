@@ -97,4 +97,6 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     @Query("SELECT pd FROM ProductDetail pd WHERE pd.product.id = :productId")
     List<ProductDetail> findByProductId(@Param("productId") Long productId);
 
+public interface ProductDetailRepository extends JpaRepository<ProductDetail  , Long> {
+List<ProductDetail> findAll();
 }

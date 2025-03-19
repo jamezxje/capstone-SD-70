@@ -10,6 +10,9 @@ import org.fpoly.capstone.service.payload.color.ColorResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.fpoly.capstone.entity.Color;
+import org.fpoly.capstone.repository.ColorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +20,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ColorServiceImpl implements ColorService {
-
     private final ColorRepository colorRepository;
     private final ModelMapper modelMapper;
     private static final String COLOR_NOT_FOUND_EXCEPTIONS = "Color not found with id: ";
+
+    public List<Color> getAllColors() {
+        return colorRepository.findAll();
+    }
 
     @Override
     public List<Color> getAllColor() {
@@ -83,4 +89,10 @@ public class ColorServiceImpl implements ColorService {
         return this.colorRepository.findSizesByProductId(productId);
     }
 
+public class ColorServiceImpl {
+@Autowired
+    private ColorRepository colorRepository;
+public List<Color> getAllColors() {
+    return colorRepository.findAll();
+}
 }
