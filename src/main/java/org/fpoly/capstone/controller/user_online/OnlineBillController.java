@@ -22,7 +22,7 @@ import java.util.List;
 @Controller
 @RequestMapping(path = "bill")
 @RequiredArgsConstructor
-public class BillController {
+public class OnlineBillController {
 
     private final CartDetailService cartDetailService;
     private final BillService billService;
