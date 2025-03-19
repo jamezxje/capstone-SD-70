@@ -13,12 +13,16 @@ import org.fpoly.capstone.service.payload.user.FileUploadImagesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -36,19 +40,19 @@ public class EmployeeController {
 
     @GetMapping("/employee")
     public String listEmployees(Model model) {
-        List<User> employees = employeeService.getAllEmployees(); // Lấy danh sách nhân viên có ROLE_USER
+        List<User> employees = this.employeeService.getAllEmployees(); // Lấy danh sách nhân viên có ROLE_USER
         model.addAttribute("employees", employees);
         return "views/users/employee/employee-list";
     }
 
     @GetMapping("/employee/detail/{id}")
     public String employeeDetail(@PathVariable Long id, Model model) {
-        User employee = employeeService.getEmployeeById(id);
+        User employee = this.employeeService.getEmployeeById(id);
         if (employee == null) {
             return "redirect:/dashboard/employee";
         }
 
-        Address defaultAddress = addressService.getDefaultAddress(employee.getId());
+        Address defaultAddress = this.addressService.getDefaultAddress(employee.getId());
 
         model.addAttribute("employee", employee);
         model.addAttribute("defaultAddress", defaultAddress);
@@ -80,10 +84,10 @@ public class EmployeeController {
         employee.setCitizenIdentity(employeeDTO.getCitizenIdentity());
         employee.setRoles(UserRole.ROLE_USER);
         if (!avatarFile.isEmpty()) {
-            String avatarFileName = fileUploadImagesService.saveAvatar(avatarFile, "employee", employee.getId());
+            String avatarFileName = this.fileUploadImagesService.saveAvatar(avatarFile, "employee", employee.getId());
             employee.setAvatar(avatarFileName);
         }
-        Address address =new Address();
+        Address address = new Address();
         address.setLine(addressDTO.getLine());
         address.setProvince(addressDTO.getProvince());
         address.setDistrict(addressDTO.getDistrict());
@@ -91,8 +95,8 @@ public class EmployeeController {
         address.setWardCode(addressDTO.getWardCode());
         address.setWardCode(addressDTO.getProvinceId());
         address.setWardCode(addressDTO.getToDistrictId());
-        address.setProvinceId(addressDTO.getProvinceId());
-        address.setToDistrictId(addressDTO.getToDistrictId());
+        address.setProvinceId(Integer.valueOf(addressDTO.getProvinceId()));
+        address.setToDistrictId(Integer.valueOf(addressDTO.getToDistrictId()));
 
         address.setUser(employee);
 
@@ -102,18 +106,18 @@ public class EmployeeController {
         employee.getAddresses().add(address);
 
         // Lưu vào database
-        employeeService.createEmployee(employeeDTO,addressDTO,avatarFile);
+        this.employeeService.createEmployee(employeeDTO, addressDTO, avatarFile);
 
         return "redirect:/dashboard/employee";
     }
 
     @GetMapping("/employee/view-update/{id}")
     public String viewupdateEmployee(@PathVariable Long id, Model model) {
-        User employee = employeeService.getEmployeeById(id);
+        User employee = this.employeeService.getEmployeeById(id);
         if (employee == null) {
             return "redirect:/dashboard/employee";
         }
-        Address defaultAddress = addressService.getDefaultAddress(employee.getId());
+        Address defaultAddress = this.addressService.getDefaultAddress(employee.getId());
         model.addAttribute("employee", employee);
         model.addAttribute("defaultAddress", defaultAddress);
         return "views/users/employee/employee-update";
@@ -124,7 +128,7 @@ public class EmployeeController {
                                  @ModelAttribute User employee,
                                  @ModelAttribute Address address,
                                  @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile) {
-        User existingEmployee = employeeService.getEmployeeById(id);
+        User existingEmployee = this.employeeService.getEmployeeById(id);
 
         if (existingEmployee == null) {
             return "redirect:/dashboard/employee";
@@ -141,13 +145,13 @@ public class EmployeeController {
 
         // Xử lý ảnh đại diện
         if (avatarFile != null && !avatarFile.isEmpty()) {
-            String avatarPath = fileUploadImagesService.saveAvatar(avatarFile, "employee", existingEmployee.getId());
+            String avatarPath = this.fileUploadImagesService.saveAvatar(avatarFile, "employee", existingEmployee.getId());
             if (avatarPath != null) {
                 existingEmployee.setAvatar(avatarPath);
             }
         }
         // Cập nhật hoặc thêm mới địa chỉ
-        Address existingAddress = addressService.getDefaultAddress(existingEmployee.getId());
+        Address existingAddress = this.addressService.getDefaultAddress(existingEmployee.getId());
         if (existingAddress != null) {
             existingAddress.setProvince(address.getProvince());
             existingAddress.setProvinceId(address.getProvinceId());
@@ -164,18 +168,18 @@ public class EmployeeController {
             existingEmployee.getAddresses().add(address);
         }
 
-        addressService.saveAddress(existingAddress != null ? existingAddress : address);
-        employeeService.saveEmployee(existingEmployee);
+        this.addressService.saveAddress(existingAddress != null ? existingAddress : address);
+        this.employeeService.saveEmployee(existingEmployee);
 
         return "redirect:/dashboard/employee";
     }
 
     @GetMapping("/employee/delete/{id}")
     public String softDeleteEmployee(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        User employee = employeeService.getEmployeeById(id);
+        User employee = this.employeeService.getEmployeeById(id);
         if (employee != null) {
             employee.setStatus(UserStatus.DELETED); // Đánh dấu là đã xóa
-            employeeService.saveEmployee(employee);
+            this.employeeService.saveEmployee(employee);
             redirectAttributes.addFlashAttribute("successMessage", "Nhân viên đã được vô hiệu hóa.");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy nhân viên.");

@@ -12,7 +12,6 @@ import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.EmployeeRepository;
 import org.fpoly.capstone.service.EmployeeService;
 import org.fpoly.capstone.service.payload.user.FileUploadImagesService;
-//import org.fpoly.capstone.service.payload.user.SendEmailService;
 import org.fpoly.capstone.service.payload.user.RandomNumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,12 +41,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<User> getAllEmployees() {
-        return employeeRepository.findByRolesAndStatus(UserRole.ROLE_USER, UserStatus.ACTIVATED);
+        return this.employeeRepository.findByRolesAndStatus(UserRole.ROLE_USER, UserStatus.ACTIVATED);
     }
 
     @Override
     public User getEmployeeById(Long id) {
-        return employeeRepository.findById(id).orElse(null);
+        return this.employeeRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -58,19 +57,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         System.out.println("Saving employee: " + employee);
 
         employee.setRoles(UserRole.ROLE_USER);
-        return employeeRepository.save(employee);
+        return this.employeeRepository.save(employee);
     }
 
+    @Override
     @Transactional
     public User createEmployee(EmployeeDTO employeereRequest, AddressDTO addressRequest, MultipartFile file) {
         // Kiểm tra số điện thoại, email và căn cước công dân đã tồn tại chưa
-        if (employeeRepository.getEmployBySDT(employeereRequest.getPhoneNumber()) != null) {
+        if (this.employeeRepository.getEmployBySDT(employeereRequest.getPhoneNumber()) != null) {
             throw new IllegalArgumentException("Số điện thoại này đã tồn tại!");
         }
-        if (employeeRepository.getEmployByEmail(employeereRequest.getEmail()) != null) {
+        if (this.employeeRepository.getEmployByEmail(employeereRequest.getEmail()) != null) {
             throw new IllegalArgumentException("Email này đã tồn tại!");
         }
-        if (employeeRepository.getEmployByCCCD(employeereRequest.getCitizenIdentity()) != null) {
+        if (this.employeeRepository.getEmployByCCCD(employeereRequest.getCitizenIdentity()) != null) {
             throw new IllegalArgumentException("Căn cước công dân này đã tồn tại!");
         }
 
@@ -83,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         user.setPhoneNumber(employeereRequest.getPhoneNumber());
         user.setEmail(employeereRequest.getEmail());
         user.setStatus(employeereRequest.getStatus());
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(this.passwordEncoder.encode(password));
         user.setDateOfBirth(employeereRequest.getDateOfBirth());
         user.setGender(employeereRequest.getGender());
         user.setCitizenIdentity(employeereRequest.getCitizenIdentity());
@@ -91,21 +91,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         user.setStatus(UserStatus.ACTIVATED);
 
         // Lưu user vào database trước khi xử lý avatar
-        user = employeeRepository.save(user);
+        user = this.employeeRepository.save(user);
 
         // Xử lý ảnh đại diện
         if (file != null && !file.isEmpty()) {
-            String avatarFileName = fileUploadImagesService.saveAvatar(file, "employee", user.getId());
+            String avatarFileName = this.fileUploadImagesService.saveAvatar(file, "employee", user.getId());
             user.setAvatar(avatarFileName);
-            employeeRepository.save(user); // Cập nhật lại user với avatar
+            this.employeeRepository.save(user); // Cập nhật lại user với avatar
         }
 
         // Tạo địa chỉ cho user
         Address address = Address.builder()
                 .status(AddressStatus.DANG_SU_DUNG)
                 .ward(addressRequest.getWard())
-                .toDistrictId(addressRequest.getToDistrictId())
-                .provinceId(addressRequest.getProvinceId())
+                .toDistrictId(Integer.valueOf(addressRequest.getToDistrictId()))
+                .provinceId(Integer.valueOf(addressRequest.getProvinceId()))
                 .line(addressRequest.getLine())
                 .province(addressRequest.getProvince())
                 .district(addressRequest.getDistrict())
@@ -113,7 +113,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .user(user)
                 .build();
 
-        addressRepository.save(address); // Lưu địa chỉ vào database
+        this.addressRepository.save(address); // Lưu địa chỉ vào database
 
         // Gửi email thông báo tài khoản & mật khẩu
         String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên CAPSTONE";
@@ -210,17 +210,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public User updateEmployee(Long id, User employee) {
-        Optional<User> existingEmployee = employeeRepository.findById(id);
+        Optional<User> existingEmployee = this.employeeRepository.findById(id);
         if (existingEmployee.isPresent()) {
             employee.setId(id);
             employee.setRoles(UserRole.ROLE_USER);
-            return employeeRepository.save(employee);
+            return this.employeeRepository.save(employee);
         }
         return null;
     }
 
     @Override
     public void deleteEmployee(Long id) {
-        employeeRepository.deleteById(id);
+        this.employeeRepository.deleteById(id);
     }
 }
