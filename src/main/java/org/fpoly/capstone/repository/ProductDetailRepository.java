@@ -1,6 +1,10 @@
 package org.fpoly.capstone.repository;
 
 import org.fpoly.capstone.entity.ProductDetail;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -99,5 +103,7 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
 
     @Override
     List<ProductDetail> findAll();
+
+Optional<ProductDetail> findById(long id);
 
 }

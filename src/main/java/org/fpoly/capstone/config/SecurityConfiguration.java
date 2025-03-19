@@ -1,17 +1,11 @@
 package org.fpoly.capstone.config;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -34,31 +28,38 @@ public class SecurityConfiguration {
 
     protected static final String[] PUBLIC_UNAUTHENTICATION_URI = {
             "/",
-            "/sale-counter/**" ,
-            "/getAllBill" ,
+            "/sale-counter/**",
+            "/getAllBill",
             "/deleteBill/**",
-            "/save-bill/**" ,
-            "/save-product-bill/**" ,
-            "/getAllProduct/**" ,
-            "/getAllVoucher/**" ,
-            "/payment-vnpay/**" ,
-            "/vnpay-success/**" ,
-            "/customerPage/**" ,
-            "/createCustomerBill/**" ,
-            "/searchCustomer/**" ,
-            "/payment-success/**" ,
+            "/save-bill/**",
+            "/save-product-bill/**",
+            "/getAllProduct/**",
+            "/getAllVoucher/**",
+            "/payment-vnpay/**",
+            "/vnpay-success/**",
+            "/customerPage/**",
+            "/createCustomerBill/**",
+            "/searchCustomer/**",
+            "/payment-success/**",
             "/sendInvoice/**",
-            "/address-user/**" ,
-            "/getMinimumBill/**" ,
+            "/address-user/**",
+            "/getMinimumBill/**",
             "/paymnet-success/**",
-            "/delete-product-bill/**" ,
+            "/delete-product-bill/**",
             "/products/**",
-            "/getAllProductDetail" ,
+            "/getAllProductDetail",
             "/auth/register",
             "/hello",
             "/login",
             "/register",
             "/index",
+            "/bill/**",
+            "/bill/detail/**",
+            "/change-status/**",
+            "/updateCustomer-bill/**",
+            "/getStatus-history/**",
+            "/getInforBill/**",
+            "/cancel-bill/**",
             "/search",
             "/find",
             "/css/**",
