@@ -37,7 +37,7 @@ import java.util.List;
 @Controller
 @RequestMapping(path = "dashboard/product-management/product-detail")
 @RequiredArgsConstructor
-public class ProductDetailController {
+public class AdminProductDetailController {
 
     private final CategoryService categoryService;
     private final ProductService productService;
@@ -211,5 +211,5 @@ public class ProductDetailController {
         return "redirect:/dashboard/product-management/product-detail?page=" + page + "&size=" + size;
 
     }
-    
+
 }
