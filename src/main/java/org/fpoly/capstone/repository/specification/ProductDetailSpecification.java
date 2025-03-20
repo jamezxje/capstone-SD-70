@@ -58,6 +58,9 @@ public class ProductDetailSpecification {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("product").get("name")), "%" + request.getProductName().toLowerCase() + "%"));
             }
 
+            // Set the order by createDate in descending order
+            query.orderBy(criteriaBuilder.desc(root.get("createDate")));
+
             return predicate;
         };
 

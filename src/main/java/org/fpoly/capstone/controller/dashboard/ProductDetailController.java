@@ -89,10 +89,11 @@ public class ProductDetailController {
         return PRODUCT_DETAIL_VIEW;
     }
 
-    @GetMapping(path = "add")
-    public String onOpenAddNewProductDetailView(Model model) {
+    @GetMapping(path = "add/{productId}")
+    public String onOpenAddNewProductDetailView(@PathVariable("productId") Long productId, Model model) {
         this.addCommonAttributes(model);
 
+        model.addAttribute("productId", productId);
         model.addAttribute("productDetailModel", new ProductDetailModel());
 
         return "/views/admin-dashboard/product-management/product-detail/add-new-product-detail-form";
@@ -211,5 +212,5 @@ public class ProductDetailController {
         return "redirect:/dashboard/product-management/product-detail?page=" + page + "&size=" + size;
 
     }
-    
+
 }

@@ -79,12 +79,13 @@
                 <div class="basic-form">
                   <div class="form-row">
                     <div class="form-group col-md-3">
-                      <label for="productId">Sản phẩm <span class="text-danger">*</span> </label>
-                      <select id="productId" name="productId" class="form-control"
+                      <label>Sản phẩm <span class="text-danger">*</span> </label>
+                      <select id="productId single-select" name="productId" class="form-control"
                               required>
                         <option value="" selected>Chọn sản phẩm</option>
                         <option th:each="product : ${products}"
                                 th:value="${product.id}"
+                                th:selected="${product.id == productId}"
                                 th:text="${product.name}">
                         </option>
                       </select>
@@ -203,6 +204,7 @@
 <!-- JS Section -->
 <th:block id="th-js">
   <script th:src="@{/assets/admin-dashboard/vendor/jquery-validation/jquery.validate.min.js}"></script>
+  <script th:src="@{/assets/admin-dashboard/js/plugins-init/select2-init.js}"></script>
   <script>
     (function ($) {
       "use strict"
