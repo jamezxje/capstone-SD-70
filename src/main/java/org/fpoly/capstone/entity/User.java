@@ -36,7 +36,7 @@ public class User {
     @Column(name = "full_name", length = 30)
     private String fullName;
 
-    @Column(name = "date_or_birth")
+    @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
