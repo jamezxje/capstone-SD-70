@@ -65,4 +65,9 @@ public class BillDetail {
     @Column(name = "updated_by")
     private String updatedBy;
 
+    @Override
+    public int hashCode() {
+        return this.getClass().hashCode();
+    }
+
 }

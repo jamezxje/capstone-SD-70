@@ -49,7 +49,7 @@ public class CartController {
                 .toList();
 
         model.addAttribute("cartDetailList", viewModels);
-        model.addAttribute("cart", this.cartRepository.findCartByUserId(loggedUser.getId()));
+        model.addAttribute("shoppingCart", this.cartRepository.findCartByUserId(loggedUser.getId()));
 
         return "/views/user-online-view/cart-management";
     }

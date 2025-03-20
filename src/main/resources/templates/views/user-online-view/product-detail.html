@@ -895,7 +895,7 @@
     $(document).ready(function () {
       $('#product_form_10508262282').on('submit', function (event) {
         // Check if any size is selected
-        if ($('input[name="sizeId"]:checked').length === 0) {
+        if ($('input[name="sizeId"]:checked').length === 0 || $('input[name="colorId"]:checked').length === 0) {
           event.preventDefault(); // Prevent form submission
           
           // Show modal
@@ -906,6 +906,13 @@
           
           $('#modalOverly').css("height", pageHeight).fadeIn();
           $('#popup-container').fadeIn();
+          
+          // Check if color is selected and update message accordingly
+          if ($('input[name="colorId"]:checked').length === 0) {
+            $('#popup-container h2').text("Please select color before adding to cart");
+          } else {
+            $('#popup-container h2').text("Please select size before adding to cart");
+          }
           
           // Close popup when clicking on close button
           $('.closepopup').on('click', function () {
@@ -921,13 +928,8 @@
               $('#modalOverly').fadeOut();
             }
           });
-          
-          // Cookie check (requires jQuery.cookie plugin)
-          if ($.cookie('noShowWelcome')) {
-            $('#popup-container').hide();
-            $('#active-popup').hide();
-          }
         }
+        
       });
     });
   </script>

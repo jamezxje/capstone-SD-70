@@ -2,6 +2,7 @@ package org.fpoly.capstone.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.fpoly.capstone.common.CommonUtils;
 import org.fpoly.capstone.entity.Category;
 import org.fpoly.capstone.entity.Product;
 import org.fpoly.capstone.entity.ProductDetail;
@@ -69,9 +70,11 @@ public class ProductServiceImpl implements ProductService {
         Category category = this.categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
+        String productCode = CommonUtils.generateProductCode();
+
         Product product = Product.builder()
                 .category(category)
-                .code(request.getCode())
+                .code(productCode)
                 .name(request.getName())
                 .status(ProductStatus.DANG_SU_DUNG)
                 .build();
