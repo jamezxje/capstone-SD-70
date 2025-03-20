@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,6 +45,7 @@ private BillDetailRepository billDetailRepository;
     public String generateHtmlContent(Bill bill) {
         StringBuilder html = new StringBuilder();
         String meThodBill = String.valueOf(bill.getMethod());
+        Date shipDate = bill.getShipDate();
         if (meThodBill.equals("TIEN_MAT")) {
             meThodBill = "Tiền mặt";
         }else if (meThodBill.equals("CHUYEN_KHOAN")) {
@@ -62,6 +64,7 @@ private BillDetailRepository billDetailRepository;
                 .append(".info-section { display: flex; justify-content: space-between; margin-bottom: 10px; }")
                 .append(".info-left, .info-right { width: 48%; }")
                 .append(".info-title { font-weight: bold; }")
+                .append(".info-title-1 { font-weight: bold; width: 100%; }")
                 .append(".total { font-size: 18px; font-weight: bold; margin-top: 20px; }")
                 .append("</style>")
                 .append("</head><body>")
@@ -75,19 +78,20 @@ private BillDetailRepository billDetailRepository;
                 .append("</div>")
                 .append("<div class='info-right'>")
                 .append("<p><span class='info-title'>Từ:</span> <strong>").append("CAPSTONE").append("</strong></p>")
-                .append("<p><span class='info-title'>Nhân viên bán hàng:</span> <strong>").append("Kim Thanh").append("</strong></p>")
+                .append("<p><span class='info-title'>Nhân viên bán hàng:</span> <strong>").append("Bảo").append("</strong></p>")
                 .append("</div>")
                 .append("</div>")
 
                 .append("<div class='info-section'>")
                 .append("<div class='info-left'>")
-                .append("<p><span class= 'info-title'>Thông tin người mua hàng</span></p>")
-                .append("<p><span class='info-title'>Khách hàng:</span> <strong>").append(bill.getUser().getFullName() != null ? bill.getUser().getFullName() : "Khách lẻ").append("</strong></p>")
-                .append("<p><span class='info-title'>Số điện thoại:</span> <strong>").append(bill.getUser().getPhoneNumber() != null ? bill.getUser().getPhoneNumber(): "").append("</strong></p>")
-                .append("<p><span class= 'info-title'>Thông tin người nhận hàng</span></p>")
-                .append("<p><span class='info-title'>Họ tên:</span> <strong>").append(bill.getUserName() != null ? bill.getUserName() : "Khách lẻ").append("</strong></p>")
-                .append("<p><span class='info-title'>Số điện thoại người nhận:</span> <strong>").append(bill.getPhoneNumber() != null ? bill.getPhoneNumber() : "").append("</strong></p>")
-                .append("<p><span class='info-title'>Địa chỉ:</span> <strong>").append(bill.getAddress()).append("</strong></p>")
+                .append("<p><span class= 'info-title-1'>Thông tin người mua hàng</span></p>")
+                .append("<p><span class='info-title-1'>Khách hàng:</span> <strong>").append(bill.getUser().getFullName() != null ? bill.getUser().getFullName() : "Khách lẻ").append("</strong></p>")
+                .append("<p><span class='info-title-1'>Số điện thoại:</span> <strong>").append(bill.getUser().getPhoneNumber() != null ? bill.getUser().getPhoneNumber(): "").append("</strong></p>")
+                .append(shipDate != null ? "<p><span class='info-title'>Thông tin người nhận hàng</span></p>"
+                        + "<p><span class='info-title'>Họ tên:</span> <strong>" + (bill.getUserName() != null ? bill.getUserName() : "Khách lẻ") + "</strong></p>"
+                        + "<p><span class='info-title'>Số điện thoại người nhận:</span> <strong>" + (bill.getPhoneNumber() != null ? bill.getPhoneNumber() : "") + "</strong></p>"
+                        + "<p><span class='info-title'>Địa chỉ:</span> <strong>" + bill.getAddress() + "</strong></p>"
+                        : "")
                 .append("</div>")
                 .append("<div class='info-right'>")
                 .append("<p><span class='info-title'>Phương thức thanh toán:</span> <strong>").append(meThodBill).append("</strong></p>")

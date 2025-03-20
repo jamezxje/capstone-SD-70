@@ -24,7 +24,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
            v.startDate as startDate ,
            v.endDate as endDate 
     FROM Voucher v 
-    WHERE v.status = 'DA_SU_DUNG' 
+    WHERE v.status = 'ACTIVE' 
       AND v.minimumBill <= :totalAmount
     ORDER BY v.lastModifiedDate DESC
 """)
@@ -42,7 +42,7 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
         v.endDate as endDate,
         v.status as status
     FROM Voucher v
-    WHERE v.status = 'DA_SU_DUNG' AND v.minimumBill <= :minimumBill
+    WHERE v.status = 'ACTIVE' AND v.minimumBill <= :minimumBill
     ORDER BY v.minimumBill DESC
     LIMIT 1
 """)
