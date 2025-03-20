@@ -181,7 +181,7 @@
                     </div>
                   </div>
                   <div class="product-form__item--submit">
-                    <button name="add" class="btn product-form__cart-submit">
+                    <button name="add" class="btn product-form__cart-submit" id="add-to-cart-btn">
                       <span>Add to cart</span>
                     </button>
                   </div>
@@ -840,6 +840,26 @@
     </div>
   </div>
   <!-- End Size Required Popup -->
+  
+  
+  <!-- Login Required Popup -->
+  <div class="newsletter-wrap" id="login-popup-container" style="display: none;">
+    <div id="popup-window">
+      <a class="btn closepopup"><i class="icon icon anm anm-times-l"></i></a>
+      <!-- Modal content-->
+      <div class="display-table splash-bg">
+        <div class="newsletter-left">
+          <h2>You need to log in to add products to the cart</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Login Required Popup -->
+  
+  <!-- Overlay -->
+  <div id="login-modalOverly"
+       style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+
 
 </th:block>
 
@@ -891,12 +911,40 @@
       });
     });
   </script>
+  <script th:inline="javascript">
+    const loggedUserEmail = /*[[${loggedUserEmail}]]*/ [];
+  </script>
   <script>
     $(document).ready(function () {
       $('#product_form_10508262282').on('submit', function (event) {
-        // Check if any size is selected
-        if ($('input[name="sizeId"]:checked').length === 0 || $('input[name="colorId"]:checked').length === 0) {
-          event.preventDefault(); // Prevent form submission
+        // Initialize the popup message to an empty string
+        let popupMessage = "";
+        
+        // Get selected size and color values
+        let selectedSize = $('input[name="sizeId"]:checked').val();
+        let selectedColor = $('input[name="colorId"]:checked').val();
+        
+        // Log selected size, color, and loggedUserEmail
+        console.log("Selected Size:", selectedSize);
+        console.log("Selected Color:", selectedColor);
+        console.log("Logged User Email:", loggedUserEmail);  // This will log the email of the logged-in user
+        
+        // Check if any size is selected or any color is selected
+        if (selectedSize === undefined) {
+          popupMessage = "Please select size before adding to cart";
+        } else if (selectedColor === undefined) {
+          popupMessage = "Please select color before adding to cart";
+        }
+        
+        // Check if the user is logged in
+        if (loggedUserEmail == null) {
+          // If the user is not logged in, show login message
+          popupMessage = "Please login before adding to cart";
+        }
+        
+        // If any validation failed, show the modal
+        if (popupMessage !== "") {
+          event.preventDefault();  // Prevent form submission
           
           // Show modal
           var pageHeight = $(document).height();
@@ -907,11 +955,28 @@
           $('#modalOverly').css("height", pageHeight).fadeIn();
           $('#popup-container').fadeIn();
           
-          // Check if color is selected and update message accordingly
-          if ($('input[name="colorId"]:checked').length === 0) {
-            $('#popup-container h2').text("Please select color before adding to cart");
-          } else {
-            $('#popup-container h2').text("Please select size before adding to cart");
+          // Set the popup message
+          $('#popup-container h2').text(popupMessage);
+          
+          // If user is not logged in, add login and register buttons
+          if (loggedUserEmail == null) {
+            var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Login</a>');
+            
+            var registerButton = $('<button id="registerButton" class="btn">Register</button>');
+            
+            // Append the buttons to the popup
+            $('#popup-container').append(loginButton);
+            // $('#popup-container').append(registerButton);
+            
+            // Set the action for the login button (redirect to login page)
+            loginButton.on('click', function () {
+              window.location.href = "/login";  // Replace with your login page URL
+            });
+            
+            // Set the action for the register button (redirect to register page)
+            registerButton.on('click', function () {
+              window.location.href = "/register";  // Replace with your register page URL
+            });
           }
           
           // Close popup when clicking on close button
@@ -929,10 +994,11 @@
             }
           });
         }
-        
       });
     });
+  
   </script>
+  
   <script th:inline="javascript">
     const productDetailIdReceived = /*[[${productDetailId}]]*/ [];
   </script>
@@ -994,6 +1060,10 @@
         }
       });
     }
+  
+  </script>
+  
+  <script>
   
   </script>
 

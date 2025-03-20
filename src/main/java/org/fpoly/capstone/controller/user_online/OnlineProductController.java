@@ -6,14 +6,15 @@ import org.fpoly.capstone.controller.payload.product_detail.ProductDetailFilterM
 import org.fpoly.capstone.controller.payload.product_detail.ProductDetailViewModel;
 import org.fpoly.capstone.entity.Color;
 import org.fpoly.capstone.entity.Size;
+import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.service.BrandService;
 import org.fpoly.capstone.service.CartService;
 import org.fpoly.capstone.service.CategoryService;
 import org.fpoly.capstone.service.ColorService;
 import org.fpoly.capstone.service.MaterialService;
 import org.fpoly.capstone.service.ProductDetailService;
-import org.fpoly.capstone.service.ProductService;
 import org.fpoly.capstone.service.SizeService;
+import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.service.payload.cart.AddProductToCartRequest;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailFilterRequest;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
@@ -41,7 +42,7 @@ public class OnlineProductController {
     private final SizeService sizeService;
     private final CartService cartService;
     private final CategoryService categoryService;
-    private final ProductService productService;
+    private final UserService userService;
     private final MaterialService materialService;
     private final ColorService colorService;
     private final BrandService brandService;
@@ -70,6 +71,8 @@ public class OnlineProductController {
 
     @GetMapping(path = "{productDetailId}")
     public String onOpenProductDetailView(@PathVariable(value = "productDetailId") Long productDetailId, Model model) {
+        User loggedUser = this.userService.getUserFromContext();
+        String loggedUserEmail = loggedUser != null ? loggedUser.getEmail() : null;  // Check if loggedUser is null
 
         ProductDetailResponse productDetailResponse = this.productDetailService.getProductDetailById(productDetailId);
 
@@ -91,6 +94,7 @@ public class OnlineProductController {
         model.addAttribute("colorList", colorList);
         model.addAttribute("productDetailId", productDetailId);
         model.addAttribute("addProductToCartModel", new AddProductToCartModel());
+        model.addAttribute("loggedUserEmail", loggedUserEmail);
 
         return "/views/user-online-view/product-detail";
     }

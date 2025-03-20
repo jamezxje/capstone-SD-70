@@ -15,4 +15,9 @@ public class AuthController {
         return "views/auth/login";
     }
 
+    @GetMapping(path = "login/online")
+    public String showLoginForOnlineUserPage() {
+        return "/views/user-online-view/auth/login";
+    }
+
 }
