@@ -31,15 +31,27 @@ public interface BillService {
 
     List<VoucherRequest> getVoucherMinimumbill(Integer minimumBill);
 
-    Page<ProductRequest> findAllProductDetail(int page , int size);
+    Page<ProductRequest> findAllProductDetail(int page, int size);
 
     List<Voucher> getAllVoucher();
 
     CreateCustomerBill createCustomerBill(CreateCustomerBill createCustomerBill);
 
-    Page<GetAllCusomter> findALlCustomerPage(int page , int size);
+    Page<GetAllCusomter> findALlCustomerPage(int page, int size);
 
-    Page<VoucherRequest1> findAllVoucherPage(Integer totalAmount , int page , int size);
+    Page<VoucherRequest1> findAllVoucherPage(Integer totalAmount, int page, int size);
 
     List<GetAllCusomter> searchCustomer(String searchQuery);
+
+    Page<ProductRequest> searchProduct(String name, Long category, Long color, Long material, Long kichCo, Long brand, int page, int size);
+
+    List<Brand> findAllBrand();
+
+    List<Size> findAllSize();
+
+    List<Category> findAllCategory();
+
+    List<Material> findAllMaterial();
+
+    List<Color> findAllColor();
 }

@@ -92,10 +92,51 @@
         <!--        Modal product-->
         <div id="myModal"
              style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
-            <div style="background-color: white; margin: 17% 20% 20% 22%; padding: 20px; border-radius: 10px; width: 80%; max-width: 1200px">
+            <div style="background-color: white; margin: 12% 20% 20% 22%; padding: 20px; border-radius: 10px; width: 80%; max-width: 1200px">
                 <span id="closeModal"
                       style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
-                <p style="margin-bottom: 20px; font-size: 20px ;color: black ; padding: 10px">Danh sách sản phẩm</p>
+                    <p style="margin-bottom: 20px; font-size: 20px ;color: black ; padding: 10px">Danh sách sản phẩm</p>
+                    <div class="search-container">
+                        <p style="font-size: 15px; font-weight: bold; color: black">Tìm kiếm :
+                            <input type="text" placeholder="Nhập tên sản phẩm" id="nameInputProduct">
+                        </p>
+                    </div>
+
+                    <div class="filter-container">
+                        <p><label for="category">Danh mục:</label>
+                            <select id="category">
+                                <option>Chọn</option>
+                                <!-- Thêm các danh mục ở đây -->
+                            </select>
+                        </p>
+
+                        <p><label for="color">Màu sắc:</label>
+                            <select id="color">
+                                <option>Chọn</option>
+                                <!-- Thêm các màu sắc ở đây -->
+                            </select>
+                        </p>
+
+                        <p><label for="material">Chất liệu:</label>
+                            <select id="material">
+                                <option>Chọn</option>
+                                <!-- Thêm các chất liệu ở đây -->
+                            </select>
+                        </p>
+
+                        <p><label for="size">Kích cỡ:</label>
+                            <select id="size">
+                                <option>Chọn</option>
+                                <!-- Thêm các kích cỡ ở đây -->
+                            </select>
+                        </p>
+                        <p><label for="brand">Hãng:</label>
+                            <select id="brand">
+                                <option>Chọn</option>
+                                <!-- Thêm các kích cỡ ở đây -->
+                            </select>
+                        </p>
+                </div>
                 <table class="table table-striped" style="margin: 0" id="productTable">
                     <thead>
                     <tr>
@@ -110,7 +151,6 @@
                         <th scope="col">Giới tính</th>
                         <th scope="col">Số lượng</th>
                         <th scope="col">Giá</th>
-                        <th scope="col">Trạng thái</th>
                         <th scope="col">Hành động</th>
                     </tr>
                     </thead>

@@ -55,6 +55,16 @@ public class BillServiceImpl implements BillService {
     private AddressRepository addressRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private ColorRepository colorRepository;
+    @Autowired
+    private MaterialRepository materialRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private BrandRepository brandRepository;
+    @Autowired
+    private SizeRepository sizeRepository;
 
     @Autowired
     private EmailService emailService;
@@ -439,6 +449,56 @@ public class BillServiceImpl implements BillService {
             cusomters.add(getAllCusomter);
         }
         return cusomters;
+    }
+
+    @Override
+    public Page<ProductRequest> searchProduct(String nameProduct , Long category , Long color , Long material , Long kichCo , Long brand , int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Object[]> results = productRepository.findAllProductDetailsBySearch(nameProduct, category, color, material, kichCo, brand, pageable);
+        List<ProductRequest> productRequests = new ArrayList<>();
+        for (Object[] result : results) {
+            Long id = (Long) result[0];
+            String code = (String) result[1];
+            String name = (String) result[2];
+            String categoryName = (String) result[3];
+            String sizeName = (String) result[4];
+            String colorName = (String) result[5];
+            String materialName = (String) result[6];
+            String brandName = (String) result[7];
+            Integer quantity = (Integer) result[8];
+            BigDecimal price = (BigDecimal) result[9];
+            Gender gender = (Gender) result[10];
+            ProductVariantStatus status = (ProductVariantStatus) result[11];
+            ProductRequest productRequest = new ProductRequest(id , code , name , categoryName , sizeName , colorName ,
+                    materialName , brandName , quantity , price , gender , status) ;
+            productRequests.add(productRequest);
+        }
+        return new PageImpl<>(productRequests , pageable , results.getTotalElements());
+    }
+
+    @Override
+    public List<Brand> findAllBrand() {
+        return brandRepository.findAll();
+    }
+
+    @Override
+    public List<Size> findAllSize() {
+        return sizeRepository.findAll();
+    }
+
+    @Override
+    public List<Category> findAllCategory() {
+        return categoryRepository.findAll();
+    }
+
+    @Override
+    public List<Material> findAllMaterial() {
+        return materialRepository.findAll();
+    }
+
+    @Override
+    public List<Color> findAllColor() {
+        return colorRepository.findAll();
     }
 
     @Override

@@ -132,6 +132,16 @@ async function restTab() {
     const shiing = document.getElementById('shipping')
     const remaining = document.getElementById('remaining-amount');
     const strMissing = document.getElementById('str-missing');
+    const totalPrice = document.getElementById('total-price');
+    const shipping = document.getElementById('shipping')
+    const discount = document.getElementById('discount');
+    const reaming = document.getElementById('remaining-amount');
+    const totalAmount = document.getElementById('total-amount');
+    totalAmount.innerText = '';
+    shipping.innerText= '';
+    discount.innerText= '';
+    reaming.innerText = '';
+    totalPrice.innerText = '';
     strMissing.innerText = '';
     remaining.innerText = '';
     shiing.innerText = '';
@@ -339,9 +349,17 @@ function reduceQuantity() {
 async function confirmProduct() {
     const quantityInput = document.getElementById('input-quantity');
     let currentQuantity = parseInt(quantityInput.value);
+    const maxQuantity = parseInt(document.querySelector('.chose-product[data-product-id="' + idProductD + '"]').getAttribute('data-product-quantity'));
+
     if (!isNaN(currentQuantity)) {
+        if (currentQuantity > maxQuantity) {
+            toastr.options.positionClass = 'toast-top-right';
+            toastr.error('Số lượng nhập vào vượt quá số lượng hiện tại. Vui lòng nhập lại.');
+            return;
+        }
+
         quantityInputChange = currentQuantity;
-        console.log("Check currment quantity", currentQuantity)
+        console.log("Check currment quantity", currentQuantity);
 
         billDetails.push({
             idProduct: parseInt(idProductD),
@@ -349,14 +367,13 @@ async function confirmProduct() {
             price: parseInt(priceProductD)
         });
 
-        console.log("data send ", billDetails)
+        console.log("data send ", billDetails);
         addProductToInvoice1(idProductD, nameProductD, sizeProductD, colorProductD, quantityInputChange, priceProductD);
         await saveProductInBill(idBill);
-       fetchProducts(0)
-        toastr.options.positionClass = 'toast-top-right'
+        fetchProducts(0);
+        toastr.options.positionClass = 'toast-top-right';
         toastr.success('Thêm sản phẩm thành công');
         document.getElementById('myModalInput').style.display = 'none';
-
     }
 }
 
@@ -1717,7 +1734,6 @@ function updateProductTable(products) {
             <td>${productDetail.gender}</td>
             <td>${productDetail.quantity}</td>
             <td>${formatVND(productDetail.price)}</td>
-            <td>${statusProduct}</td>
             <td>
                 <button class="chose-product"
                     data-product-id="${productDetail.id}"
@@ -1753,7 +1769,6 @@ function updatePaginationProduct(totalPages, currentPage1) {
         paginationDiv.appendChild(prevButton);
     }
 
-    // Thêm các nút trang
     for (let i = 0; i < totalPages; i++) {
         const pageButton = document.createElement('li');
         pageButton.classList.add('page-item');
@@ -1763,11 +1778,10 @@ function updatePaginationProduct(totalPages, currentPage1) {
         pageButton.innerHTML = `
             <a class="page-link" href="#">${i + 1}</a>
         `;
-        pageButton.onclick = () => fetchProducts(i);  // Load trang i
+        pageButton.onclick = () => fetchProducts(i);
         paginationDiv.appendChild(pageButton);
     }
 
-    // Thêm nút "Next"
     if (currentPage1 < totalPages - 1) {
         const nextButton = document.createElement('li');
         nextButton.classList.add('page-item');
@@ -1777,15 +1791,13 @@ function updatePaginationProduct(totalPages, currentPage1) {
                 <span class="sr-only">Next</span>
             </a>
         `;
-        nextButton.onclick = () => fetchProducts(currentPage1 + 1);  // Load trang sau
+        nextButton.onclick = () => fetchProducts(currentPage1 + 1);
         paginationDiv.appendChild(nextButton);
     }
 }
 
-// Gọi hàm fetchProducts lần đầu để tải sản phẩm và phân trang
 fetchProducts(currentPage1);
 
-// au
 
 
 document.getElementById('btn-bank').addEventListener('click', function () {
@@ -2181,3 +2193,151 @@ document.getElementById('inputSearchCustomer').addEventListener('input' , functi
         fetchCustomers(currentPage);
     }
 })
+
+function getAllBrand(){
+    axios.get('/getAllBrand')
+        .then(response => {
+            const data = response.data;
+            console.log("Data brand",data)
+            const brandSelect = document.getElementById('brand');
+            brandSelect.innerHTML = '<option>Chọn</option>';
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                brandSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.log("error", error)
+        })
+}
+function getAllCategory() {
+    axios.get('/getAllCategory')
+        .then(response => {
+            const data = response.data;
+            console.log("Data brand", data);
+
+            const categorySelect = document.getElementById('category');
+
+            categorySelect.innerHTML = '<option>Chọn</option>';
+
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                categorySelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.log("Error:", error);
+        });
+}
+function getAllColor(){
+    axios.get('/getAllColor')
+        .then(response => {
+            const data = response.data;
+            const colorSelect = document.getElementById('color');
+            colorSelect.innerHTML = '<option>Chọn</option>';
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                colorSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.log("error", error)
+        })
+}
+function getAllSize(){
+    axios.get('/getAllSize')
+        .then(response => {
+            const data = response.data;
+            const sizeSelect = document.getElementById('size');
+            sizeSelect.innerHTML = '<option>Chọn</option>';
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                sizeSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.log("error", error)
+        })
+}
+function getAllMaterial(){
+    axios.get('/getAllMaterial')
+        .then(response => {
+            const data = response.data;
+            const materialSelect = document.getElementById('material');
+            materialSelect.innerHTML = '<option>Chọn</option>';
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                materialSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.log("error", error)
+        })
+}
+getAllBrand();
+getAllColor()
+getAllMaterial()
+getAllSize()
+getAllCategory()
+
+
+function searchProduct(page = 0) {
+    const categoryId = document.querySelector('#category').value === "Chọn" ? null : document.querySelector('#category').value;
+    const colorId = document.querySelector('#color').value === "Chọn" ? null : document.querySelector('#color').value;
+    const materialId = document.querySelector('#material').value === "Chọn" ? null : document.querySelector('#material').value;
+    const sizeId = document.querySelector('#size').value === "Chọn" ? null : document.querySelector('#size').value;
+    const brandId = document.querySelector('#brand').value === "Chọn" ? null : document.querySelector('#brand').value;
+    const name = document.getElementById('nameInputProduct').value;
+
+
+    axios.get('/searchProduct', {
+        params: {
+            name: name || null,
+            category: categoryId,
+            color: colorId,
+            material: materialId,
+            kichCo: sizeId,
+            brand: brandId,
+            page: page,
+            size: 5
+        }
+    })
+        .then(response => {
+            console.log("Check data search product", response.data);
+            updateProductTable(response.data.content);
+            updatePaginationProduct(response.data.totalPages, page);
+        })
+        .catch(error => {
+            console.log("Error", error);
+        });
+}
+
+document.getElementById('category').addEventListener('change', function () {
+    searchProduct(0);
+});
+document.getElementById('color').addEventListener('change', function () {
+    searchProduct(0);
+});
+document.getElementById('material').addEventListener('change', function () {
+    searchProduct(0);
+});
+document.getElementById('size').addEventListener('change', function () {
+    searchProduct(0);
+});
+document.getElementById('brand').addEventListener('change', function () {
+    searchProduct(0);
+});
+
+document.getElementById('nameInputProduct').addEventListener('input', function () {
+    searchProduct(0);
+});

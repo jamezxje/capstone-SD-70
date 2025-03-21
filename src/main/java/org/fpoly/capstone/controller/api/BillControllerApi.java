@@ -8,10 +8,7 @@ import org.fpoly.capstone.dto.vnpay.CreatePayMentMethodRequest;
 import org.fpoly.capstone.dto.billDetail.BillProductDTO;
 import org.fpoly.capstone.dto.vnpay.PayMentVnPayResponse;
 import org.fpoly.capstone.dto.voucher.VoucherRequest;
-import org.fpoly.capstone.entity.Bill;
-import org.fpoly.capstone.entity.ProductDetail;
-import org.fpoly.capstone.entity.User;
-import org.fpoly.capstone.entity.Voucher;
+import org.fpoly.capstone.entity.*;
 import org.fpoly.capstone.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -145,6 +142,38 @@ public class BillControllerApi {
                                                 ){
         return billService.searchCustomer(searchQuery);
     }
+    @GetMapping("/searchProduct")
+    public Page<ProductRequest> getProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Long category,
+            @RequestParam(required = false) Long color,
+            @RequestParam(required = false) Long material,
+            @RequestParam(required = false) Long kichCo,
+            @RequestParam(required = false) Long brand,
+            @RequestParam(defaultValue = "0") int page ,
+            @RequestParam(defaultValue = "5") int size) {
 
+        return billService.searchProduct(name, category, color, material, kichCo, brand, page , size);
+    }
+    @GetMapping("/getAllBrand")
+    public List<Brand> getAllBrand() {
+        return billService.findAllBrand();
+    }
+    @GetMapping("/getAllSize")
+    public List<Size> getAllSize() {
+        return billService.findAllSize();
+    }
+    @GetMapping("/getAllCategory")
+    public List<Category> getAllCategory() {
+        return billService.findAllCategory();
+    }
+    @GetMapping("/getAllMaterial")
+    public List<Material> getAllMaterial() {
+        return billService.findAllMaterial();
+    }
+    @GetMapping("/getAllColor")
+    public List<Color> getAllColor() {
+        return billService.findAllColor();
+    }
 
 }

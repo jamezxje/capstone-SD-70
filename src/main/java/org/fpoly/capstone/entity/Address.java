@@ -50,7 +50,7 @@ public class Address {
     @Column(name = "ward_code", length = 255)
     private String wardCode;
 
-    @Column(name = "province_id", length = 50)
+    @Column(name = "province_zid", length = 50)
     private Integer provinceId;
 
     @Column(name = "to_district_id", length = 50)
