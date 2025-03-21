@@ -92,12 +92,13 @@
                     <label for="input-lastname">Full Name <span class="required-f">*</span></label>
                     <input name="lastname" value="" id="input-lastname" type="text" th:value="${loggedUser.fullName}">
                   </div>
-                </div>
-                <div class="row">
+                  
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                     <label for="input-email">E-Mail <span class="required-f">*</span></label>
                     <input name="email" value="" id="input-email" type="email" th:value="${loggedUser.email}">
                   </div>
+                </div>
+                <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                     <label for="input-telephone">Telephone <span class="required-f">*</span></label>
                     <input name="telephone" value="" id="input-telephone" type="tel"
@@ -108,72 +109,26 @@
               
               <fieldset>
                 <div class="row">
-                  <div class="form-group col-md-6 col-lg-6 col-xl-6">
-                    <label for="input-company">Company</label>
-                    <input name="company" value="" id="input-company" type="text">
-                  </div>
-                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-address-1">Address <span class="required-f">*</span></label>
-                    <input name="address_1" value="" id="input-address-1" type="text">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-6 col-lg-6 col-xl-6">
-                    <label for="input-address-2">Apartment <span class="required-f">*</span></label>
-                    <input name="address_2" value="" id="input-address-2" type="text">
-                  </div>
-                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-city">City <span class="required-f">*</span></label>
-                    <input name="city" value="" id="input-city" type="text">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-postcode">Post Code <span class="required-f">*</span></label>
-                    <input name="postcode" value="" id="input-postcode" type="text">
-                  </div>
-                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-country">Country <span class="required-f">*</span></label>
-                    <select name="country_id" id="input-country">
-                      <option value=""> --- Please Select ---</option>
-                      <option value="244">Aaland Islands</option>
-                      <option value="1">Afghanistan</option>
-                      <option value="2">Albania</option>
-                      <option value="3">Algeria</option>
-                      <option value="4">American Samoa</option>
-                      <option value="5">Andorra</option>
-                      <option value="6">Angola</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-zone">Region / State <span class="required-f">*</span></label>
-                    <select name="zone_id" id="input-zone">
-                      <option value=""> --- Please Select ---</option>
-                      <option value="3513">Aberdeen</option>
-                      <option value="3514">Aberdeenshire</option>
-                      <option value="3515">Anglesey</option>
-                      <option value="3516">Angus</option>
+                  <div class="form-group col-md-12 col-lg-12 col-xl-12 required">
+                    <label for="customer-address">Địa chỉ</label>
+                    <select id="customer-address">
+                      <option th:each="address : ${addressList}"
+                              th:value="${address.id}"
+                              th:data-districtId="${address.toDistrictId}"
+                              th:data-wardCode="${address.wardCode}"
+                              th:text="${address.detailAddress} + ' - '+${address.ward} + ' - ' + ${address.district} + ' - ' + ${address.province} "
+                              th:selected="${address.id == defaultAddress.id}">
+                      </option>
                     </select>
                   </div>
                 </div>
               </fieldset>
               
-              <fieldset>
-                <div class="row">
-                  <div class="form-group form-check col-md-12 col-lg-12 col-xl-12">
-                    <label class="form-check-label padding-15px-left">
-                      <input type="checkbox" class="form-check-input" value=""><strong>Create an account ?</strong>
-                    </label>
-                  </div>
-                </div>
-              </fieldset>
               
               <fieldset>
                 <div class="row">
                   <div class="form-group col-md-12 col-lg-12 col-xl-12">
-                    <label for="input-company">Order Notes <span class="required-f">*</span></label>
+                    <label>Order Notes <span class="required-f">*</span></label>
                     <textarea class="form-control resize-both" rows="3"></textarea>
                   </div>
                 </div>
@@ -211,7 +166,11 @@
                   <tfoot class="font-weight-600">
                   <tr>
                     <td colspan="4" class="text-right">Shipping</td>
-                    <td>$50.00</td>
+                    <td id="shipFee">$50.00</td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" class="text-right">Delevery Expect</td>
+                    <td id="confirm-day">$50.00</td>
                   </tr>
                   <tr>
                     <td colspan="4" class="text-right">Total</td>
@@ -345,5 +304,164 @@
 <script>
 </script>
 <th:block id="th-js">
+  <script>
+    // Function to calculate shipping
+    function calculateShipping() {
+      // Get selected address details
+      const selectedOption = document.querySelector("#customer-address option:checked");
+      
+      // Log the selected option to inspect its data
+      console.log("Selected option:", selectedOption);
+      
+      // Parse the selected address data (districtId and wardCode)
+      const selectedDistrictId = selectedOption.getAttribute("data-districtid");
+      const selectedWardCode = selectedOption.getAttribute("data-wardcode");
+      
+      console.log("selectedDistrictId: " + selectedDistrictId);
+      console.log("selectedWardCode: " + selectedWardCode);
+      
+      // If no district or ward is selected, alert the user
+      if (!selectedDistrictId || !selectedWardCode) {
+        alert("Please select both district and ward.");
+        return;
+      }
+      
+      // Prepare the request body
+      const requestBody = {
+        "service_id": 53321,
+        "insurance_value": 500000,
+        "coupon": null,
+        "from_district_id": 3440, // Replace with actual "from" district ID
+        "to_district_id": selectedDistrictId,
+        "to_ward_code": selectedWardCode,
+        "height": 15,
+        "length": 15,
+        "weight": 1000,
+        "width": 15
+      };
+      
+      // Make the AJAX request
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee",  // API URL
+        method: "GET",  // API GET method for shipping fee
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe",  // Token in header
+          "shop_id": "5677097"  // Shop ID in header
+        },
+        contentType: "application/json",  // Sending JSON in the body
+        data: requestBody,  // Sending request body
+        success: function (response) {
+          // Check if the API returns a 'total' value
+          if (response && response.data && response.data.total) {
+            // Set the total shipping cost
+            const totalShippingCost = response.data.total;
+            
+            // Update the shipping cost display
+            document.getElementById("shipFee").textContent = totalShippingCost + " VND";  // Assuming the response is in VND
+          } else {
+            // Handle cases where there's no valid 'total' field in the response
+            alert("Error calculating shipping. Please try again later.");
+          }
+        },
+        error: function (xhr, status, error) {
+          // Handle error
+          console.error("Error fetching shipping fee:", status, error);
+          alert("Failed to calculate shipping. Please try again later.");
+        }
+      });
+    }
+    
+    // Add event listener to the address select to trigger the shipping calculation when changed
+    document.getElementById("customer-address").addEventListener("change", calculateShipping);
+    
+    // Run calculateShipping when the page loads if an address is already selected
+    window.onload = function () {
+      const selectedOption = document.querySelector("#customer-address option:checked");
+      if (selectedOption) {
+        calculateShipping();
+      }
+    };
+  </script>
+  
+  <script>
+    // Function to calculate lead time (shipping time)
+    function calculateLeadTime() {
+      // Get selected address details
+      const selectedOption = document.querySelector("#customer-address option:checked");
+      
+      // Log the selected option to inspect its data
+      console.log("Selected option:", selectedOption);
+      
+      // Parse the selected address data (districtId and wardCode)
+      const selectedDistrictId = selectedOption ? parseInt(selectedOption.getAttribute("data-districtid"), 10) : null;
+      const selectedWardCode = selectedOption ? selectedOption.getAttribute("data-wardcode") : null;
+      
+      console.log("selectedDistrictId: " + selectedDistrictId);
+      console.log("selectedWardCode: " + selectedWardCode);
+      
+      // If no district or ward is selected, alert the user
+      if (!selectedDistrictId || !selectedWardCode) {
+        alert("Please select both district and ward.");
+        return;
+      }
+      
+      // Prepare the request body for lead time calculation
+      const requestBody = {
+        "from_district_id": 1492,
+        "from_ward_code": "1A0501",// Replace with actual "from" ward code
+        "to_district_id": selectedDistrictId, // Ensure this is an integer
+        "to_ward_code": selectedWardCode, // Ward code remains as string
+        "service_id": 53321 // Service ID for lead time calculation
+      };
+      
+      console.log("requestBody date calculate:", requestBody);
+      
+      // Make the AJAX request for lead time
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/leadtime",  // API URL
+        method: "POST",  // API POST method for lead time
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe",  // Token in header
+          "shop_id": "5677097"  // Shop ID in header
+        },
+        contentType: "application/json",  // Sending JSON in the body
+        data: JSON.stringify(requestBody),  // Sending request body
+        success: function (response) {
+          if (response && response.data && response.data.leadtime_order) {
+            const leadtimeOrder = response.data.leadtime_order;
+            
+            // Extract to_estimate_date
+            const toDate = new Date(leadtimeOrder.to_estimate_date);
+            
+            // Format the date as DD/MM/YYYY
+            const formattedToDate = `${toDate.getDate().toString().padStart(2, '0')}/${(toDate.getMonth() + 1).toString().padStart(2, '0')}/${toDate.getFullYear()}`;
+            
+            // Display the delivery date
+            document.getElementById('confirm-day').innerText = `${formattedToDate}`;
+          } else {
+            alert("Error calculating delivery time. Please try again later.");
+          }
+        },
+        error: function (xhr, status, error) {
+          // Handle error
+          console.error("Error fetching delivery time:", status, error);
+          alert("Failed to calculate delivery time. Please try again later.");
+        }
+      });
+    }
+    
+    // Add event listener to the address select to trigger the lead time calculation when changed
+    document.getElementById("customer-address").addEventListener("change", calculateLeadTime);
+    
+    // Run calculateLeadTime when the page loads if an address is already selected
+    window.onload = function () {
+      const selectedOption = document.querySelector("#customer-address option:checked");
+      if (selectedOption) {
+        calculateLeadTime();
+      }
+    };
+  </script>
+
+
 </th:block>
 </html>

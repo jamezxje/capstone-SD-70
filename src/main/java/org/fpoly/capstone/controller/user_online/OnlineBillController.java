@@ -2,12 +2,14 @@ package org.fpoly.capstone.controller.user_online;
 
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
+import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.Bill;
 import org.fpoly.capstone.entity.Cart;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.service.BillService;
 import org.fpoly.capstone.service.CartDetailService;
+import org.fpoly.capstone.service.OnlineAddressService;
 import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
 import org.modelmapper.ModelMapper;
@@ -29,11 +31,14 @@ public class OnlineBillController {
     private final CartRepository cartRepository;
     private final ModelMapper modelMapper;
     private final UserService userService;
+    private final OnlineAddressService onlineAddressService;
 
     @GetMapping(path = "checkout")
     public String onOpenCheckoutView(Model model) {
 
         User loggedUser = this.userService.getUserFromContext();
+
+        Address defaultAddress = this.onlineAddressService.findDefaultAddressByUserId();
 
         List<CartDetailResponse> cartDetailResponseList = this.cartDetailService.findCartDetailByUserId();
 
@@ -41,9 +46,14 @@ public class OnlineBillController {
                 .map(response -> this.modelMapper.map(response, CartDetailViewModel.class))
                 .toList();
 
+        List<Address> addressList = onlineAddressService.getListAddressByLoggedUser();
+
         model.addAttribute("cartDetailList", viewModels);
         model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("shoppingCart", this.cartRepository.findCartByUserId(loggedUser.getId()));
+        model.addAttribute("addressList", addressList);
+        model.addAttribute("defaultAddress", defaultAddress);
+
 
         return "/views/user-online-view/checkout-form";
     }

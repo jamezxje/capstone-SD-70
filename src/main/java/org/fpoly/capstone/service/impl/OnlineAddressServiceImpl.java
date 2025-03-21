@@ -26,6 +26,7 @@ public class OnlineAddressServiceImpl implements OnlineAddressService {
 
         User loggedUser = this.userService.getUserFromContext();
 
+        // Tạo địa chỉ mới từ request
         Address address = Address.builder()
                 .province(request.getProvince())
                 .provinceId(String.valueOf(request.getProvinceId()))
@@ -35,12 +36,26 @@ public class OnlineAddressServiceImpl implements OnlineAddressService {
                 .wardCode(String.valueOf(request.getWardCode()))
                 .detailAddress(request.getDetailAddress())
                 .user(loggedUser)
-                .status(AddressStatus.DANG_SU_DUNG)
                 .build();
 
-        this.onlineAddressRepository.save(address);
 
+        List<Address> existingAddressList = this.onlineAddressRepository.findAddressByUserId(loggedUser.getId());
+
+        if (existingAddressList.isEmpty()) {
+            address.setStatus(AddressStatus.DANG_SU_DUNG);
+        } else {
+
+            for (Address existingAddress : existingAddressList) {
+                existingAddress.setStatus(AddressStatus.NGUNG_SU_DUNG);
+                this.onlineAddressRepository.save(existingAddress);
+            }
+            address.setStatus(AddressStatus.DANG_SU_DUNG);
+        }
+
+        // Lưu địa chỉ mới vào cơ sở dữ liệu
+        this.onlineAddressRepository.save(address);
     }
+
 
     @Override
     public void updateAddressForOnlineUser(Integer addressId, UpdateAddressRequest request) {
@@ -68,6 +83,13 @@ public class OnlineAddressServiceImpl implements OnlineAddressService {
     }
 
     @Override
+    public Address findDefaultAddressByUserId() {
+        User loggedUser = this.userService.getUserFromContext();
+
+        return this.onlineAddressRepository.findDefaultAddressByUserId(loggedUser.getId());
+    }
+
+    @Override
     public Address findAddressById(Integer addressId) {
         return this.onlineAddressRepository
                 .findById(Long.valueOf(addressId))
@@ -82,4 +104,25 @@ public class OnlineAddressServiceImpl implements OnlineAddressService {
 
         this.onlineAddressRepository.delete(deleteAdress);
     }
+
+    @Override
+    public void setDefaultAddress(Integer addressId) {
+        // Tìm địa chỉ mặc định từ ID
+        Address defaultAddress = this.onlineAddressRepository
+                .findById(Long.valueOf(addressId))
+                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + addressId));
+
+        // Cập nhật tất cả các địa chỉ còn lại thành 'NGUNG_SU_DUNG'
+        for (Address address : this.onlineAddressRepository.findAll()) {
+            if (!address.getId().equals(defaultAddress.getId())) {
+                address.setStatus(AddressStatus.NGUNG_SU_DUNG);
+                this.onlineAddressRepository.save(address);
+            }
+        }
+
+        // Đặt địa chỉ mặc định với trạng thái 'DANG_SU_DUNG'
+        defaultAddress.setStatus(AddressStatus.DANG_SU_DUNG);
+        this.onlineAddressRepository.save(defaultAddress);
+    }
+
 }

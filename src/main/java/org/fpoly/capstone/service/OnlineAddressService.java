@@ -13,7 +13,11 @@ public interface OnlineAddressService {
 
     List<Address> getListAddressByLoggedUser();
 
+    Address findDefaultAddressByUserId();
+
     Address findAddressById(Integer addressId);
 
     void deleteAddress(Integer addressId);
+
+    void setDefaultAddress(Integer addressId);
 }

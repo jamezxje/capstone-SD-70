@@ -38,10 +38,23 @@ public class OnlineCustomerController {
     }
 
     @PostMapping(path = "address/delete/{id}")
-    public String deleteBrand(@PathVariable Integer id) {
+    public String deleteAddress(@PathVariable Integer id) {
 
         try {
             this.onlineAddressService.deleteAddress(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/online/customer/profile";
+
+    }
+
+    @PostMapping(path = "address/set-default/{id}")
+    public String setDefaultAddress(@PathVariable Integer id) {
+
+        try {
+            this.onlineAddressService.setDefaultAddress(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
