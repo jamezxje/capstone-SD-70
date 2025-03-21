@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fpoly.capstone.entity.enum_status.AddressStatus;
@@ -25,6 +26,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "address")
+@Builder
 public class Address {
 
     @Id
@@ -37,6 +39,9 @@ public class Address {
 
     @Column(name = "line", length = 255)
     private String line;
+
+    @Column(name = "detail_address", length = 255)
+    private String detailAddress;
 
     @Column(name = "province", length = 50)
     private String province;
