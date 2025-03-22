@@ -4,19 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.Bill;
-import org.fpoly.capstone.entity.Cart;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.service.BillService;
 import org.fpoly.capstone.service.CartDetailService;
 import org.fpoly.capstone.service.OnlineAddressService;
 import org.fpoly.capstone.service.UserService;
+import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -46,25 +45,27 @@ public class OnlineBillController {
                 .map(response -> this.modelMapper.map(response, CartDetailViewModel.class))
                 .toList();
 
-        List<Address> addressList = onlineAddressService.getListAddressByLoggedUser();
+        List<Address> addressList = this.onlineAddressService.getListAddressByLoggedUser();
 
         model.addAttribute("cartDetailList", viewModels);
         model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("shoppingCart", this.cartRepository.findCartByUserId(loggedUser.getId()));
         model.addAttribute("addressList", addressList);
         model.addAttribute("defaultAddress", defaultAddress);
+        model.addAttribute("cartTotalMoney", this.cartRepository.findCartByUserId(loggedUser.getId()).getTotalPrice());
+        model.addAttribute("createBillRequest", new CreateBillRequest());
 
 
         return "/views/user-online-view/checkout-form";
     }
 
-    @PostMapping("save")
-    public String onSaveBill(Model model) {
-        User loggedUser = this.userService.getUserFromContext();
-        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
-        this.billService.saveToBillForOnlineUser(cart);
-        return "redirect:/bill";
-    }
+//    @PostMapping("save")
+//    public String onSaveBill(Model model, @ModelAttribute("createBillRequest") CreateBillRequest createBillRequest) {
+//        User loggedUser = this.userService.getUserFromContext();
+//        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+//        this.billService.saveToBillForOnlineUser(cart, createBillRequest);
+//        return "redirect:/bill";
+//    }
 
     @GetMapping(path = "")
     public String onOpenBillView(Model model) {

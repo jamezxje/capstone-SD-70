@@ -35,6 +35,7 @@
                   <tr>
                     <th class="text-left">Order date</th>
                     <th>Total price</th>
+                    <th>Expect recieve date</th>
                     <th>Order status</th>
                     <th>Detail</th>
                     <th>Cancel</th>
@@ -45,9 +46,10 @@
                     <td class="text-left" th:text="${bill.createDate}">
                       Spike Jacket
                     </td>
-                    <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'POINT', 0, 'POINT')}">
+                    <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'POINT', 0, 'POINT')} + ' VND'">
                       Spike Jacket
                     </td>
+                    <td th:text="${bill.receiveDate}"></td>
                     <td th:text="${bill.status}">$99</td>
                     <td>
                       <a href="#" title="Detail" class="site-header__cart">

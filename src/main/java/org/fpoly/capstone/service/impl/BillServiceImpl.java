@@ -12,10 +12,12 @@ import org.fpoly.capstone.repository.BillDetailRespository;
 import org.fpoly.capstone.repository.BillRespository;
 import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.service.BillService;
+import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,7 +29,7 @@ public class BillServiceImpl implements BillService {
     private final CartRepository cartRepository;
 
     @Override
-    public void saveToBillForOnlineUser(Cart cart) {
+    public void saveToBillForOnlineUser(Cart cart, CreateBillRequest request) {
         Bill bill = new Bill();
 
         User customer = cart.getUser();
@@ -50,6 +52,18 @@ public class BillServiceImpl implements BillService {
             this.billDetailRespository.save(billDetail);
             billDetailList.add(billDetail);
         }
+
+        BigDecimal moneyShip = request.getMoneyShip();
+        Date recieveDate = request.getReceiveDate();
+        BigDecimal grandTotal = request.getGrandTotal();
+        String address = request.getAddress();
+        String note = request.getNote();
+
+        bill.setTotalMoney(grandTotal);
+        bill.setMoneyShip(moneyShip);
+        bill.setReceiveDate(recieveDate);
+        bill.setAddress(address);
+        bill.setNote(note);
 
         bill.setBillDetailList(billDetailList);
         this.cartRepository.deleteById(cart.getId());
