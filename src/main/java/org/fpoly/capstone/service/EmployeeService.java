@@ -1,18 +1,20 @@
 package org.fpoly.capstone.service;
 
-import org.fpoly.capstone.dto.user.AddressDTO;
-import org.fpoly.capstone.dto.user.EmployeeDTO;
+import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
+@Service
 public interface EmployeeService {
-    List<User> getAllEmployees();
-    User getEmployeeById(Long id);
-    User saveEmployee(User employee);
-    User createEmployee(EmployeeDTO employeRequest , AddressDTO addressRequest,
-                        MultipartFile file);
-    User updateEmployee(Long id, User employee);
-    void deleteEmployee(Long id);
+
+    Page<User> getEmployeesPaginated(Pageable pageable);
+    User getEmployeeById(String id);
+    User createEmployee(User user , Address address);
+    User updateEmployee(String id, User user, Address address);
+//    User createEmployee(User user , Address address, MultipartFile file);
+//    User updateEmployee(String id, User user, Address address, MultipartFile file);
+
 }

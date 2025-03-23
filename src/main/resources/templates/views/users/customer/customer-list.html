@@ -5,7 +5,6 @@
 	<meta charset="UTF-8">
 	<title>Quản lý khách hàng</title>
 	<th:block id="th-css"></th:block>
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <th:block id="th-body">
@@ -85,7 +84,30 @@
 									</div>
 								</td>
 							</tr></tbody>
-						</table><div class="dataTables_info" id="ListDatatableView_info" role="status" aria-live="polite">Showing 1 to 10 of 14 entries</div><div class="dataTables_paginate paging_simple_numbers" id="ListDatatableView_paginate"><a class="paginate_button previous disabled" aria-controls="ListDatatableView" data-dt-idx="0" tabindex="0" id="ListDatatableView_previous"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a><span><a class="paginate_button current" aria-controls="ListDatatableView" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="ListDatatableView" data-dt-idx="2" tabindex="0">2</a></span><a class="paginate_button next" aria-controls="ListDatatableView" data-dt-idx="3" tabindex="0" id="ListDatatableView_next"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></div></div>
+						</table>
+						<div class="dataTables_info" id="ListDatatableView_info" role="status" aria-live="polite">
+							Trang <span th:text="${currentPage}"></span> / <span th:text="${totalPages}"></span>
+						</div>
+						<div class="dataTables_paginate paging_simple_numbers" id="ListDatatableView_paginate">
+							<!-- Nút Previous -->
+							<a class="paginate_button previous"
+							   th:classappend="${currentPage == 1} ? 'disabled'"
+							   th:href="${currentPage > 1} ? @{/customer-management(numPage=${currentPage - 1})} : '#'">
+								<i class="fa fa-angle-double-left" aria-hidden="true"></i>
+							</a>
+							<!-- Hiển thị số trang -->
+							<span>
+								<a th:each="i : ${#numbers.sequence(1, totalPages)}" class="paginate_button"
+								   th:classappend="${i == currentPage} ? 'current'"
+								   th:href="@{/customer-management(numPage=${i})}" th:text="${i}"></a>
+							</span>
+							<!-- Nút Next -->
+							<a class="paginate_button next"
+							   th:classappend="${currentPage == totalPages} ? 'disabled'"
+							   th:href="${currentPage < totalPages} ? @{/customer-management(numPage=${currentPage + 1})} : '#'">
+								<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -1,8 +1,5 @@
 package org.fpoly.capstone.service.impl;
 
-import jakarta.transaction.Transactional;
-import org.fpoly.capstone.dto.user.AddressDTO;
-import org.fpoly.capstone.dto.user.EmployeeDTO;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.AddressStatus;
@@ -10,17 +7,22 @@ import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.EmployeeRepository;
+import org.fpoly.capstone.service.AddressService;
+import org.fpoly.capstone.service.EmailService;
 import org.fpoly.capstone.service.EmployeeService;
-import org.fpoly.capstone.service.payload.user.FileUploadImagesService;
-//import org.fpoly.capstone.service.payload.user.SendEmailService;
-import org.fpoly.capstone.service.payload.user.RandomNumberGenerator;
+import org.fpoly.capstone.service.UserService;
+import org.fpoly.capstone.utils.PasswordUtil;
+import org.fpoly.capstone.utils.upload.UploadAvatarToCloudinary;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Date;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -31,196 +33,158 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private AddressRepository addressRepository;
 
-//    @Autowired
-//    private SendEmailService sendEmailService;
-
-    @Autowired
-    private FileUploadImagesService fileUploadImagesService;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AddressService addressService;
+
+    @Autowired
+    private UploadAvatarToCloudinary uploadAvatarToCloudinary;
+
     @Override
-    public List<User> getAllEmployees() {
-        return employeeRepository.findByRolesAndStatus(UserRole.ROLE_USER, UserStatus.ACTIVATED);
+    public Page<User> getEmployeesPaginated(Pageable pageable) {
+        return employeeRepository.findByRolesAndStatus(UserRole.ROLE_USER, UserStatus.ACTIVATED, pageable);
     }
 
     @Override
-    public User getEmployeeById(Long id) {
-        return employeeRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public User saveEmployee(User employee) {
-        if (employee == null) {
-            throw new IllegalArgumentException("Employee object is null!");
-        }
-        System.out.println("Saving employee: " + employee);
-
-        employee.setRoles(UserRole.ROLE_USER);
-        return employeeRepository.save(employee);
+    public User getEmployeeById(String id) {
+        return employeeRepository.findEmployAddresses(id).orElse(null);
     }
 
     @Transactional
-    public User createEmployee(EmployeeDTO employeereRequest, AddressDTO addressRequest, MultipartFile file) {
-        // Kiểm tra số điện thoại, email và căn cước công dân đã tồn tại chưa
-        if (employeeRepository.getEmployBySDT(employeereRequest.getPhoneNumber()) != null) {
-            throw new IllegalArgumentException("Số điện thoại này đã tồn tại!");
-        }
-        if (employeeRepository.getEmployByEmail(employeereRequest.getEmail()) != null) {
-            throw new IllegalArgumentException("Email này đã tồn tại!");
-        }
-        if (employeeRepository.getEmployByCCCD(employeereRequest.getCitizenIdentity()) != null) {
-            throw new IllegalArgumentException("Căn cước công dân này đã tồn tại!");
-        }
+    @Override
+        public User createEmployee(User user, Address address) {
+//    public User createEmployee(User user, Address address, MultipartFile file) {
+        String rawPassword = PasswordUtil.generateRandomPassword(8); // Tạo mật khẩu 8 ký tự
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        String userServiceName = userService.getName();
 
-        // Mã hóa mật khẩu
-        String password = String.valueOf(new RandomNumberGenerator().generateRandom6DigitNumber());
+        // xử lý ảnh
+//        String urlAvatar = null;
+//        if (file != null && !file.isEmpty()) {
+//            urlAvatar = uploadAvatarToCloudinary.uploadImage(file);
+//        }
 
         // Tạo đối tượng user
-        User user = new User();
-        user.setFullName(employeereRequest.getFullName());
-        user.setPhoneNumber(employeereRequest.getPhoneNumber());
-        user.setEmail(employeereRequest.getEmail());
-        user.setStatus(employeereRequest.getStatus());
-        user.setPassword(passwordEncoder.encode(password));
-        user.setDateOfBirth(employeereRequest.getDateOfBirth());
-        user.setGender(employeereRequest.getGender());
-        user.setCitizenIdentity(employeereRequest.getCitizenIdentity());
-        user.setRoles((UserRole.ROLE_USER));
-        user.setStatus(UserStatus.ACTIVATED);
+        User newUser = new User();
+        newUser.setFullName(user.getFullName());
+        newUser.setEmail(user.getEmail());
+        newUser.setPhoneNumber(user.getPhoneNumber());
+        newUser.setPassword(encodedPassword);
+//        newUser.setAvatar(urlAvatar);
+        newUser.setDateOfBirth(user.getDateOfBirth());
+        newUser.setCitizenIdentity(user.getCitizenIdentity());
+        newUser.setGender(user.getGender());
+        newUser.setRoles(UserRole.ROLE_USER);
+        newUser.setStatus(UserStatus.ACTIVATED);
+        newUser.setCreatedBy(userServiceName);
+        newUser.setCreateDate(new Date());
 
-        // Lưu user vào database trước khi xử lý avatar
-        user = employeeRepository.save(user);
+        // Lưu user và lấy ID mới
+        User savedUser = employeeRepository.save(newUser);
+        System.out.println("User ID: " + savedUser.getId()); // Debug xem có ID không
 
-        // Xử lý ảnh đại diện
-        if (file != null && !file.isEmpty()) {
-            String avatarFileName = fileUploadImagesService.saveAvatar(file, "employee", user.getId());
-            user.setAvatar(avatarFileName);
-            employeeRepository.save(user); // Cập nhật lại user với avatar
+        if (address != null) {
+            Address newAddress = new Address();
+            newAddress.setAddressStatus(AddressStatus.DANG_SU_DUNG);
+            newAddress.setProvinceId(address.getProvinceId());
+            newAddress.setToDistrictId(address.getToDistrictId());
+            newAddress.setWardCode(address.getWardCode());
+            newAddress.setProvince(address.getProvince());
+            newAddress.setDistrict(address.getDistrict());
+            newAddress.setWard(address.getWard());
+            newAddress.setLine(address.getLine());
+            newAddress.setFullName(user.getFullName());
+            newAddress.setPhoneNumber(user.getPhoneNumber());
+            newUser.setCreateDate(new Date());
+            newAddress.setUser(savedUser); // Không cần tìm lại user nữa
+
+            // Lưu địa chỉ vào database
+//            addressRepository.save(newAddress);
+            Address savedAddress = addressRepository.save(newAddress);
+            System.out.println("Address ID: " + savedAddress.getId()); // Debug xem có lưu không
+        }
+        System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
+//        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên CAPSTONE";
+//        emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
+        return savedUser;
+    }
+
+    @Transactional
+    @Override
+        public User updateEmployee(String id, User user, Address address) {
+//    public User updateEmployee(String id, User user, Address address, MultipartFile file) {
+        User existingEmployee = employeeRepository.findById(id).orElse(null);
+        if (existingEmployee == null) {
+            return null;
+        }
+        String userServiceName = userService.getName();
+
+        // Nếu có file mới => Upload lên Cloudinary, ngược lại giữ nguyên ảnh cũ
+//        String urlAvatar = existingEmployee.getAvatar(); // Giữ ảnh cũ
+//        if (file != null && !file.isEmpty()) {
+//            urlAvatar = uploadAvatarToCloudinary.uploadImage(file); // Upload ảnh mới
+//        }
+
+        // Cập nhật thông tin nhân viên
+        existingEmployee.setFullName(user.getFullName());
+        existingEmployee.setEmail(user.getEmail());
+        existingEmployee.setPhoneNumber(user.getPhoneNumber());
+        existingEmployee.setDateOfBirth(user.getDateOfBirth());
+        existingEmployee.setGender(user.getGender());
+        existingEmployee.setCitizenIdentity(user.getCitizenIdentity());
+        existingEmployee.setStatus(user.getStatus());
+//        existingEmployee.setAvatar(urlAvatar); // Cập nhật avatar
+        existingEmployee.setUpdatedBy(userServiceName);
+        existingEmployee.setLastModifiedDate(new Date());
+
+        // Cập nhật hoặc thêm mới địa chỉ
+        Address existingAddress = addressService.getDefaultAddress(existingEmployee.getId());
+        if (existingAddress != null) {
+            existingAddress.setProvinceId(address.getProvinceId());
+            existingAddress.setToDistrictId(address.getToDistrictId());
+            existingAddress.setWardCode(address.getWardCode());
+            existingAddress.setProvince(address.getProvince());
+            existingAddress.setDistrict(address.getDistrict());
+            existingAddress.setWard(address.getWard());
+            existingAddress.setLine(address.getLine());
+            existingAddress.setFullName(user.getFullName());
+            existingAddress.setPhoneNumber(user.getPhoneNumber());
+            existingAddress.setUpdatedBy(userServiceName);
+            existingAddress.setLastModifiedDate(new Date());
+            addressService.saveAddress(existingAddress);
+        } else {
+            Address newAddress = new Address();
+            newAddress.setAddressStatus(AddressStatus.DANG_SU_DUNG);
+            newAddress.setProvinceId(address.getProvinceId());
+            newAddress.setToDistrictId(address.getToDistrictId());
+            newAddress.setWardCode(address.getWardCode());
+            newAddress.setProvince(address.getProvince());
+            newAddress.setDistrict(address.getDistrict());
+            newAddress.setWard(address.getWard());
+            newAddress.setLine(address.getLine());
+            newAddress.setFullName(user.getFullName());
+            newAddress.setPhoneNumber(user.getPhoneNumber());
+            newAddress.setCreatedBy(userServiceName);
+            newAddress.setLastModifiedDate(new Date());
+            newAddress.setUser(existingEmployee);
+
+            if (existingEmployee.getAddresses() == null) {
+                existingEmployee.setAddresses(new ArrayList<>());
+            }
+            existingEmployee.getAddresses().add(newAddress);
+            addressService.saveAddress(newAddress);
         }
 
-        // Tạo địa chỉ cho user
-        Address address = Address.builder()
-                .status(AddressStatus.DANG_SU_DUNG)
-                .ward(addressRequest.getWard())
-                .toDistrictId(addressRequest.getToDistrictId())
-                .provinceId(addressRequest.getProvinceId())
-                .line(addressRequest.getLine())
-                .province(addressRequest.getProvince())
-                .district(addressRequest.getDistrict())
-                .wardCode(addressRequest.getWardCode())
-                .user(user)
-                .build();
-
-        addressRepository.save(address); // Lưu địa chỉ vào database
-
-        // Gửi email thông báo tài khoản & mật khẩu
-        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên CAPSTONE";
-//        sendEmailService.sendEmailPassword(user.getEmail(), subject, employeereRequest.getPassword());
-
-        return user;
+        // Lưu nhân viên
+        return employeeRepository.save(existingEmployee);
     }
 
-//    @Override
-//    @Transactional
-//    public User updateEmployee(Long id, User employee, UpdateAddressRequest addressRequest, MultipartFile avatarFile) {
-//        // Kiểm tra nhân viên có tồn tại không
-//        Optional<User> optionalUser = employeeRepository.findById(id);
-//        if (!optionalUser.isPresent()) {
-//            throw new RuntimeException("Nhân viên không tồn tại!");
-//        }
-//        User existingUser = optionalUser.get();
-//
-////        // Kiểm tra trùng số điện thoại
-////        if (!existingUser.getPhoneNumber().equals(employee.getPhoneNumber()) &&
-////                employeeRepository.getOneUserByPhoneNumber(employee.getPhoneNumber()) != null) {
-////            throw new RuntimeException("Số điện thoại đã tồn tại!");
-////        }
-////
-////        // Kiểm tra trùng email
-////        if (!existingUser.getEmail().equals(employee.getEmail()) &&
-////                employeeRepository.getOneUserByEmail(employee.getEmail()) != null) {
-////            throw new RuntimeException("Email đã tồn tại!");
-////        }
-////
-////        // Kiểm tra trùng CCCD
-////        if (!existingUser.getCitizenIdentity().equals(employee.getCitizenIdentity()) &&
-////                employeeRepository.getOneByCitizenIdentity(employee.getCitizenIdentity()) != null) {
-////            throw new RuntimeException("Căn cước công dân đã tồn tại!");
-////        }
-//
-//        // Cập nhật thông tin nhân viên
-//        existingUser.setFullName(employee.getFullName());
-//        existingUser.setPhoneNumber(employee.getPhoneNumber());
-//        existingUser.setDateOfBirth(employee.getDateOfBirth());
-//        existingUser.setEmail(employee.getEmail());
-//        existingUser.setGender(employee.getGender());
-//        existingUser.setStatus(employee.getStatus());
-//        existingUser.setCitizenIdentity(employee.getCitizenIdentity());
-//
-//        // Cập nhật avatar nếu có
-//        if (avatarFile != null && !avatarFile.isEmpty()) {
-//            String avatarPath = fileUploadImagesService.saveAvatar(avatarFile, "employee", id);
-//            if (avatarPath != null) {
-//                existingUser.setAvatar(avatarPath);
-//            }
-//        }
-//
-//        employeeRepository.save(existingUser); // Lưu thông tin nhân viên vào database
-//
-//        // 🔥 Kiểm tra xem nhân viên có địa chỉ chưa
-//        Address existingAddress = addressRepository.getAddressByUserIdAndStatus(existingUser.getId(), AddressStatus.DANG_SU_DUNG);
-//
-//        if (existingAddress != null) {
-//            // Cập nhật địa chỉ hiện có
-//            existingAddress.setId(existingUser.getId());
-//            existingAddress.setProvince(addressRequest.getProvince());
-//            existingAddress.setProvinceId(addressRequest.getProvinceId());
-//            existingAddress.setDistrict(addressRequest.getDistrict());
-//            existingAddress.setToDistrictId(
-//                    addressRequest.getToDistrictId() != null ? String.valueOf(addressRequest.getToDistrictId()) : null
-//            );
-//            existingAddress.setWard(addressRequest.getWard());
-//            existingAddress.setWardCode(addressRequest.getWardCode());
-//            existingAddress.setLine(addressRequest.getLine());
-//            existingAddress.setStatus(AddressStatus.DANG_SU_DUNG);
-//        } else {
-//            // Tạo địa chỉ mới nếu chưa có
-//            existingAddress = new Address();
-//            existingAddress.setUser(existingUser);
-//            existingAddress.setProvince(addressRequest.getProvince());
-//            existingAddress.setProvinceId(addressRequest.getProvinceId());
-//            existingAddress.setDistrict(addressRequest.getDistrict());
-//            existingAddress.setToDistrictId(
-//                    addressRequest.getToDistrictId() != null ? String.valueOf(addressRequest.getToDistrictId()) : null
-//            );
-//            existingAddress.setWard(addressRequest.getWard());
-//            existingAddress.setWardCode(addressRequest.getWardCode());
-//            existingAddress.setLine(addressRequest.getLine());
-//            existingAddress.setStatus(AddressStatus.DANG_SU_DUNG);
-//        }
-//
-//        // Lưu địa chỉ sau khi đã cập nhật hoặc tạo mới
-//        addressRepository.save(existingAddress);
-//
-//
-//        return existingUser;
-//    }
-
-    @Override
-    public User updateEmployee(Long id, User employee) {
-        Optional<User> existingEmployee = employeeRepository.findById(id);
-        if (existingEmployee.isPresent()) {
-            employee.setId(id);
-            employee.setRoles(UserRole.ROLE_USER);
-            return employeeRepository.save(employee);
-        }
-        return null;
-    }
-
-    @Override
-    public void deleteEmployee(Long id) {
-        employeeRepository.deleteById(id);
-    }
 }

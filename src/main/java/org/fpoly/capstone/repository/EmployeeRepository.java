@@ -3,21 +3,22 @@ package org.fpoly.capstone.repository;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<User, Long> {
+public interface EmployeeRepository extends JpaRepository<User, String> {
 
-    List<User> findByRolesAndStatus(UserRole role, UserStatus status);
+    Page<User> findByRolesAndStatus(UserRole role, UserStatus status, Pageable pageable);
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.addresses WHERE u.id = :userId")
-    Optional<User> findUserAddresses(@Param("userId") Long userId);
+    Optional<User> findEmployAddresses(@Param("userId") String userId);
 
     @Query("SELECT u FROM  User u WHERE u.phoneNumber =:phoneNumber")
     User getEmployBySDT(@Param("phoneNumber") String phoneNumber);
@@ -27,4 +28,6 @@ public interface EmployeeRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM  User u WHERE u.citizenIdentity =:citizenIdentity")
     User getEmployByCCCD(@Param("citizenIdentity") String citizenIdentity);
+
+    User getById(String id);
 }

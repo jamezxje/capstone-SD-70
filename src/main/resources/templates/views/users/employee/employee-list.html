@@ -34,10 +34,6 @@
 								<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="ACTION: activate to sort column ascending" style="width: 124.088px;">HÀNH ĐỘNG</th></tr>
 							</thead>
 							<tbody>
-<!--							<tr role="row" class="odd">-->
-<!--								<td class="sorting_1">-->
-<!--									<h6>1.</h6>-->
-<!--								</td>-->
 							<tr role="row" class="odd" th:each="employee, index : ${employees}">
 								<td class="sorting_1">
 									<h6 th:text="${index.count}"></h6>
@@ -61,7 +57,6 @@
 								<td>
 									<div>
 										<h6 th:text="${employee.citizenIdentity}"></h6>
-<!--										<h6 th:text="${user.citizenIdentity}"></h6>-->
 									</div>
 								</td>
 								<td>
@@ -79,8 +74,6 @@
 								  : 'Đã nghỉ việc')}"></span>
 								</td>
 								<td>
-<!--									<a th:href="@{/dashboard/employees/detail/{id}(id=${employee.id})}">Xem</a>-->
-<!--									<a th:href="@{/dashboard/employees/edit/{id}(id=${employee.id})}">Sửa</a>-->
 <!--									<a th:href="@{/dashboard/employees/delete/{id}(id=${employee.id})}" onclick="return confirm('Bạn có chắc muốn xóa nhân viên này?');">Xóa</a>-->
 									<div class="d-flex action-button">
 										<a th:href="@{/staff-management/detail/{id}(id=${employee.id})}" title="Chi tiết nhân viên" href="javascript:void(0);" class=" btn btn-xs px-2 light btn-danger">
@@ -111,7 +104,34 @@
 									</div>
 								</td>
 							</tr></tbody>
-						</table><div class="dataTables_info" id="ListDatatableView_info" role="status" aria-live="polite">Showing 1 to 10 of 14 entries</div><div class="dataTables_paginate paging_simple_numbers" id="ListDatatableView_paginate"><a class="paginate_button previous disabled" aria-controls="ListDatatableView" data-dt-idx="0" tabindex="0" id="ListDatatableView_previous"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a><span><a class="paginate_button current" aria-controls="ListDatatableView" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="ListDatatableView" data-dt-idx="2" tabindex="0">2</a></span><a class="paginate_button next" aria-controls="ListDatatableView" data-dt-idx="3" tabindex="0" id="ListDatatableView_next"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></div></div>
+						</table>
+							<div class="dataTables_info" id="ListDatatableView_info" role="status" aria-live="polite">
+								Trang <span th:text="${currentPage}"></span> / <span th:text="${totalPages}"></span>
+							</div>
+
+							<div class="dataTables_paginate paging_simple_numbers" id="ListDatatableView_paginate">
+								<!-- Nút Previous -->
+								<a class="paginate_button previous"
+								   th:classappend="${currentPage == 1} ? 'disabled'"
+								   th:href="${currentPage > 1} ? @{/staff-management(numPage=${currentPage - 1})} : '#'">
+									<i class="fa fa-angle-double-left" aria-hidden="true"></i>
+								</a>
+
+								<!-- Hiển thị số trang -->
+								<span>
+									<a th:each="i : ${#numbers.sequence(1, totalPages)}" class="paginate_button"
+									   th:classappend="${i == currentPage} ? 'current'"
+									   th:href="@{/staff-management(numPage=${i})}" th:text="${i}"></a>
+								</span>
+
+								<!-- Nút Next -->
+								<a class="paginate_button next"
+								   th:classappend="${currentPage == totalPages} ? 'disabled'"
+								   th:href="${currentPage < totalPages} ? @{/staff-management(numPage=${currentPage + 1})} : '#'">
+									<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+								</a>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

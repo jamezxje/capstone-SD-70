@@ -5,7 +5,6 @@
 	<meta charset="UTF-8">
 	<title>Quản lý Nhân Viên</title>
 	<th:block id="th-css"></th:block>
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <th:block id="th-body">
@@ -18,7 +17,6 @@
 							<h4 class="card-title">Nhân Viên Chi Tiết</h4>
 							<div>
 								<a href="/staff-management" class="btn btn-primary mr-2">Quay lại</a>
-								<!--<button type="submit" class="btn btn-primary">Lưu</button>-->
 							</div>
 						</div>
 						<div class="card-body">
@@ -56,7 +54,7 @@
 												<label class="col-lg-4 col-form-label" for="val-sodienthoai">Ngày sinh
 												</label>
 												<div class="col-lg-6">
-													<input th:value="${#dates.format(employee.dateOfBirth, 'dd/MM/yyyy')}" type="text" readonly="" class="form-control" id="val-sodienthoai" name="val-sodienthoai" placeholder="Your valid date of birth..">
+													<input type="date" class="form-control" readonly th:value="${#dates.format(employee.dateOfBirth, 'yyyy-MM-dd')}">
 												</div>
 											</div>
 											<div class="form-group row">
@@ -92,61 +90,31 @@
 											</div>
 										</div>
 										<div class="col-xl-6">
-<!--											<div class="form-group row">-->
-<!--												<label class="col-lg-4 col-form-label" >Tỉnh/Thành Phố-->
-<!--												</label>-->
-<!--												<div class="col-lg-6">-->
-<!--													<input th:value="${defaultAddress.province}" type="text" readonly="" class="form-control" placeholder="Your valid phone number..">-->
-<!--												</div>-->
-<!--											</div>-->
-<!--											<div class="form-group row">-->
-<!--												<label class="col-lg-4 col-form-label" >Quận/Huyện-->
-<!--												</label>-->
-<!--												<div class="col-lg-6">-->
-<!--													<input th:value="${defaultAddress.district}" type="text" readonly="" class="form-control" placeholder="Your valid phone number..">-->
-<!--												</div>-->
-<!--											</div><div class="form-group row">-->
-<!--											<label class="col-lg-4 col-form-label" >Xã/Phường-->
-<!--											</label>-->
-<!--											<div class="col-lg-6">-->
-<!--												<input th:value="${defaultAddress.ward}" type="text" readonly="" class="form-control" placeholder="Your valid phone number..">-->
-<!--												</div>-->
-<!--											</div>-->
-											<!--Tỉnh/Thành phố-->
 											<div class="form-group row">
-												<label class="col-lg-4 col-form-label">Tỉnh/Thành Phố</label>
+												<label class="col-lg-4 col-form-label" >Tỉnh/Thành Phố
+												</label>
 												<div class="col-lg-6">
-													<select class="form-control" id="provinceSelect" th:data-province="${defaultAddress?.provinceId}" disabled >
-														<option value="">Chọn</option>
-													</select>
+													<input th:value="${address.province}" type="text" readonly="" class="form-control" placeholder="Your valid phone number..">
 												</div>
 											</div>
-
-											<!-- Quận/Huyện -->
 											<div class="form-group row">
-												<label class="col-lg-4 col-form-label">Quận/Huyện</label>
+												<label class="col-lg-4 col-form-label" >Quận/Huyện
+												</label>
 												<div class="col-lg-6">
-													<select class="form-control" id="districtSelect" th:data-district="${defaultAddress?.toDistrictId}" disabled>
-														<option value="">Chọn</option>
-													</select>
+													<input th:value="${address.district}" type="text" readonly="" class="form-control" placeholder="Your valid phone number..">
+												</div>
+											</div><div class="form-group row">
+											<label class="col-lg-4 col-form-label" >Xã/Phường
+											</label>
+											<div class="col-lg-6">
+												<input th:value="${address.ward}" type="text" readonly="" class="form-control" placeholder="Your valid phone number..">
 												</div>
 											</div>
-
-											<!-- Xã/Phường -->
-											<div class="form-group row">
-												<label class="col-lg-4 col-form-label">Xã/Phường</label>
-												<div class="col-lg-6">
-													<select class="form-control" id="wardSelect" th:data-ward="${defaultAddress?.wardCode}" disabled>
-														<option value="">Chọn</option>
-													</select>
-												</div>
-											</div>
-
 											<!-- Địa chỉ cụ thể-->
 											<div class="form-group row">
 												<label class="col-lg-4 col-form-label">Số nhà/Ngõ/Đường</label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" readonly="" name="line" th:value="${defaultAddress?.line}" placeholder="Nhập địa chỉ cụ thể...">
+													<input type="text" class="form-control" readonly="" name="line" th:value="${address?.line}" placeholder="Nhập địa chỉ cụ thể...">
 												</div>
 											</div>
 											<div class="form-group row">
@@ -159,118 +127,47 @@
 													</select>
 												</div>
 											</div>
-											<!-- Avatar Section -->
+
+											<!-- Modal Bootstrap -->
 											<div class="form-group row">
 												<label class="col-lg-4 col-form-label">Ảnh đại diện</label>
-												<div class="col-lg-6 d-flex align-items-center position-relative">
+												<div class="col-lg-6 d-flex align-items-center">
 													<!-- Avatar -->
-													<div class="avatar-container position-relative" style="display: inline-block; position: relative;">
+													<div class="avatar-container position-relative"
+														 style="width: 120px; height: 120px; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
 														<img id="avatarPreview"
-															 th:src="@{'/assets/images/avatar/' + ${employee.avatar}}"
+															 th:src="${employee.avatar != null ? '/assets/images/avatar/' + employee.avatar : ''}"
 															 class="img-thumbnail"
 															 alt="Avatar"
 															 width="120" height="120"
-															 style="border: 1px solid #ffffff; border-radius: 10px; object-fit: cover;">
+															 style="object-fit: cover; display: none;"
+															 th:style="${employee.avatar != null} ? 'display: block;' : 'display: none;'">
+													</div>
+													<!-- Nút Xem ảnh -->
+													<button title="Xem ảnh" type="button" id="viewAvatarBtn" class="btn btn-sm btn-dark ml-3"
+															data-toggle="modal" data-target="#previewModal" style="display: none;">
+														<svg viewBox="64 64 896 896" focusable="false" data-icon="eye" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+															<path d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"></path>
+														</svg>
+													</button>
+												</div>
+											</div>
 
-														<!-- Nút Xem trước -->
-														<div style="position: absolute; bottom: 5px; right: 5px; display: flex; gap: 5px;">
-															<!-- Nút Xem trước (mờ, đặt trong ảnh) -->
-															<button type="button" data-toggle="modal"  title="Xem ảnh" data-target="#previewModal"
-																	style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
-                        											border-radius: 50%; background-color: rgba(0, 0, 0, 0.5); color: white; border: none;">
-																<i class="fas fa-eye"></i>
-															</button>
+											<!-- Modal -->
+											<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+												<div class="modal-dialog" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<p class="modal-title" id="imageName" th:text="${employee.avatar}"></p>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
 														</div>
-														<!-- Modal -->
-														<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
-															<div class="modal-dialog" role="document">
-																<div class="modal-content text-center" style=" width: 420px; height: auto;" >
-																	<div class="modal-header">
-																		<!-- Hiển thị tên ảnh -->
-																		<p class="modal-title" id="imageName" th:text="${employee.avatar}"></p>
-
-																		<!-- Nút đóng -->
-																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																			<span aria-hidden="true">&times;</span>
-																		</button>
-																	</div>
-																	<div class="modal-body text-center">
-																		<!-- Hiển thị ảnh với chiều rộng 80% modal -->
-																		<img id="modalPreviewImage" src="" class="img-fluid" style="width: 100%; height: auto;">
-																	</div>
-																</div>
-															</div>
+														<div class="modal-body text-center">
+															<img id="modalPreviewImage" src="" class="img-fluid" style="width: 100%;">
 														</div>
 													</div>
 												</div>
 											</div>
-<!--											&lt;!&ndash; Modal Bootstrap &ndash;&gt;-->
-<!--											<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">-->
-<!--												<div class="modal-dialog modal-lg" role="document" >-->
-<!--													<div class="modal-content">-->
-<!--														<div class="modal-header">-->
-<!--															<h5 class="modal-title" id="previewModalLabel">Xem ảnh</h5>-->
-<!--															<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--																<span aria-hidden="true">&times;</span>-->
-<!--															</button>-->
-<!--														</div>-->
-<!--														<div class="modal-body text-center">-->
-<!--															<img id="modalPreviewImage" src="" class="img-fluid rounded">-->
-<!--														</div>-->
-<!--													</div>-->
-<!--												</div>-->
-<!--											</div>-->
-<!--											<div class="form-group row">-->
-<!--												<label class="col-lg-4 col-form-label">Ảnh đại diện</label>-->
-<!--												<div class="col-lg-6 d-flex align-items-center">-->
-<!--													&lt;!&ndash; Avatar &ndash;&gt;-->
-<!--													<div class="mr-3">-->
-<!--														<img id="avatarPreview"-->
-<!--															 th:src="@{'/assets/images/avatar/' + ${employee.avatar}}"-->
-<!--															 class="img-thumbnail"-->
-<!--															 alt="Avatar"-->
-<!--															 width="120" height="120"-->
-<!--															 style="border: 1px solid #ffffff; border-radius: 10px; object-fit: cover;">-->
-<!--													</div>-->
 
-<!--													&lt;!&ndash; Input Upload Ảnh &ndash;&gt;-->
-<!--													<div>-->
-<!--														<input type="file" id="avatarUpload" class="form-control-file" accept="image/*">-->
-<!--														&lt;!&ndash; Nút Xem trước &ndash;&gt;-->
-<!--														<button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#previewModal">-->
-<!--															Xem trước-->
-<!--														</button>-->
-
-<!--														&lt;!&ndash; Modal &ndash;&gt;-->
-<!--														<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">-->
-<!--															<div class="modal-dialog" role="document">-->
-<!--																<div class="modal-content">-->
-<!--																	<div class="modal-header">-->
-<!--																		<h5 class="modal-title" id="previewModalLabel">Xem trước ảnh</h5>-->
-<!--																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--																			<span aria-hidden="true">&times;</span>-->
-<!--																		</button>-->
-<!--																	</div>-->
-<!--																	<div class="modal-body text-center">-->
-<!--																		<img id="modalPreviewImage" src="" class="img-fluid">-->
-<!--																	</div>-->
-<!--																</div>-->
-<!--															</div>-->
-<!--														</div>-->
-<!--													</div>-->
-<!--												</div>-->
-<!--											</div>-->
-
-											<!--											<div class="form-group row">-->
-<!--												<label class="col-lg-4 col-form-label" for="val-username">Ảnh đại diện</label>-->
-<!--												<div class="d-flex justify-content-start ml-3" >-->
-<!--													<img th:src="@{'/assets/images/avatar/' + ${employee.avatar}}"-->
-<!--														 class="img-thumbnail"-->
-<!--														 alt="Avatar"-->
-<!--														 width="120" height="120"-->
-<!--														 style="border: 1px solid #ffffff; border-radius: 10px; object-fit: cover;">-->
-<!--												</div>-->
-<!--											</div>-->
 										</div>
 									</div>
 								</form>
@@ -281,104 +178,27 @@
 			</div>
 		</div>
 	</div>
-</th:block>
-<script>
-	document.addEventListener("DOMContentLoaded", function () {
-		const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';
-		const urlProvince = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
-		const urlDistricts = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
-		const urlWard = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';
+	<script>
+		// Khi mở modal, cập nhật ảnh & tên file
+		document.addEventListener("DOMContentLoaded", function () {
+			let avatarPreview = document.getElementById("avatarPreview");
+			let viewAvatarBtn = document.getElementById("viewAvatarBtn");
 
-		// Lấy giá trị từ Thymeleaf
-		const selectedProvince = document.getElementById('provinceSelect').getAttribute("data-province");
-		const selectedDistrict = document.getElementById('districtSelect').getAttribute("data-district");
-		const selectedWard = document.getElementById('wardSelect').getAttribute("data-ward");
+			// Kiểm tra nếu có ảnh thì hiển thị nút "Xem ảnh"
+			if (avatarPreview.src && avatarPreview.style.display !== "none") {
+				viewAvatarBtn.style.display = "inline-block";
+			}
 
-		console.log("Province ID từ Thymeleaf:", selectedProvince);
-		console.log("District ID từ Thymeleaf:", selectedDistrict);
-		console.log("Ward Code từ Thymeleaf:", selectedWard);
+			// Khi mở modal, cập nhật ảnh & tên file
+			document.querySelector("[data-target='#previewModal']").addEventListener("click", function () {
+				let imgSrc = avatarPreview.src;
+				let imgName = imgSrc.substring(imgSrc.lastIndexOf("/") + 1); // Lấy tên file từ URL
 
-		// Hàm fetch danh sách tỉnh/thành phố
-		function fetchAllProvince() {
-			axios.get(urlProvince, { headers: { token: tokenApiGHN } })
-					.then(response => {
-						console.log("📌 API GHN - Provinces:", response.data); // ✅ Kiểm tra dữ liệu API
-						const selectElement = document.getElementById('provinceSelect');
-						selectElement.innerHTML = '<option value="">Chọn tỉnh</option>';
-
-						response.data.data.forEach(province => {
-							console.log(`🔹 Province: ${province.ProvinceName} - ID: ${province.ProvinceID}`); // ✅ Kiểm tra từng tỉnh
-							const option = new Option(province.ProvinceName, province.ProvinceID);
-							selectElement.add(option);
-
-							if (province.ProvinceID == selectedProvince) {
-								option.selected = true;
-								console.log(`✅ Province Selected: ${province.ProvinceName}`);
-								fetchProvinceDistricts(province.ProvinceID, true);
-							}
-						});
-					})
-					.catch(error => console.error('❌ Lỗi khi lấy danh sách tỉnh:', error));
-		}
-
-
-		// Hàm fetch danh sách quận/huyện dựa vào tỉnh đã chọn
-		function fetchProvinceDistricts(provinceId, isAutoLoad = false) {
-			axios.get(urlDistricts, {
-				params: { province_id: provinceId },
-				headers: { token: tokenApiGHN }
-			})
-					.then(response => {
-						const districtSelect = document.getElementById('districtSelect');
-						districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
-						response.data.data.forEach(district => {
-							const option = new Option(district.DistrictName, district.DistrictID);
-							districtSelect.add(option);
-							if (isAutoLoad && district.DistrictID == selectedDistrict) {
-								option.selected = true;
-								fetchProvinceWard(district.DistrictID, true);
-							}
-						});
-					})
-					.catch(error => console.error("Lỗi khi lấy danh sách huyện:", error));
-		}
-
-		// Hàm fetch danh sách xã/phường dựa vào huyện đã chọn
-		function fetchProvinceWard(districtId, isAutoLoad = false) {
-			axios.get(urlWard, {
-				params: { district_id: districtId },
-				headers: { token: tokenApiGHN }
-			})
-					.then(response => {
-						const wardSelect = document.getElementById('wardSelect');
-						wardSelect.innerHTML = '<option value="">Chọn xã</option>';
-						response.data.data.forEach(ward => {
-							const option = new Option(ward.WardName, ward.WardCode);
-							wardSelect.add(option);
-							if (isAutoLoad && ward.WardCode == selectedWard) {
-								option.selected = true;
-							}
-						});
-					})
-					.catch(error => console.error("Lỗi khi lấy danh sách xã:", error));
-		}
-
-		// Gọi API để load tỉnh/thành phố khi trang load
-		fetchAllProvince();
-	});
-</script>
-<script>
-	// Khi mở modal, cập nhật ảnh & tên file
-	document.addEventListener("DOMContentLoaded", function () {
-		document.querySelector("[data-target='#previewModal']").addEventListener("click", function () {
-			let imgElement = document.getElementById("avatarPreview");
-			let imgSrc = imgElement.src;
-			let imgName = imgSrc.substring(imgSrc.lastIndexOf("/") + 1); // Lấy tên file từ URL
-
-			document.getElementById("modalPreviewImage").src = imgSrc;
-			document.getElementById("imageName").textContent = imgName; // Cập nhật tên ảnh
+				document.getElementById("modalPreviewImage").src = imgSrc;
+				document.getElementById("imageName").textContent = imgName; // Cập nhật tên ảnh
+			});
 		});
-	});
-</script>
+	</script>
+</th:block>
 </body>
 </html>

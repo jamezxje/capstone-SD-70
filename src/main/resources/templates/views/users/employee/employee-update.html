@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Quản lý Nhân Viên</title>
     <th:block id="th-css"></th:block>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <th:block id="th-body">
@@ -15,53 +14,46 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Cập Nhật Nhân Viên</h4>
-                            <div>
-                                <a href="/staff-management" class="btn btn-secondary mr-2">Quay lại</a>
-                                <button type="button" class="btn btn-primary" onclick="submitEmployeeForm()">Cập nhật nhân viên</button>
-                            </div>
+                            <h4 class="card-title">Cập nhật Nhân Viên</h4>
                         </div>
                         <div class="card-body">
                             <div class="form-validation">
-                                <form class="form-valide" method="post"
-                                      th:action="@{/staff-management/update/{id}(id=${employee.id})}"
-                                      th:object="${employee}" enctype="multipart/form-data">
+                                <form class="needs-validation" method="post" th:action="@{/staff-management/update/{id}(id=${employee.id})}">
                                     <div class="row">
                                         <div class="col-xl-6">
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">ID nhân viên</label>
+                                                <label class="col-lg-4 col-form-label" for="fullName">Họ và tên</label>
                                                 <div class="col-lg-6">
-                                                    <input th:value="*{id}" type="text" readonly class="form-control">
+                                                    <input type="text" class="form-control" id="fullName" th:field="*{employee.fullName}" placeholder="Nhập họ và tên...">
+                                                    <span th:if="${#fields.hasErrors('employee.fullName')}" class="text-danger" th:errors="*{employee.fullName}"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Họ và tên</label>
+                                                <label class="col-lg-4 col-form-label" for="email">Email</label>
                                                 <div class="col-lg-6">
-                                                    <input th:field="*{fullName}" type="text" class="form-control">
+                                                    <input type="email" class="form-control" id="email" th:field="*{employee.email}" placeholder="Nhập email..." readonly>
+                                                    <p th:if="${#fields.hasErrors('employee.email')}" class="text-danger" th:errors="*{employee.email}"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Email</label>
+                                                <label class="col-lg-4 col-form-label" for="phoneNumber">Số điện thoại</label>
                                                 <div class="col-lg-6">
-                                                    <input th:field="*{email}" type="email" class="form-control">
+                                                    <input type="text" class="form-control" id="phoneNumber" th:field="*{employee.phoneNumber}" placeholder="Nhập số điện thoại...">
+                                                    <p th:if="${#fields.hasErrors('employee.phoneNumber')}" class="text-danger" th:errors="*{employee.phoneNumber}"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Số điện thoại</label>
+                                                <label class="col-lg-4 col-form-label" for="dateOfBirth">Ngày sinh</label>
                                                 <div class="col-lg-6">
-                                                    <input th:field="*{phoneNumber}" type="text" class="form-control">
+                                                    <input type="date" class="form-control" id="dateOfBirth" th:field="*{employee.dateOfBirth}" min="1944-01-01" max="2006-12-31">
+                                                    <p th:if="${#fields.hasErrors('employee.dateOfBirth')}" class="text-danger" th:errors="*{employee.dateOfBirth}"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Ngày sinh</label>
+                                                <label class="col-lg-4 col-form-label" for="citizenIdentity">Căn cước công dân</label>
                                                 <div class="col-lg-6">
-                                                    <input th:field="*{dateOfBirth}" type="date" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Căn cước công dân</label>
-                                                <div class="col-lg-6">
-                                                    <input th:field="*{citizenIdentity}" type="text" class="form-control">
+                                                    <input type="text" class="form-control" id="citizenIdentity" th:field="*{employee.citizenIdentity}" placeholder="Nhập CCCD...">
+                                                    <p th:if="${#fields.hasErrors('employee.citizenIdentity')}" class="text-danger" th:errors="*{employee.citizenIdentity}"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -69,142 +61,80 @@
                                                 <div class="col-lg-6">
                                                     <div class="mt-2">
                                                         <label class="radio-inline mr-3">
-                                                            <input type="radio" th:field="*{gender}" value="true"> Nam
+                                                            <input type="radio" th:field="*{employee.gender}" value="true"> Nam
                                                         </label>
                                                         <label class="radio-inline mr-3">
-                                                            <input type="radio" th:field="*{gender}" value="false"> Nữ
+                                                            <input type="radio" th:field="*{employee.gender}" value="false"> Nữ
                                                         </label>
                                                     </div>
+                                                    <p th:if="${#fields.hasErrors('employee.gender')}" class="text-danger mt-1" th:errors="*{employee.gender}"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Vai trò</label>
+                                                <label class="col-lg-4 col-form-label" for="roles">Vai trò</label>
                                                 <div class="col-lg-6">
-                                                    <select class="form-control" th:field="*{roles}">
-                                                        <option th:value="ROLE_USER">Nhân viên</option>
+                                                    <select class="form-control" id="roles" th:field="*{employee.roles}">
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserRole).ROLE_USER}">Nhân viên</option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xl-6">
-                                            <div th:object="${defaultAddress}">
-                                                <!-- Tỉnh/Thành Phố -->
-                                                <div class="form-group row">
-                                                    <label class="col-lg-4 col-form-label">Tỉnh/Thành Phố</label>
-                                                    <div class="col-lg-6">
-                                                        <select class="form-control" id="provinceSelect" th:field="*{provinceId}" name="provinceId"
-                                                                th:attr="data-province=${defaultAddress.provinceId}">
-                                                            <option value="">Chọn</option>
-                                                        </select>
-                                                        <input type="hidden" id="provinceName" th:field="*{province}" name="province">
-                                                    </div>
-                                                </div>
-                                                <!-- Quận/Huyện -->
-                                                <div class="form-group row">
-                                                    <label class="col-lg-4 col-form-label">Quận/Huyện</label>
-                                                    <div class="col-lg-6">
-                                                        <select class="form-control" id="districtSelect" th:field="*{toDistrictId}" name="toDistrictId"
-                                                                th:attr="data-district=${defaultAddress.toDistrictId}">
-                                                            <option value="">Chọn</option>
-                                                        </select>
-                                                        <input type="hidden" id="districtName" th:field="*{district}" name="toDistrict">
-                                                    </div>
-                                                </div>
-                                                <!-- Xã/Phường -->
-                                                <div class="form-group row">
-                                                    <label class="col-lg-4 col-form-label">Xã/Phường</label>
-                                                    <div class="col-lg-6">
-                                                        <select class="form-control" id="wardSelect" th:field="*{wardCode}" name="wardCode"
-                                                                th:attr="data-ward=${defaultAddress.wardCode}">
-                                                            <option value="">Chọn</option>
-                                                        </select>
-                                                        <input type="hidden" id="wardName" th:field="*{ward}" name="ward">
-                                                    </div>
-                                                </div>
-
-                                                <!-- Số nhà/Ngõ/Đường -->
-                                                <div class="form-group row">
-                                                    <label class="col-lg-4 col-form-label">Số nhà/Ngõ/Đường</label>
-                                                    <div class="col-lg-6">
-                                                        <input type="text" class="form-control" th:field="*{line}" name="line" placeholder="Nhập địa chỉ cụ thể...">
-                                                    </div>
+                                            <div class="form-group row">
+                                                <label class="col-lg-4 col-form-label">Tỉnh/Thành Phố</label>
+                                                <div class="col-lg-6">
+                                                    <select class="form-control" id="provinceSelect" th:field="*{address.provinceId}"
+                                                        th:attr="data-province=${address.provinceId}">
+                                                        <option value="">Chọn</option>
+                                                    </select>
+                                                    <input type="hidden" id="provinceName" th:field="*{address.province}">
+                                                    <p th:if="${#fields.hasErrors('address.provinceId')}" class="text-danger" th:errors="*{address.provinceId}"></p>
                                                 </div>
                                             </div>
-
-
+                                            <div class="form-group row">
+                                                <label class="col-lg-4 col-form-label">Quận/Huyện</label>
+                                                <div class="col-lg-6">
+                                                    <select class="form-control" id="districtSelect" th:field="*{address.toDistrictId}"
+                                                            th:attr="data-district=${address.toDistrictId}">
+                                                        <option value="">Chọn</option>
+                                                    </select>
+                                                    <input type="hidden" id="districtName" th:field="*{address.district}">
+                                                    <p th:if="${#fields.hasErrors('address.toDistrictId')}" class="text-danger" th:errors="*{address.toDistrictId}"></p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-lg-4 col-form-label">Xã/Phường</label>
+                                                <div class="col-lg-6">
+                                                    <select class="form-control" id="wardSelect" th:field="*{address.wardCode}"
+                                                            th:attr="data-ward=${address.wardCode}">
+                                                        <option value="">Chọn</option>
+                                                    </select>
+                                                    <input type="hidden" id="wardName" th:field="*{address.ward}">
+                                                    <p th:if="${#fields.hasErrors('address.wardCode')}" class="text-danger" th:errors="*{address.wardCode}"></p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-lg-4 col-form-label">Số nhà/Ngõ/Đường</label>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" th:field="*{address.line}" placeholder="Nhập địa chỉ cụ thể...">
+                                                    <p th:if="${#fields.hasErrors('address.line')}" class="text-danger" th:errors="*{address.line}"></p>
+                                                </div>
+                                            </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">Trạng thái</label>
                                                 <div class="col-lg-6">
-                                                    <select class="form-control" th:field="*{status}">
+                                                    <select class="form-control" th:field="*{employee.status}">
                                                         <option th:value="ACTIVATED">Kích hoạt</option>
                                                         <option th:value="NOT_ACTIVATED">Ngừng kích hoạt</option>
-                                                        <option th:value="DELETED">Đã nghỉ việc</option>
                                                     </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Ảnh đại diện</label>
-                                                <div class="col-lg-6 d-flex align-items-center">
-                                                    <!-- Khung ảnh đại diện -->
-                                                    <div class="avatar-container position-relative"
-                                                         style="width: 120px; height: 120px; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                                                        <img id="avatarPreview"
-                                                             th:src="${employee.avatar != null ? '/assets/images/avatar/' + employee.avatar : ''}"
-                                                             class="img-thumbnail"
-                                                             alt="Avatar"
-                                                             width="120" height="120"
-                                                             style="object-fit: cover; display: none;"
-                                                             th:style="${employee.avatar != null} ? 'display: block;' : 'display: none;'">
-                                                    </div>
-
-                                                    <!-- Nút hành động -->
-                                                    <div class="ml-2 d-flex flex-column gap-2">
-                                                        <!-- Nút Xem trước -->
-                                                        <button title="Xem ảnh" type="button" id="viewAvatarBtn" class="btn btn-sm btn-dark"
-                                                                data-toggle="modal" data-target="#previewModal" style="display: none;">
-                                                            <svg viewBox="64 64 896 896" focusable="false" data-icon="eye" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-                                                                <path d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 000 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"></path>
-                                                            </svg>
-                                                        </button>
-
-                                                        <!-- Nút Xóa ảnh -->
-                                                        <button title="Xóa ảnh" type="button" id="deleteAvatarBtn" class="btn btn-sm btn-dark" style="display: none;"
-                                                                onclick="deleteAvatar()">
-                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                            </svg>
-                                                        </button>
-
-                                                        <!-- Nút Thêm ảnh -->
-                                                        <button type="button" id="chooseAvatarBtn" class="btn btn-sm btn-outline-primary"
-                                                                onclick="document.getElementById('avatarInput').click()">
-                                                            ➕ Thêm ảnh
-                                                        </button>
-                                                    </div>
-
-                                                    <!-- Input file (ẩn) -->
-                                                    <input type="file" id="avatarInput" name="avatarFile" accept="image/*" hidden onchange="previewAvatar(this)">
-                                                    <input type="hidden" id="avatarFileName" name="avatarFileName" value="">
-                                                    <input type="hidden" id="deleteAvatarFlag" name="deleteAvatar" value="false">
-                                                </div>
-                                            </div>
-                                            <!-- Modal xem ảnh -->
-                                            <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content text-center" style="width: 420px;">
-                                                        <div class="modal-header">
-                                                            <p class="modal-title" id="imageName" th:text="${employee.avatar}"></p>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <img id="modalPreviewImage" src="" class="img-fluid" style="width: 100%;">
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Cập nhật nhân viên</button>
+                                    <div style="text-align: right; margin-top: 20px">
+                                        <a class="btn btn-primary mr-2" href="/staff-management">Hủy</a>
+                                        <button type="submit" class="btn btn-primary">Cập nhật nhân viên</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -213,8 +143,309 @@
             </div>
         </div>
     </div>
-</th:block>
 <script>
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';
+    //     const urlProvince = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
+    //     const urlDistricts = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
+    //     const urlWard = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';
+    //
+    //     // Lấy giá trị mặc định từ Thymeleaf
+    //     const selectedProvince = document.getElementById('provinceSelect')?.getAttribute("data-province") || "";
+    //     const selectedDistrict = document.getElementById('districtSelect')?.getAttribute("data-district") || "";
+    //     const selectedWard = document.getElementById('wardSelect')?.getAttribute("data-ward") || "";
+    //
+    //     function fetchAllProvinces() {
+    //         axios.get(urlProvince, { headers: { token: tokenApiGHN } })
+    //             .then(response => {
+    //                 const selectElement = document.getElementById('provinceSelect');
+    //                 selectElement.innerHTML = '<option value="">Chọn tỉnh</option>';
+    //                 response.data.data.forEach(province => {
+    //                     const option = new Option(province.ProvinceName, province.ProvinceID);
+    //                     selectElement.add(option);
+    //                 });
+    //
+    //                 // Nếu có dữ liệu sẵn, chọn lại tỉnh
+    //                 const selectedProvince = selectElement.getAttribute("data-value");
+    //                 if (selectedProvince) {
+    //                     selectElement.value = selectedProvince;
+    //                     fetchDistricts(selectedProvince);
+    //                 }
+    //             })
+    //             .catch(error => console.error('Lỗi lấy tỉnh:', error));
+    //     }
+    //
+    //     function fetchDistricts(provinceId) {
+    //         axios.get(urlDistricts, { params: { province_id: provinceId }, headers: { token: tokenApiGHN } })
+    //             .then(response => {
+    //                 const districtSelect = document.getElementById('districtSelect');
+    //                 districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
+    //                 response.data.data.forEach(district => {
+    //                     const option = new Option(district.DistrictName, district.DistrictID);
+    //                     districtSelect.add(option);
+    //                 });
+    //
+    //                 // Nếu có dữ liệu sẵn, chọn lại huyện
+    //                 const selectedDistrict = districtSelect.getAttribute("data-value");
+    //                 if (selectedDistrict) {
+    //                     districtSelect.value = selectedDistrict;
+    //                     fetchWards(selectedDistrict);
+    //                 }
+    //             })
+    //             .catch(error => console.log("Lỗi lấy huyện:", error));
+    //     }
+    //
+    //     function fetchWards(districtId) {
+    //         axios.get(urlWard, { params: { district_id: districtId }, headers: { token: tokenApiGHN } })
+    //             .then(response => {
+    //                 const wardSelect = document.getElementById('wardSelect');
+    //                 wardSelect.innerHTML = '<option value="">Chọn xã</option>';
+    //                 response.data.data.forEach(ward => {
+    //                     const option = new Option(ward.WardName, ward.WardCode);
+    //                     wardSelect.add(option);
+    //                 });
+    //
+    //                 // Nếu có dữ liệu sẵn, chọn lại xã
+    //                 const selectedWard = wardSelect.getAttribute("data-value");
+    //                 if (selectedWard) {
+    //                     wardSelect.value = selectedWard;
+    //                 }
+    //             })
+    //             .catch(error => console.log("Lỗi lấy xã:", error));
+    //     }
+    //
+    //     // Cập nhật khi chọn tỉnh
+    //     document.getElementById('provinceSelect').addEventListener('change', function () {
+    //         const provinceId = this.value;
+    //         document.getElementById('provinceName').value = this.options[this.selectedIndex].text;
+    //         document.getElementById('districtSelect').innerHTML = '<option value="">Chọn huyện</option>';
+    //         document.getElementById('wardSelect').innerHTML = '<option value="">Chọn xã</option>';
+    //         if (provinceId) fetchDistricts(provinceId);
+    //     });
+    //
+    //     // Cập nhật khi chọn huyện
+    //     document.getElementById('districtSelect').addEventListener('change', function () {
+    //         const districtId = this.value;
+    //         document.getElementById('districtName').value = this.options[this.selectedIndex].text;
+    //         document.getElementById('wardSelect').innerHTML = '<option value="">Chọn xã</option>';
+    //         if (districtId) fetchWards(districtId);
+    //     });
+    //
+    //     // Cập nhật khi chọn xã
+    //     document.getElementById('wardSelect').addEventListener('change', function () {
+    //         document.getElementById('wardName').value = this.options[this.selectedIndex].text;
+    //     });
+    //
+    //     fetchAllProvinces();
+    // });
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';
+    //     const urlProvince = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
+    //     const urlDistricts = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
+    //     const urlWard = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';
+    //
+    //     // Lấy giá trị mặc định từ Thymeleaf
+    //     const selectedProvince = document.getElementById('provinceSelect')?.getAttribute("data-province") || "";
+    //     const selectedDistrict = document.getElementById('districtSelect')?.getAttribute("data-district") || "";
+    //     const selectedWard = document.getElementById('wardSelect')?.getAttribute("data-ward") || "";
+    //
+    //     // Fetch danh sách tỉnh/thành phố
+    //     function fetchAllProvince() {
+    //         axios.get(urlProvince, { headers: { token: tokenApiGHN } })
+    //             .then(response => {
+    //                 const selectElement = document.getElementById('provinceSelect');
+    //                 selectElement.innerHTML = '<option value="">Chọn tỉnh</option>';
+    //                 response.data.data.forEach(province => {
+    //                     const option = new Option(province.ProvinceName, province.ProvinceID);
+    //                     selectElement.add(option);
+    //                     if (province.ProvinceID == selectedProvince) {
+    //                         option.selected = true;
+    //                         fetchProvinceDistricts(province.ProvinceID, true);
+    //                     }
+    //                 });
+    //             })
+    //             .catch(error => console.error('Có lỗi xảy ra:', error));
+    //     }
+    //
+    //     // Fetch danh sách quận/huyện theo tỉnh
+    //     function fetchProvinceDistricts(idProvince, isAutoLoad = false) {
+    //         axios.get(urlDistricts, {
+    //             params: { province_id: idProvince },
+    //             headers: { token: tokenApiGHN }
+    //         })
+    //             .then(response => {
+    //                 const districtSelect = document.getElementById('districtSelect');
+    //                 districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
+    //                 response.data.data.forEach(district => {
+    //                     const option = new Option(district.DistrictName, district.DistrictID);
+    //                     districtSelect.add(option);
+    //                     if (isAutoLoad && district.DistrictID == selectedDistrict) {
+    //                         option.selected = true;
+    //                         fetchProvinceWard(district.DistrictID, true);
+    //                     }
+    //                 });
+    //             })
+    //             .catch(error => console.log("Lỗi lấy danh sách huyện:", error));
+    //     }
+    //
+    //     // Fetch danh sách xã/phường theo huyện
+    //     function fetchProvinceWard(idDistrict, isAutoLoad = false) {
+    //         axios.get(urlWard, {
+    //             params: { district_id: idDistrict },
+    //             headers: { token: tokenApiGHN }
+    //         })
+    //             .then(response => {
+    //                 const wardSelect = document.getElementById('wardSelect');
+    //                 wardSelect.innerHTML = '<option value="">Chọn xã</option>';
+    //                 response.data.data.forEach(ward => {
+    //                     const option = new Option(ward.WardName, ward.WardCode);
+    //                     wardSelect.add(option);
+    //                     if (isAutoLoad && ward.WardCode == selectedWard) {
+    //                         option.selected = true;
+    //                     }
+    //                 });
+    //             })
+    //             .catch(error => console.log("Lỗi lấy danh sách xã:", error));
+    //     }
+    //
+    //     // Khi trang tải xong, fetch danh sách tỉnh
+    //     fetchAllProvince();
+    //
+    //     // Khi chọn tỉnh, load danh sách huyện
+    //     document.getElementById('provinceSelect').addEventListener('change', function () {
+    //         const provinceId = this.value;
+    //         if (provinceId) {
+    //             fetchProvinceDistricts(provinceId);
+    //         } else {
+    //             document.getElementById('districtSelect').innerHTML = '<option value="">Chọn huyện</option>';
+    //             document.getElementById('wardSelect').innerHTML = '<option value="">Chọn xã</option>';
+    //         }
+    //     });
+    //
+    //     // Khi chọn huyện, load danh sách xã
+    //     document.getElementById('districtSelect').addEventListener('change', function () {
+    //         const districtId = this.value;
+    //         if (districtId) {
+    //             fetchProvinceWard(districtId);
+    //         } else {
+    //             document.getElementById('wardSelect').innerHTML = '<option value="">Chọn xã</option>';
+    //         }
+    //     });
+    // });
+    //
+    // provinceSelect.addEventListener('change', function () {
+    //     const selectedOption = this.options[this.selectedIndex];
+    //     document.getElementById('provinceName').value = selectedOption.text; // Lấy tên tỉnh/thành phố
+    // });
+    //
+    // districtSelect.addEventListener('change', function () {
+    //     const selectedOption = this.options[this.selectedIndex];
+    //     document.getElementById('districtName').value = selectedOption.text; // Lấy tên quận/huyện
+    // });
+    //
+    // wardSelect.addEventListener('change', function () {
+    //     const selectedOption = this.options[this.selectedIndex];
+    //     document.getElementById('wardName').value = selectedOption.text; // Lấy tên xã/phường
+    // });
+
+    // document.addEventListener("DOMContentLoaded", async function () {
+    //     const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';
+    //     const urlProvince = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
+    //     const urlDistricts = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
+    //     const urlWard = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';
+    //
+    //     const provinceSelect = document.getElementById('provinceSelect');
+    //     const districtSelect = document.getElementById('districtSelect');
+    //     const wardSelect = document.getElementById('wardSelect');
+    //
+    //     if (!provinceSelect || !districtSelect || !wardSelect) return;
+    //
+    //     // Lấy giá trị mặc định từ Thymeleaf
+    //     const selectedProvince = provinceSelect.getAttribute("data-province") || "";
+    //     const selectedDistrict = districtSelect.getAttribute("data-district") || "";
+    //     const selectedWard = wardSelect.getAttribute("data-ward") || "";
+    //
+    //     // Hàm gọi API
+    //     async function fetchData(url, params = {}) {
+    //         try {
+    //             const response = await axios.get(url, { headers: { token: tokenApiGHN }, params });
+    //             return response.data.data;
+    //         } catch (error) {
+    //             console.error(`Lỗi fetch dữ liệu từ ${url}:`, error);
+    //             return [];
+    //         }
+    //     }
+    //
+    //     // Fetch danh sách tỉnh/thành phố
+    //     async function fetchAllProvince() {
+    //         const provinces = await fetchData(urlProvince);
+    //         provinceSelect.innerHTML = '<option value="">Chọn tỉnh</option>';
+    //
+    //         provinces.forEach(province => {
+    //             const option = new Option(province.ProvinceName, province.ProvinceID);
+    //             provinceSelect.add(option);
+    //             if (province.ProvinceID == selectedProvince) {
+    //                 option.selected = true;
+    //             }
+    //         });
+    //
+    //         if (selectedProvince) await fetchProvinceDistricts(selectedProvince, true);
+    //     }
+    //
+    //     // Fetch danh sách quận/huyện theo tỉnh
+    //     async function fetchProvinceDistricts(idProvince, isAutoLoad = false) {
+    //         const districts = await fetchData(urlDistricts, { province_id: idProvince });
+    //         districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
+    //
+    //         districts.forEach(district => {
+    //             const option = new Option(district.DistrictName, district.DistrictID);
+    //             districtSelect.add(option);
+    //             if (isAutoLoad && district.DistrictID == selectedDistrict) {
+    //                 option.selected = true;
+    //             }
+    //         });
+    //
+    //         if (selectedDistrict && isAutoLoad) await fetchProvinceWard(selectedDistrict, true);
+    //     }
+    //
+    //     // Fetch danh sách xã/phường theo huyện
+    //     async function fetchProvinceWard(idDistrict, isAutoLoad = false) {
+    //         const wards = await fetchData(urlWard, { district_id: idDistrict });
+    //         wardSelect.innerHTML = '<option value="">Chọn xã</option>';
+    //
+    //         wards.forEach(ward => {
+    //             const option = new Option(ward.WardName, ward.WardCode);
+    //             wardSelect.add(option);
+    //             if (isAutoLoad && ward.WardCode == selectedWard) {
+    //                 option.selected = true;
+    //             }
+    //         });
+    //     }
+    //
+    //     // Khi trang tải xong, fetch danh sách tỉnh
+    //     await fetchAllProvince();
+    //
+    //     // Khi chọn tỉnh, load danh sách huyện
+    //     provinceSelect.addEventListener('change', async function () {
+    //         if (this.value) {
+    //             await fetchProvinceDistricts(this.value);
+    //         } else {
+    //             districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
+    //             wardSelect.innerHTML = '<option value="">Chọn xã</option>';
+    //         }
+    //     });
+    //
+    //     // Khi chọn huyện, load danh sách xã
+    //     districtSelect.addEventListener('change', async function () {
+    //         if (this.value) {
+    //             await fetchProvinceWard(this.value);
+    //         } else {
+    //             wardSelect.innerHTML = '<option value="">Chọn xã</option>';
+    //         }
+    //     });
+    // });
+
     document.addEventListener("DOMContentLoaded", function () {
         const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';
         const urlProvince = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
@@ -222,9 +453,13 @@
         const urlWard = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';
 
         // Lấy giá trị mặc định từ Thymeleaf
-        const selectedProvince = document.getElementById('provinceSelect')?.getAttribute("data-province") || "";
-        const selectedDistrict = document.getElementById('districtSelect')?.getAttribute("data-district") || "";
-        const selectedWard = document.getElementById('wardSelect')?.getAttribute("data-ward") || "";
+        const provinceSelect = document.getElementById('provinceSelect');
+        const districtSelect = document.getElementById('districtSelect');
+        const wardSelect = document.getElementById('wardSelect');
+
+        const selectedProvince = provinceSelect?.getAttribute("data-province") || "";
+        const selectedDistrict = districtSelect?.getAttribute("data-district") || "";
+        const selectedWard = wardSelect?.getAttribute("data-ward") || "";
 
         // Fetch danh sách tỉnh/thành phố
         function fetchAllProvince() {
@@ -238,11 +473,14 @@
                         if (province.ProvinceID == selectedProvince) {
                             option.selected = true;
                             fetchProvinceDistricts(province.ProvinceID, true);
+                            // Cập nhật provinceName khi trang load nếu có giá trị sẵn
+                            document.getElementById('provinceName').value = province.ProvinceName;
                         }
                     });
                 })
                 .catch(error => console.error('Có lỗi xảy ra:', error));
         }
+
 
         // Fetch danh sách quận/huyện theo tỉnh
         function fetchProvinceDistricts(idProvince, isAutoLoad = false) {
@@ -251,7 +489,6 @@
                 headers: { token: tokenApiGHN }
             })
                 .then(response => {
-                    const districtSelect = document.getElementById('districtSelect');
                     districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
                     response.data.data.forEach(district => {
                         const option = new Option(district.DistrictName, district.DistrictID);
@@ -272,7 +509,6 @@
                 headers: { token: tokenApiGHN }
             })
                 .then(response => {
-                    const wardSelect = document.getElementById('wardSelect');
                     wardSelect.innerHTML = '<option value="">Chọn xã</option>';
                     response.data.data.forEach(ward => {
                         const option = new Option(ward.WardName, ward.WardCode);
@@ -289,25 +525,54 @@
         fetchAllProvince();
 
         // Khi chọn tỉnh, load danh sách huyện
-        document.getElementById('provinceSelect').addEventListener('change', function () {
+        provinceSelect.addEventListener('change', function () {
             const provinceId = this.value;
             if (provinceId) {
                 fetchProvinceDistricts(provinceId);
             } else {
-                document.getElementById('districtSelect').innerHTML = '<option value="">Chọn huyện</option>';
-                document.getElementById('wardSelect').innerHTML = '<option value="">Chọn xã</option>';
+                districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
+                wardSelect.innerHTML = '<option value="">Chọn xã</option>';
             }
+            document.getElementById('provinceName').value = this.options[this.selectedIndex].text;
         });
 
         // Khi chọn huyện, load danh sách xã
-        document.getElementById('districtSelect').addEventListener('change', function () {
+        districtSelect.addEventListener('change', function () {
             const districtId = this.value;
             if (districtId) {
                 fetchProvinceWard(districtId);
             } else {
-                document.getElementById('wardSelect').innerHTML = '<option value="">Chọn xã</option>';
+                wardSelect.innerHTML = '<option value="">Chọn xã</option>';
             }
+            document.getElementById('districtName').value = this.options[this.selectedIndex].text;
         });
+
+        // Khi chọn xã, cập nhật hidden input
+        wardSelect.addEventListener('change', function () {
+            document.getElementById('wardName').value = this.options[this.selectedIndex].text;
+        });
+
+        // Tự động chọn lại tỉnh, huyện, xã nếu có dữ liệu
+        if (selectedProvince) provinceSelect.dispatchEvent(new Event('change'));
+        if (selectedDistrict) districtSelect.dispatchEvent(new Event('change'));
+    });
+
+    // Cập nhật tên tỉnh/thành phố khi chọn
+    document.getElementById('provinceSelect').addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        document.getElementById('provinceName').value = selectedOption.text;
+    });
+
+    // Cập nhật tên quận/huyện khi chọn
+    document.getElementById('districtSelect').addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        document.getElementById('districtName').value = selectedOption.text;
+    });
+
+    // Cập nhật tên xã/phường khi chọn
+    document.getElementById('wardSelect').addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        document.getElementById('wardName').value = selectedOption.text;
     });
 </script>
 <script>
@@ -367,72 +632,7 @@
         });
     });
 </script>
-
-<!--<script>-->
-<!--    // Khi mở modal, cập nhật ảnh & tên file-->
-<!--    document.addEventListener("DOMContentLoaded", function () {-->
-<!--        document.querySelector("[data-target='#previewModal']").addEventListener("click", function () {-->
-<!--            let imgElement = document.getElementById("avatarPreview");-->
-<!--            let imgSrc = imgElement.src;-->
-<!--            let imgName = imgSrc.substring(imgSrc.lastIndexOf("/") + 1); // Lấy tên file từ URL-->
-
-<!--            document.getElementById("modalPreviewImage").src = imgSrc;-->
-<!--            document.getElementById("imageName").textContent = imgName; // Cập nhật tên ảnh-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
-<!--<script>-->
-<!--    function previewAvatar(input) {-->
-<!--        const file = input.files[0];-->
-<!--        if (file) {-->
-<!--            const reader = new FileReader();-->
-<!--            reader.onload = function (e) {-->
-<!--                document.getElementById("avatarPreview").src = e.target.result;-->
-<!--                document.getElementById("modalAvatarPreview").src = e.target.result;-->
-<!--                document.getElementById("avatarContainer").style.display = "inline-block";-->
-<!--                document.getElementById("chooseAvatarBtn").style.display = "none"; // Ẩn nút chọn ảnh-->
-<!--            };-->
-<!--            reader.readAsDataURL(file);-->
-<!--        }-->
-<!--    }-->
-<!--    document.getElementById("deleteAvatarBtn")?.addEventListener("click", function () {-->
-<!--        document.getElementById("avatarContainer").style.display = "none"; // Ẩn ảnh-->
-<!--        document.getElementById("chooseAvatarBtn").style.display = "inline-block"; // Hiện nút chọn ảnh-->
-<!--        document.getElementById("deleteAvatarFlag").value = "true"; // Đánh dấu xóa ảnh-->
-<!--    });-->
-<!--</script>-->
-<!--<script>-->
-<!--    function previewAvatar(input) {-->
-<!--        const file = input.files[0];-->
-<!--        if (file) {-->
-<!--            const reader = new FileReader();-->
-<!--            reader.onload = function (e) {-->
-<!--                document.getElementById("avatarPreview").src = e.target.result;-->
-<!--                document.getElementById("modalAvatarPreview").src = e.target.result;-->
-<!--                document.getElementById("avatarPreview").style.display = "block";-->
-<!--                document.getElementById("viewAvatarBtn").style.display = "inline-block";-->
-<!--                document.getElementById("deleteAvatarBtn").style.display = "inline-block";-->
-<!--                document.getElementById("chooseAvatarBtn").style.display = "none";-->
-<!--                document.getElementById("deleteAvatarFlag").value = "false";-->
-<!--            };-->
-<!--            reader.readAsDataURL(file);-->
-<!--        }-->
-<!--    }-->
-
-<!--    document.getElementById("deleteAvatarBtn")?.addEventListener("click", function () {-->
-<!--        document.getElementById("avatarPreview").src = "";-->
-<!--        document.getElementById("avatarPreview").style.display = "none";-->
-<!--        document.getElementById("viewAvatarBtn").style.display = "none";-->
-<!--        document.getElementById("deleteAvatarBtn").style.display = "none";-->
-<!--        document.getElementById("chooseAvatarBtn").style.display = "inline-block";-->
-<!--        document.getElementById("deleteAvatarFlag").value = "true";-->
-<!--    });-->
-<!--</script>-->
-
-<script>
-    function submitEmployeeForm() {
-        document.getElementById("employeeForm").submit();
-    }
-</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</th:block>
 </body>
 </html>
