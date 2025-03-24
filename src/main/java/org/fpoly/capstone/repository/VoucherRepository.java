@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 
-    @Query("select v from Voucher v order by v.id desc")
+    @Query("select v from Voucher v ORDER BY v.lastModifiedDate DESC")
     Page<Voucher> findAll(Pageable pageable);
 
     @Query("SELECT v FROM Voucher v WHERE v.name = :name or v.status = :status")

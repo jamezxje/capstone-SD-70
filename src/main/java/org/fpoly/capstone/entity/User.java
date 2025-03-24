@@ -34,7 +34,6 @@ public class User {
     @Column(name = "email", length = 255)
     private String email;
 
-    @Column(name = "gender")
     private Boolean gender;
 
     @Column(name = "avata", length = 255)

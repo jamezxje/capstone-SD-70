@@ -52,6 +52,7 @@ public class VoucherDetailServiceImpl implements VoucherDetailService {
         newVoucherDetail.setDiscountPrice(voucherDetail.getDiscountPrice());
         newVoucherDetail.setCreateDate(new Date());
         newVoucherDetail.setCreatedBy(user);
+        newVoucherDetail.setLastModifiedDate(new Date());
         newVoucherDetail.setUpdatedBy(user);
 
 
@@ -73,6 +74,7 @@ public class VoucherDetailServiceImpl implements VoucherDetailService {
         newVoucherDetail.setBeforePrice(voucherDetail.getBeforePrice());
         newVoucherDetail.setDiscountPrice(voucherDetail.getDiscountPrice());
         newVoucherDetail.setUpdatedBy(user);
+        newVoucherDetail.setLastModifiedDate(new Date());
 
 
         log.info("(update) :" + newVoucherDetail);
