@@ -13,24 +13,26 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<User, String> {
-    //List<User> findByRoles(UserRole role);
-//    Page<User> findByRolesAndStatus(UserRole role, UserStatus status, Pageable pageable);
-    User findByEmail(String email);
+public interface CustomerRepository extends JpaRepository<User, Long> {
 
-    Page<User> findByRolesAndStatus(UserRole role, UserStatus status, Pageable pageable);
+//    User findByEmail(String email);
+
+    @Query("SELECT u FROM User u WHERE u.roles = :role ORDER BY u.lastModifiedDate DESC")
+    Page<User> findCustomersSortedByLastModifiedDate(@Param("role") UserRole role, Pageable pageable);
+
+//    Page<User> findByRolesAndStatus(UserRole role, UserStatus status, Pageable pageable);
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.addresses WHERE u.id = :userId")
-    Optional<User> findCustomerAddresses(@Param("userId") String userId);
+    Optional<User> findCustomerAddresses(@Param("userId") Long userId);
 
-    @Query("SELECT u FROM  User u WHERE u.phoneNumber =:phoneNumber")
-    User getCustomerBySDT(@Param("phoneNumber") String phoneNumber);
+    @Query("SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber")
+    Optional<User> getEmployBySDT(@Param("phoneNumber") String phoneNumber);
 
-    @Query("SELECT u FROM  User u WHERE u.email =:email")
-    User getCustomerByEmail(@Param("email") String email);
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    Optional<User> getEmployByEmail(@Param("email") String email);
 
-    @Query("SELECT u FROM  User u WHERE u.citizenIdentity =:citizenIdentity")
-    User getCustomerByCCCD(@Param("citizenIdentity") String citizenIdentity);
+    @Query("SELECT u FROM User u WHERE u.citizenIdentity = :citizenIdentity")
+    Optional<User> getEmployByCCCD(@Param("citizenIdentity") String citizenIdentity);
 
-    User getById(String id);
+    User getById(Long id);
 }

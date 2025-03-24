@@ -7,12 +7,8 @@ import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.EmployeeRepository;
-import org.fpoly.capstone.service.AddressService;
-import org.fpoly.capstone.service.EmailService;
-import org.fpoly.capstone.service.EmployeeService;
-import org.fpoly.capstone.service.UserService;
+import org.fpoly.capstone.service.*;
 import org.fpoly.capstone.utils.PasswordUtil;
-import org.fpoly.capstone.utils.upload.UploadAvatarToCloudinary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,23 +41,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private AddressService addressService;
 
-    @Autowired
-    private UploadAvatarToCloudinary uploadAvatarToCloudinary;
-
+//    @Override
+//    public Page<User> getEmployeesPaginated(Pageable pageable) {
+//        return employeeRepository.findByRolesAndStatus(UserRole.ROLE_USER, UserStatus.ACTIVATED, pageable);
+//    }
     @Override
     public Page<User> getEmployeesPaginated(Pageable pageable) {
-        return employeeRepository.findByRolesAndStatus(UserRole.ROLE_USER, UserStatus.ACTIVATED, pageable);
+        return employeeRepository.findEmployeesSortedByLastModifiedDate(UserRole.ROLE_USER, pageable);
     }
 
     @Override
-    public User getEmployeeById(String id) {
+    public User getEmployeeById(Long id) {
         return employeeRepository.findEmployAddresses(id).orElse(null);
     }
 
     @Transactional
     @Override
-        public User createEmployee(User user, Address address) {
-//    public User createEmployee(User user, Address address, MultipartFile file) {
+    public User createEmployee(User user, Address address) {
+//        public User createEmployee(User user, Address address, MultipartFile file) {
         String rawPassword = PasswordUtil.generateRandomPassword(8); // Tạo mật khẩu 8 ký tự
         String encodedPassword = passwordEncoder.encode(rawPassword);
         String userServiceName = userService.getName();
@@ -69,7 +66,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         // xử lý ảnh
 //        String urlAvatar = null;
 //        if (file != null && !file.isEmpty()) {
-//            urlAvatar = uploadAvatarToCloudinary.uploadImage(file);
+//            urlAvatar = fileUploadImagesService.saveAvatar(file, "employee", user.getId()); // Lưu ảnh & nhận URL
+//            System.out.println("Avatar URL: " + urlAvatar); // Debug kiểm tra đường dẫn ảnh
 //        }
 
         // Tạo đối tượng user
@@ -85,7 +83,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         newUser.setRoles(UserRole.ROLE_USER);
         newUser.setStatus(UserStatus.ACTIVATED);
         newUser.setCreatedBy(userServiceName);
+        newUser.setUpdatedBy(userServiceName);
         newUser.setCreateDate(new Date());
+        newUser.setLastModifiedDate(new Date());
 
         // Lưu user và lấy ID mới
         User savedUser = employeeRepository.save(newUser);
@@ -104,22 +104,24 @@ public class EmployeeServiceImpl implements EmployeeService {
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
             newUser.setCreateDate(new Date());
+            newUser.setLastModifiedDate(new Date());
+            newUser.setCreatedBy(userServiceName);
+            newUser.setUpdatedBy(userServiceName);
             newAddress.setUser(savedUser); // Không cần tìm lại user nữa
-
             // Lưu địa chỉ vào database
 //            addressRepository.save(newAddress);
             Address savedAddress = addressRepository.save(newAddress);
             System.out.println("Address ID: " + savedAddress.getId()); // Debug xem có lưu không
         }
         System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
-//        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên CAPSTONE";
-//        emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
+        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên CAPSTONE";
+        emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return savedUser;
     }
 
     @Transactional
     @Override
-        public User updateEmployee(String id, User user, Address address) {
+        public User updateEmployee(Long id, User user, Address address) {
 //    public User updateEmployee(String id, User user, Address address, MultipartFile file) {
         User existingEmployee = employeeRepository.findById(id).orElse(null);
         if (existingEmployee == null) {
@@ -132,7 +134,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        if (file != null && !file.isEmpty()) {
 //            urlAvatar = uploadAvatarToCloudinary.uploadImage(file); // Upload ảnh mới
 //        }
-
         // Cập nhật thông tin nhân viên
         existingEmployee.setFullName(user.getFullName());
         existingEmployee.setEmail(user.getEmail());
@@ -172,7 +173,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             newAddress.setLine(address.getLine());
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
-            newAddress.setCreatedBy(userServiceName);
+            newAddress.setUpdatedBy(userServiceName);
             newAddress.setLastModifiedDate(new Date());
             newAddress.setUser(existingEmployee);
 

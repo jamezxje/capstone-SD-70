@@ -29,28 +29,28 @@
                                                 <label class="col-lg-4 col-form-label" for="fullName">Họ và tên</label>
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" id="fullName" th:field="*{customer.fullName}" placeholder="Nhập họ và tên...">
-                                                    <span th:if="${#fields.hasErrors('customer.fullName')}" th:errorclass="text-danger" th:errors="*{customer.fullName}"></span>
+                                                    <p class="error" th:if="${errors['fullName']}" th:text="${errors['fullName']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label" for="email">Email</label>
                                                 <div class="col-lg-6">
-                                                    <input type="email" class="form-control" id="email" th:field="*{customer.email}" placeholder="Nhập email...">
-                                                    <p th:if="${#fields.hasErrors('customer.email')}" th:errorclass="text-danger" th:errors="*{customer.email}"></p>
+                                                    <input type="text" class="form-control" id="email" th:field="*{customer.email}" placeholder="Nhập email...">
+                                                    <p class="error" th:if="${errors['email']}" th:text="${errors['email']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label" for="phoneNumber">Số điện thoại</label>
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" id="phoneNumber" th:field="*{customer.phoneNumber}" placeholder="Nhập số điện thoại...">
-                                                    <p th:if="${#fields.hasErrors('customer.phoneNumber')}" th:errorclass="text-danger" th:errors="*{customer.phoneNumber}"></p>
+                                                    <p class="error" th:if="${errors['phoneNumber']}" th:text="${errors['phoneNumber']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label" for="dateOfBirth">Ngày sinh</label>
                                                 <div class="col-lg-6">
                                                     <input type="date" class="form-control" id="dateOfBirth" th:field="*{customer.dateOfBirth}" min="1944-01-01" max="2006-12-31">
-                                                    <p th:if="${#fields.hasErrors('customer.dateOfBirth')}" th:errorclass="text-danger" th:errors="*{customer.dateOfBirth}"></p>
+                                                    <p class="error" th:if="${errors['dateOfBirth']}" th:text="${errors['dateOfBirth']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -65,7 +65,7 @@
                                                         </label>
                                                     </div>
                                                     <div>
-                                                        <p th:if="${#fields.hasErrors('customer.gender')}" class="text-danger mt-1" th:errors="*{customer.gender}"></p>
+                                                        <p class="error" th:if="${errors['gender']}" th:text="${errors['gender']}" th:classappend="text-danger"></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -86,7 +86,7 @@
                                                         <option value="">Chọn</option>
                                                     </select>
                                                     <input type="hidden" id="provinceName" th:field="*{address.province}" name="province">
-                                                    <p th:if="${#fields.hasErrors('address.provinceId')}" th:errorclass="text-danger" th:errors="*{address.provinceId}"></p>
+                                                    <p class="error" th:if="${errorsAddress['provinceId']}" th:text="${errorsAddress['provinceId']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -96,7 +96,7 @@
                                                         <option value="">Chọn</option>
                                                     </select>
                                                     <input type="hidden" id="districtName" th:field="*{address.district}" name="district">
-                                                    <p th:if="${#fields.hasErrors('address.toDistrictId')}" th:errorclass="text-danger" th:errors="*{address.toDistrictId}"></p>
+                                                    <p class="error" th:if="${errorsAddress['toDistrictId']}" th:text="${errorsAddress['toDistrictId']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -106,14 +106,14 @@
                                                         <option value="">Chọn</option>
                                                     </select>
                                                     <input type="hidden" id="wardName" th:field="*{address.ward}" name="ward">
-                                                    <p th:if="${#fields.hasErrors('address.wardCode')}" th:errorclass="text-danger" th:errors="*{address.wardCode}"></p>
+                                                    <p class="error" th:if="${errorsAddress['wardCode']}" th:text="${errorsAddress['wardCode']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">Số nhà/Ngõ/Đường</label>
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" th:field="*{address.line}" name="line" placeholder="Nhập địa chỉ cụ thể...">
-                                                    <p th:if="${#fields.hasErrors('address.line')}" th:errorclass="text-danger" th:errors="*{address.line}"></p>
+                                                    <p class="error" th:if="${errorsAddress['line']}" th:text="${errorsAddress['line']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">

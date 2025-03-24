@@ -11,9 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 public interface EmployeeService {
 
     Page<User> getEmployeesPaginated(Pageable pageable);
-    User getEmployeeById(String id);
+    User getEmployeeById(Long id);
     User createEmployee(User user , Address address);
-    User updateEmployee(String id, User user, Address address);
+    User updateEmployee(Long id, User user, Address address);
 //    User createEmployee(User user , Address address, MultipartFile file);
 //    User updateEmployee(String id, User user, Address address, MultipartFile file);
 

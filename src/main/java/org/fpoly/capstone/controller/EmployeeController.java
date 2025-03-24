@@ -1,19 +1,20 @@
 package org.fpoly.capstone.controller;
 
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.repository.AddressRepository;
+import org.fpoly.capstone.repository.EmployeeRepository;
 import org.fpoly.capstone.service.AddressService;
 import org.fpoly.capstone.service.EmployeeService;
+import org.fpoly.capstone.validation.AddressValidator;
+import org.fpoly.capstone.validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -39,8 +39,11 @@ public class EmployeeController {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
     @GetMapping("/detail/{id}")
-    public String employeeDetail(@PathVariable String id, Model model) {
+    public String employeeDetail(@PathVariable Long id, Model model) {
         User employee = employeeService.getEmployeeById(id);
         if (employee == null) {
             return "redirect:/staff-management";
@@ -73,35 +76,55 @@ public class EmployeeController {
     }
 
     @GetMapping("/view-add")
-    public String showAddForm(Model model) {
-        User employee = new User();
-        Address address = new Address();
-        // Gán address vào danh sách địa chỉ của employee
-        employee.setAddresses(new ArrayList<>(List.of(address)));
+        public String showAddForm(Model model) {
+            User employee = new User();
+            Address address = new Address();
+            Map<String, String> errors = new HashMap<>();
+            Map<String, String> errorsAddress = new HashMap<>();
+
+            // Gán address vào danh sách địa chỉ của employee
+            employee.setAddresses(new ArrayList<>(List.of(address)));
         model.addAttribute("address", address);
         model.addAttribute("employee", employee);
+        model.addAttribute("errors", errors);
+        model.addAttribute("errorsAddress", errorsAddress);
         return "views/users/employee/employee-create";
     }
 
     @PostMapping("/add")
-    public String saveEmployee(@Valid @ModelAttribute("employee") User user,
-                               BindingResult userResult,
-                               @Valid @ModelAttribute("address") Address address,
-                               BindingResult addressResult,
+    public String saveEmployee(@ModelAttribute("employee") User user,
+                               @ModelAttribute("address") Address address,
 //                               @RequestParam("file") MultipartFile file,
                                Model model) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
-        if (userResult.hasErrors() || addressResult.hasErrors()) {
-            System.out.println("Validation lỗi user: " + userResult.getAllErrors());
-            System.out.println("Validation lỗi address: " + addressResult.getAllErrors());
+
+        // Kiểm tra xem file có null không & có rỗng không
+//        if (file == null || file.isEmpty()) {
+//            System.out.println("Không có ảnh được chọn!");
+//        } else {
+//            System.out.println("Ảnh tải lên: " + file.getOriginalFilename());
+//        }
+//        System.out.println("File nhận được: " + (file != null ? file.getOriginalFilename() : "Không có file"));
+        // Validate dữ liệu
+        Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "citizenIdentity", "gender");
+        Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
+        Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
+        Map<String, String> errorsAddress = AddressValidator.validate(address, addressFieldsToValidate);
+
+        if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
+            user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
+            model.addAttribute("errors", errors);
+            model.addAttribute("errorsAddress", errorsAddress);
             model.addAttribute("employee", user);
             model.addAttribute("address", address);
             return "views/users/employee/employee-create";
         }
+
         System.out.println("ProvinceId: " + address.getProvinceId());
         System.out.println("ToDistrictId: " + address.getToDistrictId());
         System.out.println("WardCode: " + address.getWardCode());
+
         // Gọi service để tạo nhân viên và địa chỉ
 //        employeeService.createEmployee(user, address,file);
         employeeService.createEmployee(user, address);
@@ -109,36 +132,46 @@ public class EmployeeController {
     }
 
     @GetMapping("/view-update/{id}")
-    public String viewupdateEmployee(@PathVariable String id, Model model) {
+    public String viewupdateEmployee(@PathVariable Long id, Model model) {
         User employee = employeeService.getEmployeeById(id);
         if (employee == null) {
             return "redirect:/staff-management";
         }
+        Map<String, String> errors = new HashMap<>();
+        Map<String, String> errorsAddress = new HashMap<>();
+        // Gán address vào danh sách địa chỉ của employee
         Address address = addressService.getDefaultAddress(employee.getId());
         model.addAttribute("employee", employee);
         model.addAttribute("address", address);
+        model.addAttribute("errors", errors);
+        model.addAttribute("errorsAddress", errorsAddress);
         return "views/users/employee/employee-update";
     }
 
     @PostMapping("/update/{id}")
-    public String updateEmployee(@PathVariable String id,
-                                 @Valid @ModelAttribute("employee") User user,
-                                 BindingResult userResult,
-                                 @Valid @ModelAttribute("address") Address address,
-                                 BindingResult addressResult,
+    public String updateEmployee(@PathVariable Long id,
+                                 @ModelAttribute("employee") User user,
+                                 @ModelAttribute("address") Address address,
 //                                 @RequestParam(value = "file", required = false) MultipartFile file,
                                  Model model) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
 
-        // Kiểm tra lỗi validation
-        if (userResult.hasErrors() || addressResult.hasErrors()) {
-            System.out.println("Validation lỗi user: " + userResult.getAllErrors());
-            System.out.println("Validation lỗi address: " + addressResult.getAllErrors());
+        // Validate dữ liệu chung
+        Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "citizenIdentity", "gender");
+        Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
+        Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
+        Map<String, String> errorsAddress = AddressValidator.validate(address, addressFieldsToValidate);
+
+        if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
+            user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
+            model.addAttribute("errors", errors);
+            model.addAttribute("errorsAddress", errorsAddress);
             model.addAttribute("employee", user);
             model.addAttribute("address", address);
             return "views/users/employee/employee-update";
         }
+
         System.out.println("ProvinceId: " + address.getProvinceId());
         System.out.println("ToDistrictId: " + address.getToDistrictId());
         System.out.println("WardCode: " + address.getWardCode());

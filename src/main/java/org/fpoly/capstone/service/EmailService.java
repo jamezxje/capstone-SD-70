@@ -2,6 +2,7 @@ package org.fpoly.capstone.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -12,13 +13,13 @@ public class EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    private final String sender = "baoptph39967@fpt.edu.vn"; // Đổi thành email của bạn
+    @Value("${spring.mail.username}")
+    private String sender; // Đổi thành email của bạn
 
     public void sendEmailPassword(String to, String subject, String password) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-
             String htmlBody = "<html>"
                     + "<head>"
                     + "<style>"
@@ -49,13 +50,11 @@ public class EmailService {
                     + "</div>"
                     + "</body>"
                     + "</html>";
-
             helper.setFrom(sender);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlBody, true);
             javaMailSender.send(message);
-
         } catch (MessagingException e) {
             e.printStackTrace();
         }

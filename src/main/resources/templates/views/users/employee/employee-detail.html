@@ -183,17 +183,14 @@
 		document.addEventListener("DOMContentLoaded", function () {
 			let avatarPreview = document.getElementById("avatarPreview");
 			let viewAvatarBtn = document.getElementById("viewAvatarBtn");
-
 			// Kiểm tra nếu có ảnh thì hiển thị nút "Xem ảnh"
 			if (avatarPreview.src && avatarPreview.style.display !== "none") {
 				viewAvatarBtn.style.display = "inline-block";
 			}
-
 			// Khi mở modal, cập nhật ảnh & tên file
 			document.querySelector("[data-target='#previewModal']").addEventListener("click", function () {
 				let imgSrc = avatarPreview.src;
 				let imgName = imgSrc.substring(imgSrc.lastIndexOf("/") + 1); // Lấy tên file từ URL
-
 				document.getElementById("modalPreviewImage").src = imgSrc;
 				document.getElementById("imageName").textContent = imgName; // Cập nhật tên ảnh
 			});

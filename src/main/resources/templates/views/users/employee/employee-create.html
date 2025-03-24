@@ -25,35 +25,35 @@
                                                 <label class="col-lg-4 col-form-label" for="fullName">Họ và tên</label>
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" id="fullName" th:field="*{employee.fullName}" placeholder="Nhập họ và tên...">
-                                                    <span th:if="${#fields.hasErrors('employee.fullName')}" th:errorclass="text-danger" th:errors="*{employee.fullName}"></span>
+                                                    <p class="error" th:if="${errors['fullName']}" th:text="${errors['fullName']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label" for="email">Email</label>
                                                 <div class="col-lg-6">
-                                                    <input type="email" class="form-control" id="email" th:field="*{employee.email}" placeholder="Nhập email...">
-                                                    <p th:if="${#fields.hasErrors('employee.email')}" th:errorclass="text-danger" th:errors="*{employee.email}"></p>
+                                                    <input type="text" class="form-control" id="email" th:field="*{employee.email}" placeholder="Nhập email...">
+                                                    <p class="error" th:if="${errors['email']}" th:text="${errors['email']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label" for="phoneNumber">Số điện thoại</label>
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" id="phoneNumber" th:field="*{employee.phoneNumber}" placeholder="Nhập số điện thoại...">
-                                                    <p th:if="${#fields.hasErrors('employee.phoneNumber')}" th:errorclass="text-danger" th:errors="*{employee.phoneNumber}"></p>
+                                                    <p class="error" th:if="${errors['phoneNumber']}" th:text="${errors['phoneNumber']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label" for="dateOfBirth">Ngày sinh</label>
                                                 <div class="col-lg-6">
-                                                    <input type="date" class="form-control" id="dateOfBirth" th:field="*{employee.dateOfBirth}" min="1944-01-01" max="2006-12-31">
-                                                    <p th:if="${#fields.hasErrors('employee.dateOfBirth')}" th:errorclass="text-danger" th:errors="*{employee.dateOfBirth}"></p>
+                                                    <input type="date" class="form-control" id="dateOfBirth" th:field="*{employee.dateOfBirth}" >
+                                                    <p class="error" th:if="${errors['dateOfBirth']}" th:text="${errors['dateOfBirth']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label" for="citizenIdentity">Căn cước công dân</label>
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" id="citizenIdentity" th:field="*{employee.citizenIdentity}" placeholder="Nhập CCCD...">
-                                                    <p th:if="${#fields.hasErrors('employee.citizenIdentity')}" th:errorclass="text-danger" th:errors="*{employee.citizenIdentity}"></p>
+                                                    <p class="error" th:if="${errors['citizenIdentity']}" th:text="${errors['citizenIdentity']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -68,7 +68,7 @@
                                                         </label>
                                                     </div>
                                                     <div>
-                                                        <p th:if="${#fields.hasErrors('employee.gender')}" class="text-danger mt-1" th:errors="*{employee.gender}"></p>
+                                                        <p class="error" th:if="${errors['gender']}" th:text="${errors['gender']}" th:classappend="text-danger"></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -89,7 +89,7 @@
                                                         <option value="">Chọn</option>
                                                     </select>
                                                     <input type="hidden" id="provinceName" th:field="*{address.province}" name="province">
-                                                    <p th:if="${#fields.hasErrors('address.provinceId')}" th:errorclass="text-danger" th:errors="*{address.provinceId}"></p>
+                                                    <p class="error" th:if="${errorsAddress['provinceId']}" th:text="${errorsAddress['provinceId']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -99,7 +99,7 @@
                                                         <option value="">Chọn</option>
                                                     </select>
                                                     <input type="hidden" id="districtName" th:field="*{address.district}" name="district">
-                                                    <p th:if="${#fields.hasErrors('address.toDistrictId')}" th:errorclass="text-danger" th:errors="*{address.toDistrictId}"></p>
+                                                    <p class="error" th:if="${errorsAddress['toDistrictId']}" th:text="${errorsAddress['toDistrictId']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -109,14 +109,14 @@
                                                         <option value="">Chọn</option>
                                                     </select>
                                                     <input type="hidden" id="wardName" th:field="*{address.ward}" name="ward">
-                                                    <p th:if="${#fields.hasErrors('address.wardCode')}" th:errorclass="text-danger" th:errors="*{address.wardCode}"></p>
+                                                    <p class="error" th:if="${errorsAddress['wardCode']}" th:text="${errorsAddress['wardCode']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">Số nhà/Ngõ/Đường</label>
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" th:field="*{address.line}" name="line" placeholder="Nhập địa chỉ cụ thể...">
-                                                    <p th:if="${#fields.hasErrors('address.line')}" th:errorclass="text-danger" th:errors="*{address.line}"></p>
+                                                    <p class="error" th:if="${errorsAddress['line']}" th:text="${errorsAddress['line']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -140,7 +140,6 @@
                                                              width="120" height="120"
                                                              style="object-fit: cover;">
                                                     </div>
-
                                                     <!-- Nút thao tác -->
                                                     <div class="ml-2 d-flex flex-column gap-2">
                                                         <button title="Xem ảnh" type="button" id="viewAvatarBtn" class="btn btn-sm btn-dark" data-toggle="modal"
@@ -155,13 +154,11 @@
                                                             ➕ Thêm ảnh
                                                         </button>
                                                     </div>
-
                                                     <!-- Input file ẩn -->
                                                     <input type="file" id="avatarInput" name="avatarFile" accept="image/*" hidden>
                                                     <input type="hidden" id="avatarUrl" name="avatarUrl">
                                                 </div>
                                             </div>
-
                                             <!-- Modal xem ảnh -->
                                             <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel"
                                                  aria-hidden="true">
@@ -177,8 +174,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
                                     <div style="text-align: right; margin-top: 20px">
@@ -283,76 +278,6 @@
 
         fetchAllProvinces();
     });
-
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';
-    //     const urlProvince = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
-    //     const urlDistricts = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
-    //     const urlWard = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';
-    //
-    //     function fetchAllProvince() {
-    //         axios.get(urlProvince, { headers: { token: tokenApiGHN } })
-    //             .then(response => {
-    //                 const selectElement = document.getElementById('provinceSelect');
-    //                 selectElement.innerHTML = '<option value="">Chọn tỉnh</option>';
-    //                 response.data.data.forEach(province => {
-    //                     const option = new Option(province.ProvinceName, province.ProvinceID);
-    //                     selectElement.add(option);
-    //                 });
-    //             })
-    //             .catch(error => console.error('Lỗi lấy tỉnh:', error));
-    //     }
-    //
-    //     function fetchProvinceDistricts(idProvince) {
-    //         axios.get(urlDistricts, { params: { province_id: idProvince }, headers: { token: tokenApiGHN } })
-    //             .then(response => {
-    //                 const districtSelect = document.getElementById('districtSelect');
-    //                 districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
-    //                 response.data.data.forEach(district => {
-    //                     const option = new Option(district.DistrictName, district.DistrictID);
-    //                     districtSelect.add(option);
-    //                 });
-    //             })
-    //             .catch(error => console.log("Lỗi lấy huyện:", error));
-    //     }
-    //
-    //     function fetchProvinceWard(idDistrict) {
-    //         axios.get(urlWard, { params: { district_id: idDistrict }, headers: { token: tokenApiGHN } })
-    //             .then(response => {
-    //                 const wardSelect = document.getElementById('wardSelect');
-    //                 wardSelect.innerHTML = '<option value="">Chọn xã</option>';
-    //                 response.data.data.forEach(ward => {
-    //                     const option = new Option(ward.WardName, ward.WardCode);
-    //                     wardSelect.add(option);
-    //                 });
-    //             })
-    //             .catch(error => console.log("Lỗi lấy xã:", error));
-    //     }
-    //
-    //     document.getElementById('provinceSelect').addEventListener('change', function () {
-    //         const provinceId = this.value;
-    //         const provinceName = this.options[this.selectedIndex].text;
-    //         document.getElementById('provinceName').value = provinceName;
-    //         document.getElementById('districtSelect').innerHTML = '<option value="">Chọn huyện</option>';
-    //         document.getElementById('wardSelect').innerHTML = '<option value="">Chọn xã</option>';
-    //         if (provinceId) fetchProvinceDistricts(provinceId);
-    //     });
-    //
-    //     document.getElementById('districtSelect').addEventListener('change', function () {
-    //         const districtId = this.value;
-    //         const districtName = this.options[this.selectedIndex].text;
-    //         document.getElementById('districtName').value = districtName;
-    //         document.getElementById('wardSelect').innerHTML = '<option value="">Chọn xã</option>';
-    //         if (districtId) fetchProvinceWard(districtId);
-    //     });
-    //
-    //     document.getElementById('wardSelect').addEventListener('change', function () {
-    //         const wardName = this.options[this.selectedIndex].text;
-    //         document.getElementById('wardName').value = wardName;
-    //     });
-    //
-    //     fetchAllProvince();
-    // });
 </script>
 <!--<script>-->
 <!--    document.addEventListener("DOMContentLoaded", function () {-->
@@ -413,76 +338,121 @@
 <!--</script>-->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const avatarPreview = document.getElementById("avatarPreview");
-            const modalPreviewImage = document.getElementById("modalPreviewImage");
-            const viewAvatarBtn = document.getElementById("viewAvatarBtn");
-            const deleteAvatarBtn = document.getElementById("deleteAvatarBtn");
-            const chooseAvatarBtn = document.getElementById("chooseAvatarBtn");
-            const avatarInput = document.getElementById("avatarInput");
-            const avatarUrl = document.getElementById("avatarUrl");
+            let avatarInput = document.getElementById("avatarInput");
+            let avatarPreview = document.getElementById("avatarPreview");
+            let avatarUrlInput = document.getElementById("avatarUrl");
+            let viewAvatarBtn = document.getElementById("viewAvatarBtn");
+            let deleteAvatarBtn = document.getElementById("deleteAvatarBtn");
+            let modalPreviewImage = document.getElementById("modalPreviewImage");
 
-            // Ẩn/hiện nút khi có ảnh
-            function updateButtonVisibility() {
-                const hasImage = avatarPreview.src && avatarPreview.src !== window.location.href;
-                viewAvatarBtn.style.display = hasImage ? "inline-block" : "none";
-                deleteAvatarBtn.style.display = hasImage ? "inline-block" : "none";
+            // Kiểm tra nếu đã có ảnh thì hiện nút "Xem" và "Xóa"
+            if (avatarPreview.src && !avatarPreview.src.includes("default-avatar.jpg")) {
+                viewAvatarBtn.style.display = "block";
+                deleteAvatarBtn.style.display = "block";
             }
-            updateButtonVisibility();
-
-            // Xem trước ảnh khi chọn file
+            // Xử lý khi chọn ảnh mới
             avatarInput.addEventListener("change", function () {
-                const file = avatarInput.files[0];
+                let file = avatarInput.files[0];
                 if (file) {
-                    const reader = new FileReader();
+                    let reader = new FileReader();
                     reader.onload = function (e) {
-                        avatarPreview.src = e.target.result;
-                        avatarPreview.style.display = "block";
-                        uploadToCloudinary(file); // Tự động upload
+                        avatarPreview.src = e.target.result; // Hiển thị ảnh xem trước
+                        avatarUrlInput.value = e.target.result; // Lưu URL vào input ẩn
+                        viewAvatarBtn.style.display = "block"; // Hiện nút Xem
+                        deleteAvatarBtn.style.display = "block"; // Hiện nút Xóa
                     };
                     reader.readAsDataURL(file);
                 }
             });
 
-            // Xóa ảnh
-            deleteAvatarBtn.addEventListener("click", function () {
-                avatarPreview.src = "/assets/images/avatar/default-avatar.jpg";
-                avatarUrl.value = "";
-                updateButtonVisibility();
-            });
-
-            // Xem ảnh trong modal
+            // Xem ảnh lớn hơn trong modal
             viewAvatarBtn.addEventListener("click", function () {
                 modalPreviewImage.src = avatarPreview.src;
-                document.getElementById("imageName").textContent = avatarUrl.value || "Ảnh đại diện";
             });
 
-            // Upload lên Cloudinary
-            function uploadToCloudinary(file) {
-                const cloudName = "dwsu2j5pf";  // Thay bằng Cloud Name của bạn
-                const uploadPreset = "default_preset";  // Đổi sang upload preset của bạn
-
-                let formData = new FormData();
-                formData.append("file", file);
-                formData.append("upload_preset", uploadPreset);  // Cần thiết để upload thành công
-
-                fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-                    method: "POST",
-                    body: formData
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.secure_url) {
-                            document.getElementById("avatarPreview").src = data.secure_url;
-                            document.getElementById("avatarUrl").value = data.secure_url;
-                        } else {
-                            console.error("Lỗi Cloudinary:", data);
-                        }
-                    })
-                    .catch(error => console.error("Upload thất bại:", error));
-            }
+            // Xóa ảnh
+            deleteAvatarBtn.addEventListener("click", function () {
+                avatarPreview.src = "/assets/images/avatar/default-avatar.jpg"; // Quay lại ảnh mặc định
+                avatarInput.value = ""; // Xóa file đã chọn
+                avatarUrlInput.value = ""; // Xóa đường dẫn
+                viewAvatarBtn.style.display = "none"; // Ẩn nút Xem
+                deleteAvatarBtn.style.display = "none"; // Ẩn nút Xóa
+            });
         });
-
     </script>
+
+    <!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            const avatarPreview = document.getElementById("avatarPreview");-->
+<!--            const modalPreviewImage = document.getElementById("modalPreviewImage");-->
+<!--            const viewAvatarBtn = document.getElementById("viewAvatarBtn");-->
+<!--            const deleteAvatarBtn = document.getElementById("deleteAvatarBtn");-->
+<!--            const chooseAvatarBtn = document.getElementById("chooseAvatarBtn");-->
+<!--            const avatarInput = document.getElementById("avatarInput");-->
+<!--            const avatarUrl = document.getElementById("avatarUrl");-->
+
+<!--            // Ẩn/hiện nút khi có ảnh-->
+<!--            function updateButtonVisibility() {-->
+<!--                const hasImage = avatarPreview.src && avatarPreview.src !== window.location.href;-->
+<!--                viewAvatarBtn.style.display = hasImage ? "inline-block" : "none";-->
+<!--                deleteAvatarBtn.style.display = hasImage ? "inline-block" : "none";-->
+<!--            }-->
+<!--            updateButtonVisibility();-->
+
+<!--            // Xem trước ảnh khi chọn file-->
+<!--            avatarInput.addEventListener("change", function () {-->
+<!--                const file = avatarInput.files[0];-->
+<!--                if (file) {-->
+<!--                    const reader = new FileReader();-->
+<!--                    reader.onload = function (e) {-->
+<!--                        avatarPreview.src = e.target.result;-->
+<!--                        avatarPreview.style.display = "block";-->
+<!--                        uploadToCloudinary(file); // Tự động upload-->
+<!--                    };-->
+<!--                    reader.readAsDataURL(file);-->
+<!--                }-->
+<!--            });-->
+
+<!--            // Xóa ảnh-->
+<!--            deleteAvatarBtn.addEventListener("click", function () {-->
+<!--                avatarPreview.src = "/assets/images/avatar/default-avatar.jpg";-->
+<!--                avatarUrl.value = "";-->
+<!--                updateButtonVisibility();-->
+<!--            });-->
+
+<!--            // Xem ảnh trong modal-->
+<!--            viewAvatarBtn.addEventListener("click", function () {-->
+<!--                modalPreviewImage.src = avatarPreview.src;-->
+<!--                document.getElementById("imageName").textContent = avatarUrl.value || "Ảnh đại diện";-->
+<!--            });-->
+
+<!--            // Upload lên Cloudinary-->
+<!--            function uploadToCloudinary(file) {-->
+<!--                const cloudName = "dwsu2j5pf";  // Thay bằng Cloud Name của bạn-->
+<!--                const uploadPreset = "default_preset";  // Đổi sang upload preset của bạn-->
+
+<!--                let formData = new FormData();-->
+<!--                formData.append("file", file);-->
+<!--                formData.append("upload_preset", uploadPreset);  // Cần thiết để upload thành công-->
+
+<!--                fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {-->
+<!--                    method: "POST",-->
+<!--                    body: formData-->
+<!--                })-->
+<!--                    .then(response => response.json())-->
+<!--                    .then(data => {-->
+<!--                        if (data.secure_url) {-->
+<!--                            document.getElementById("avatarPreview").src = data.secure_url;-->
+<!--                            document.getElementById("avatarUrl").value = data.secure_url;-->
+<!--                        } else {-->
+<!--                            console.error("Lỗi Cloudinary:", data);-->
+<!--                        }-->
+<!--                    })-->
+<!--                    .catch(error => console.error("Upload thất bại:", error));-->
+<!--            }-->
+<!--        });-->
+
+<!--    </script>-->
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </th:block>

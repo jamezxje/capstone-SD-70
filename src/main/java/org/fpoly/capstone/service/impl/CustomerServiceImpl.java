@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -46,11 +45,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Page<User> getCustomerPaginated(Pageable pageable) {
-        return customerRepository.findByRolesAndStatus(UserRole.ROLE_CUSTOMER, UserStatus.ACTIVATED, pageable);
+        return customerRepository.findCustomersSortedByLastModifiedDate(UserRole.ROLE_CUSTOMER, pageable);
     }
 
     @Override
-    public User getCustomerById(String id) {
+    public User getCustomerById(Long id) {
         return customerRepository.findCustomerAddresses(id).orElse(null);
     }
 
@@ -72,7 +71,9 @@ public class CustomerServiceImpl implements CustomerService {
         newUser.setRoles(UserRole.ROLE_CUSTOMER);
         newUser.setStatus(UserStatus.ACTIVATED);
         newUser.setCreatedBy(userServiceName);
+        newUser.setUpdatedBy(userServiceName);
         newUser.setCreateDate(new Date());
+        newUser.setLastModifiedDate(new Date());
 
         // Lưu user và lấy ID mới
         User savedUser = customerRepository.save(newUser);
@@ -91,6 +92,9 @@ public class CustomerServiceImpl implements CustomerService {
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
             newUser.setCreateDate(new Date());
+            newUser.setLastModifiedDate(new Date());
+            newUser.setCreatedBy(userServiceName);
+            newUser.setUpdatedBy(userServiceName);
             newAddress.setUser(savedUser); // Không cần tìm lại user nữa
 
             // Lưu địa chỉ vào database
@@ -99,15 +103,15 @@ public class CustomerServiceImpl implements CustomerService {
             System.out.println("Address ID: " + savedAddress.getId()); // Debug xem có lưu không
         }
         System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
-//        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên CAPSTONE";
-//        emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
+        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản CAPSTONE";
+        emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return savedUser;
 //        return employeeRepository.save(newUser);
     }
 
     @Transactional
     @Override
-    public User updateCustomer(String id, User user, Address address) {
+    public User updateCustomer(Long id, User user, Address address) {
         User existingCustomer = customerRepository.findById(id).orElse(null);
         if (existingCustomer == null) {
             return null;
@@ -151,7 +155,7 @@ public class CustomerServiceImpl implements CustomerService {
             newAddress.setLine(address.getLine());
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
-            newAddress.setCreatedBy(userServiceName);
+            newAddress.setUpdatedBy(userServiceName);
             newAddress.setLastModifiedDate(new Date());
             newAddress.setUser(existingCustomer);
 

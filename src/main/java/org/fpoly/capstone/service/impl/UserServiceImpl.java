@@ -7,7 +7,7 @@ import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.repository.UserRepository;
-import org.fpoly.capstone.request.RegisterDTO;
+import org.fpoly.capstone.service.EmailService;
 import org.fpoly.capstone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -27,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public User getUserFromContext() {
@@ -53,20 +56,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void registerUser(RegisterDTO registerDTO) {
-        try {
-            User user = new User();
-            user.setFullName(registerDTO.getFullName());
-            user.setEmail(registerDTO.getEmail());
-            user.setPhoneNumber(registerDTO.getPhoneNumber());
-            user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
-            user.setStatus(UserStatus.ACTIVATED);
-            user.setRoles(UserRole.ROLE_CUSTOMER);
-            user.setCreateDate(new Date());
-            userRepository.save(user);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi đăng ký tài khoản: " + e.getMessage());
-        }
+    public User createUserRegister(User user) {
+        String rawPassword = user.getPassword();
+        User newUser = new User();
+        newUser.setFullName(user.getFullName());
+        newUser.setEmail(user.getEmail());
+        newUser.setPhoneNumber(user.getPhoneNumber());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setStatus(UserStatus.ACTIVATED);
+        newUser.setRoles(UserRole.ROLE_CUSTOMER);
+        newUser.setCreateDate(new Date());
+        newUser.setLastModifiedDate(new Date());
+        userRepository.save(newUser);
+        String subject = "Chào mừng bạn đến với CAPSTONE! Tài khoản của bạn đã được tạo thành công. Đừng quên cập nhật thông tin để có trải nghiệm tốt nhất!";
+        emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
+        return newUser;
     }
-
 }

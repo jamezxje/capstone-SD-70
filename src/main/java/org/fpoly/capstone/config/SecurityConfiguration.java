@@ -21,6 +21,7 @@ public class SecurityConfiguration {
     protected static final String[] PUBLIC_UNAUTHENTICATION_URI = {
             "/",
             "/auth/register",
+            "/auth/register/save",
             "/home",
             "/login",
             "/register",

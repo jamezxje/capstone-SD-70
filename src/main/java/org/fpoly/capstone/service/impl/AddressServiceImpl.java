@@ -18,14 +18,20 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Address getDefaultAddress(String userId) {
+    public Address getDefaultAddress(Long userId) {
         return addressRepository.findDefaultAddressByUserId(userId, AddressStatus.DANG_SU_DUNG).orElse(null);
     }
+
+//    @Override
+//    public Address getAllAddress(Long userId) {
+//        return addressRepository.findByUserId(userId).orElse(null);
+//    }
 
     @Override
     public Address saveAddress(Address address) {
         return addressRepository.save(address);
     }
+
 
 }
 

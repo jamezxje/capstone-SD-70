@@ -5,14 +5,11 @@
 	<meta charset="UTF-8">
 	<title>Quản lý khách hàng</title>
 	<th:block id="th-css"></th:block>
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <th:block id="th-body">
 	<div class="content-body">
 		<div class="container-fluid">
-			<!-- Add Project -->
-			<!-- row -->
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="card">
@@ -178,91 +175,6 @@
 			</div>
 		</div>
 	</div>
-<!--<script>-->
-<!--	document.addEventListener("DOMContentLoaded", function () {-->
-<!--		const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';-->
-<!--		const urlProvince = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';-->
-<!--		const urlDistricts = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';-->
-<!--		const urlWard = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';-->
-
-<!--		// Lấy giá trị từ Thymeleaf-->
-<!--		const selectedProvince = document.getElementById('provinceSelect').getAttribute("data-province");-->
-<!--		const selectedDistrict = document.getElementById('districtSelect').getAttribute("data-district");-->
-<!--		const selectedWard = document.getElementById('wardSelect').getAttribute("data-ward");-->
-
-<!--		console.log("Province ID từ Thymeleaf:", selectedProvince);-->
-<!--		console.log("District ID từ Thymeleaf:", selectedDistrict);-->
-<!--		console.log("Ward Code từ Thymeleaf:", selectedWard);-->
-
-<!--		// Hàm fetch danh sách tỉnh/thành phố-->
-<!--		function fetchAllProvince() {-->
-<!--			axios.get(urlProvince, { headers: { token: tokenApiGHN } })-->
-<!--					.then(response => {-->
-<!--						console.log("📌 API GHN - Provinces:", response.data); // ✅ Kiểm tra dữ liệu API-->
-<!--						const selectElement = document.getElementById('provinceSelect');-->
-<!--						selectElement.innerHTML = '<option value="">Chọn tỉnh</option>';-->
-
-<!--						response.data.data.forEach(province => {-->
-<!--							console.log(`🔹 Province: ${province.ProvinceName} - ID: ${province.ProvinceID}`); // ✅ Kiểm tra từng tỉnh-->
-<!--							const option = new Option(province.ProvinceName, province.ProvinceID);-->
-<!--							selectElement.add(option);-->
-
-<!--							if (province.ProvinceID == selectedProvince) {-->
-<!--								option.selected = true;-->
-<!--								console.log(`✅ Province Selected: ${province.ProvinceName}`);-->
-<!--								fetchProvinceDistricts(province.ProvinceID, true);-->
-<!--							}-->
-<!--						});-->
-<!--					})-->
-<!--					.catch(error => console.error('❌ Lỗi khi lấy danh sách tỉnh:', error));-->
-<!--		}-->
-
-
-<!--		// Hàm fetch danh sách quận/huyện dựa vào tỉnh đã chọn-->
-<!--		function fetchProvinceDistricts(provinceId, isAutoLoad = false) {-->
-<!--			axios.get(urlDistricts, {-->
-<!--				params: { province_id: provinceId },-->
-<!--				headers: { token: tokenApiGHN }-->
-<!--			})-->
-<!--					.then(response => {-->
-<!--						const districtSelect = document.getElementById('districtSelect');-->
-<!--						districtSelect.innerHTML = '<option value="">Chọn huyện</option>';-->
-<!--						response.data.data.forEach(district => {-->
-<!--							const option = new Option(district.DistrictName, district.DistrictID);-->
-<!--							districtSelect.add(option);-->
-<!--							if (isAutoLoad && district.DistrictID == selectedDistrict) {-->
-<!--								option.selected = true;-->
-<!--								fetchProvinceWard(district.DistrictID, true);-->
-<!--							}-->
-<!--						});-->
-<!--					})-->
-<!--					.catch(error => console.error("Lỗi khi lấy danh sách huyện:", error));-->
-<!--		}-->
-
-<!--		// Hàm fetch danh sách xã/phường dựa vào huyện đã chọn-->
-<!--		function fetchProvinceWard(districtId, isAutoLoad = false) {-->
-<!--			axios.get(urlWard, {-->
-<!--				params: { district_id: districtId },-->
-<!--				headers: { token: tokenApiGHN }-->
-<!--			})-->
-<!--					.then(response => {-->
-<!--						const wardSelect = document.getElementById('wardSelect');-->
-<!--						wardSelect.innerHTML = '<option value="">Chọn xã</option>';-->
-<!--						response.data.data.forEach(ward => {-->
-<!--							const option = new Option(ward.WardName, ward.WardCode);-->
-<!--							wardSelect.add(option);-->
-<!--							if (isAutoLoad && ward.WardCode == selectedWard) {-->
-<!--								option.selected = true;-->
-<!--							}-->
-<!--						});-->
-<!--					})-->
-<!--					.catch(error => console.error("Lỗi khi lấy danh sách xã:", error));-->
-<!--		}-->
-
-<!--		// Gọi API để load tỉnh/thành phố khi trang load-->
-<!--		fetchAllProvince();-->
-<!--	});-->
-<!--</script>-->
 <script>
 	// Khi mở modal, cập nhật ảnh & tên file
 	document.addEventListener("DOMContentLoaded", function () {

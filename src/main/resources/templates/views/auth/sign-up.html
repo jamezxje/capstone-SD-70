@@ -14,8 +14,8 @@
 <body>
 
 <th:block id="th-body">
-    <div class="vh-100">
-        <div class="authincation h-100">
+<div class="vh-100">
+<div class="authincation h-100">
     <div class="container h-100">
         <div class="row justify-content-center h-100 align-items-center">
             <div class="col-md-6">
@@ -27,26 +27,31 @@
                                     <img src="/assets/images/logo-full.png" alt="Logo">
                                 </div>
                                 <h4 class="text-center mb-4">Đăng ký tài khoản</h4>
-                                <form th:action="@{/auth/register/save}" method="post" th:object="${registerDTO}">
+                                <form th:action="@{/auth/register/save}" method="post" th:object="${userRegister}">
                                     <div class="form-group">
                                         <label class="mb-1"><strong>Họ và tên</strong></label>
                                         <input type="text" class="form-control" th:field="*{fullName}" placeholder="Họ và tên">
-                                        <p class="text-danger" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></p>
+                                        <p class="error" th:if="${errors['fullName']}" th:text="${errors['fullName']}" th:classappend="text-danger"></p>
                                     </div>
                                     <div class="form-group">
                                         <label class="mb-1"><strong>Email</strong></label>
-                                        <input type="email" class="form-control" th:field="*{email}" placeholder="Email">
-                                        <p class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                                        <input type="text" class="form-control" th:field="*{email}" placeholder="Email">
+                                        <p class="error" th:if="${errors['email']}" th:text="${errors['email']}" th:classappend="text-danger"></p>
                                     </div>
                                     <div class="form-group">
                                         <label class="mb-1"><strong>Số điện thoại</strong></label>
                                         <input type="text" class="form-control" th:field="*{phoneNumber}" placeholder="Số điện thoại">
-                                        <p class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></p>
+                                        <p class="error" th:if="${errors['phoneNumber']}" th:text="${errors['phoneNumber']}" th:classappend="text-danger"></p>
                                     </div>
                                     <div class="form-group">
                                         <label class="mb-1"><strong>Mật khẩu</strong></label>
-                                        <input type="password" class="form-control" th:field="*{password}" placeholder="Mật khẩu">
-                                        <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" th:field="*{password}" id="password" placeholder="Mật khẩu">
+                                            <button type="button" class="btn btn-outline-secondary" id="toggleBtn" onclick="togglePassword()">
+                                                <i id="eyeIcon" class="fa fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <p class="error" th:if="${errors['password']}" th:text="${errors['password']}" th:classappend="text-danger"></p>
                                     </div>
                                     <div class="text-center mt-4">
                                         <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
@@ -63,7 +68,26 @@
         </div>
     </div>
 </div>
-    </div>
+</div>
+    <script>
+        function togglePassword() {
+            var passwordField = document.getElementById("password");
+            var eyeIcon = document.getElementById("eyeIcon");
+            var toggleBtn = document.getElementById("toggleBtn");
+            if (passwordField.type === "password") {
+                passwordField.type = "text"; // Hiện mật khẩu
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye"); // Icon mắt mở
+            } else {
+                passwordField.type = "password"; // Ẩn mật khẩu
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash"); // Icon mắt đóng
+            }
+        }
+    </script>
+
+    <!-- Thêm Font Awesome nếu chưa có -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </th:block>
 
 </body>

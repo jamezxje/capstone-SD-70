@@ -6,6 +6,8 @@ import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.service.AddressService;
 import org.fpoly.capstone.service.CustomerService;
+import org.fpoly.capstone.validation.AddressValidator;
+import org.fpoly.capstone.validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,8 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -30,7 +31,7 @@ public class CustomerController {
     private AddressService addressService;
 
     @GetMapping("/detail/{id}")
-    public String viewCustomerDetail(@PathVariable String id, Model model) {
+    public String viewCustomerDetail(@PathVariable Long id, Model model) {
         User customer = customerService.getCustomerById(id);
         if (customer == null) {
             return "redirect:/customer-management";
@@ -66,27 +67,39 @@ public class CustomerController {
     public String showAddForm(Model model) {
         User customer = new User();
         Address address = new Address();
+        Map<String, String> errors = new HashMap<>();
+        Map<String, String> errorsAddress = new HashMap<>();
+
         customer.setAddresses(new ArrayList<>(List.of(address)));
         model.addAttribute("address", address);
         model.addAttribute("customer", customer);
+        model.addAttribute("errors", errors);
+        model.addAttribute("errorsAddress", errorsAddress);
         return "views/users/customer/customer-create";
     }
 
     @PostMapping("/add")
-    public String saveCustomer(@Valid @ModelAttribute("customer") User user,
-                                BindingResult userResult,
-                                @Valid @ModelAttribute("address") Address address,
-                                BindingResult addressResult,
+    public String saveCustomer(@ModelAttribute("customer") User user,
+                                @ModelAttribute("address") Address address,
                                 Model model) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
-        if (userResult.hasErrors() || addressResult.hasErrors()) {
-            System.out.println("Validation lỗi user: " + userResult.getAllErrors());
-            System.out.println("Validation lỗi address: " + addressResult.getAllErrors());
-            model.addAttribute("customer", user);
+
+        // Validate dữ liệu
+        Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "gender");
+        Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
+        Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
+        Map<String, String> errorsAddress = AddressValidator.validate(address, addressFieldsToValidate);
+
+        if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
+            user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
+            model.addAttribute("errors", errors);
+            model.addAttribute("errorsAddress", errorsAddress);
+            model.addAttribute("employee", user);
             model.addAttribute("address", address);
-            return "views/users/customer/customer-create";
+            return "views/users/employee/customer-create";
         }
+
         System.out.println("ProvinceId: " + address.getProvinceId());
         System.out.println("ToDistrictId: " + address.getToDistrictId());
         System.out.println("WardCode: " + address.getWardCode());
@@ -96,32 +109,41 @@ public class CustomerController {
     }
 
     @GetMapping("/view-update/{id}")
-    public String viewupdateCustomer(@PathVariable String id, Model model) {
+    public String viewupdateCustomer(@PathVariable Long id, Model model) {
         User customer = customerService.getCustomerById(id);
         if (customer == null) {
             return "redirect:/customer-management";
         }
+        Map<String, String> errors = new HashMap<>();
+        Map<String, String> errorsAddress = new HashMap<>();
         Address address = addressService.getDefaultAddress(customer.getId());
+
         model.addAttribute("customer", customer);
         model.addAttribute("address", address);
+        model.addAttribute("errors", errors);
+        model.addAttribute("errorsAddress", errorsAddress);
         return "views/users/customer/customer-update";
     }
 
     @PostMapping("/update/{id}")
-    public String updateCustomer(@PathVariable String id,
-                                 @Valid @ModelAttribute("customer") User user,
-                                 BindingResult userResult,
-                                 @Valid @ModelAttribute("address") Address address,
-                                 BindingResult addressResult,
+    public String updateCustomer(@PathVariable Long id,
+                                 @ModelAttribute("customer") User user,
+                                 @ModelAttribute("address") Address address,
                                  Model model) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
 
-        // Kiểm tra lỗi validation
-        if (userResult.hasErrors() || addressResult.hasErrors()) {
-            System.out.println("Validation lỗi user: " + userResult.getAllErrors());
-            System.out.println("Validation lỗi address: " + addressResult.getAllErrors());
-            model.addAttribute("customer", user);
+        // Validate dữ liệu
+        Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "gender");
+        Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
+        Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
+        Map<String, String> errorsAddress = AddressValidator.validate(address, addressFieldsToValidate);
+
+        if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
+            user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
+            model.addAttribute("errors", errors);
+            model.addAttribute("errorsAddress", errorsAddress);
+            model.addAttribute("employee", user);
             model.addAttribute("address", address);
             return "views/users/customer/customer-update";
         }
