@@ -1,5 +1,6 @@
 package org.fpoly.capstone.controller.user_online;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.bill_detail.BillDetailViewModel;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
@@ -12,6 +13,7 @@ import org.fpoly.capstone.service.BillService;
 import org.fpoly.capstone.service.CartDetailService;
 import org.fpoly.capstone.service.OnlineAddressService;
 import org.fpoly.capstone.service.UserService;
+import org.fpoly.capstone.service.VnPayService;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
 import org.fpoly.capstone.service.payload.bill_detail.BillDetailResponse;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
@@ -36,6 +38,7 @@ public class OnlineBillController {
     private final ModelMapper modelMapper;
     private final UserService userService;
     private final OnlineAddressService onlineAddressService;
+    private final VnPayService vnPayService;
 
     @GetMapping(path = "checkout")
     public String onOpenCheckoutView(Model model) {
@@ -94,5 +97,22 @@ public class OnlineBillController {
         model.addAttribute("billDetailResponseList", viewModels);
 
         return "/views/user-online-view/bill/bill-detail";
+    }
+
+    @GetMapping("/vnpay-payment-return")
+    public String paymentCompleted(HttpServletRequest request, Model model) {
+        int paymentStatus = this.vnPayService.orderReturn(request);
+
+        String orderInfo = request.getParameter("vnp_OrderInfo");
+        String paymentTime = request.getParameter("vnp_PayDate");
+        String transactionId = request.getParameter("vnp_TransactionNo");
+        String totalPrice = request.getParameter("vnp_Amount");
+
+        model.addAttribute("orderId", orderInfo);
+        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("paymentTime", paymentTime);
+        model.addAttribute("transactionId", transactionId);
+
+        return paymentStatus == 1 ? "/views/user-online-view/vn-pay/orderSuccess" : "/views/user-online-view/vn-pay/orderFail";
     }
 }

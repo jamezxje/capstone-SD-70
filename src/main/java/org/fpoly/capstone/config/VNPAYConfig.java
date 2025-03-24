@@ -6,15 +6,20 @@ import lombok.extern.log4j.Log4j2;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Log4j2
 public class VNPAYConfig {
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl = "/vnpay-payment-return";
-    public static String vnp_TmnCode = "3MJ0BXLW"; // kiểm tra email sau
-    public static String vnp_HashSecret = "1IZWGV8711K80PJD57X4RK2RWLQ9QUZP"; // khi đăng ký Test
+    public static String vnp_Returnurl = "/bill/vnpay-payment-return";
+    public static String vnp_TmnCode = "I5KMPMGH"; // kiểm tra email sau
+    public static String vnp_HashSecret = "QUYWZGLMSVOMGMWKBRFWAOUVSCSTKSQD"; // khi đăng ký Test
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
 
@@ -62,5 +67,25 @@ public class VNPAYConfig {
             sb.append(chars.charAt(rnd.nextInt(chars.length())));
         }
         return sb.toString();
+    }
+
+    public static String hashAllFields(Map fields) {
+        List fieldNames = new ArrayList(fields.keySet());
+        Collections.sort(fieldNames);
+        StringBuilder sb = new StringBuilder();
+        Iterator itr = fieldNames.iterator();
+        while (itr.hasNext()) {
+            String fieldName = (String) itr.next();
+            String fieldValue = (String) fields.get(fieldName);
+            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                sb.append(fieldName);
+                sb.append("=");
+                sb.append(fieldValue);
+            }
+            if (itr.hasNext()) {
+                sb.append("&");
+            }
+        }
+        return hmacSHA512(vnp_HashSecret, sb.toString());
     }
 }
