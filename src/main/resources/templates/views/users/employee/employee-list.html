@@ -40,9 +40,7 @@
 								</td>
 								<td>
 									<div class="media style-1">
-<!--										<img src="images/avatar/1.jpg" class="img-fluid mr-2" alt="">-->
-<!--										<img th:src="${user.avatar}" alt="">-->
-										<img th:src="@{'/assets/images/avatar/' + ${employee.avatar}}" class="img-fluid mr-2" alt="">
+										<img th:src="@{employee.avatar}" class="img-fluid mr-2" alt="">
 										<div class="media-body">
 											<h6 th:text="${employee.fullName}"></h6>
 											<span><a th:text="${employee.email}" class="__cf_email__" data-cfemail="6c060304020803092c0b010d0500420f0301">[email&nbsp;protected]</a></span>

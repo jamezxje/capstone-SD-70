@@ -39,7 +39,7 @@
 								</td>
 								<td>
 									<div class="media style-1">
-										<img th:src="@{'/assets/images/avatar/' + ${customer.avatar}}" class="img-fluid mr-2" alt="">
+										<img th:src="@{customer.avatar}" class="img-fluid mr-2" alt="">
 										<div class="media-body">
 											<h6 th:text="${customer.fullName}"></h6>
 											<span><a th:text="${customer.email}" class="__cf_email__" data-cfemail="6c060304020803092c0b010d0500420f0301">[email&nbsp;protected]</a></span>
