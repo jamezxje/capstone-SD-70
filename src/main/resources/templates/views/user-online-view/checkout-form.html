@@ -463,6 +463,7 @@
       }
       
       const receiveDate = formatDate($('#confirm-day').text());
+      const moneyShip = $('#shipFee').val();
       
       const grandTotal = $('#totalPriceWithShipping').text();
       console.log("grand total: ", grandTotal)
@@ -482,13 +483,15 @@
       
       // Kiểm tra nếu phương thức thanh toán là "chuyen_khoan"
       if (paymentMethod === 'CHUYEN_KHOAN') {
+        const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}`;
+        
         // Gọi API "online-payment"
         $.ajax({
           url: '/bill/online-payment',
           type: 'POST', // GET vì phương thức của bạn là @GetMapping
           data: {
             amount: formatCurrency(grandTotal), // Truyền tổng tiền đã định dạng
-            orderInfo: "Thanh toán đơn hàng " + grandTotal, // Truyền thông tin đơn hàng
+            orderInfo: orderInfo // Truyền thông tin đơn hàng
           }, // Truyền grandTotal dưới dạng tham số query
           success: function (paymentUrl) {
             console.log("payment url khi thành coong: ", paymentUrl);

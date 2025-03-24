@@ -37,6 +37,7 @@
                     <th>Total price</th>
                     <th>Expect recieve date</th>
                     <th>Order status</th>
+                    <th>Payment method</th>
                     <th>Detail</th>
                     <th>Cancel</th>
                   </tr>
@@ -51,6 +52,7 @@
                     </td>
                     <td th:text="${bill.receiveDate}"></td>
                     <td th:text="${bill.status}">$99</td>
+                    <td th:text="${bill.method}">$99</td>
                     <td>
                       <a th:href="@{bill/{billId}(billId=${bill.id})}" title="Detail" class="site-header__cart">
                         <i class="icon anm anm-eye-l"></i>
