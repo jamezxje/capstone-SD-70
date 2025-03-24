@@ -15,7 +15,8 @@ import java.util.Optional;
 public interface BillHistotyRepository extends JpaRepository<BillHistory, Long> {
     List<BillHistory> findByBill_Id(Long id);
 
-    List<BillHistory> findAllByBill(Bill bill);
+    Optional<BillHistory> findTopByBillIdAndStatusOrderByCreateDateDesc(Long billId, String status);
+List<BillHistory> findAllByBill(Bill bill);
 
     @Query("SELECT h.id , h.status as status , h.createDate as createDate FROM BillHistory h WHERE h.status != 'TAO_HOA_DON' AND h.bill.id = :id")
     List<Object[]> findAllStatusExcludingTaoHoaDon(@Param("id") Long id);

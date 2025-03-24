@@ -55,52 +55,50 @@ public class BillDetailServiceImpl implements BillDetaiService {
         }
         if (bill.get().getStatus() == BillStatus.XAC_NHAN) {
             System.out.println("Chay vao xac nhan");
-            if (bill.get().getUser() == null) {
-                Long id_bill = bill.get().getId();
 
-                List<BillDetail> billDetalOnlineList = billDetailRepository.findByBillId(id_bill);
+            Long id_bill = bill.get().getId();
 
-                System.out.println("BillDetails found: " + billDetalOnlineList.size()); // Logging số lượng BillDetail
+            List<BillDetail> billDetalOnlineList = billDetailRepository.findByBillId(id_bill);
 
-                if (!billDetalOnlineList.isEmpty()) {
-                    for (BillDetail billDetail : billDetalOnlineList) {
-                        Long productDetailId = billDetail.getProductDetail().getId();
-                        Optional<ProductDetail> productDetail = productDetailRepository.findById(productDetailId);
+            System.out.println("BillDetails found: " + billDetalOnlineList.size()); // Logging số lượng BillDetail
 
-                        if (productDetail.isPresent()) {
-                            ProductDetail product = productDetail.get();
-                            System.out.println("Product ID: " + product.getId());
-                            System.out.println("Current Quantity: " + product.getQuantity());
-                            System.out.println("Product Status: " + product.getStatus());
+            if (!billDetalOnlineList.isEmpty()) {
+                for (BillDetail billDetail : billDetalOnlineList) {
+                    Long productDetailId = billDetail.getProductDetail().getId();
+                    Optional<ProductDetail> productDetail = productDetailRepository.findById(productDetailId);
+
+                    if (productDetail.isPresent()) {
+                        ProductDetail product = productDetail.get();
+                        System.out.println("Product ID: " + product.getId());
+                        System.out.println("Current Quantity: " + product.getQuantity());
+                        System.out.println("Product Status: " + product.getStatus());
 
 
-                            if (product.getQuantity() < billDetail.getQuantity()) {
-                                throw new RuntimeException("Số lượng sản phẩm không đủ để bán");
-                            }
-
-                            if (product.getStatus() != ProductVariantStatus.DANG_SU_DUNG) {
-                                throw new RuntimeException("Sản phẩm không hợp lệ. Trạng thái không phải DANG_SU_DUNG.");
-                            }
-
-                            product.setQuantity(product.getQuantity() - billDetail.getQuantity());
-
-                            if (product.getQuantity() == 0) {
-                                product.setStatus(ProductVariantStatus.HET_SAN_PHAM);
-                            }
-
-                            productDetailRepository.save(product);
-                            System.out.println("Product saved with updated quantity: " + product.getQuantity());
-                        } else {
-                            System.out.println("Product not found for ID: " + productDetailId); // Logging khi không tìm thấy sản phẩm
+                        if (product.getQuantity() < billDetail.getQuantity()) {
+                            throw new RuntimeException("Số lượng sản phẩm không đủ để bán");
                         }
-                    }
-                } else {
-                    System.out.println("No BillDetail found for Bill ID: " + id_bill); // Logging khi không có BillDetail
-                }
 
+                        if (product.getStatus() != ProductVariantStatus.DANG_SU_DUNG) {
+                            throw new RuntimeException("Sản phẩm không hợp lệ. Trạng thái không phải DANG_SU_DUNG.");
+                        }
+
+                        product.setQuantity(product.getQuantity() - billDetail.getQuantity());
+
+                        if (product.getQuantity() == 0) {
+                            product.setStatus(ProductVariantStatus.HET_SAN_PHAM);
+                        }
+
+                        productDetailRepository.save(product);
+                        System.out.println("Product saved with updated quantity: " + product.getQuantity());
+                    } else {
+                        System.out.println("Product not found for ID: " + productDetailId); // Logging khi không tìm thấy sản phẩm
+                    }
+                }
             } else {
-                System.out.println("User is already assigned to the bill: " + bill.get().getUser().getFullName());
+                System.out.println("No BillDetail found for Bill ID: " + id_bill); // Logging khi không có BillDetail
             }
+
+
 
             // Cập nhật ngày hoàn thành
             bill.get().setCompletionDate(Calendar.getInstance().getTime());
@@ -165,7 +163,10 @@ public class BillDetailServiceImpl implements BillDetaiService {
     @Override
     public Bill cancelBillAdmin(Long id, Long idEmployess, ChangeStatusBillRequest request) {
         Optional<Bill> bill = billRepository.findById(id);
+        System.out.println("Check id bill" + bill.get().getId());
         Optional<User> user = userRepository.findById(idEmployess);
+        System.out.println("Chekc id user" + user.get().getId());
+        System.out.println("Check role" + user.get().getRoles());
         if (!bill.isPresent()) {
             throw new RuntimeException("Bill not found for ID: " + id);
         }
@@ -179,47 +180,48 @@ public class BillDetailServiceImpl implements BillDetaiService {
             throw new RuntimeException("User is not admin and Van chuyen No cacel");
         }
         if (bill.get().getStatus() == BillStatus.XAC_NHAN) {
-            if (bill.get().getUser() == null) {
-                Long idBill = bill.get().getId();
-                List<BillDetail> billDetailOnlineList = billDetailRepository.findByBillId(idBill);
-                if (!billDetailOnlineList.isEmpty()) {
-                    for (BillDetail billDetail : billDetailOnlineList) {
-                        Long productDetailId = billDetail.getProductDetail().getId();
-                        Optional<ProductDetail> productDetail = productDetailRepository.findById(productDetailId);
-                        if (productDetail.isPresent()) {
-                            ProductDetail product = productDetail.get();
-                            product.setQuantity(product.getQuantity() + billDetail.getQuantity());
+            System.out.println("Chay vao day");
+            Long idBill = bill.get().getId();
+            List<BillDetail> billDetailOnlineList = billDetailRepository.findByBillId(idBill);
+            if (!billDetailOnlineList.isEmpty()) {
+                for (BillDetail billDetail : billDetailOnlineList) {
+                    Long productDetailId = billDetail.getProductDetail().getId();
+                    Optional<ProductDetail> productDetail = productDetailRepository.findById(productDetailId);
+                    if (productDetail.isPresent()) {
+                        ProductDetail product = productDetail.get();
+                        product.setQuantity(product.getQuantity() + billDetail.getQuantity());
 
-                            if (product.getStatus() == ProductVariantStatus.HET_SAN_PHAM) {
-                                product.setStatus(ProductVariantStatus.DANG_SU_DUNG);
-                            }
-                            productDetailRepository.save(product);
+                        if (product.getStatus() == ProductVariantStatus.HET_SAN_PHAM) {
+                            product.setStatus(ProductVariantStatus.DANG_SU_DUNG);
                         }
+                        productDetailRepository.save(product);
                     }
                 }
             }
-            bill.get().setLastModifiedDate(Calendar.getInstance().getTime());
-            bill.get().setStatus(BillStatus.DA_HUY);
-            bill.get().setEmployee(user.get());
-            BillHistory billHistory = new BillHistory();
-            billHistory.setBill(bill.get());
-            billHistory.setStatus(bill.get().getStatus());
-            billHistory.setActionDescription(request.getActionDescription());
-            billHistory.setUser(user.get());
-            billHistotyRepository.save(billHistory);
-            return billRepository.save(bill.get());
-
         }
+        bill.get().setLastModifiedDate(Calendar.getInstance().getTime());
+        bill.get().setStatus(BillStatus.DA_HUY);
+        bill.get().setEmployee(user.get());
+        BillHistory billHistory = new BillHistory();
+        billHistory.setBill(bill.get());
+        billHistory.setStatus(bill.get().getStatus());
+        billHistory.setActionDescription(request.getActionDescription());
+        billHistory.setUser(user.get());
+        billHistotyRepository.save(billHistory);
+        billRepository.save(bill.get());
         return bill.get();
+
+
+
     }
 
 
-        private Date getCurrentTimestampInVietnam () {
-            Instant instant = Instant.now();
-            ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
-            long timestamp = instant.atZone(zoneId).toEpochSecond() * 1000;
+    private Date getCurrentTimestampInVietnam () {
+        Instant instant = Instant.now();
+        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        long timestamp = instant.atZone(zoneId).toEpochSecond() * 1000;
 
-            return new Date(timestamp);
-        }
+        return new Date(timestamp);
     }
+}
 

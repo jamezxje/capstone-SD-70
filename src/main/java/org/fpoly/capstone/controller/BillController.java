@@ -10,11 +10,16 @@ import org.fpoly.capstone.repository.*;
 import org.fpoly.capstone.service.BillDetailService;
 import org.fpoly.capstone.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,9 +49,26 @@ public class BillController {
     private VoucherDetailRepository voucherDetailRepository;
 
     @GetMapping
-    public String listBills(Model model) {
-        model.addAttribute("bills", billRepository.findAll());
-        model.addAttribute("users", userRepository.findAll());
+    public String listBills(Model model,
+                            @RequestParam(defaultValue = "1") int page,
+                            @RequestParam(defaultValue = "10") int size,
+                            @RequestParam(required = false) String keyword,
+                            @RequestParam(required = false) String orderType,
+                            @RequestParam(required = false) String startDate,
+                            @RequestParam(required = false) String endDate) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        // Chuyển đổi ngày từ String sang LocalDate
+        LocalDate start = (startDate != null && !startDate.isEmpty()) ? LocalDate.parse(startDate) : null;
+        LocalDate end = (endDate != null && !endDate.isEmpty()) ? LocalDate.parse(endDate) : null;
+
+        Page<Bill> billPage = billService.searchBills(keyword, orderType, start, end, pageable);
+
+        model.addAttribute("bills", billPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", billPage.getTotalPages());
+
         return "views/bill";
     }
 
@@ -87,5 +109,4 @@ public class BillController {
 
         return "redirect:/bill/detail/" + billId;
     }
-
 }

@@ -203,9 +203,7 @@
                 <div style="display: flex; justify-content: start; gap: 10px;">
                     <button id="changeStatusButton" class="btn btn-primary">Chuyển trạng thái</button>
                     <button class="btn btn-danger" id="cancelBill">Hủy</button>
-                    <button type="button" class="btn btn-primary">
-                        Lịch Sử
-                    </button>
+                    <button class="btn btn-primary" id="historyBill">Lịch sử</button>
                 </div>
 
                 <div id="confirmModalStatus" class="modal">
@@ -218,9 +216,51 @@
                         <button id="confirmButton">Xác nhận</button>
                     </div>
                 </div>
+                <div id="historyModalStatus" class="modal">
+                    <div class="modal-content">
+                            <h5 class="modal-title" id="historyModalLabel">Lịch sử thay đổi trạng thái</h5>
+                            <span class="closehistory">&times;</span>
+                        <div class="modal-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Loại giao dịch</th>
+                                        <th>Trạng thái</th>
+                                        <th>Mô tả</th>
+                                        <th>Thời gian</th>
+                                        <th>Người thực hiện</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="billHistory, index : ${billHistorys}">
+                                        <td th:text="${index.index + 1}"></td>
+                                        <td th:text="${billHistory.bill.type}"></td>
+                                        <td>
+                                            <span th:switch="${#strings.trim(billHistory.status)}">
+                                                <span th:case="'CHO_XAC_NHAN'">Chờ xác nhận</span>
+                                                <span th:case="'CHO_VAN_CHUYEN'">Chờ vận chuyển</span>
+                                                <span th:case="'VAN_CHUYEN'">Đang vận chuyển</span>
+                                                <span th:case="'XAC_NHAN'">Đã xác nhận</span>
+                                                <span th:case="'DA_THANH_TOAN'">Đã thanh toán</span>
+                                                <span th:case="'THANH_CONG'">Hoàn thành</span>
+                                                <span th:case="'TRA_HANG'">Trả hàng</span>
+                                                <span th:case="'DA_HUY'">Hủy</span>
+                                                <span th:case="*">Không xác định</span>
+                                            </span>
+                                        </td>
+                                        <td th:text="${billHistory.actionDescription}"></td>
+                                        <td th:text="${billHistory.createDate}"></td>
+                                        <td th:text="${billHistory.user.fullName}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 <div id="cancelModalStatus" class="modal">
                     <div class="modal-content">
-                        <span class="close">&times;</span>
+                        <span class="closehuy">&times;</span>
                         <h4>Xác nhận chuyển trạng thái</h4>
                         <p>Vui lòng nhập hủy (tối thiểu 20 chữ):</p>
                         <textarea id="cancelmationReason" rows="4" cols="50"></textarea>
@@ -229,7 +269,6 @@
                     </div>
                 </div>
             </div>
-
             <div>
                 <div class="order-container">
                     <div class="order-header">
@@ -257,9 +296,11 @@
                         </div>
                     </div>
                 </div><br>
+
+
             </div>
 
-            <!--Modal change ìnor-->
+<!--Modal change infor-->
             <div id="changeAddressModal" class="modal">
                 <div class="modal-content">
                     <span class="close-btn">&times;</span>
@@ -305,33 +346,32 @@
             </div>
 
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Size</th>
-                        <th>Màu sắc</th>
-                        <th>Số lượng</th>
-                        <th>Giá</th>
-                        <th>Tổng tiền</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="detailsp, index : ${billDetailsp}">
-                        <td th:text="${index.index + 1}"></td>
-                        <td th:text="${detailsp.productName}"></td>
-                        <td th:text="${detailsp.size}"></td>
-                        <td th:text="${detailsp.color}"></td>
-                        <td th:text="${detailsp.quantity}"></td>
-                        <td th:text="${#numbers.formatDecimal(detailsp.price, 0, 'COMMA', 3, 'POINT')} + ' VND'"></td>
-                        <td th:text="${#numbers.formatDecimal(detailsp.price, 0, 'COMMA', 3, 'POINT')} * ${detailsp.quantity} +' VND'"></td>
-                    </tr>
-                    </tbody>
-                </table>
+           <div class="table-container">
+               <table>
+                   <thead>
+                   <tr>
+                       <th>STT</th>
+                       <th>Tên sản phẩm</th>
+                       <th>Size</th>
+                       <th>Màu sắc</th>
+                       <th>Số lượng</th>
+                       <th>Giá</th>
+                       <th>Tổng tiền</th>
+                   </tr>
+                   </thead>
+                   <tbody>
+                   <tr th:each="detailsp, index : ${billDetailsp}">
+                       <td th:text="${index.index + 1}"></td>
+                       <td th:text="${detailsp.productName}"></td>
+                       <td th:text="${detailsp.size}"></td>
+                       <td th:text="${detailsp.color}"></td>
+                       <td th:text="${detailsp.quantity}"></td>
+                       <td th:text="${#numbers.formatDecimal(detailsp.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                       <td th:text="${#numbers.formatDecimal(detailsp.price * detailsp.quantity, 0, 'COMMA', 0, 'POINT')} +' VND'"></td>
+                   </tr>
+                   </tbody>
+               </table>
             </div>
-
             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -358,15 +398,15 @@
                 </div>
             </div>
 
-                <div  th:each="vcdetail, index : ${voucherDetail}" class="card p-3 mt-3" style="width: 450px; border: 2px solid #ccc; border-radius: 10px;">
-                    <h5><b>Tổng tiền hàng :</b> <span class="text-primary" th:text="${#numbers.formatDecimal(vcdetail.beforePrice, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
-                    <h5><b>Phí vận chuyển :</b> <span th:text="${#numbers.formatDecimal(shippingFee, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
-                    <h5><b>Voucher giảm giá :</b> <span th:text="${#numbers.formatDecimal(cdetail.discountPrice, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
-                    <h5><b>Tổng tiền giảm :</b> <span th:text="${#numbers.formatDecimal(cdetail.discountPrice, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
-                    <hr>
-                    <h4><b>Tổng tiền thanh toán:</b> <span class="text-danger" th:text="${#numbers.formatDecimal(cdetail.afterPrice, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h4>
-                </div>
-            
+            <div  th:each="vcdetail, index : ${voucherDetail}" class="card p-3 mt-3" style="width: 450px; border: 2px solid #ccc; border-radius: 10px;">
+                <h5><b>Tổng tiền hàng :</b> <span class="text-primary" th:text="vcdetail.beforePrice + ' VND'"></span></h5>
+                <!-- <h5><b>Phí vận chuyển :</b> <span th:text="${#numbers.formatDecimal(shippingFee, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5> -->
+                <h5><b>Voucher giảm giá :</b> <span th:text="vcdetail.discountPrice + ' VND'"></span></h5>
+                <h5><b>Tổng tiền giảm :</b> <span th:text="vcdetail.discountPrice + ' VND'"></span></h5>
+                <hr>
+                <h4><b>Tổng tiền thanh toán:</b> <span class="text-danger" th:text="vcdetail.afterPrice + ' VND'"></span></h4>
+            </div>
+
         </div>
     </div>
 
@@ -392,7 +432,71 @@
             document.getElementById("newStatusInput").value = newStatus;
         });
         });
-        
+
+        document.getElementById("btn-changeInfor").addEventListener("click", function (event) {
+        event.preventDefault(); // Ngăn chặn hành động submit mặc định
+
+        let customerName = document.getElementById("customerNameModal").value.trim();
+        let phoneNumber = document.getElementById("phoneNumberModal").value.trim();
+        let city = document.getElementById("citySelectModal").value;
+        let district = document.getElementById("districtSelectModal").value;
+        let ward = document.getElementById("wardSelectModal").value;
+        let detailAddress = document.getElementById("detailAddressModal").value.trim();
+
+        // Biến kiểm tra lỗi
+        // let isValid = true;
+        let errorMessage = "";
+
+        // Kiểm tra tên khách hàng (chỉ chứa chữ cái và khoảng trắng)
+        let nameRegex = /^[a-zA-ZÀ-Ỹà-ỹ\s]+$/;
+        if (customerName === "") {
+            alert("Tên khách hàng không được để trống.");
+        } else if (!nameRegex.test(customerName)) {
+            alert("Tên khách hàng chỉ được chứa chữ cái và khoảng trắng.");
+            return;
+        }
+
+        // Kiểm tra số điện thoại (chỉ chứa số, 10 chữ số, bắt đầu bằng 0)
+        let phoneRegex = /^0\d{9}$/;
+        if (!phoneRegex.test(phoneNumber)) {
+            alert("Số điện thoại không hợp lệ (phải có 10 số, bắt đầu bằng 0, chỉ chứa chữ số).");
+            return;
+        }
+
+        // Kiểm tra chọn tỉnh/thành phố
+        if (city === "") {
+            alert("Vui lòng chọn thành phố.");
+            return;
+        }
+
+        // Kiểm tra chọn quận/huyện
+        if (district === "") {
+            alert("Vui lòng chọn huyện.");
+            return;
+        }
+
+        // Kiểm tra chọn xã/phường
+        if (ward === "") {
+            alert("Vui lòng chọn xã.");
+            return;
+        }
+
+        // Kiểm tra địa chỉ chi tiết
+        if (detailAddress === "") {
+            alert("Vui lòng nhập địa chỉ chi tiết.");
+            return;
+        }
+
+        // // Nếu có lỗi, hiển thị thông báo và dừng xử lý
+        // if (!isValid) {
+        //     alert(errorMessage);
+        //     return;
+        // }
+
+        // // Nếu tất cả hợp lệ, tiến hành lưu thay đổi
+        // alert("Thông tin đã được cập nhật thành công!");
+    });
+
     </script>
 </th:block>
 </body>

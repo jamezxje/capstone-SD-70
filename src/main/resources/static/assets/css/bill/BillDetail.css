@@ -121,7 +121,38 @@ button:active {
     text-decoration: none;
     cursor: pointer;
 }
+.closehuy {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-family: Arial, sans-serif;
+}
 
+.closehuy:hover,
+.closehuy:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.closehistory {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-family: Arial, sans-serif;
+}
+
+.closehistory:hover,
+.closehistory:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 button {
     padding: 10px 20px;
     background-color: #4CAF50;

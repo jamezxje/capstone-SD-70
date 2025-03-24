@@ -4,126 +4,207 @@
 <head>
     <meta charset="UTF-8">
     <title>Quản lý Hóa đơn</title>
-    <th:block id="th-css"></th:block>
+    <th:block id="th-css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>
+        <style>
+            .table-container {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+            thead {
+                background-color: #E87E4D !important;
+                color: white !important;
+            }
+            .table thead th {
+                background-color: #E87E4D !important;
+                color: white !important;
+            }
+            form {
+                background-color: #fff;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                padding: 15px;
+                border-radius: 8px;
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            .form-control, .form-select {
+                height: 40px;
+                font-size: 16px;
+            }
+            .filter-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        </style>
+    </th:block>
 </head>
 <body>
 <th:block id="th-body">
     <div class="content-body">
         <div class="container-fluid">
-            <div class="container mt-4">
-                <h3><i class="fas fa-file-invoice"></i> Quản lý Hóa đơn</h3>
+                <!-- Form Tìm Kiếm -->
+                <div class="table-container">
+                    <form method="GET" action="/bill">
+                        
+                        <div class="col-mt-6">
+                            <label class="form-label">Tìm kiếm</label>
+                            <input type="text" class="form-control" name="keyword" placeholder="Tìm kiếm mã hóa đơn">
+                        </div>
+                        <div class="col-mt-6">
+                            <label class="form-label">Loại đơn</label>
+                            <select name="orderType" class="form-select">
+                                <option value="">Tất cả loại hóa đơn</option>
+                                <option value="ONLINE">Online</option>
+                                <option value="OFFLINE">Offline</option>
+                            </select>
+                        </div>
+                        <div class="col-mt-6">
+                            <label class="form-label">Ngày bắt đầu</label>
+                            <input type="date" class="form-control" name="startDate">
+                        </div>
+                        <div class="col-mt-6">
+                            <label class="form-label">Ngày kết thúc</label>
+                            <input type="date" class="form-control" name="endDate">
+                        </div>
+                        <div class="col-mt-6 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                        </div>
+                        <div class="col-mt-6 d-flex align-items-end">
+                            <button type="reset" class="btn btn-danger w-100">Làm mới</button>
+                        </div>
+                    </form>
+                </div>     
+            <br>
+            <div class="table-container">
+                <div class="container mt-4">
+                    <h3><i class="fas fa-file-invoice"></i> Danh Sách Hóa đơn</h3>
+                    
+                    <!-- Tabs Trạng Thái -->
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a class="nav-link active filter-tab" data-status="">Tất cả</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Chờ xác nhận">Chờ xác nhận</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Đã xác nhận">Đã xác nhận</a></li>                    
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Chờ vận chuyển">Chờ vận chuyển</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Đang vận chuyển">Đang vận chuyển</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Đã thanh toán">Đã thanh toán</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Hoàn thành">Hoàn thành</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Trả hàng">Trả hàng</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Hủy">Hủy</a></li>
+                    </ul>
 
-                <!-- Tabs Trạng Thái -->
-                <ul class="nav nav-tabs">
-                    <li class="nav-item"><a class="nav-link active filter-tab" data-status="">Tất cả</a></li>
-                    <li class="nav-item"><a class="nav-link filter-tab" data-status="Chờ xác nhận">Chờ xác nhận</a></li>
-                    <li class="nav-item"><a class="nav-link filter-tab" data-status="Đã xác nhận">Đã xác nhận</a></li>                    
-                    <li class="nav-item"><a class="nav-link filter-tab" data-status="Chờ vận chuyển">Chờ vận chuyển</a></li>
-                    <li class="nav-item"><a class="nav-link filter-tab" data-status="Đang vận chuyển">Đang vận chuyển</a></li>
-                    <li class="nav-item"><a class="nav-link filter-tab" data-status="Đã thanh toán">Đã thanh toán</a></li>
-                    <li class="nav-item"><a class="nav-link filter-tab" data-status="Hoàn thành">Hoàn thành</a></li>
-                    <li class="nav-item"><a class="nav-link filter-tab" data-status="Trả hàng">Trả hàng</a></li>
-                    <li class="nav-item"><a class="nav-link filter-tab" data-status="Hủy">Hủy</a></li>
-                </ul>
-
-                <!-- Bảng danh sách hóa đơn -->
-                <div class="table-responsive mt-3">
-                    <table class="table table-striped table-bordered">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên Khách Hàng</th>
-                                <th>Nhân viên</th>
-                                <th>SĐT</th>
-                                <th>Địa chỉ</th>
-                                <th>Loại</th>
-                                <th>Trạng Thái</th>
-                                <th>Ngày tạo</th>
-                                <th>Giảm giá</th>
-                                <th>Tổng tiền</th>
-                                <th>Thao tác</th>
+                    <!-- Bảng danh sách hóa đơn -->
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã Hóa Đơn</th>
+                                    <th>Tên Khách Hàng</th>
+                                    <th>Nhân viên</th>
+                                    <th>SĐT</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Loại</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="bill, index : ${bills}">
+                                <td th:text="${index.index+1}"></td>
+                                <td th:text="${bill.code}"></td>
+                                <td th:text="${bill.userName}"></td>
+                                <td th:text="${bill.user != null ? bill.user.fullName : 'Không có dữ liệu'}"></td>
+                                <td th:text="${bill.phoneNumber}"></td>
+                                <td th:text="${bill.address}"></td>
+                                <td th:text="${bill.type}"></td>
+                                <td class="status-cell">
+                                    <span th:switch="${#strings.trim(bill.status)}">
+                                        <span th:case="'CHO_XAC_NHAN'">Chờ xác nhận</span>
+                                        <span th:case="'CHO_VAN_CHUYEN'">Chờ vận chuyển</span>
+                                        <span th:case="'VAN_CHUYEN'">Đang vận chuyển</span>
+                                        <span th:case="'XAC_NHAN'">Đã xác nhận</span>
+                                        <span th:case="'DA_THANH_TOAN'">Đã thanh toán</span>
+                                        <span th:case="'THANH_CONG'">Hoàn thành</span>
+                                        <span th:case="'TRA_HANG'">Trả hàng</span>
+                                        <span th:case="'DA_HUY'">Hủy</span>
+                                        <span th:case="*">Không xác định</span>
+                                    </span>
+                                </td>
+                                <td th:text="${bill.createDate}"></td>
+                                <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                                <td>
+                                    <a th:href="@{/bill/detail/{id}(id=${bill.id})}" class="btn btn-info">Xem</a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                          <tr th:each="bill, index : ${bills}">
-                              <td th:text="${index.index+1}"></td>
-                              <td th:text="${bill.userName}"></td>
-                              <td th:text="${bill.user != null ? bill.user.fullName : 'Không có dữ liệu'}"></td>
-                              <td th:text="${bill.phoneNumber}"></td>
-                              <td th:text="${bill.address}"></td>
-                              <td th:text="${bill.type}"></td>
-                              <td class="status-cell">
-                                  <span th:switch="${#strings.trim(bill.status)}">
-                                      <span th:case="'CHO_XAC_NHAN'">Chờ xác nhận</span>
-                                      <span th:case="'CHO_VAN_CHUYEN'">Chờ vận chuyển</span>
-                                      <span th:case="'VAN_CHUYEN'">Đang vận chuyển</span>
-                                      <span th:case="'XAC_NHAN'">Đã xác nhận</span>
-                                      <span th:case="'DA_THANH_TOAN'">Đã thanh toán</span>
-                                      <span th:case="'THANH_CONG'">Hoàn thành</span>
-                                      <span th:case="'TRA_HANG'">Trả hàng</span>
-                                      <span th:case="'DA_HUY'">Hủy</span>
-                                      <span th:case="*">Không xác định</span>
-                                  </span>
-                              </td>
-                              <td th:text="${bill.createDate}"></td>
-                              <td th:text="${bill.itemDiscount}"></td>
-                              <td th:text="${bill.totalMoney}"></td>
-                              <td>
-                                  <a th:href="@{/bill/detail/{id}(id=${bill.id})}" class="btn btn-info">Xem</a>
-                              </td>
-                          </tr>
-                      </tbody>
-                    </table>
-                </div>
-
-                <!-- Phân trang -->
-                <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-3">
-                    <ul class="pagination">
-                        <!-- Nút Đầu -->
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/bills?page=0}">Đầu</a>
+                        </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination justify-content-end">
+                        <!-- Nút Trước -->
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/bill(page=${currentPage - 1})}">Trước</a>
                         </li>
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/bills?page={id}(id=${currentPage - 1})}">Previous</a>
+                    
+                        <!-- Trang đầu -->
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
+                            <a class="page-link" th:href="@{/bill(page=1)}">1</a>
                         </li>
-
-                        <!-- Nút Cuối -->
-                        <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                            <a class="page-link" th:href="@{/bills?page={id}(id=${totalPages - 1})}">Cuối</a>
+                    
+                        <!-- Hiển thị dấu ... nếu cần -->
+                        <li th:if="${currentPage > 3}" class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    
+                        <!-- Hiển thị trang gần vị trí hiện tại -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(currentPage-1, currentPage+1)}"
+                            th:if="${i > 1 and i < totalPages}" th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/bill(page=${i})}" th:text="${i}"></a>
+                        </li>
+                    
+                        <!-- Hiển thị dấu ... nếu cần -->
+                        <li th:if="${currentPage < totalPages - 2}" class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    
+                        <!-- Trang cuối -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
+                            <a class="page-link" th:href="@{/bill(page=${totalPages})}" th:text="${totalPages}"></a>
+                        </li>
+                    
+                        <!-- Nút Tiếp -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/bill(page=${currentPage + 1})}">Tiếp</a>
                         </li>
                     </ul>
-                </nav>
-
-                <p class="text-muted">
-                    Hiển thị trang <span th:if="${currentPage != null}" th:text="${currentPage + 1}"></span>/ 
-                    <span th:text="${totalPages}"></span> (Tổng số hóa đơn: <span th:text="${totalItems}"></span>)
-                </p>
-            </div>
+                </div>
+            </div>    
         </div>
     </div>
 </th:block>
 </body>
 
-<!-- JavaScript lọc dữ liệu -->
+<!-- JavaScript -->
 <th:block id="th-js">
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const tabs = document.querySelectorAll(".filter-tab");
-            const rows = document.querySelectorAll("tbody tr");
+        document.querySelectorAll(".filter-tab").forEach(tab => {
+            tab.addEventListener("click", function (event) {
+                document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+                this.classList.add("active");
 
-            tabs.forEach(tab => {
-                tab.addEventListener("click", function (event) {
-                    tabs.forEach(t => t.classList.remove("active"));
-                    this.classList.add("active");
-
-                    const status = this.getAttribute("data-status").trim();
-                    rows.forEach(row => {
-                        const rowStatus = row.querySelector(".status-cell").textContent.trim();
-                        row.style.display = (status === "" || rowStatus === status) ? "" : "none";
-                    });
-
-                    event.preventDefault();
+                let status = this.getAttribute("data-status").trim();
+                document.querySelectorAll("tbody tr").forEach(row => {
+                    let rowStatus = row.querySelector(".status-cell").textContent.trim();
+                    row.style.display = (status === "" || rowStatus === status) ? "" : "none";
                 });
+
+                event.preventDefault();
             });
         });
     </script>

@@ -6,10 +6,14 @@ localStorage.setItem('billId', id);
 let billId  = localStorage.getItem('billId')
 const modal = document.getElementById("confirmModalStatus");
 const cancelModal = document.getElementById('cancelModalStatus');
+const historyModal = document.getElementById('historyModalStatus');
 const btn = document.getElementById("changeStatusButton");
 const closeBtn = document.getElementsByClassName("close")[0];
+const closeBtnhuy = document.getElementsByClassName("closehuy")[0];
+const closeBtnhistory = document.getElementsByClassName("closehistory")[0];
 const confirmButton = document.getElementById("confirmButton");
 const btnCancel = document.getElementById('cancelBill');
+const btnhistory = document.getElementById('historyBill');
 const confirmationReason = document.getElementById("confirmationReason");
 const cancelReason = document.getElementById("cancelmationReason");
 const cancelButton = document.getElementById("cancelButton");
@@ -22,7 +26,16 @@ closeBtn.onclick = function() {
     modal.style.display = "none";
 }
 btnCancel.onclick = function () {
-cancelModal.style.display = 'block';
+    cancelModal.style.display = 'block';
+}
+closeBtnhuy.onclick = function() {
+    cancelModal.style.display = "none";
+}
+btnhistory.onclick = function () {
+    historyModal.style.display = 'block';
+}
+closeBtnhistory.onclick = function() {
+    historyModal.style.display = "none";
 }
 
 cancelButton.onclick = function () {
@@ -33,7 +46,7 @@ cancelButton.onclick = function () {
         cancelReason.value = '';
         cancelBill();
     }else{
-        alert("Vui lòng nhập 20ký tự")
+        alert("Vui lòng nhập 20 ký tự")
     }
 }
 
@@ -50,6 +63,12 @@ confirmButton.onclick = function() {
         alert("Vui lòng nhập tối thiểu 5 ký tự.");
     }
 }
+
+document.getElementById('btn-changeInfor').addEventListener('click' , function () {
+    updateInforBill(billId);
+    const modal = document.getElementById("changeAddressModal");
+    modal.style.display = "none";
+})
 
 function changeStatus () {
     const employeeId = 1;
@@ -602,8 +621,3 @@ function updateInforBill(billId) {
             console.log("lỗi update" , error);
         })
 }
-document.getElementById('btn-changeInfor').addEventListener('click' , function () {
-    updateInforBill(billId);
-    const modal = document.getElementById("changeAddressModal");
-    modal.style.display = "none";
-})
