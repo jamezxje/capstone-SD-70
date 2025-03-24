@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/user-online-view/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Index user</title>
+  <th:block id="th-css">
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  <!--Body Content-->
+  <div id="page-content">
+    <!--Page Title-->
+    <div class="page section-header mt-5 text-center">
+      <div class="page-title">
+        <div class="wrapper"><h1 class="page-width">Bill detail</h1></div>
+      </div>
+    </div>
+    <!--End Page Title-->
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
+          <form action="#" method="post" class="bill style2">
+            <table>
+              <thead class="bill__row bill__header">
+              <tr>
+                <th colspan="2" class="text-center">Product</th>
+                <th class="text-center">Price</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-right">Total</th>
+                <th class="action">&nbsp;</th>
+              </tr>
+              </thead>
+              <form action="#" method="post" id="billForm">
+                <tbody>
+                <tr th:if="${#lists.isEmpty(billDetailResponseList)}">
+                  <td colspan="10" class="text-center pt-5"><h3>KHÔNG TÌM THẤY DỮ LIỆU</h3></td>
+                </tr>
+                <tr class="bill__row border-bottom line1 bill-flex border-top"
+                    th:each="bill: ${billDetailResponseList}">
+                  <td class="bill__image-wrapper bill-flex-item">
+                    <input type="text" hidden th:value="${bill.productDetailId}" class="productDetailId">
+                    <input type="text" hidden th:value="${bill.id}" class="billDetailId">
+                    <a th:href="@{/shop/{id}(id= ${bill.productDetailId})}">
+                      <img class="bill__image" th:src="${bill.productFeatureImageUrl}"
+                           alt="Elastic Waist Dress - Navy / Small">
+                    </a>
+                  </td>
+                  <td class="bill__meta small--text-left bill-flex-item">
+                    <div class="list-view-item__title">
+                      <a th:href="@{/shop/{id}(id= ${bill.productDetailId})}" th:text="${bill.productName}">Elastic
+                        Waist Dress</a>
+                    </div>
+                    <div class="bill__meta-text">
+                      Color: [[${bill.colorName}]]<br>Size: [[${bill.sizeName}]]<br>
+                    </div>
+                  </td>
+                  <td class="bill__price-wrapper bill-flex-item">
+                    <span class="money"
+                          th:text="${#numbers.formatDecimal(bill.price, 0, 'POINT', 0, 'POINT')} + ' VND'">$735.00</span>
+                  </td>
+                  <td class="bill__update-wrapper bill-flex-item text-right">
+                    <div class="bill__qty text-center">
+                      
+                        <span th:text="${bill.quantity}">
+                        </span>
+                    
+                    </div>
+                  </td>
+                  <td class="text-right small--hide bill-price">
+                    <div>
+                      <span class="money"
+                            th:text="${#numbers.formatDecimal(bill.subtotal, 0, 'POINT', 0, 'POINT')} + ' VND'">$735.00</span>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                  <td colspan="3" class="text-left">
+                    <a th:href="@{/shop}" class="btn btn-secondary btn--small bill-continue">Continue shopping</a>
+                  </td>
+                </tr>
+                </tfoot>
+              </form>
+            
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--End Body Content-->
+</th:block>
+
+</body>
+<th:block id="th-js">
+</th:block>
+</html>

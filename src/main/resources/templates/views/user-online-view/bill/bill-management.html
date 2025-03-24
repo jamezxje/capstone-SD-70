@@ -52,7 +52,7 @@
                     <td th:text="${bill.receiveDate}"></td>
                     <td th:text="${bill.status}">$99</td>
                     <td>
-                      <a href="#" title="Detail" class="site-header__cart">
+                      <a th:href="@{bill/{billId}(billId=${bill.id})}" title="Detail" class="site-header__cart">
                         <i class="icon anm anm-eye-l"></i>
                       </a>
                     </td>
