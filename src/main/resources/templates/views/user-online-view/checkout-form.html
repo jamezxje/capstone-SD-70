@@ -5,6 +5,26 @@
   <meta charset="UTF-8">
   <title>Index user</title>
   <th:block id="th-css">
+    <style>
+      .payment-section {
+        display: flex;
+        gap: 15px; /* Thêm khoảng cách giữa các nút */
+      }
+      
+      .card {
+        flex: 1; /* Giúp các phần tử có thể co giãn theo kích thước của container */
+        display: inline-block;
+      }
+      
+      .card-header_1 {
+        display: flex;
+        align-items: center;
+      }
+      
+      .card-header_1 input[type="radio"] {
+        margin-right: 10px; /* Khoảng cách giữa radio button và label */
+      }
+    </style>
   </th:block>
 </head>
 <body>
@@ -186,98 +206,21 @@
               <hr/>
               
               <div class="your-payment">
-                <h2 class="payment-title mb-3">payment method</h2>
+                <h2 class="payment-title mb-3">Payment Method</h2>
                 <div class="payment-method">
-                  <div class="payment-accordion">
-                    <div id="accordion" class="payment-section">
-                      <div class="card mb-2">
-                        <div class="card-header">
-                          <a class="card-link" data-toggle="collapse" href="#collapseOne">Direct Bank Transfer </a>
-                        </div>
-                        <div id="collapseOne" class="collapse" data-parent="#accordion">
-                          <div class="card-body">
-                            <p class="no-margin font-15">Make your payment directly into our bank account. Please use
-                              your
-                              Order ID as the payment reference. Your order won't be shipped until the funds have
-                              cleared
-                              in our account.</p>
-                          </div>
-                        </div>
+                  <div class="payment-section">
+                    <div class="card mb-2">
+                      <div class="card-header_1">
+                        <input type="radio" id="cod" name="paymentMethod"
+                               th:value="${T(org.fpoly.capstone.entity.enum_status.PaymentMethod).TIEN_MAT}">
+                        <label for="cod" class="font-15">Thanh toán khi nhận hàng</label>
                       </div>
-                      <div class="card mb-2">
-                        <div class="card-header">
-                          <a class="collapsed card-link" data-toggle="collapse" href="#collapseTwo">Cheque Payment</a>
-                        </div>
-                        <div id="collapseTwo" class="collapse" data-parent="#accordion">
-                          <div class="card-body">
-                            <p class="no-margin font-15">Please send your cheque to Store Name, Store Street, Store
-                              Town,
-                              Store State / County, Store Postcode.</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card margin-15px-bottom border-radius-none">
-                        <div class="card-header">
-                          <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree"> PayPal </a>
-                        </div>
-                        <div id="collapseThree" class="collapse" data-parent="#accordion">
-                          <div class="card-body">
-                            <p class="no-margin font-15">Pay via PayPal; you can pay with your credit card if you don't
-                              have a PayPal account.</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card mb-2">
-                        <div class="card-header">
-                          <a class="collapsed card-link" data-toggle="collapse" href="#collapseFour"> Payment
-                            Information </a>
-                        </div>
-                        <div id="collapseFour" class="collapse" data-parent="#accordion">
-                          <div class="card-body">
-                            <fieldset>
-                              <div class="row">
-                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                  <label for="input-cardname">Name on Card <span class="required-f">*</span></label>
-                                  <input name="cardname" value="" placeholder="Card Name" id="input-cardname"
-                                         class="form-control" type="text">
-                                </div>
-                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                  <label for="input-country">Credit Card Type <span class="required-f">*</span></label>
-                                  <select name="country_id" class="form-control">
-                                    <option value=""> --- Please Select ---</option>
-                                    <option value="1">American Express</option>
-                                    <option value="2">Visa Card</option>
-                                    <option value="3">Master Card</option>
-                                    <option value="4">Discover Card</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                  <label for="input-cardno">Credit Card Number <span class="required-f">*</span></label>
-                                  <input name="cardno" value="" placeholder="Credit Card Number" id="input-cardno"
-                                         class="form-control" type="text">
-                                </div>
-                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                  <label for="input-cvv">CVV Code <span class="required-f">*</span></label>
-                                  <input name="cvv" value="" placeholder="Card Verification Number" id="input-cvv"
-                                         class="form-control" type="text">
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                  <label>Expiration Date <span class="required-f">*</span></label>
-                                  <input type="date" name="exdate" class="form-control">
-                                </div>
-                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                  <img class="padding-25px-top xs-padding-5px-top" src="assets/images/payment-img.jpg"
-                                       alt="card" title="card"/>
-                                </div>
-                              </div>
-                            </fieldset>
-                          
-                          </div>
-                        </div>
+                    </div>
+                    <div class="card mb-2">
+                      <div class="card-header_1">
+                        <input type="radio" id="vnpay" name="paymentMethod"
+                               th:value="${T(org.fpoly.capstone.entity.enum_status.PaymentMethod).CHUYEN_KHOAN}">
+                        <label for="vnpay" class="font-15">VNPAY</label>
                       </div>
                     </div>
                   </div>
@@ -287,6 +230,7 @@
                   </div>
                 </div>
               </div>
+            
             </div>
           </div>
         </div>
@@ -493,7 +437,6 @@
         calculateLeadTime();
       }
     });
-  
   </script>
   
   <script>
@@ -510,10 +453,18 @@
     $('#createBillOnline').on('submit', function (event) {
       event.preventDefault();
       
+      // Kiểm tra xem người dùng đã chọn phương thức thanh toán chưa
+      const paymentMethod = $('input[name="paymentMethod"]:checked').val();
+      
+      if (!paymentMethod) {
+        // Hiển thị thông báo nếu người dùng chưa chọn phương thức thanh toán
+        alert("Please select a payment method before placing the order.");
+        return;  // Ngừng việc gửi form
+      }
+      
       const receiveDate = formatDate($('#confirm-day').text());
       
       const grandTotal = $('#totalPriceWithShipping').text();
-      const formattedGrandTotal = formatCurrency(grandTotal);
       console.log("grand total: ", grandTotal)
       console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
       
@@ -523,25 +474,49 @@
         moneyShip: $('#shipFee').val(),
         address: $('#customer-address').find(":selected").text(),
         note: $('#orderNote').val(),
-        grandTotal: formatCurrency(grandTotal)
+        grandTotal: formatCurrency(grandTotal),
+        paymentMethod: paymentMethod
       };
       
       console.log("Create bill online request body: ", JSON.stringify(requestBody))
       
-      $.ajax({
-        url: "/bill/save",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(requestBody),
-        success: function () {
-          window.location.href = "/bill";
-          console.error("Create online bill successfully");
-        },
-        error: function (xhr, status, error) {
-          console.error("Error adding new address", status, error);
-          alert("Failed to add new address. Please try again later.");
-        }
-      });
+      // Kiểm tra nếu phương thức thanh toán là "chuyen_khoan"
+      if (paymentMethod === 'CHUYEN_KHOAN') {
+        // Gọi API "online-payment"
+        $.ajax({
+          url: '/bill/online-payment',
+          type: 'POST', // GET vì phương thức của bạn là @GetMapping
+          data: {
+            amount: formatCurrency(grandTotal), // Truyền tổng tiền đã định dạng
+            orderInfo: "Thanh toán đơn hàng " + grandTotal, // Truyền thông tin đơn hàng
+          }, // Truyền grandTotal dưới dạng tham số query
+          success: function (paymentUrl) {
+            console.log("payment url khi thành coong: ", paymentUrl);
+            // Nếu gọi API thành công và trả về URL, chuyển hướng người dùng
+            window.location.href = paymentUrl; // Chuyển hướng người dùng tới URL thanh toán
+          },
+          error: function (xhr, status, error) {
+            console.error("Error initiating payment", status, error);
+            alert("Failed to initiate payment. Please try again later.");
+          }
+        });
+      } else {
+        // Nếu không phải phương thức thanh toán "chuyen_khoan", gửi form như bình thường
+        $.ajax({
+          url: "/bill/save",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(requestBody),
+          success: function () {
+            window.location.href = "/bill";
+            console.error("Create online bill successfully");
+          },
+          error: function (xhr, status, error) {
+            console.error("Error adding new address", status, error);
+            alert("Failed to add new address. Please try again later.");
+          }
+        });
+      }
     });
   </script>
 

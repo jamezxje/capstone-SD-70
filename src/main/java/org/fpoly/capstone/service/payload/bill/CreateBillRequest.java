@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.fpoly.capstone.entity.enum_status.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,5 +20,6 @@ public class CreateBillRequest {
     private String address;
     private String note;
     private BigDecimal grandTotal;
+    private PaymentMethod paymentMethod;
 
 }

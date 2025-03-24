@@ -8,6 +8,7 @@ import org.fpoly.capstone.entity.CartDetail;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.BillType;
+import org.fpoly.capstone.entity.enum_status.PaymentMethod;
 import org.fpoly.capstone.repository.BillDetailRespository;
 import org.fpoly.capstone.repository.BillRespository;
 import org.fpoly.capstone.repository.CartRepository;
@@ -58,12 +59,14 @@ public class BillServiceImpl implements BillService {
         BigDecimal grandTotal = request.getGrandTotal();
         String address = request.getAddress();
         String note = request.getNote();
+        PaymentMethod paymentMethod = request.getPaymentMethod();
 
         bill.setTotalMoney(grandTotal);
         bill.setMoneyShip(moneyShip);
         bill.setReceiveDate(recieveDate);
         bill.setAddress(address);
         bill.setNote(note);
+        bill.setMethod(paymentMethod);
 
         bill.setBillDetailList(billDetailList);
         this.cartRepository.deleteById(cart.getId());
