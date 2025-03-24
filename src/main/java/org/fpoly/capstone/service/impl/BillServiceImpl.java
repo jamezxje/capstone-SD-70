@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -177,7 +178,7 @@ public class BillServiceImpl implements BillService {
             if (!vouchers.isPresent()) {
                 throw new RuntimeException("Voucher not found");
             }
-            if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().getTime() < Calendar.getInstance().getTimeInMillis()) {
+            if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().isBefore(LocalDate.now())) {
                 throw new RuntimeException("Voucher end date is less than current date");
             }
             vouchers.get().setQuantity(vouchers.get().getQuantity() - 1);

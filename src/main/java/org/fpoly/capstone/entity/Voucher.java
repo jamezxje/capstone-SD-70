@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import org.fpoly.capstone.entity.enum_status.VoucherStatus;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -43,11 +44,11 @@ public class Voucher {
 
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date endDate;
+    private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
