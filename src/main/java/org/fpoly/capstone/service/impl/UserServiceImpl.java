@@ -31,4 +31,11 @@ public class UserServiceImpl implements UserService {
         return userDetailsCustom.getUser();
     }
 
+    @Override
+    public String getName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        return userName;
+    }
+
 }

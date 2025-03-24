@@ -7,6 +7,7 @@ import org.fpoly.capstone.dto.voucher.VoucherRequest;
 import org.fpoly.capstone.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.fpoly.capstone.entity.Bill;
 
 import java.util.List;
 
@@ -54,4 +55,9 @@ public interface BillService {
     List<Material> findAllMaterial();
 
     List<Color> findAllColor();
+
+    List<Long> findAllById();
+
+    Bill findById(Long id);
+
 }

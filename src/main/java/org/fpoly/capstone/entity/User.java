@@ -1,6 +1,7 @@
 package org.fpoly.capstone.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,20 +19,21 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @Builder
+
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "full_name", length = 30)
+    @Column(name = "full_name", length = 100)
     private String fullName;
 
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(name = "phone_number", length = 10)
+    @Column(name = "phone_number", length = 15)
     private String phoneNumber;
 
     @Column(name = "email", length = 255)
@@ -40,17 +42,17 @@ public class User {
     @Column(name = "gender")
     private Boolean gender;
 
-    @Column(name = "avatar", length = 255)
+    @Column(name = "avata", length = 255)
     private String avatar;
 
-    @Column(name = "citizen_identity", length = 200)
+    @Column(name = "citizen_identity", length = 20)
     private String citizenIdentity;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private UserStatus status;
 
-    @Column(name = "password")
+    @Column(name = "password", length = 60)
     private String password;
 
     @Enumerated(EnumType.STRING)

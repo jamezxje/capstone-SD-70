@@ -1,6 +1,7 @@
 package org.fpoly.capstone.service.impl;
 
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.constant.MessageError;
 import org.fpoly.capstone.dto.address.BaseAddressRequest;
@@ -25,11 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BillServiceImpl implements BillService {
 
     @Autowired
@@ -178,7 +181,7 @@ public class BillServiceImpl implements BillService {
             if (!vouchers.isPresent()) {
                 throw new RuntimeException("Voucher not found");
             }
-            if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().isBefore(LocalDate.now())) {
+            if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().isBefore(LocalDateTime.now())) {
                 throw new RuntimeException("Voucher end date is less than current date");
             }
             vouchers.get().setQuantity(vouchers.get().getQuantity() - 1);
@@ -535,4 +538,15 @@ public class BillServiceImpl implements BillService {
         System.out.println("Nội dung email: " + htmlContent);
         emailService.sendEmail(reciprient , subject , htmlContent);
     }
+    @Override
+    public List<Long> findAllById() {
+        return billRepository.findByAllIds();
+    }
+
+    @Override
+    public Bill findById(Long id) {
+        Bill bill = billRepository.findById(id).orElseThrow();
+        return bill;
+    }
+
 }

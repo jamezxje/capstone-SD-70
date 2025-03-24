@@ -23,4 +23,8 @@ SELECT b.id FROM Bill b where b.vnpTransaction = :code
 """)
     List<String> findAllByVnpTransaction(@Param("code") String code);
     Optional<Bill> findByCode(String code);
+    @Query("select b.id from Bill b")
+    List<Long> findByAllIds();
+
+
 }

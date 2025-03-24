@@ -1,6 +1,7 @@
 package org.fpoly.capstone.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import org.fpoly.capstone.entity.enum_status.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -42,7 +44,7 @@ public class Bill {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "user_name")
+    @Column(name = "use_name")
     private String userName;
 
     @Column(name = "email")
@@ -110,4 +112,7 @@ public class Bill {
         this.completionDate = new Date();
         this.createDate = new Date();
     }
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<VoucherDetail> voucherDetailList;
+
 }

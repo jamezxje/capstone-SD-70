@@ -1,23 +1,19 @@
 package org.fpoly.capstone.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fpoly.capstone.entity.enum_status.VoucherStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,25 +26,31 @@ public class Voucher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @Column(name = "code")
     private String code;
 
+    @NotEmpty(message = "Tên không được trống")
     @Column(name = "name")
     private String name;
 
-    @Column(name = "value", precision = 38, scale = 2)
+    @NotNull(message = "Số tiền không được trống")
+    @Column(name = "value")
     private BigDecimal value;
 
+    @NotNull(message = "Số lượng không được trống")
     @Column(name = "quantity")
     private Integer quantity;
 
+    @NotNull(message = "Ngày bắt đầu không được trống")
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDate startDate;
 
+    private LocalDateTime startDate;
+    @NotNull(message = "Ngày kết thúc không được trống")
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -63,12 +65,16 @@ public class Voucher {
 
     @Column(name = "last_modified_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     @Column(name = "created_by")
     private String createdBy;
 
     @Column(name = "updated_by")
     private String updatedBy;
+
+    @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<VoucherDetail> voucherDetails;
+
 
 }
