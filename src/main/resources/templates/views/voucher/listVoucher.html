@@ -253,6 +253,18 @@ table th, table td {
         <div class="card-body">
           <!-- Table Content -->
           <div class="table-responsive">
+            <script>
+              // Định dạng tiền tệ cho giá trị voucher khi trang tải
+              document.addEventListener("DOMContentLoaded", function() {
+                  const valueElements = document.querySelectorAll('.voucher-value');
+                  valueElements.forEach(function (element) {
+                      const value = parseFloat(element.innerText.replace(/\D/g, ''));  // Loại bỏ các ký tự không phải số
+                      element.innerText = new Intl.NumberFormat('vi-VN').format(value) + ' VND';
+                  });
+              });
+            </script>
+
+
             <table class="table table-bordered table-hover" id="ListDatatableView" border="1">
               <thead>
               <tr>
@@ -269,7 +281,7 @@ table th, table td {
               </tr>
               </thead>
               <tbody>
-              <!-- Dữ liệu Voucher sẽ được lặp qua từ Thymeleaf -->
+
               <tr th:each="voucher,iterStat : ${voucherPage}">
                 <td><div th:text="${iterStat.index + 1}"></div></td>
                 <td><div class="media style-1"><div class="media-body" th:text="${voucher.code}"></div></div></td>
@@ -339,12 +351,6 @@ table th, table td {
     </div>
   </div>
 </th:block>
-<!--<th:block id="th-js">-->
-<!--  <script>-->
-<!--    let i = 0;-->
-<!--  document.getElementById("index").innerText = i + 1;-->
-<!--  </script>-->
-<!--</th:block>-->
 </body>
 
 

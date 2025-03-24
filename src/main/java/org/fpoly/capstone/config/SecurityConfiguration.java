@@ -20,14 +20,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    @Bean("messageSource")
-    public MessageSource getMessageSource(){
-        ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
-        ms.setDefaultEncoding("utf-8");
-        ms.setBasename("classpath:i18n/voucher");
-        return ms;
-    }
-
     protected static final String[] PUBLIC_UNAUTHENTICATION_URI = {
             "/",
             "/auth/register",

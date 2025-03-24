@@ -49,7 +49,7 @@ public class VoucherController {
         model.addAttribute("currentPage", (numPage == null || numPage <= 0) ? 1 : numPage);
         model.addAttribute("totalPages", voucherPage.getTotalPages() > 0 ? voucherPage.getTotalPages() : 1);
         model.addAttribute("status", VoucherStatus.values());
-        model.addAttribute("voucherPage", voucherPage);
+
         return "views/voucher/listVoucher";
     }
 
@@ -91,6 +91,9 @@ public class VoucherController {
         Integer size = 5;
         Pageable pageable = PageRequest.of(numPage-1,size);
         Page<Voucher> voucherPage = voucherService.search(pageable, name, status);
+        model.addAttribute("currentPage", (numPage == null || numPage <= 0) ? 1 : numPage);
+        model.addAttribute("totalPages", voucherPage.getTotalPages() > 0 ? voucherPage.getTotalPages() : 1);
+        model.addAttribute("status", VoucherStatus.values());
         if(voucherPage.isEmpty()){
             voucherPage = voucherService.findAll(pageable);
         }
