@@ -333,8 +333,8 @@ public class BillServiceImpl implements BillService {
            String name = (String) result[2];
            Integer minimumbill = (Integer) result[4];
            Integer quantity = (Integer) result[5];
-           Date startDate = (Date) result[6];
-           Date endDate = (Date) result[7];
+           LocalDateTime startDate = (LocalDateTime) result[6];
+           LocalDateTime endDate = (LocalDateTime) result[7];
            VoucherStatus voucherStatus = (VoucherStatus) result[8];
            VoucherRequest voucherRequest = new VoucherRequest(id , code , name , value,
                    minimumbill , quantity, startDate , endDate , voucherStatus);
@@ -431,8 +431,8 @@ public class BillServiceImpl implements BillService {
             BigDecimal value = (BigDecimal) result[3];
             Integer minimumbill = (Integer) result[4];
             Integer quantity = (Integer) result[5];
-            Date startDate = (Date) result[6];
-            Date endDate = (Date) result[7];
+            LocalDateTime startDate = (LocalDateTime) result[6];
+            LocalDateTime endDate = (LocalDateTime) result[7];
             VoucherRequest1 voucherRequest = new VoucherRequest1(id , code , name , value , minimumbill , quantity , startDate , endDate);
             voucherRequests.add(voucherRequest);
         }

@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.fpoly.capstone.entity.enum_status.VoucherStatus;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -20,7 +22,7 @@ private String name;
 private BigDecimal value;
 private Integer minimumBill;
 private Integer quantity;
-private Date startDate;
-private Date endDate;
+private LocalDateTime startDate;
+private LocalDateTime endDate;
 private VoucherStatus status;
 }
