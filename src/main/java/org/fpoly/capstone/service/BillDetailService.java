@@ -20,8 +20,6 @@ public class BillDetailService {
     @Autowired
     private BillDetailRepository billDetailRepository;
 
-    @Autowired
-    private BillRepository billRepository;
 
     public List<BillDetailDTO> getBillDetails(Long billId) {
         List<Object[]> results = billDetailRepository.getProductByBillId(billId);
@@ -36,32 +34,6 @@ public class BillDetailService {
         }
 
         return billDetails;
-    }
-
-    public boolean confirmPayment(Long billId) {
-        Optional<Bill> billOpt = billRepository.findById(billId);
-        if (billOpt.isPresent()) {
-            Bill bill = billOpt.get();
-            switch (bill.getStatus()) {
-                case CHO_XAC_NHAN:
-                    bill.setStatus(BillStatus.XAC_NHAN);
-                    break;
-                case XAC_NHAN:
-                    bill.setStatus(BillStatus.CHO_VAN_CHUYEN);
-                    break;
-                case CHO_VAN_CHUYEN:
-                    bill.setStatus(BillStatus.VAN_CHUYEN);
-                    break;
-                case VAN_CHUYEN:
-                    bill.setStatus(BillStatus.DA_THANH_TOAN);
-                    break;
-                default:
-                    return false;
-            }
-            billRepository.save(bill);
-            return true;
-        }
-        return false;
     }
 }
 

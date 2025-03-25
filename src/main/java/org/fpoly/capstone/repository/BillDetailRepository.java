@@ -32,5 +32,4 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
             """, nativeQuery = true)
     List<Object[]> getProductByBillId(@Param("id") Long billId);
 
-
 }

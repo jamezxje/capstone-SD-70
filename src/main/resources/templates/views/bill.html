@@ -22,24 +22,6 @@
                 background-color: #E87E4D !important;
                 color: white !important;
             }
-            form {
-                background-color: #fff;
-                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-                padding: 15px;
-                border-radius: 8px;
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-            }
-            .form-control, .form-select {
-                height: 40px;
-                font-size: 16px;
-            }
-            .filter-container {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
         </style>
     </th:block>
 </head>
@@ -50,35 +32,47 @@
                 <!-- Form Tìm Kiếm -->
                 <div class="table-container">
                     <form method="GET" action="/bill">
-                        
-                        <div class="col-mt-6">
-                            <label class="form-label">Tìm kiếm</label>
-                            <input type="text" class="form-control" name="keyword" placeholder="Tìm kiếm mã hóa đơn">
-                        </div>
-                        <div class="col-mt-6">
-                            <label class="form-label">Loại đơn</label>
-                            <select name="orderType" class="form-select">
-                                <option value="">Tất cả loại hóa đơn</option>
-                                <option value="ONLINE">Online</option>
-                                <option value="OFFLINE">Offline</option>
-                            </select>
-                        </div>
-                        <div class="col-mt-6">
-                            <label class="form-label">Ngày bắt đầu</label>
-                            <input type="date" class="form-control" name="startDate">
-                        </div>
-                        <div class="col-mt-6">
-                            <label class="form-label">Ngày kết thúc</label>
-                            <input type="date" class="form-control" name="endDate">
-                        </div>
-                        <div class="col-mt-6 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
-                        </div>
-                        <div class="col-mt-6 d-flex align-items-end">
-                            <button type="reset" class="btn btn-danger w-100">Làm mới</button>
+                        <div class="row md-12">
+                            <!-- Tìm kiếm -->
+                            <div class="col-md-6">
+                                <label class="form-label">Tìm kiếm</label>
+                                <input type="text" class="form-control w-250" name="keyword" placeholder="Tìm kiếm mã hóa đơn">
+                            </div>
+                            <!-- Loại đơn -->
+                            <div class="col-md-6">
+                                <label class="form-label">Loại đơn</label>
+                                <select name="orderType" class="form-select w-250">
+                                    <option value="">Tất cả loại hóa đơn</option>
+                                    <option value="ONLINE">Online</option>
+                                    <option value="OFFLINE">Offline</option>
+                                </select>
+                            </div>
+                        <!-- </div>
+                        <div class="row md-12"> -->
+                            <!-- Ngày bắt đầu -->
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày bắt đầu</label>
+                                <input type="date" class="form-control w-250" name="startDate">
+                            </div>
+                            <!-- Ngày kết thúc -->
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày kết thúc</label>
+                                <input type="date" class="form-control w-250" name="endDate">
+                            </div>
+                        </div><br>
+                
+                        <div class="row md-12">
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-success w-100 py-2 px-4 rounded">🔍 Tìm kiếm</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="reset" class="btn btn-danger w-100 py-2 px-4 rounded">🔄 Làm mới</button>
+                            </div>
                         </div>
                     </form>
-                </div>     
+                </div>
+                
+                                   
             <br>
             <div class="table-container">
                 <div class="container mt-4">
@@ -137,7 +131,7 @@
                                         <span th:case="*">Không xác định</span>
                                     </span>
                                 </td>
-                                <td th:text="${bill.createDate}"></td>
+                                <td th:text="${#dates.format(bill.createDate, 'HH:mm:ss dd/MM/yyyy')}"></td>
                                 <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
                                 <td>
                                     <a th:href="@{/bill/detail/{id}(id=${bill.id})}" class="btn btn-info">Xem</a>
@@ -207,6 +201,36 @@
                 event.preventDefault();
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const orderTypeSelect = document.querySelector("select[name='orderType']");
+        const startDateInput = document.querySelector("input[name='startDate']");
+        const endDateInput = document.querySelector("input[name='endDate']");
+
+        function filterTable() {
+            let selectedType = orderTypeSelect.value.trim();
+            let startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+            let endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+            document.querySelectorAll("tbody tr").forEach(row => {
+                let rowType = row.querySelector("td:nth-child(7)").textContent.trim(); // Cột Loại
+                let rowDateText = row.querySelector("td:nth-child(9)").textContent.trim(); // Cột Ngày tạo
+                let rowDate = rowDateText ? new Date(rowDateText) : null;
+
+                let matchesType = (selectedType === "" || rowType === selectedType);
+                let matchesDate = (!rowDate || 
+                                  (!startDate || rowDate >= startDate) && 
+                                  (!endDate || rowDate <= endDate));
+
+                row.style.display = (matchesType && matchesDate) ? "" : "none";
+            });
+        }
+
+        // Lắng nghe sự kiện thay đổi
+        orderTypeSelect.addEventListener("change", filterTable);
+        startDateInput.addEventListener("change", filterTable);
+        endDateInput.addEventListener("change", filterTable);
+    });
     </script>
 </th:block>
 </html>

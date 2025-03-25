@@ -153,6 +153,9 @@
                 justify-content: space-between;
                 margin-top: 10px;
             }
+            .modal {
+                margin: auto;
+            }
         </style>
     </th:block>
 </head>
@@ -300,7 +303,7 @@
 
             </div>
 
-<!--Modal change infor-->
+            <!--Modal change infor-->
             <div id="changeAddressModal" class="modal">
                 <div class="modal-content">
                     <span class="close-btn">&times;</span>
@@ -398,9 +401,9 @@
                 </div>
             </div>
 
-            <div  th:each="vcdetail, index : ${voucherDetail}" class="card p-3 mt-3" style="width: 450px; border: 2px solid #ccc; border-radius: 10px;">
+            <div  th:each="vcdetail, index : ${voucherDetail}">
                 <h5><b>Tổng tiền hàng :</b> <span class="text-primary" th:text="vcdetail.beforePrice + ' VND'"></span></h5>
-                <!-- <h5><b>Phí vận chuyển :</b> <span th:text="${#numbers.formatDecimal(shippingFee, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5> -->
+                <h5><b>Phí vận chuyển :</b> <span th:text="${#numbers.formatDecimal(shippingFee, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
                 <h5><b>Voucher giảm giá :</b> <span th:text="vcdetail.discountPrice + ' VND'"></span></h5>
                 <h5><b>Tổng tiền giảm :</b> <span th:text="vcdetail.discountPrice + ' VND'"></span></h5>
                 <hr>
@@ -487,14 +490,6 @@
             return;
         }
 
-        // // Nếu có lỗi, hiển thị thông báo và dừng xử lý
-        // if (!isValid) {
-        //     alert(errorMessage);
-        //     return;
-        // }
-
-        // // Nếu tất cả hợp lệ, tiến hành lưu thay đổi
-        // alert("Thông tin đã được cập nhật thành công!");
     });
 
     </script>

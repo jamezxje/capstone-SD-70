@@ -95,18 +95,4 @@ public class BillController {
         return "views/billDetail";
     }
 
-    @PostMapping("/detail/{id}/confirm")
-    public String confirmPayment(@PathVariable("id") Long billId,
-                                 @RequestParam("note") String note,
-                                 RedirectAttributes redirectAttributes) {
-        boolean success = billService.confirmPayment(billId,note);
-
-        if (success) {
-            redirectAttributes.addFlashAttribute("successMessage", "Trạng thái đơn hàng đã được cập nhật.");
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Cập nhật thất bại. Kiểm tra trạng thái hiện tại.");
-        }
-
-        return "redirect:/bill/detail/" + billId;
-    }
 }
