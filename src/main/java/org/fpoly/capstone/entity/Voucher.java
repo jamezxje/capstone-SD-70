@@ -45,8 +45,8 @@ public class Voucher {
     @NotNull(message = "Ngày bắt đầu không được trống")
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
-
     private LocalDateTime startDate;
+
     @NotNull(message = "Ngày kết thúc không được trống")
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
