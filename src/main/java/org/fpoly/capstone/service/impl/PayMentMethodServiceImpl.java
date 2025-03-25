@@ -24,10 +24,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -172,7 +169,8 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                     if (!vouchers.isPresent()) {
                         throw new RuntimeException("Voucher not found");
                     }
-                    if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().getTime() < Calendar.getInstance().getTimeInMillis()) {
+                    if (vouchers.get().getQuantity() <= 0 &&
+                            vouchers.get().getEndDate().toInstant(ZoneOffset.UTC).toEpochMilli() < System.currentTimeMillis()) {
                         throw new RuntimeException("Voucher end date is less than current date");
                     }
                     vouchers.get().setQuantity(vouchers.get().getQuantity() - 1);

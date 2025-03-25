@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -178,7 +179,7 @@ public class BillServiceImpl implements BillService {
             if (!vouchers.isPresent()) {
                 throw new RuntimeException("Voucher not found");
             }
-            if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().isBefore(LocalDate.now())) {
+            if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().isBefore(LocalDateTime.now())) {
                 throw new RuntimeException("Voucher end date is less than current date");
             }
             vouchers.get().setQuantity(vouchers.get().getQuantity() - 1);
@@ -330,8 +331,8 @@ public class BillServiceImpl implements BillService {
            String name = (String) result[2];
            Integer minimumbill = (Integer) result[4];
            Integer quantity = (Integer) result[5];
-           Date startDate = (Date) result[6];
-           Date endDate = (Date) result[7];
+           LocalDateTime startDate = (LocalDateTime) result[6];
+           LocalDateTime endDate = (LocalDateTime) result[7];
            VoucherStatus voucherStatus = (VoucherStatus) result[8];
            VoucherRequest voucherRequest = new VoucherRequest(id , code , name , value,
                    minimumbill , quantity, startDate , endDate , voucherStatus);
@@ -428,8 +429,8 @@ public class BillServiceImpl implements BillService {
             BigDecimal value = (BigDecimal) result[3];
             Integer minimumbill = (Integer) result[4];
             Integer quantity = (Integer) result[5];
-            Date startDate = (Date) result[6];
-            Date endDate = (Date) result[7];
+            LocalDateTime startDate = (LocalDateTime) result[6];
+            LocalDateTime endDate = (LocalDateTime) result[7];
             VoucherRequest1 voucherRequest = new VoucherRequest1(id , code , name , value , minimumbill , quantity , startDate , endDate);
             voucherRequests.add(voucherRequest);
         }

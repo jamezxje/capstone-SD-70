@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class VoucherRequest1 {
     private BigDecimal value;
     private Integer minimumBill;
     private Integer quantity;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
 }
