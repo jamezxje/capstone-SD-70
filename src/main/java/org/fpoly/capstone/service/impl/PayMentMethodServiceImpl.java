@@ -172,7 +172,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                     if (!vouchers.isPresent()) {
                         throw new RuntimeException("Voucher not found");
                     }
-                    if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().getTime() < Calendar.getInstance().getTimeInMillis()) {
+                    if (vouchers.get().getQuantity() <= 0 && vouchers.get().getEndDate().getMinute() < Calendar.getInstance().getTimeInMillis()) {
                         throw new RuntimeException("Voucher end date is less than current date");
                     }
                     vouchers.get().setQuantity(vouchers.get().getQuantity() - 1);
