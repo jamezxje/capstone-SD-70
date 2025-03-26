@@ -335,7 +335,9 @@
                   <div class="product-details text-center">
                     <!-- product name -->
                     <div class="product-name">
-                      <span th:text="${product.productName}"></span>
+                      <a th:href="@{/shop/{id}(id=${product.id})}">
+                        <span th:text="${product.productName}"></span>
+                      </a>
                     </div>
                     <!-- End product name -->
                     <!-- product price -->

@@ -915,89 +915,91 @@
     const loggedUserEmail = /*[[${loggedUserEmail}]]*/ [];
   </script>
   <script>
-    $(document).ready(function () {
-      $('#product_form_10508262282').on('submit', function (event) {
-        // Initialize the popup message to an empty string
-        let popupMessage = "";
+    // Hàm validate và hiển thị popup
+    function validateAndShowPopup(event) {
+      let popupMessage = "";
+      
+      // Get selected size and color values
+      let selectedSize = $('input[name="sizeId"]:checked').val();
+      let selectedColor = $('input[name="colorId"]:checked').val();
+      
+      console.log("Selected Size:", selectedSize);
+      console.log("Selected Color:", selectedColor);
+      console.log("Logged User Email:", loggedUserEmail);  // Log the email of the logged-in user
+      
+      // Check if any size is selected or any color is selected
+      if (selectedSize === undefined) {
+        popupMessage = "Please select size before adding to cart";
+      } else if (selectedColor === undefined) {
+        popupMessage = "Please select color before adding to cart";
+      }
+      
+      // Check if the user is logged in
+      if (loggedUserEmail == null) {
+        popupMessage = "Please login before adding to cart";
+      }
+      
+      // If any validation failed, show the modal
+      if (popupMessage !== "") {
+        event.preventDefault();  // Prevent form submission
         
-        // Get selected size and color values
-        let selectedSize = $('input[name="sizeId"]:checked').val();
-        let selectedColor = $('input[name="colorId"]:checked').val();
-        
-        // Log selected size, color, and loggedUserEmail
-        console.log("Selected Size:", selectedSize);
-        console.log("Selected Color:", selectedColor);
-        console.log("Logged User Email:", loggedUserEmail);  // This will log the email of the logged-in user
-        
-        // Check if any size is selected or any color is selected
-        if (selectedSize === undefined) {
-          popupMessage = "Please select size before adding to cart";
-        } else if (selectedColor === undefined) {
-          popupMessage = "Please select color before adding to cart";
+        // Show modal
+        var pageHeight = $(document).height();
+        if (!$('#modalOverly').length) {
+          $('<div id="modalOverly"></div>').insertBefore('body');
         }
         
-        // Check if the user is logged in
+        $('#modalOverly').css("height", pageHeight).fadeIn();
+        $('#popup-container').fadeIn();
+        
+        // Set the popup message
+        $('#popup-container h2').text(popupMessage);
+        
+        // If user is not logged in, add login and register buttons
         if (loggedUserEmail == null) {
-          // If the user is not logged in, show login message
-          popupMessage = "Please login before adding to cart";
+          var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Login</a>');
+          var registerButton = $('<button id="registerButton" class="btn">Register</button>');
+          
+          // Append the buttons to the popup
+          $('#popup-container').append(loginButton);
+          $('#popup-container').append(registerButton);
+          
+          // Set the action for the login button (redirect to login page)
+          loginButton.on('click', function () {
+            window.location.href = "/login";  // Replace with your login page URL
+          });
+          
+          // Set the action for the register button (redirect to register page)
+          registerButton.on('click', function () {
+            window.location.href = "/register";  // Replace with your register page URL
+          });
         }
         
-        // If any validation failed, show the modal
-        if (popupMessage !== "") {
-          event.preventDefault();  // Prevent form submission
-          
-          // Show modal
-          var pageHeight = $(document).height();
-          if (!$('#modalOverly').length) {
-            $('<div id="modalOverly"></div>').insertBefore('body');
-          }
-          
-          $('#modalOverly').css("height", pageHeight).fadeIn();
-          $('#popup-container').fadeIn();
-          
-          // Set the popup message
-          $('#popup-container h2').text(popupMessage);
-          
-          // If user is not logged in, add login and register buttons
-          if (loggedUserEmail == null) {
-            var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Login</a>');
-            
-            var registerButton = $('<button id="registerButton" class="btn">Register</button>');
-            
-            // Append the buttons to the popup
-            $('#popup-container').append(loginButton);
-            // $('#popup-container').append(registerButton);
-            
-            // Set the action for the login button (redirect to login page)
-            loginButton.on('click', function () {
-              window.location.href = "/login";  // Replace with your login page URL
-            });
-            
-            // Set the action for the register button (redirect to register page)
-            registerButton.on('click', function () {
-              window.location.href = "/register";  // Replace with your register page URL
-            });
-          }
-          
-          // Close popup when clicking on close button
-          $('.closepopup').on('click', function () {
-            $('#popup-container').fadeOut();
+        // Close popup when clicking on close button
+        $('.closepopup').on('click', function () {
+          $('#popup-container').fadeOut();
+          $('#modalOverly').fadeOut();
+        });
+        
+        // Close modal if clicked outside
+        $(document).mouseup(function (e) {
+          var container = $('#popup-container');
+          if (!container.is(e.target) && container.has(e.target).length === 0) {
+            container.fadeOut();
             $('#modalOverly').fadeOut();
-          });
-          
-          // Close modal if clicked outside
-          $(document).mouseup(function (e) {
-            var container = $('#popup-container');
-            if (!container.is(e.target) && container.has(e.target).length === 0) {
-              container.fadeOut();
-              $('#modalOverly').fadeOut();
-            }
-          });
-        }
+          }
+        });
+      }
+    }
+    
+    $(document).ready(function () {
+      // Xử lý sự kiện submit cho form
+      $('#product_form_10508262282').on('submit', function (event) {
+        validateAndShowPopup(event);  // Gọi hàm validate và hiển thị popup
       });
     });
-  
   </script>
+  
   
   <script th:inline="javascript">
     const productDetailIdReceived = /*[[${productDetailId}]]*/ [];
@@ -1064,7 +1066,111 @@
   </script>
   
   <script>
-  
+    $('.shopify-payment-button__button--unbranded').on('click', function (e) {
+      
+      e.preventDefault();
+      
+      let popupMessage = "";
+      
+      // Get selected size and color values
+      let selectedSize = $('input[name="sizeId"]:checked').val();
+      let selectedColor = $('input[name="colorId"]:checked').val();
+// Log the email of the logged-in user
+      // Check if any size is selected or any color is selected
+      if (selectedSize === undefined) {
+        popupMessage = "Please select size before adding to cart";
+      } else if (selectedColor === undefined) {
+        popupMessage = "Please select color before adding to cart";
+      }
+      
+      // Check if the user is logged in
+      if (loggedUserEmail == null) {
+        popupMessage = "Please login before adding to cart";
+      }
+      
+      // If any validation failed, show the modal
+      if (popupMessage !== "") {
+        e.preventDefault();  // Prevent form submission
+        
+        // Show modal
+        var pageHeight = $(document).height();
+        if (!$('#modalOverly').length) {
+          $('<div id="modalOverly"></div>').insertBefore('body');
+        }
+        
+        $('#modalOverly').css("height", pageHeight).fadeIn();
+        $('#popup-container').fadeIn();
+        
+        // Set the popup message
+        $('#popup-container h2').text(popupMessage);
+        
+        // If user is not logged in, add login and register buttons
+        if (loggedUserEmail == null) {
+          var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Login</a>');
+          var registerButton = $('<button id="registerButton" class="btn">Register</button>');
+          
+          // Append the buttons to the popup
+          $('#popup-container').append(loginButton);
+          $('#popup-container').append(registerButton);
+          
+          // Set the action for the login button (redirect to login page)
+          loginButton.on('click', function () {
+            window.location.href = "/login";  // Replace with your login page URL
+          });
+          
+          // Set the action for the register button (redirect to register page)
+          registerButton.on('click', function () {
+            window.location.href = "/register";  // Replace with your register page URL
+          });
+        }
+        
+        // Close popup when clicking on close button
+        $('.closepopup').on('click', function () {
+          $('#popup-container').fadeOut();
+          $('#modalOverly').fadeOut();
+        });
+        
+        // Close modal if clicked outside
+        $(document).mouseup(function (e) {
+          var container = $('#popup-container');
+          if (!container.is(e.target) && container.has(e.target).length === 0) {
+            container.fadeOut();
+            $('#modalOverly').fadeOut();
+          }
+        });
+      } else {
+        // Nếu validate thành công, thực hiện gửi yêu cầu AJAX
+        var form = $('#product_form_10508262282');
+        var formData = new FormData(form[0]);
+        var quantity = formData.get('quantity');
+        
+        var requestBody = {
+          productId: formData.get('productId'),
+          sizeId: selectedSize,
+          colorId: selectedColor,
+          quantity: quantity
+        };
+        
+        console.log("requestBody: ", requestBody);
+        
+        $.ajax({
+          url: '/buy-now',  // Địa chỉ API
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(requestBody), // Dữ liệu gửi đi
+          success: function (response) {
+            window.location.href = "/bill/checkout/buy-now"
+          },
+          error: function (xhr, status, error) {
+            // Xử lý lỗi nếu có
+            console.error('Error:', error);
+            // alert('An error occurred. Please try again.');
+          }
+        });
+        
+      }
+      
+    });
   </script>
 
 </th:block>
