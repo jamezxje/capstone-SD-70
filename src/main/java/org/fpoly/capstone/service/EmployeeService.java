@@ -10,11 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public interface EmployeeService {
 
-    Page<User> getEmployeesPaginated(Pageable pageable);
     User getEmployeeById(Long id);
-    User createEmployee(User user , Address address);
-    User updateEmployee(Long id, User user, Address address);
-//    User createEmployee(User user , Address address, MultipartFile file);
-//    User updateEmployee(String id, User user, Address address, MultipartFile file);
+//    User createEmployee(User user , Address address);
+//    User updateEmployee(Long id, User user, Address address);
+    User createEmployee(User user , Address address, MultipartFile file);
+    User updateEmployee(Long id, User user, Address address, MultipartFile file);
 
+    //Phân trang tìm kiếm
+    Page<User> getEmployeesPaginated(Pageable pageable);
+    Page<User> searchAndFilterEmployees(String keyword, String status, Pageable pageable);
 }

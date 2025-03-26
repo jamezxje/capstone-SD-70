@@ -56,22 +56,25 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public String listEmployeesPage(@RequestParam(defaultValue = "1") Integer numPage, Model model) {
-        int size = 5; // Số nhân viên trên mỗi trang
-        // Đảm bảo numPage không nhỏ hơn 1
-        if (numPage < 1) {
-            numPage = 1;
-        }
+    public String listEmployeesPage(@RequestParam(defaultValue = "1") Integer numPage,
+                                    @RequestParam(required = false) String keyword,
+                                    @RequestParam(required = false) String status,
+                                    Model model) {
+        int size = 5; // Số nhân viên mỗi trang
         Pageable pageable = PageRequest.of(numPage - 1, size);
-        Page<User> employees = employeeService.getEmployeesPaginated(pageable);
-        int totalPages = employees.getTotalPages() > 0 ? employees.getTotalPages() : 1;
-        // Đảm bảo numPage không lớn hơn totalPages
-        if (numPage > totalPages) {
-            numPage = totalPages;
+
+        Page<User> employees;
+        if ((keyword != null && !keyword.isEmpty()) || (status != null && !status.isEmpty())) {
+            employees = employeeService.searchAndFilterEmployees(keyword, status, pageable);
+        } else {
+            employees = employeeService.getEmployeesPaginated(pageable);
         }
         model.addAttribute("employees", employees);
         model.addAttribute("currentPage", numPage);
-        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalPages", employees.getTotalPages());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("status", status);
+
         return "views/users/employee/employee-list";
     }
 
@@ -94,18 +97,16 @@ public class EmployeeController {
     @PostMapping("/add")
     public String saveEmployee(@ModelAttribute("employee") User user,
                                @ModelAttribute("address") Address address,
-//                               @RequestParam("file") MultipartFile file,
+                               @RequestParam("file") MultipartFile file,
                                Model model) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
 
         // Kiểm tra xem file có null không & có rỗng không
-//        if (file == null || file.isEmpty()) {
-//            System.out.println("Không có ảnh được chọn!");
-//        } else {
-//            System.out.println("Ảnh tải lên: " + file.getOriginalFilename());
-//        }
-//        System.out.println("File nhận được: " + (file != null ? file.getOriginalFilename() : "Không có file"));
+        if (file == null || file.isEmpty()) {
+            model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
+        }
+
         // Validate dữ liệu
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "citizenIdentity", "gender");
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
@@ -126,8 +127,8 @@ public class EmployeeController {
         System.out.println("WardCode: " + address.getWardCode());
 
         // Gọi service để tạo nhân viên và địa chỉ
-//        employeeService.createEmployee(user, address,file);
-        employeeService.createEmployee(user, address);
+        employeeService.createEmployee(user, address,file);
+//        employeeService.createEmployee(user, address);
         return "redirect:/staff-management";
     }
 
@@ -152,10 +153,14 @@ public class EmployeeController {
     public String updateEmployee(@PathVariable Long id,
                                  @ModelAttribute("employee") User user,
                                  @ModelAttribute("address") Address address,
-//                                 @RequestParam(value = "file", required = false) MultipartFile file,
+                                 @RequestParam(value = "file", required = false) MultipartFile file,
                                  Model model) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
+
+        if (file == null || file.isEmpty()) {
+            model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
+        }
 
         // Validate dữ liệu chung
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "citizenIdentity", "gender");
@@ -181,8 +186,8 @@ public class EmployeeController {
         System.out.println("Avatar: " + user.getAvatar());
         // Gọi service để cập nhật nhân viên và địa chỉ
 
-        employeeService.updateEmployee(id, user, address);
-//        employeeService.updateEmployee(id, user, address,file);
+//        employeeService.updateEmployee(id, user, address);
+        employeeService.updateEmployee(id, user, address,file);
         return "redirect:/staff-management";
     }
 

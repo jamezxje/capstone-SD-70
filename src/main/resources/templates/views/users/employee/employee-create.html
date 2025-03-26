@@ -129,48 +129,27 @@
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">Ảnh đại diện</label>
-                                                <div class="col-lg-6 d-flex align-items-center">
-                                                    <!-- Khung ảnh -->
-                                                    <div class="avatar-container position-relative"
-                                                         style="width: 120px; height: 120px; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                                                        <img id="avatarPreview"
-                                                             th:src="${employee.avatar != null ? employee.avatar : '/assets/images/avatar/default-avatar.jpg'}"
-                                                             class="img-thumbnail"
-                                                             alt="Avatar"
-                                                             width="120" height="120"
-                                                             style="object-fit: cover;">
-                                                    </div>
-                                                    <!-- Nút thao tác -->
-                                                    <div class="ml-2 d-flex flex-column gap-2">
-                                                        <button title="Xem ảnh" type="button" id="viewAvatarBtn" class="btn btn-sm btn-dark" data-toggle="modal"
-                                                                data-target="#previewModal" style="display: none;">
-                                                            👁 Xem
-                                                        </button>
-                                                        <button title="Xóa ảnh" type="button" id="deleteAvatarBtn" class="btn btn-sm btn-dark" style="display: none;">
-                                                            ❌ Xóa
-                                                        </button>
-                                                        <button type="button" id="chooseAvatarBtn" class="btn btn-sm btn-outline-primary"
-                                                                onclick="document.getElementById('avatarInput').click()">
-                                                            ➕ Thêm ảnh
-                                                        </button>
-                                                    </div>
-                                                    <!-- Input file ẩn -->
-                                                    <input type="file" id="avatarInput" name="avatarFile" accept="image/*" hidden>
-                                                    <input type="hidden" id="avatarUrl" name="avatarUrl">
-                                                </div>
-                                            </div>
-                                            <!-- Modal xem ảnh -->
-                                            <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel"
-                                                 aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content text-center" style="width: 420px;">
-                                                        <div class="modal-header">
-                                                            <p class="modal-title" id="imageName"></p>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                                                <div class="col-lg-6 d-flex flex-column align-items-center">
+                                                    <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm" style="max-width: 300px; width: 100%;">
+                                                        <input id="upload" type="file" name="file" onchange="readURLAvatar(this);"
+                                                               class="form-control border-0" accept="image/*" hidden>
+                                                        <label id="upload-label" for="upload" class="font-weight-light text-muted"></label>
+                                                        <div class="input-group-append w-100">
+                                                            <label for="upload" class="btn btn-light m-0 rounded-pill px-4 d-flex align-items-center justify-content-center w-100">
+                                                                <i class="fa fa-cloud-upload mr-2 text-muted"></i>
+                                                                <small class="text-uppercase font-weight-bold text-muted mb-0">
+                                                                    Chọn file
+                                                                </small>
+                                                            </label>
                                                         </div>
-                                                        <div class="modal-body">
-                                                            <img id="modalPreviewImage" src="" class="img-fluid" style="width: 100%;">
-                                                        </div>
+                                                    </div>
+                                                    <div class="image-area mt-4">
+                                                        <img id="avatarPreview" th:src="${employee.avatar}"
+                                                             class="img-fluid rounded shadow-sm"
+                                                             style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;">
+                                                    </div>
+                                                    <div th:if="${fileError}" class="text-danger mt-2">
+                                                        <p th:text="${fileError}"></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -336,50 +315,50 @@
 <!--        });-->
 <!--    });-->
 <!--</script>-->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let avatarInput = document.getElementById("avatarInput");
-            let avatarPreview = document.getElementById("avatarPreview");
-            let avatarUrlInput = document.getElementById("avatarUrl");
-            let viewAvatarBtn = document.getElementById("viewAvatarBtn");
-            let deleteAvatarBtn = document.getElementById("deleteAvatarBtn");
-            let modalPreviewImage = document.getElementById("modalPreviewImage");
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            let avatarInput = document.getElementById("avatarInput");-->
+<!--            let avatarPreview = document.getElementById("avatarPreview");-->
+<!--            let avatarUrlInput = document.getElementById("avatarUrl");-->
+<!--            let viewAvatarBtn = document.getElementById("viewAvatarBtn");-->
+<!--            let deleteAvatarBtn = document.getElementById("deleteAvatarBtn");-->
+<!--            let modalPreviewImage = document.getElementById("modalPreviewImage");-->
 
-            // Kiểm tra nếu đã có ảnh thì hiện nút "Xem" và "Xóa"
-            if (avatarPreview.src && !avatarPreview.src.includes("default-avatar.jpg")) {
-                viewAvatarBtn.style.display = "block";
-                deleteAvatarBtn.style.display = "block";
-            }
-            // Xử lý khi chọn ảnh mới
-            avatarInput.addEventListener("change", function () {
-                let file = avatarInput.files[0];
-                if (file) {
-                    let reader = new FileReader();
-                    reader.onload = function (e) {
-                        avatarPreview.src = e.target.result; // Hiển thị ảnh xem trước
-                        avatarUrlInput.value = e.target.result; // Lưu URL vào input ẩn
-                        viewAvatarBtn.style.display = "block"; // Hiện nút Xem
-                        deleteAvatarBtn.style.display = "block"; // Hiện nút Xóa
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+<!--            // Kiểm tra nếu đã có ảnh thì hiện nút "Xem" và "Xóa"-->
+<!--            if (avatarPreview.src && !avatarPreview.src.includes("default-avatar.jpg")) {-->
+<!--                viewAvatarBtn.style.display = "block";-->
+<!--                deleteAvatarBtn.style.display = "block";-->
+<!--            }-->
+<!--            // Xử lý khi chọn ảnh mới-->
+<!--            avatarInput.addEventListener("change", function () {-->
+<!--                let file = avatarInput.files[0];-->
+<!--                if (file) {-->
+<!--                    let reader = new FileReader();-->
+<!--                    reader.onload = function (e) {-->
+<!--                        avatarPreview.src = e.target.result; // Hiển thị ảnh xem trước-->
+<!--                        avatarUrlInput.value = e.target.result; // Lưu URL vào input ẩn-->
+<!--                        viewAvatarBtn.style.display = "block"; // Hiện nút Xem-->
+<!--                        deleteAvatarBtn.style.display = "block"; // Hiện nút Xóa-->
+<!--                    };-->
+<!--                    reader.readAsDataURL(file);-->
+<!--                }-->
+<!--            });-->
 
-            // Xem ảnh lớn hơn trong modal
-            viewAvatarBtn.addEventListener("click", function () {
-                modalPreviewImage.src = avatarPreview.src;
-            });
+<!--            // Xem ảnh lớn hơn trong modal-->
+<!--            viewAvatarBtn.addEventListener("click", function () {-->
+<!--                modalPreviewImage.src = avatarPreview.src;-->
+<!--            });-->
 
-            // Xóa ảnh
-            deleteAvatarBtn.addEventListener("click", function () {
-                avatarPreview.src = "/assets/images/avatar/default-avatar.jpg"; // Quay lại ảnh mặc định
-                avatarInput.value = ""; // Xóa file đã chọn
-                avatarUrlInput.value = ""; // Xóa đường dẫn
-                viewAvatarBtn.style.display = "none"; // Ẩn nút Xem
-                deleteAvatarBtn.style.display = "none"; // Ẩn nút Xóa
-            });
-        });
-    </script>
+<!--            // Xóa ảnh-->
+<!--            deleteAvatarBtn.addEventListener("click", function () {-->
+<!--                avatarPreview.src = "/assets/images/avatar/default-avatar.jpg"; // Quay lại ảnh mặc định-->
+<!--                avatarInput.value = ""; // Xóa file đã chọn-->
+<!--                avatarUrlInput.value = ""; // Xóa đường dẫn-->
+<!--                viewAvatarBtn.style.display = "none"; // Ẩn nút Xem-->
+<!--                deleteAvatarBtn.style.display = "none"; // Ẩn nút Xóa-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
 
     <!--    <script>-->
 <!--        document.addEventListener("DOMContentLoaded", function () {-->
@@ -453,7 +432,22 @@
 <!--        });-->
 
 <!--    </script>-->
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function readURLAvatar(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('avatarPreview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            document.getElementById('upload').addEventListener('change', function () {
+                readURLAvatar(this);
+            });
+        });
+    </script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </th:block>
 </body>

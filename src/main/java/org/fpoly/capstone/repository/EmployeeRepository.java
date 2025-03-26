@@ -32,5 +32,17 @@ public interface EmployeeRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.citizenIdentity = :citizenIdentity")
     Optional<User> getEmployByCCCD(@Param("citizenIdentity") String citizenIdentity);
 
+    @Query("SELECT u FROM User u WHERE " +
+            "(:keyword IS NULL OR :keyword = '' OR " +
+            "LOWER(u.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(u.phoneNumber) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND (:status IS NULL OR u.status = :status) " +
+            "AND u.roles = :role")
+    Page<User> searchAndFilterEmployees(@Param("keyword") String keyword,
+                                        @Param("status") UserStatus status,
+                                        @Param("role") UserRole role,
+                                        Pageable pageable);
+
     User getById(Long id);
 }

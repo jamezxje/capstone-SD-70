@@ -14,11 +14,37 @@
 				<div class="card-header d-sm-flex d-block">
 					<div class="mr-auto mb-sm-0 mb-3">
 						<h4 class="card-title mb-2">Quản lý khách hàng</h4>
-						<!--							<span>Lorem Ipsum sit amet</span>-->
 					</div>
-					<a href="javascript:void(0);" class="btn btn-info light mr-3"><i class="las la-download scale3 mr-2"></i>Import Csv</a>
+					<a href="/customer-management" class="btn btn-info light mr-3">Tải lại</a>
 					<a href="/customer-management/view-add" class="btn btn-info">+ Add Khách hàng</a>
 				</div>
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-center w-100">
+						<div class="d-flex justify-content-center w-100 gap-5" style="width: 100%;">
+							<!-- Form tìm kiếm -->
+							<form th:action="@{/customer-management}" method="get" class="d-flex gap-3 mr-5">
+								<input type="text" name="keyword" class="form-control"
+									   placeholder="Nhập tên, số điện thoại hoặc email..." th:value="${keyword}"
+									   style="flex: 1; min-width: 300px;">
+								<button type="submit" class="btn btn-primary">
+									<i class="fa fa-search"></i> Tìm kiếm
+								</button>
+							</form>
+							<!-- Form lọc trạng thái -->
+							<form th:action="@{/customer-management}" method="get" class="d-flex align-items-center gap-3 ">
+								<label class="mb-0 mr-1"><strong>Trạng thái:</strong></label>
+								<select class="form-control form-select"
+										name="status" style="flex: 1; min-width: 250px; border-radius: 5px; padding: 5px; cursor: pointer;"
+										onchange="this.form.submit()">
+									<option value="">Tất cả</option>
+									<option value="ACTIVATED" th:selected="${status == 'ACTIVATED'}">Đang sử dụng</option>
+									<option value="NOT_ACTIVATED" th:selected="${status == 'NOT_ACTIVATED'}">Ngừng sử dụng</option>
+								</select>
+							</form>
+						</div>
+					</div>
+				</div>
+				<hr>
 				<div class="card-body">
 					<div class="table-responsive">
 						<div id="ListDatatableView_wrapper" class="dataTables_wrapper no-footer"><table class="table style-1 dataTable no-footer" id="ListDatatableView" role="grid" aria-describedby="ListDatatableView_info">
@@ -39,26 +65,26 @@
 								</td>
 								<td>
 									<div class="media style-1">
-										<img th:src="@{customer.avatar}" class="img-fluid mr-2" alt="">
+										<img th:src="${customer.avatar}" class="img-fluid mr-2" alt="">
 										<div class="media-body">
-											<h6 th:text="${customer.fullName}"></h6>
-											<span><a th:text="${customer.email}" class="__cf_email__" data-cfemail="6c060304020803092c0b010d0500420f0301">[email&nbsp;protected]</a></span>
+											<h6 th:text="${customer.fullName != null ? customer.fullName : 'Không có dữ liệu'}"></h6>
+											<span><a th:text="${customer.email != null ? customer.email : 'Không có dữ liệu'}" class="__cf_email__" data-cfemail="6c060304020803092c0b010d0500420f0301">[email&nbsp;protected]</a></span>
 										</div>
 									</div>
 								</td>
 								<td>
 									<div>
-										<h6 th:text="${customer.phoneNumber}"></h6>
+										<h6 th:text="${customer.phoneNumber != null ? customer.phoneNumber : 'Không có dữ liệu'}"></h6>
 									</div>
 								</td>
 								<td>
 									<div>
-										<h6 class="text-primary" th:text="${#dates.format(customer.dateOfBirth, 'dd/MM/yyyy')}"></h6>
+										<h6 class="text-primary" th:text="${customer.dateOfBirth != null ? #dates.format(customer.dateOfBirth, 'dd/MM/yyyy') : 'Không có dữ liệu'}"></h6>
 									</div>
 								</td>
 								<td>
 									<div>
-										<h6 class="text-primary" th:text="${customer.gender ? 'Nam' : 'Nữ'}"></h6>
+										<h6 class="text-primary" th:text="${customer.gender != null ? (customer.gender ? 'Nam' : 'Nữ') : 'Không có dữ liệu'}"></h6>
 									</div>
 								</td>
 								<td><span class="badge badge-warning"  th:text="${customer.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED ? 'Kích hoạt'
@@ -67,7 +93,7 @@
 								</td>
 								<td>
 									<div class="d-flex action-button">
-										<a th:href="@{/customer-management/detail/{id}(id=${customer.id})}" title="Chi tiết nhân viên" href="javascript:void(0);" class=" btn btn-xs px-2 light btn-danger">
+										<a th:href="@{/customer-management/detail/{id}(id=${customer.id})}" title="Chi tiết khách hàng" href="javascript:void(0);" class=" btn btn-xs px-2 light btn-danger">
 											<svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
 												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect>
 													<circle fill="#000000" cx="5" cy="12" r="2"></circle>
@@ -75,20 +101,22 @@
 													<circle fill="#000000" cx="19" cy="12" r="2"></circle></g>
 											</svg>
 										</a>
-
-										<a th:href="@{/customer-management/view-update/{id}(id=${customer.id})}" title="Cập nhật nhân viên" href="javascript:void(0);" class="ml-2 btn btn-info btn-xs light px-2">
+										<a th:href="@{/customer-management/view-update/{id}(id=${customer.id})}" title="Cập nhật khách hàng" href="javascript:void(0);" class="ml-2 btn btn-info btn-xs light px-2">
 											<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="">
 												<path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
 											</svg>
 										</a>
+<!--										<a th:href="@{/customer-management/view-update-profile/{id}(id=${customer.id})}" title="Cập nhật khách hàng" href="javascript:void(0);" class="ml-2 btn btn-info btn-xs light px-2">-->
+<!--											<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="">-->
+<!--												<path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>-->
+<!--											</svg>-->
+<!--										</a>-->
 									</div>
 								</td>
-							</tr></tbody>
+							</tr>
+							</tbody>
 						</table>
-						<div class="dataTables_info" id="ListDatatableView_info" role="status" aria-live="polite">
-							Trang <span th:text="${currentPage}"></span> / <span th:text="${totalPages}"></span>
-						</div>
-						<div class="dataTables_paginate paging_simple_numbers" id="ListDatatableView_paginate">
+							<div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;" class="dataTables_paginate paging_simple_numbers" id="ListDatatableView_paginate">
 							<!-- Nút Previous -->
 							<a class="paginate_button previous"
 							   th:classappend="${currentPage == 1} ? 'disabled'"

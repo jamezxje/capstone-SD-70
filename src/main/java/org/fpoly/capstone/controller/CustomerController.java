@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -44,24 +45,26 @@ public class CustomerController {
     }
 
     @GetMapping
-    public String listCustomersPage(@RequestParam(defaultValue = "1") Integer numPage, Model model) {
+    public String listCustomersPage(@RequestParam(defaultValue = "1") Integer numPage,
+                                    @RequestParam(required = false) String keyword,
+                                    @RequestParam(required = false) String status,
+                                    Model model) {
         int size = 5; // Số nhân viên trên mỗi trang
-        // Đảm bảo numPage không nhỏ hơn 1
-        if (numPage < 1) {
-            numPage = 1;
-        }
         Pageable pageable = PageRequest.of(numPage - 1, size);
-        Page<User> customer = customerService.getCustomerPaginated(pageable);
-        int totalPages = customer.getTotalPages() > 0 ? customer.getTotalPages() : 1;
-        // Đảm bảo numPage không lớn hơn totalPages
-        if (numPage > totalPages) {
-            numPage = totalPages;
+        Page<User> customer;
+        if ((keyword != null && !keyword.isEmpty()) || (status != null && !status.isEmpty())) {
+            customer = customerService.searchAndFilterCustomer(keyword, status, pageable);
+        } else {
+            customer = customerService.getCustomerPaginated(pageable);
         }
         model.addAttribute("customer", customer);
         model.addAttribute("currentPage", numPage);
-        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalPages", customer.getTotalPages());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("status", status);
         return "views/users/customer/customer-list";
     }
+
 
     @GetMapping("/view-add")
     public String showAddForm(Model model) {
@@ -81,9 +84,14 @@ public class CustomerController {
     @PostMapping("/add")
     public String saveCustomer(@ModelAttribute("customer") User user,
                                 @ModelAttribute("address") Address address,
+                                @RequestParam("file") MultipartFile file,
                                 Model model) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
+
+        if (file == null || file.isEmpty()) {
+            model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
+        }
 
         // Validate dữ liệu
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "gender");
@@ -95,16 +103,16 @@ public class CustomerController {
             user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
-            model.addAttribute("employee", user);
+            model.addAttribute("customer", user);
             model.addAttribute("address", address);
-            return "views/users/employee/customer-create";
+            return "views/users/customer/customer-create";
         }
 
         System.out.println("ProvinceId: " + address.getProvinceId());
         System.out.println("ToDistrictId: " + address.getToDistrictId());
         System.out.println("WardCode: " + address.getWardCode());
         // Gọi service để tạo nhân viên và địa chỉ
-        customerService.createCustomer(user, address);
+        customerService.createCustomer(user, address,file);
         return "redirect:/customer-management";
     }
 
@@ -129,9 +137,14 @@ public class CustomerController {
     public String updateCustomer(@PathVariable Long id,
                                  @ModelAttribute("customer") User user,
                                  @ModelAttribute("address") Address address,
+                                 @RequestParam("file") MultipartFile file,
                                  Model model) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
+
+        if (file == null || file.isEmpty()) {
+            model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
+        }
 
         // Validate dữ liệu
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "gender");
@@ -143,7 +156,7 @@ public class CustomerController {
             user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
-            model.addAttribute("employee", user);
+            model.addAttribute("customer", user);
             model.addAttribute("address", address);
             return "views/users/customer/customer-update";
         }
@@ -155,7 +168,22 @@ public class CustomerController {
         System.out.println("Ward: " + address.getWard());
         // Gọi service để cập nhật nhân viên và địa chỉ
 
-        customerService.updateCustomer(id, user, address);
+        customerService.updateCustomer(id, user, address,file);
         return "redirect:/customer-management";
+    }
+
+    @GetMapping(path = "view-update-profile/{id}")
+    public String onOpenCustomerProfile(Model model,@PathVariable Long id) {
+        User customer = customerService.getCustomerById(id);
+
+//        User loggedUser = customerService.getCustomerById(id);
+//
+//        List<Address> listAddress = this.customerService.getListAddressByUser();
+//        model.addAttribute("loggedUser", loggedUser);
+//        model.addAttribute("listAddress", listAddress);
+//        model.addAttribute("createAddressRequest", new CreateAddressRequest());
+//        model.addAttribute("updateAddressRequest", new CreateAddressRequest());
+
+        return "views/users/customer/customer-profile";
     }
 }

@@ -7,10 +7,7 @@ import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.CustomerRepository;
-import org.fpoly.capstone.service.AddressService;
-import org.fpoly.capstone.service.CustomerService;
-import org.fpoly.capstone.service.EmailService;
-import org.fpoly.capstone.service.UserService;
+import org.fpoly.capstone.service.*;
 import org.fpoly.capstone.utils.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,9 +41,30 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private AddressService addressService;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
     @Override
     public Page<User> getCustomerPaginated(Pageable pageable) {
         return customerRepository.findCustomersSortedByLastModifiedDate(UserRole.ROLE_CUSTOMER, pageable);
+    }
+
+    @Override
+    public Page<User> searchAndFilterCustomer(String keyword, String status, Pageable pageable) {
+        UserStatus userStatus = null;
+        // Chuyển đổi status từ String sang Enum UserStatus
+        if (status != null && !status.isEmpty()) {
+            try {
+                userStatus = UserStatus.valueOf(status.toUpperCase()); // Chuyển về chữ hoa
+            } catch (IllegalArgumentException e) {
+                userStatus = null; // Nếu không khớp với Enum, đặt null để lấy tất cả
+            }
+        }
+        // Nếu keyword rỗng, đặt về null để tránh lỗi truy vấn
+        if (keyword != null && keyword.trim().isEmpty()) {
+            keyword = null;
+        }
+        return customerRepository.searchAndFilterCustomer(keyword, userStatus, UserRole.ROLE_CUSTOMER, pageable);
     }
 
     @Override
@@ -55,10 +74,15 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public User createCustomer(User user, Address address) {
+    public User createCustomer(User user, Address address, MultipartFile file) {
         String rawPassword = PasswordUtil.generateRandomPassword(8); // Tạo mật khẩu 8 ký tự
         String encodedPassword = passwordEncoder.encode(rawPassword);// Mã hóa mật khẩu
         String userServiceName = userService.getName();
+
+        String urlAvatar = null;
+        if (file != null && !file.isEmpty()) {
+            urlAvatar = cloudinaryService.uploadAvatar(file);
+        }
 
         // Tạo đối tượng user
         User newUser = new User();
@@ -68,6 +92,7 @@ public class CustomerServiceImpl implements CustomerService {
         newUser.setPassword(encodedPassword);
         newUser.setDateOfBirth(user.getDateOfBirth());
         newUser.setGender(user.getGender());
+        newUser.setAvatar(urlAvatar);
         newUser.setRoles(UserRole.ROLE_CUSTOMER);
         newUser.setStatus(UserStatus.ACTIVATED);
         newUser.setCreatedBy(userServiceName);
@@ -111,12 +136,17 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public User updateCustomer(Long id, User user, Address address) {
+    public User updateCustomer(Long id, User user, Address address,MultipartFile file) {
         User existingCustomer = customerRepository.findById(id).orElse(null);
         if (existingCustomer == null) {
             return null;
         }
         String userServiceName = userService.getName();
+
+        String urlAvatar = null;
+        if (file != null && !file.isEmpty()) {
+            urlAvatar = cloudinaryService.uploadAvatar(file);
+        }
 
         // Cập nhật thông tin khách hàng
         existingCustomer.setFullName(user.getFullName());
@@ -125,6 +155,7 @@ public class CustomerServiceImpl implements CustomerService {
         existingCustomer.setDateOfBirth(user.getDateOfBirth());
         existingCustomer.setGender(user.getGender());
         existingCustomer.setStatus(user.getStatus());
+        existingCustomer.setAvatar(urlAvatar); // Cập nhật avatar
         existingCustomer.setUpdatedBy(userServiceName);
         existingCustomer.setLastModifiedDate(new Date());
 

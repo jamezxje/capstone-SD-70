@@ -121,47 +121,29 @@
 													</select>
 												</div>
 											</div>
-											<!-- Avatar Section -->
 											<div class="form-group row">
 												<label class="col-lg-4 col-form-label">Ảnh đại diện</label>
-												<div class="col-lg-6 d-flex align-items-center position-relative">
-													<!-- Avatar -->
-													<div class="avatar-container position-relative" style="display: inline-block; position: relative;">
-														<img id="avatarPreview"
-															 th:src="@{'/assets/images/avatar/' + ${customer.avatar}}"
-															 class="img-thumbnail"
-															 alt="Avatar"
-															 width="120" height="120"
-															 style="border: 1px solid #ffffff; border-radius: 10px; object-fit: cover;">
-														<!-- Nút Xem trước -->
-														<div style="position: absolute; bottom: 5px; right: 5px; display: flex; gap: 5px;">
-															<!-- Nút Xem trước (mờ, đặt trong ảnh) -->
-															<button type="button" data-toggle="modal"  title="Xem ảnh" data-target="#previewModal"
-																	style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
-                        											border-radius: 50%; background-color: rgba(0, 0, 0, 0.5); color: white; border: none;">
-																<i class="fas fa-eye"></i>
-															</button>
+												<div class="col-lg-6 d-flex flex-column align-items-center">
+													<div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm" style="max-width: 300px; width: 100%;">
+														<input id="upload" type="file" name="file" onchange="readURLAvatar(this);"
+															   class="form-control border-0" accept="image/*" hidden>
+														<label id="upload-label" for="upload" class="font-weight-light text-muted"></label>
+														<div class="input-group-append w-100">
+															<label for="upload" class="btn btn-light m-0 rounded-pill px-4 d-flex align-items-center justify-content-center w-100">
+																<i class="fa fa-cloud-upload mr-2 text-muted"></i>
+																<small class="text-uppercase font-weight-bold text-muted mb-0">
+																	Chọn file
+																</small>
+															</label>
 														</div>
-														<!-- Modal -->
-														<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
-															<div class="modal-dialog" role="document">
-																<div class="modal-content text-center" style=" width: 420px; height: auto;" >
-																	<div class="modal-header">
-																		<!-- Hiển thị tên ảnh -->
-																		<p class="modal-title" id="imageName" th:text="${customer.avatar}"></p>
-
-																		<!-- Nút đóng -->
-																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																			<span aria-hidden="true">&times;</span>
-																		</button>
-																	</div>
-																	<div class="modal-body text-center">
-																		<!-- Hiển thị ảnh với chiều rộng 80% modal -->
-																		<img id="modalPreviewImage" src="" class="img-fluid" style="width: 100%; height: auto;">
-																	</div>
-																</div>
-															</div>
-														</div>
+													</div>
+													<div class="image-area mt-4">
+														<img id="avatarPreview" th:src="${customer.avatar}"
+															 class="img-fluid rounded shadow-sm"
+															 style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;">
+													</div>
+													<div th:if="${fileError}" class="text-danger mt-2">
+														<p th:text="${fileError}"></p>
 													</div>
 												</div>
 											</div>
@@ -175,19 +157,24 @@
 			</div>
 		</div>
 	</div>
-<script>
-	// Khi mở modal, cập nhật ảnh & tên file
-	document.addEventListener("DOMContentLoaded", function () {
-		document.querySelector("[data-target='#previewModal']").addEventListener("click", function () {
-			let imgElement = document.getElementById("avatarPreview");
-			let imgSrc = imgElement.src;
-			let imgName = imgSrc.substring(imgSrc.lastIndexOf("/") + 1); // Lấy tên file từ URL
-
-			document.getElementById("modalPreviewImage").src = imgSrc;
-			document.getElementById("imageName").textContent = imgName; // Cập nhật tên ảnh
+	<script>
+		// Khi mở modal, cập nhật ảnh & tên file
+		document.addEventListener("DOMContentLoaded", function () {
+			let avatarPreview = document.getElementById("avatarPreview");
+			let viewAvatarBtn = document.getElementById("viewAvatarBtn");
+			// Kiểm tra nếu có ảnh thì hiển thị nút "Xem ảnh"
+			if (avatarPreview.src && avatarPreview.style.display !== "none") {
+				viewAvatarBtn.style.display = "inline-block";
+			}
+			// Khi mở modal, cập nhật ảnh & tên file
+			document.querySelector("[data-target='#previewModal']").addEventListener("click", function () {
+				let imgSrc = avatarPreview.src;
+				let imgName = imgSrc.substring(imgSrc.lastIndexOf("/") + 1); // Lấy tên file từ URL
+				document.getElementById("modalPreviewImage").src = imgSrc;
+				document.getElementById("imageName").textContent = imgName; // Cập nhật tên ảnh
+			});
 		});
-	});
-</script>
+	</script>
 </th:block>
 </body>
 </html>

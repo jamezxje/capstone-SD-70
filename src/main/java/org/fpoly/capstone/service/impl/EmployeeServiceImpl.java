@@ -41,15 +41,33 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private AddressService addressService;
 
-//    @Override
-//    public Page<User> getEmployeesPaginated(Pageable pageable) {
-//        return employeeRepository.findByRolesAndStatus(UserRole.ROLE_USER, UserStatus.ACTIVATED, pageable);
-//    }
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
     @Override
     public Page<User> getEmployeesPaginated(Pageable pageable) {
         return employeeRepository.findEmployeesSortedByLastModifiedDate(UserRole.ROLE_USER, pageable);
     }
 
+@Override
+public Page<User> searchAndFilterEmployees(String keyword, String status, Pageable pageable) {
+    UserStatus userStatus = null;
+
+    // Chuyển đổi status từ String sang Enum UserStatus
+    if (status != null && !status.isEmpty()) {
+        try {
+            userStatus = UserStatus.valueOf(status.toUpperCase()); // Chuyển về chữ hoa
+        } catch (IllegalArgumentException e) {
+            userStatus = null; // Nếu không khớp với Enum, đặt null để lấy tất cả
+        }
+    }
+    // Nếu keyword rỗng, đặt về null để tránh lỗi truy vấn
+    if (keyword != null && keyword.trim().isEmpty()) {
+        keyword = null;
+    }
+    return employeeRepository.searchAndFilterEmployees(keyword, userStatus, UserRole.ROLE_USER, pageable);
+//    return employeeRepository.searchAndFilterEmployees(keyword, userStatus, pageable);
+}
     @Override
     public User getEmployeeById(Long id) {
         return employeeRepository.findEmployAddresses(id).orElse(null);
@@ -57,26 +75,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     @Override
-    public User createEmployee(User user, Address address) {
-//        public User createEmployee(User user, Address address, MultipartFile file) {
+    public User createEmployee(User user, Address address, MultipartFile file) {
         String rawPassword = PasswordUtil.generateRandomPassword(8); // Tạo mật khẩu 8 ký tự
         String encodedPassword = passwordEncoder.encode(rawPassword);
         String userServiceName = userService.getName();
 
         // xử lý ảnh
-//        String urlAvatar = null;
-//        if (file != null && !file.isEmpty()) {
-//            urlAvatar = fileUploadImagesService.saveAvatar(file, "employee", user.getId()); // Lưu ảnh & nhận URL
-//            System.out.println("Avatar URL: " + urlAvatar); // Debug kiểm tra đường dẫn ảnh
-//        }
-
+        String urlAvatar = null;
+        if (file != null && !file.isEmpty()) {
+            urlAvatar = cloudinaryService.uploadAvatar(file);
+        }
         // Tạo đối tượng user
         User newUser = new User();
         newUser.setFullName(user.getFullName());
         newUser.setEmail(user.getEmail());
         newUser.setPhoneNumber(user.getPhoneNumber());
         newUser.setPassword(encodedPassword);
-//        newUser.setAvatar(urlAvatar);
+        newUser.setAvatar(urlAvatar);
         newUser.setDateOfBirth(user.getDateOfBirth());
         newUser.setCitizenIdentity(user.getCitizenIdentity());
         newUser.setGender(user.getGender());
@@ -109,7 +124,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             newUser.setUpdatedBy(userServiceName);
             newAddress.setUser(savedUser); // Không cần tìm lại user nữa
             // Lưu địa chỉ vào database
-//            addressRepository.save(newAddress);
+
             Address savedAddress = addressRepository.save(newAddress);
             System.out.println("Address ID: " + savedAddress.getId()); // Debug xem có lưu không
         }
@@ -121,8 +136,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     @Override
-        public User updateEmployee(Long id, User user, Address address) {
-//    public User updateEmployee(String id, User user, Address address, MultipartFile file) {
+    public User updateEmployee(Long id, User user, Address address, MultipartFile file) {
         User existingEmployee = employeeRepository.findById(id).orElse(null);
         if (existingEmployee == null) {
             return null;
@@ -130,10 +144,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         String userServiceName = userService.getName();
 
         // Nếu có file mới => Upload lên Cloudinary, ngược lại giữ nguyên ảnh cũ
-//        String urlAvatar = existingEmployee.getAvatar(); // Giữ ảnh cũ
-//        if (file != null && !file.isEmpty()) {
-//            urlAvatar = uploadAvatarToCloudinary.uploadImage(file); // Upload ảnh mới
-//        }
+        String urlAvatar = existingEmployee.getAvatar(); // Giữ ảnh cũ
+        if (file != null && !file.isEmpty()) {
+            urlAvatar = cloudinaryService.uploadAvatar(file); // Upload ảnh mới
+        }
         // Cập nhật thông tin nhân viên
         existingEmployee.setFullName(user.getFullName());
         existingEmployee.setEmail(user.getEmail());
@@ -142,7 +156,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         existingEmployee.setGender(user.getGender());
         existingEmployee.setCitizenIdentity(user.getCitizenIdentity());
         existingEmployee.setStatus(user.getStatus());
-//        existingEmployee.setAvatar(urlAvatar); // Cập nhật avatar
+        existingEmployee.setAvatar(urlAvatar); // Cập nhật avatar
         existingEmployee.setUpdatedBy(userServiceName);
         existingEmployee.setLastModifiedDate(new Date());
 
