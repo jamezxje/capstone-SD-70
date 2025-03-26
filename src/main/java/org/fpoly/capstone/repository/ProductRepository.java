@@ -21,21 +21,21 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT pd.id, p.code, p.name, c.name AS categoryName, s.name AS sizeName, " +
             "cc.name AS colorName, m.name AS materialName, b.name AS brandName, " +
-            "pd.quantity, pd.price, pd.gender, pd.status " +
+            "pd.quantity, pd.price, pd.gender, pd.status, pd.featureImage as image " +
             "FROM Product p " +
             "JOIN p.category c " +
             "JOIN p.productVariantList pd " +
             "JOIN pd.size s " +
             "JOIN pd.color cc " +
             "JOIN pd.material m " +
-            "JOIN pd.brand b  " +
-            "WHERE pd.status = 'DANG_SU_DUNG'" +
+            "JOIN pd.brand b " +
+            "WHERE pd.status = 'DANG_SU_DUNG' " +
             "ORDER BY pd.lastModifiedDate DESC")
     Page<Object[]> findAllProductDetails(Pageable pageable);
 
     @Query("SELECT pd.id, p.code, p.name, c.name AS categoryName, s.name AS sizeName, " +
             "cc.name AS colorName, m.name AS materialName, b.name AS brandName, " +
-            "pd.quantity, pd.price, pd.gender, pd.status " +
+            "pd.quantity, pd.price, pd.gender, pd.status ,  pd.featureImage as image " +
             "FROM Product p " +
             "JOIN p.category c " +
             "JOIN p.productVariantList pd " +

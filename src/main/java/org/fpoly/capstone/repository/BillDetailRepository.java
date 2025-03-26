@@ -25,7 +25,8 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
              bd.quantity AS quantity,
              s.name AS size,\s
              c.name AS color ,
-                                 bd.id_product_detail AS id_product
+                                 bd.id_product_detail AS id_product ,
+                               pd.feature_image AS image
               FROM bill_detail bd
               JOIN product_detail pd ON bd.id_product_detail = pd.id
               JOIN product p ON pd.id_product = p.id

@@ -25,5 +25,5 @@ public class ProductRequest {
     private BigDecimal price;
     private Gender gender;
     private ProductVariantStatus status;
-
+    private String image;
 }

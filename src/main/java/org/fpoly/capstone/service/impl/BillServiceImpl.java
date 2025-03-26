@@ -382,8 +382,9 @@ public class BillServiceImpl implements BillService {
             BigDecimal price = (BigDecimal) result[9];
             Gender gender = (Gender) result[10];
             ProductVariantStatus status = (ProductVariantStatus) result[11];
+            String image = (String) result[12];
             ProductRequest productRequest = new ProductRequest(id , code , name , categoryName , sizeName , colorName ,
-                    materialName , brandName , quantity , price , gender , status) ;
+                    materialName , brandName , quantity , price , gender , status , image) ;
             productRequests.add(productRequest);
         }
        return new PageImpl<>(productRequests, pageable, list.getTotalElements());
@@ -541,8 +542,9 @@ public class BillServiceImpl implements BillService {
             BigDecimal price = (BigDecimal) result[9];
             Gender gender = (Gender) result[10];
             ProductVariantStatus status = (ProductVariantStatus) result[11];
+            String image = (String) result[12];
             ProductRequest productRequest = new ProductRequest(id , code , name , categoryName , sizeName , colorName ,
-                    materialName , brandName , quantity , price , gender , status) ;
+                    materialName , brandName , quantity , price , gender , status , image ) ;
             productRequests.add(productRequest);
         }
         return new PageImpl<>(productRequests , pageable , results.getTotalElements());
@@ -585,7 +587,8 @@ public class BillServiceImpl implements BillService {
             String size = (String) result[4];
             String color = (String) result[5];
             Long idProductDetail = (Long) result[6];
-            BillProductDTO billProductDTO = new BillProductDTO(id, name, price, quantity, size, color , idProductDetail);
+            String image = (String) result[7];
+            BillProductDTO billProductDTO = new BillProductDTO(id, name, price, quantity, size, color , idProductDetail , image);
             billDetails.add(billProductDTO);
         }
         return billDetails;

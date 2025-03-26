@@ -19,4 +19,5 @@ private Integer quantity;
 private String size;
 private String color;
 private Long idProductDetail;
+private String image;
 }

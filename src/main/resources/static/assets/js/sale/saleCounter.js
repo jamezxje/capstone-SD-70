@@ -29,6 +29,9 @@ function createInvoiceTab(invoiceNumber, invoiceData) {
         const selectedInvoiceId = this.getAttribute('data-id');
         const codeSelectBill = this.getAttribute('data-code');
         console.log("Hóa đơn  chọn: ", selectedInvoiceId);
+        const tabContent = document.querySelector('.tab-content.active-content');
+        const tbody = tabContent.querySelector('tbody');
+        tbody.innerHTML = '';
         fetchProductsForAllBills(selectedInvoiceId)
         fetchVouchers(currentPageVoucher);
         console.log("InvoiCoumt", invoiceCount);
@@ -81,6 +84,7 @@ function createInvoiceTab(invoiceNumber, invoiceData) {
             <thead>
                 <tr>
                     <th scope="col">STT</th>
+                    <th scope="col">Ảnh</th>
                     <th scope="col">Tên sản phẩm</th>
                     <th scope="col">Size</th>
                     <th scope="col">Màu sắc</th>
@@ -368,7 +372,7 @@ async function confirmProduct() {
         });
 
         console.log("data send ", billDetails);
-        addProductToInvoice1(idProductD, nameProductD, sizeProductD, colorProductD, quantityInputChange, priceProductD);
+        addProductToInvoice1(idProductD, nameProductD, sizeProductD, colorProductD, quantityInputChange, priceProductD , imageD);
         await saveProductInBill(idBill);
         fetchProducts(0);
         toastr.options.positionClass = 'toast-top-right';
@@ -377,22 +381,10 @@ async function confirmProduct() {
     }
 }
 
-let idProductD = null, nameProductD = null, sizeProductD = null, colorProductD = null, priceProductD = null;
+let idProductD = null, nameProductD = null, sizeProductD = null, colorProductD = null, priceProductD = null , imageD = null;
 
 let idProductDetail = null;
 let productForBill = null;
-
-async function fetchProductsForAllBills(billIds) {
-
-    try {
-        const response = await axios.get(`/products/${billIds}`, {
-            params: {t: new Date().getTime()}
-        });
-        console.log("Dữ liệu trả về từ API:", response.data);
-        idProductDetail = response.data[0].idProductDetail;
-
-        console.log('Check dữ liệu ', idProductDetail)
-        if (Array.isArray(response.data)) {
 
             async function fetchProductsForAllBills(billIds) {
 
@@ -408,7 +400,7 @@ async function fetchProductsForAllBills(billIds) {
 
 
                         response.data.forEach(product => {
-                            addProductToInvoice(product.id, product.name, product.size, product.color, product.quantity, product.price);
+                            addProductToInvoice(product.id, product.name, product.size, product.color, product.quantity, product.price , product.image);
                         });
                     } else {
                         console.error("Dữ liệu trả về không phải là mảng");
@@ -416,17 +408,7 @@ async function fetchProductsForAllBills(billIds) {
                 } catch (error) {
                     console.log("Lỗi khi gọi API sản phẩm:", error);
                 }
-            }
 
-            response.data.forEach(product => {
-                addProductToInvoice(product.id, product.name, product.size, product.color, product.quantity, product.price);
-            });
-        } else {
-            console.error("Dữ liệu trả về không phải là mảng");
-        }
-    } catch (error) {
-        console.log("Lỗi khi gọi API sản phẩm:", error);
-    }
 }
 
 async function getVoucherInBill(minimumBill) {
@@ -469,7 +451,7 @@ function clearTable() {
 
 let totalBill = 0;
 
-function addProductToInvoice(id, name, size, color, quantity, price) {
+function addProductToInvoice(id, name, size, color, quantity, price , image) {
     const tabContent = document.querySelector('.tab-content.active-content'); // Bảng chi tiết hóa đơn
     const tbody = tabContent.querySelector('tbody');
     let productExists = false;
@@ -507,6 +489,7 @@ function addProductToInvoice(id, name, size, color, quantity, price) {
 
         newRow.innerHTML = `
             <td >${tbody.rows.length + 1}</td>
+            <td><img src="${image}" alt="${name}" style="width: 50px; height: 50px;"></td>
             <td>${name}</td>
             <td>${size}</td>
             <td>${color}</td>
@@ -536,7 +519,7 @@ function addProductToInvoice(id, name, size, color, quantity, price) {
     console.log('Check totoal Bill', totalBill)
 }
 
-function addProductToInvoice1(id, name, size, color, quantity, price) {
+function addProductToInvoice1(id, name, size, color, quantity, price , image) {
     const tabContent = document.querySelector('.tab-content.active-content'); // Bảng chi tiết hóa đơn
     const tbody = tabContent.querySelector('tbody');
     let productExists = false;
@@ -572,6 +555,7 @@ function addProductToInvoice1(id, name, size, color, quantity, price) {
         productTotal = quantity * price;
         newRow.innerHTML = `
             <td >${tbody.rows.length + 1}</td>
+            <td><img src="${image}" alt="${name}" style="width: 50px; height: 50px;"></td>
             <td>${name}</td>
             <td>${size}</td>
             <td>${color}</td>
@@ -1675,6 +1659,7 @@ function attachChooseProductEvent() {
             const productColor = this.getAttribute('data-product-color');
             const productQuantity = this.getAttribute('data-product-quantity');
             const productPrice = this.getAttribute('data-product-price');
+            const image = this.getAttribute('data-product-image');
             console.log("Check product id", productId)
             console.log("Check price", productPrice)
             console.log('Check quantity', productQuantity)
@@ -1683,6 +1668,7 @@ function attachChooseProductEvent() {
             sizeProductD = productSize;
             colorProductD = productColor;
             priceProductD = productPrice;
+            imageD = image;
             openModalInput();
 
             console.log("Check input chose quantity", quantityInputChange);
@@ -1724,6 +1710,7 @@ function updateProductTable(products) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${index + 1}</td>
+              <td><img src="${productDetail.image}" alt="${productDetail.name}" style="width: 50px; height: 50px;"></td>
             <td>${productDetail.code}</td>
             <td>${productDetail.name}</td>
             <td>${productDetail.categoryName}</td>
@@ -1741,7 +1728,8 @@ function updateProductTable(products) {
                     data-product-size="${productDetail.sizeName}"
                     data-product-color="${productDetail.colorName}"
                     data-product-quantity="${productDetail.quantity}"
-                    data-product-price="${productDetail.price}">
+                    data-product-price="${productDetail.price}"
+                    data-product-image ="${productDetail.image}">
                     <i class="bi bi-chevron-down"></i>
                 </button>
             </td>
