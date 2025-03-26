@@ -48,15 +48,16 @@ public class Bill {
     @Column(name = "code")
     private String code;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @JsonBackReference
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_employee", referencedColumnName = "id")
     @JsonBackReference
     private User employee;
+
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -127,9 +128,11 @@ public class Bill {
 
 
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<VoucherDetail> voucherDetailList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bill")
+    @JsonBackReference
     private List<BillDetail> billDetailList;
 
     @PrePersist

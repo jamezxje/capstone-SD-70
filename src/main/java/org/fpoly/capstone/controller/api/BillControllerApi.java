@@ -43,8 +43,7 @@ public class BillControllerApi {
 
     @GetMapping("/getAllBill")
     public List<Bill> getAllBill() {
-        List<Bill> list = billService.getBillTaoHoaDon();
-        return list;
+        return billService.getBillTaoHoaDon();
     }
 
     @DeleteMapping("/deleteBill/{id}")

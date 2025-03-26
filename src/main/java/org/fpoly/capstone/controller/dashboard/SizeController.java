@@ -38,6 +38,7 @@ public class SizeController {
     private static final String TYPE_SUCCESS = "success";
     private static final String TYPE_ERROR = "error";
 
+
     @GetMapping
     public String onOpenSizeView(@RequestParam(defaultValue = "1") int page,
                                  @RequestParam(defaultValue = "10") int size,

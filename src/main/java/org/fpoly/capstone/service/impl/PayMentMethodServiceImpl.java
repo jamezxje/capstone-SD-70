@@ -134,7 +134,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 User user = optionalUser.get();
                 Bill billId = idBillOptional.get();
                 bill.setUser(user);
-                bill.setLastModifiedDate(Calendar.getInstance().getTime());
+                bill.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
                 bill.setTotalMoney(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() - 2)));  // Chuyển đổi tiền
                 bill.setMethod(PaymentMethod.CHUYEN_KHOAN);
                 bill.setUserName(response.getUserName());

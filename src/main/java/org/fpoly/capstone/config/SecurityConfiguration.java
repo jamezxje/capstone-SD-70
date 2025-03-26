@@ -31,7 +31,7 @@ public class SecurityConfiguration {
     protected static final String[] PUBLIC_UNAUTHENTICATION_URI = {
             "/",
             "/sale-counter/**" ,
-            "/getAllBill" ,
+            "/getAllBill/**" ,
             "/deleteBill/**",
             "/save-bill/**" ,
             "/save-product-bill/**" ,

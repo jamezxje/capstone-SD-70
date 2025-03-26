@@ -7,10 +7,8 @@ import lombok.Setter;
 import org.fpoly.capstone.entity.enum_status.VoucherStatus;
 
 import java.math.BigDecimal;
-<<<<<<< HEAD
 import java.time.LocalDate;
-=======
->>>>>>> baopt
+
 import java.time.LocalDateTime;
 import java.util.Date;
 

@@ -17,24 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-
 public class BillController {
-@Autowired
-private BillService billService;
-@Autowired
-private CustomerService customerService;
-@Autowired
-private VoucherService voucherService;
-@Autowired
-private ProductDetailService productDetailService;
+
         @GetMapping("/sale-counter")
-    public String saleCounter(Model model , @RequestParam(defaultValue = "0") int page ) {
-            List<ProductDetail> listProductDetail = productDetailService.getAllProductDetails();
-            List<User> listUser = customerService.findAllCustomers();
-            List<Voucher> listVoucher = voucherService.getAllVouchers();
-        model.addAttribute("listProductDetail", listProductDetail);
-        model.addAttribute("listUser", listUser);
-        model.addAttribute("listVoucher", listVoucher);
+    public String saleCounter( ) {
         return "views/saleCounter/sale";
     }
 @GetMapping("/payment-success")

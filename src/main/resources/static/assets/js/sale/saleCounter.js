@@ -181,7 +181,7 @@ createInvoice.addEventListener(
                 const invoiceData = response.data;
                 invoiceCount++
                 createInvoiceTab(invoiceCount, response);
-                location.reload();
+                // location.reload();
             })
             .catch(error => {
                 console.log(error);

@@ -27,13 +27,6 @@ public class CommonCotroller {
 
             return "redirect:/";
         }
-<<<<<<< HEAD:src/main/java/org/fpoly/capstone/controller/HomeController.java
-
-        log.info("User role customer: {}", user.getRoles());
-
-        return "PayMentVNPAYSuccess";
-=======
         return "redirect:/";
->>>>>>> origin/duytx/dev:src/main/java/org/fpoly/capstone/controller/common/CommonCotroller.java
     }
 }

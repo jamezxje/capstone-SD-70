@@ -1,5 +1,6 @@
 package org.fpoly.capstone.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -38,10 +39,12 @@ public class BillDetail {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product_detail", referencedColumnName = "id")
+    @JsonBackReference
     private ProductDetail productDetail;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_bill", referencedColumnName = "id")
+    @JsonBackReference
     private Bill bill;
 
     @Column(name = "quantity")
