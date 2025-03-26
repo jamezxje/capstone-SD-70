@@ -85,4 +85,8 @@ public class User {
     public void preUpdate() {
         this.lastModifiedDate= new Date();
     }
+
+    @OneToMany(mappedBy = "user")
+    private List<Bill> billList;
+
 }

@@ -69,6 +69,9 @@ public class SecurityConfiguration {
             "/img/**",
             "/uploads/**",
             "/details/**",
+            "/shop/**",
+            "/cart/**",
+            "/auth/login/**",
     };
 
     @Bean
@@ -79,6 +82,7 @@ public class SecurityConfiguration {
                         requests -> requests
                                 .requestMatchers(PUBLIC_UNAUTHENTICATION_URI).permitAll()
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/assets/**")).permitAll()
+                                .requestMatchers("/shop/assets/**").permitAll()
                                 .requestMatchers("/dashboard/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )

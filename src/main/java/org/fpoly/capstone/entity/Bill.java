@@ -3,15 +3,34 @@ package org.fpoly.capstone.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fpoly.capstone.common.CommonUtils;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.BillType;
 import org.fpoly.capstone.entity.enum_status.PaymentMethod;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +47,8 @@ public class Bill {
     private Long id;
     @Column(name = "code")
     private String code;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     @JsonBackReference
     private User user;
@@ -94,12 +114,10 @@ public class Bill {
     private String vnpTransaction;
 
     @Column(name = "create_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate;
+    private LocalDateTime createDate;
 
     @Column(name = "last_modified_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     @Column(name = "created_by")
     private String createdBy;
@@ -107,12 +125,33 @@ public class Bill {
     @Column(name = "updated_by")
     private String updatedBy;
 
-    @PrePersist
-    public void prePersist() {
-        this.completionDate = new Date();
-        this.createDate = new Date();
-    }
+
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VoucherDetail> voucherDetailList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bill")
+    private List<BillDetail> billDetailList;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createDate == null) {
+            this.createDate = LocalDateTime.now();
+        }
+        this.createdBy = CommonUtils.getPrincipal();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        if (this.lastModifiedDate == null) {
+            this.lastModifiedDate = LocalDateTime.now();
+        }
+
+        this.updatedBy = CommonUtils.getPrincipal();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().hashCode();
+    }
 
 }

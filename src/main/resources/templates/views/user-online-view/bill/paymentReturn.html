@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Kết Quả Thanh Toán</title>
+</head>
+<body>
+<h1>Kết quả thanh toán</h1>
+
+<div>
+  <p th:text="'Mã giao dịch: ' + ${txnRef}"></p>
+  <p th:text="'Số tiền thanh toán: ' + ${amount} + ' VND'"></p>
+  <p th:text="'Trạng thái: ' + ${status}"></p>
+  <p th:text="'Thông báo: ' + ${message}"></p>
+</div>
+
+<a href="/">Quay lại trang chủ</a>
+</body>
+</html>

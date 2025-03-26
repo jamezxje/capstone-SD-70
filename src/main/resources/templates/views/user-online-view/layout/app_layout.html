@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:fragment="appLayoutFragment(cssResources, jsResources, pageContent)">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Belle Multipurpose Bootstrap 4 Html Template</title>
+  <meta name="description" content="description">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Favicon -->
+  <link rel="shortcut icon" th:href="@{/assets/user-online/images/favicon.png}"/>
+  <!-- Plugins CSS -->
+  <link rel="stylesheet" th:href="@{/assets/user-online/css/plugins.css}">
+  <!-- Bootstap CSS -->
+  <link rel="stylesheet" th:href="@{/assets/user-online/css/bootstrap.min.css}">
+  <!-- Main Style CSS -->
+  <link rel="stylesheet" th:href="@{/assets/user-online/css/style.css}">
+  <link rel="stylesheet" th:href="@{/assets/user-online/css/responsive.css}">
+  <th:block th:replace="${cssResources} ?: ~{}"></th:block>
+</head>
+<body class="template-index belle template-index-belle">
+
+<div class="pageWrapper">
+  <div id="pre-loader">
+    <img th:src="@{/assets/user-online/images/loader.gif}" alt="Loading..."/>
+  </div>
+  
+  <!--Top Header-->
+  <th:block th:replace="~{views/user-online-view/fragments/top_header::topHeaderFragment}"></th:block>
+  <!--End Top Header-->
+  
+  <!--Header-->
+  <th:block th:replace="~{views/user-online-view/fragments/header::headerFragment}"></th:block>
+  <!--End Header-->
+  
+  <!--Mobile Menu-->
+  <th:block th:replace="~{views/user-online-view/fragments/menu::menuFragment}"></th:block>
+  <!--End Mobile Menu-->
+  
+  <!--Body Content-->
+  <th:block th:replace="${pageContent} ?: ~{}"></th:block>
+  <!--End Body Content-->
+  
+  <!--Footer-->
+  <th:block th:replace="~{views/user-online-view/fragments/footer::footerFragment}"></th:block>
+  <!--End Footer-->
+  
+  <!--Scoll Top-->
+  <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+  <!--End Scoll Top-->
+  
+  <!-- Including Jquery -->
+  <script th:src="@{/assets/user-online/js/vendor/jquery-3.3.1.min.js}"></script>
+  <script th:src="@{/assets/user-online/js/vendor/modernizr-3.6.0.min.js}"></script>
+  <script th:src="@{/assets/user-online/js/vendor/jquery.cookie.js}"></script>
+  <script th:src="@{/assets/user-online/js/vendor/wow.min.js}"></script>
+  <!-- Including Javascript -->
+  <script th:src="@{/assets/user-online/js/bootstrap.min.js}"></script>
+  <script th:src="@{/assets/user-online/js/plugins.js}"></script>
+  <script th:src="@{/assets/user-online/js/popper.min.js}"></script>
+  <script th:src="@{/assets/user-online/js/lazysizes.js}"></script>
+  <script th:src="@{/assets/user-online/js/main.js}"></script>
+  <th:block th:replace="${jsResources} ?: ~{}"></th:block>
+
+</div>
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="pswp__bg"></div>
+  <div class="pswp__scroll-wrap">
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

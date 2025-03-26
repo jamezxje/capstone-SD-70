@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <th:block id="th-css">
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  <div class="content-body">
+    <div class="container-fluid">
+      <div class="card">
+        
+        <div class="card-header d-sm-flex d-block">
+          <div class="mr-auto mb-sm-0 mb-3">
+            <h4 class="card-title font-w600 mb-2">Quản lý chi tiết sản phẩm</h4>
+          </div>
+          <a type="button" th:href="@{/dashboard/product-management/product-detail/add}"
+             class="btn btn-secondary ml-auto">+
+            Thêm mới
+          </a>
+        </div>
+        <!--        Search form start-->
+        <div class="card-body">
+          <div class="basic-form">
+            <form th:action="@{/dashboard/product-management/product-detail}" method="GET" id="searchForm">
+              <div class="form-row">
+                <div class="form-group col-md-3">
+                  <label>Name</label>
+                  <input id="searchName" type="text" name="productName" class="form-control"
+                         th:value="${request.productName}"
+                         placeholder="Nhập tên sản phẩm tìm hiếm">
+                </div>
+                <div class="form-group col-md-3">
+                  <label for="searchCategoryId">Category</label>
+                  <select class="form-control" id="searchCategoryId" name="categoryId">
+                    <option value="" selected>Danh mục</option>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.id}"
+                            th:text="${category.name}"
+                            th:selected="${category.id == request.categoryId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Brand</label>
+                  <select id="searchBrandId" class="form-control" name="brandId">
+                    <option value="" selected>Brand</option>
+                    <option th:each="brand : ${brands}"
+                            th:value="${brand.id}"
+                            th:text="${brand.name}"
+                            th:selected="${brand.id == request.brandId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Màu sắc</label>
+                  <select id="searchColorId" class="form-control" name="colorId">
+                    <option value="" selected>Màu sắc</option>
+                    <option th:each="color : ${colors}"
+                            th:value="${color.id}"
+                            th:text="${color.name}"
+                            th:selected="${color.id == request.colorId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Chất liệu</label>
+                  <select id="searchMaterialId" class="form-control" name="materialId">
+                    <option value="" selected>Chất liệu</option>
+                    <option th:each="material : ${materials}"
+                            th:value="${material.id}"
+                            th:text="${material.name}"
+                            th:selected="${material.id == request.materialId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Size</label>
+                  <select id="searchSizeId" class="form-control" name="sizeId">
+                    <option value="" selected>Size</option>
+                    <option th:each="size : ${sizes}"
+                            th:value="${size.id}"
+                            th:text="${size.name}"
+                            th:selected="${size.id == request.sizeId}">
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Min price</label>
+                  <input id="searchMinPrice" type="number" name="minPrice" class="form-control"
+                         th:value="${request.minPrice}"
+                         placeholder="Nhập giá nhỏ nhất">
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Max price</label>
+                  <input id="searchMaxPrice" type="number" name="maxPrice" class="form-control"
+                         th:value="${request.maxPrice}"
+                         placeholder="Nhập giá lớn nhất">
+                </div>
+                <div class="form-group col-md-3">
+                  <label>Trạng thái</label>
+                  <select id="searchStatus" class="form-control" name="status">
+                    <option value="" selected>Trạng thái</option>
+                    <option
+                        th:each="statusOpt : ${T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).values()}"
+                        th:value="${statusOpt}" th:text="${statusOpt}"
+                        th:selected="${statusOpt == request.status}">
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                <button type="button" class="btn btn-secondary ml-2" onclick="clearForm()">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!--        Search form end-->
+        <!--Data table start-->
+        <div class="card-body">
+          <div class="table-responsive">
+            
+            <!--Table start-->
+            <table class="table">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>Sản phẩm</th>
+                <th>Danh mục</th>
+                <th>Brand</th>
+                <th>Chất liệu</th>
+                <th>Màu sắc</th>
+                <th>Size</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+                <th>Trạng thái</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:if="${#lists.isEmpty(productDetails)}">
+                <td colspan="10" class="text-center pt-5"><h3>KHÔNG TÌM THẤY DỮ LIỆU</h3></td>
+              </tr>
+              <tr th:each="productDetail, index : ${productDetails}">
+                <td th:text="${index.index+1}"></td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <img th:src="${productDetail.featureImageUrl}"
+                         class="rounded-lg mr-2" width="24" alt="">
+                    <span class="w-space-no"
+                          th:text="${productDetail.productName}">
+                    </span>
+                  </div>
+                </td>
+                <td th:text="${productDetail.categoryName}"></td>
+                <td th:text="${productDetail.brandName}"></td>
+                <td th:text="${productDetail.materialName}"></td>
+                <td th:text="${productDetail.colorName}"></td>
+                <td th:text="${productDetail.sizeName}"></td>
+                <td th:text="${productDetail.quantity}"></td>
+                <td th:text="${#numbers.formatDecimal(productDetail.price, 0, 'POINT', 0, 'POINT')} + ' VND'"></td>
+                <td>
+                  <span
+                      th:if="${productDetail.status == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).DANG_SU_DUNG}"
+                      class="badge light badge-success" th:text="${productDetail.status}"></span>
+                  <span
+                      th:if="${productDetail.status == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).NGUNG_SU_DUNG}"
+                      class="badge light badge-danger" th:text="${productDetail.status}"></span>
+                  <span
+                      th:if="${productDetail.status == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).HET_SAN_PHAM}"
+                      class="badge light badge-secondary" th:text="${productDetail.status}"></span>
+                </td>
+                <td>
+                  <div class="d-flex action-button">
+                    <a type="button" class="btn btn-secondary btn-xs light px-2"
+                       th:href="@{/dashboard/product-management/product-detail/detail/{id}(id=${productDetail.id})}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                           class="lucide lucide-eye">
+                        <path
+                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </a>
+                    <a type="button" class="ml-2 btn btn-info btn-xs light px-2"
+                       th:href="@{/dashboard/product-management/product-detail/update/{id}(id=${productDetail.id})}">
+                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z"
+                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </a>
+                    <a href="#" class="ml-2 btn btn-xs px-2 light btn-danger"
+                       data-toggle="modal"
+                       data-target="#deleteProductModal"
+                       th:data-id="${productDetail.id}">
+                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round"></path>
+                        <path
+                            d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
+                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <!--Table end-->
+            
+            <!--Navigation start-->
+            <div th:unless="${#lists.isEmpty(productDetails)}" class="d-flex justify-content-end flex-wrap">
+              <nav>
+                <ul class="pagination pagination-gutter">
+                  <li class="page-item page-indicator"
+                      th:classappend="${productDetailPage.hasPrevious()} ? '' : 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/product-detail(page = ${productDetailPage.number}, size = ${productDetailPage.size}, productId = ${request.productId}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}">
+                      <i class="la la-angle-left"></i></a>
+                  </li>
+                  <li class="page-item" th:each="i : ${#numbers.sequence(1, productDetailPage.totalPages)}"
+                      th:classappend="${productDetailPage.number + 1 == i} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/product-detail(page=${i}, size=${productDetailPage.size}, productId = ${request.productId}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}"
+                       th:text="${i}">
+                    </a>
+                  </li>
+                  <li class="page-item page-indicator"
+                      th:classappend="${productDetailPage.hasNext()} ? '' : 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/product-detail(page=${productDetailPage.number + 2}, size=${productDetailPage.size}, productId = ${request.productId}, categoryId = ${request.categoryId}, productName = ${request.productName}, brandId = ${request.brandId}, colorId = ${request.colorId}, materialId = ${request.materialId}, sizeId = ${request.sizeId}, gender = ${request.gender}, minPrice = ${request.minPrice}, maxPrice = ${request.maxPrice}, status = ${request.status})}">
+                      <i class="la la-angle-right"></i></a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!--Navigation end-->
+          
+          </div>
+        </div>
+        <!--Data table end-->
+        
+        <!-- Delete product modal start -->
+        <div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog"
+             aria-labelledby="confirmDeleteModalLabel"
+             aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Bạn chắc là muốn xóa sản phẩm này chứ ?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form id="deleteTransactionForm" method="post" action="">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Delete product modal end -->
+      
+      </div>
+    </div>
+  </div>
+</th:block>
+<th:block id="th-js">
+  <script>
+    $(document).on('click', '[data-target="#deleteProductModal"]', function () {
+      const productDetailId = $(this).data('id');
+      const formAction = `/dashboard/product-management/product-detail/delete/${productDetailId}`;
+      $('#deleteTransactionForm').attr('action', formAction);
+    });
+    
+    document.addEventListener('DOMContentLoaded', function () {
+      window.clearForm = function () {
+        // Lấy các phần tử form theo id
+        const searchCategory = document.getElementById('searchCategoryId');
+        const searchProductName = document.getElementById('searchName');
+        const searchBrand = document.getElementById('searchBrandId');
+        const searchColor = document.getElementById('searchColorId');
+        const searchMaterial = document.getElementById('searchMaterialId');
+        const searchSize = document.getElementById('searchSizeId');
+        const searchMinPrice = document.getElementById('searchMinPrice');
+        const searchMaxPrice = document.getElementById('searchMaxPrice');
+        const searchStatus = document.getElementById('searchStatus');
+        
+        // Đặt lại giá trị cho các trường input và select
+        searchCategory.value = ""; // Xóa lựa chọn Category
+        searchProductName.value = ""; // Xóa tên sản phẩm
+        searchBrand.value = ""; // Xóa lựa chọn Brand
+        searchColor.value = ""; // Xóa lựa chọn Màu sắc
+        searchMaterial.value = ""; // Xóa lựa chọn Chất liệu
+        searchSize.value = ""; // Xóa lựa chọn Size
+        searchMinPrice.value = ""; // Xóa giá Min
+        searchMaxPrice.value = ""; // Xóa giá Max
+        searchStatus.value = ""; // Xóa lựa chọn Trạng thái
+        
+        // Nếu muốn chọn lại giá trị mặc định cho các dropdown
+        searchCategory.selectedIndex = 0; // Đặt lại chọn mặc định cho Category
+        searchBrand.selectedIndex = 0; // Đặt lại chọn mặc định cho Brand
+        searchColor.selectedIndex = 0; // Đặt lại chọn mặc định cho Color
+        searchMaterial.selectedIndex = 0; // Đặt lại chọn mặc định cho Material
+        searchSize.selectedIndex = 0; // Đặt lại chọn mặc định cho Size
+        searchStatus.selectedIndex = 0; // Đặt lại chọn mặc định cho Status
+      };
+    });
+  
+  </script>
+</th:block>
+</body>
+</html>
