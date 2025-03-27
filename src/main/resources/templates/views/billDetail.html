@@ -6,7 +6,8 @@
     <title>Quản lý Hóa đơn</title>
     <th:block id="th-css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
         <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>
         <style>
@@ -399,17 +400,18 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div><br>
 
-            <div  th:each="vcdetail, index : ${voucherDetail}">
-                <h5><b>Tổng tiền hàng :</b> <span class="text-primary" th:text="vcdetail.beforePrice + ' VND'"></span></h5>
-                <h5><b>Phí vận chuyển :</b> <span th:text="${#numbers.formatDecimal(shippingFee, 0, 'COMMA', 3, 'POINT')} + ' VND'"></span></h5>
-                <h5><b>Voucher giảm giá :</b> <span th:text="vcdetail.discountPrice + ' VND'"></span></h5>
-                <h5><b>Tổng tiền giảm :</b> <span th:text="vcdetail.discountPrice + ' VND'"></span></h5>
-                <hr>
-                <h4><b>Tổng tiền thanh toán:</b> <span class="text-danger" th:text="vcdetail.afterPrice + ' VND'"></span></h4>
-            </div>
-
+            <div class="table-container">
+                <div th:if="${voucherDetail != null}">
+                    <h5>Tổng tiền hàng :<span th:text="${#numbers.formatDecimal(voucherDetail.beforePrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
+                    <h5>Phí vận chuyển : <span id="phiShip">0</span> VND</h5>
+                    <h5>Voucher giảm giá :<span th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
+                    <h5>Tổng tiền giảm :<span th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
+                    <hr>
+                    <h4>Tổng tiền thanh toán:<span th:text="${#numbers.formatDecimal(voucherDetail.afterPrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h4>
+                </div>
+            </div>    
         </div>
     </div>
 
@@ -453,40 +455,111 @@
         // Kiểm tra tên khách hàng (chỉ chứa chữ cái và khoảng trắng)
         let nameRegex = /^[a-zA-ZÀ-Ỹà-ỹ\s]+$/;
         if (customerName === "") {
-            alert("Tên khách hàng không được để trống.");
+            function showToast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000, // 3 giây tự ẩn
+                    gravity: "top", // Vị trí: top / bottom
+                    position: "right", // Vị trí: left / center / right
+                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                    close: true // Có nút đóng
+                }).showToast();
+            }
+            // Khi cần hiển thị thông báo
+            showToast("Tên khách hàng không được để trống.");
         } else if (!nameRegex.test(customerName)) {
-            alert("Tên khách hàng chỉ được chứa chữ cái và khoảng trắng.");
+            function showToast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000, // 3 giây tự ẩn
+                    gravity: "top", // Vị trí: top / bottom
+                    position: "right", // Vị trí: left / center / right
+                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                    close: true // Có nút đóng
+                }).showToast();
+            }
+            showToast("Tên khách hàng chỉ được chứa chữ cái và khoảng trắng.");
             return;
         }
 
         // Kiểm tra số điện thoại (chỉ chứa số, 10 chữ số, bắt đầu bằng 0)
         let phoneRegex = /^0\d{9}$/;
         if (!phoneRegex.test(phoneNumber)) {
-            alert("Số điện thoại không hợp lệ (phải có 10 số, bắt đầu bằng 0, chỉ chứa chữ số).");
+            function showToast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000, // 3 giây tự ẩn
+                    gravity: "top", // Vị trí: top / bottom
+                    position: "right", // Vị trí: left / center / right
+                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                    close: true // Có nút đóng
+                }).showToast();
+            }
+            showToast("Số điện thoại không hợp lệ (phải có 10 số, bắt đầu bằng 0, chỉ chứa chữ số).");
             return;
         }
 
         // Kiểm tra chọn tỉnh/thành phố
         if (city === "") {
-            alert("Vui lòng chọn thành phố.");
+            function showToast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000, // 3 giây tự ẩn
+                    gravity: "top", // Vị trí: top / bottom
+                    position: "right", // Vị trí: left / center / right
+                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                    close: true // Có nút đóng
+                }).showToast();
+            }
+            showToast("Vui lòng chọn thành phố.");
             return;
         }
 
         // Kiểm tra chọn quận/huyện
         if (district === "") {
-            alert("Vui lòng chọn huyện.");
+            function showToast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000, // 3 giây tự ẩn
+                    gravity: "top", // Vị trí: top / bottom
+                    position: "right", // Vị trí: left / center / right
+                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                    close: true // Có nút đóng
+                }).showToast();
+            }
+            showToast("Vui lòng chọn huyện.");
             return;
         }
 
         // Kiểm tra chọn xã/phường
         if (ward === "") {
-            alert("Vui lòng chọn xã.");
+            function showToast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000, // 3 giây tự ẩn
+                    gravity: "top", // Vị trí: top / bottom
+                    position: "right", // Vị trí: left / center / right
+                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                    close: true // Có nút đóng
+                }).showToast();
+            }
+            showToast("Vui lòng chọn xã.");
             return;
         }
 
         // Kiểm tra địa chỉ chi tiết
         if (detailAddress === "") {
-            alert("Vui lòng nhập địa chỉ chi tiết.");
+            function showToast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000, // 3 giây tự ẩn
+                    gravity: "top", // Vị trí: top / bottom
+                    position: "right", // Vị trí: left / center / right
+                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                    close: true // Có nút đóng
+                }).showToast();
+            }
+            showToast("Vui lòng nhập địa chỉ chi tiết.");
             return;
         }
 

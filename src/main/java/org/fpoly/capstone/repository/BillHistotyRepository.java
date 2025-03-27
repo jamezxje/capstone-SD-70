@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface BillHistotyRepository extends JpaRepository<BillHistory, Long> {
-    List<BillHistory> findByBill_Id(Long id);
+    List<BillHistory> findByBillId(Long id);
 
     List<BillHistory> findAllByBill(Bill bill);
 

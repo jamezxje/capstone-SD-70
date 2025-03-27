@@ -1,4 +1,4 @@
-package org.fpoly.capstone.dto;
+package org.fpoly.capstone.dto.billDetail;
 
 import lombok.Data;
 

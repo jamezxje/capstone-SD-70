@@ -1,26 +1,24 @@
 package org.fpoly.capstone.service.impl;
 
+import org.fpoly.capstone.dto.billDetail.BillDetailDTO;
 import org.fpoly.capstone.dto.billDetail.ChangeStatusBillRequest;
 import org.fpoly.capstone.dto.billDetail.StatusBillDetailRequest;
 import org.fpoly.capstone.dto.billDetail.UpdateInForCustomer;
 import org.fpoly.capstone.entity.*;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
-import org.fpoly.capstone.entity.enum_status.ProductStatus;
 import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 import org.fpoly.capstone.entity.enum_status.UserRole;
-import org.fpoly.capstone.exceptions.ResourceNotFoundException;
 import org.fpoly.capstone.repository.*;
 import org.fpoly.capstone.service.BillDetaiService;
-import org.fpoly.capstone.service.BillDetailService;
-import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.logging.Logger;
+
 
 @Service
 public class BillDetailServiceImpl implements BillDetaiService {
@@ -34,6 +32,24 @@ public class BillDetailServiceImpl implements BillDetaiService {
     private UserRepository userRepository;
     @Autowired
     private ProductDetailRepository productDetailRepository;
+
+    private static final Logger LOGGER = Logger.getLogger(BillDetailServiceImpl.class.getName());
+
+    @Override
+    public List<BillDetailDTO> getBillDetails(Long billId) {
+        List<Object[]> results = billDetailRepository.getProductByBillId(billId);
+        if (results == null || results.isEmpty()) {
+            LOGGER.warning("Không tìm thấy dữ liệu trong cơ sở dữ liệu cho billId: " + billId);
+            return new ArrayList<>();
+        }
+
+        List<BillDetailDTO> billDetails = new ArrayList<>();
+        for (Object[] row : results) {
+            billDetails.add(new BillDetailDTO(row));
+        }
+
+        return billDetails;
+    }
 
     @Override
     public Bill changeStatusBill(Long id, Long idEmployess, ChangeStatusBillRequest request) {
