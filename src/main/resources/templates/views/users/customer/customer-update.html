@@ -117,8 +117,8 @@
                                                 <label class="col-lg-4 col-form-label">Trạng thái</label>
                                                 <div class="col-lg-6">
                                                     <select class="form-control" th:field="*{customer.status}">
-                                                        <option th:value="ACTIVATED">Kích hoạt</option>
-                                                        <option th:value="NOT_ACTIVATED">Ngừng kích hoạt</option>
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}">Kích hoạt</option>
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED}">Ngừng kích hoạt</option>
                                                     </select>
                                                 </div>
                                             </div>

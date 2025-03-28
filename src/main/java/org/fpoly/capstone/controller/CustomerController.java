@@ -15,8 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 
@@ -30,6 +32,11 @@ public class CustomerController {
 
     @Autowired
     private AddressService addressService;
+
+    @InitBinder("address")
+    public void initBinder(WebDataBinder binder) {
+        binder.setDisallowedFields("status"); // Chặn status chỉ của Address
+    }
 
     @GetMapping("/detail/{id}")
     public String viewCustomerDetail(@PathVariable Long id, Model model) {
@@ -65,7 +72,6 @@ public class CustomerController {
         return "views/users/customer/customer-list";
     }
 
-
     @GetMapping("/view-add")
     public String showAddForm(Model model) {
         User customer = new User();
@@ -83,16 +89,15 @@ public class CustomerController {
 
     @PostMapping("/add")
     public String saveCustomer(@ModelAttribute("customer") User user,
-                                @ModelAttribute("address") Address address,
-                                @RequestParam("file") MultipartFile file,
-                                Model model) {
+                               @ModelAttribute("address") Address address,
+                               @RequestParam("file") MultipartFile file,
+                               Model model, RedirectAttributes redirectAttributes) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
 
         if (file == null || file.isEmpty()) {
             model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
         }
-
         // Validate dữ liệu
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "gender");
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
@@ -113,6 +118,7 @@ public class CustomerController {
         System.out.println("WardCode: " + address.getWardCode());
         // Gọi service để tạo nhân viên và địa chỉ
         customerService.createCustomer(user, address,file);
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm thành công!");
         return "redirect:/customer-management";
     }
 
@@ -138,7 +144,7 @@ public class CustomerController {
                                  @ModelAttribute("customer") User user,
                                  @ModelAttribute("address") Address address,
                                  @RequestParam("file") MultipartFile file,
-                                 Model model) {
+                                 Model model, RedirectAttributes redirectAttributes) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
 
@@ -169,6 +175,7 @@ public class CustomerController {
         // Gọi service để cập nhật nhân viên và địa chỉ
 
         customerService.updateCustomer(id, user, address,file);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
         return "redirect:/customer-management";
     }
 

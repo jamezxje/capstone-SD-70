@@ -67,7 +67,7 @@ public class Address {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private AddressStatus addressStatus;
+    private AddressStatus status;
 
     @Column(name = "create_date")
     @Temporal(TemporalType.TIMESTAMP)

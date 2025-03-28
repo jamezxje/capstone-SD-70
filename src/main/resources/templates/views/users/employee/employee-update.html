@@ -73,10 +73,12 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label" for="roles">Vai trò</label>
+                                                <label class="col-lg-4 col-form-label" for="status">Trạng thái</label>
                                                 <div class="col-lg-6">
-                                                    <select class="form-control" id="roles" th:field="*{employee.roles}">
-                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserRole).ROLE_USER}">Nhân viên</option>
+                                                    <select class="form-control" id="status"  th:field="*{employee.status}">
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}">Kích hoạt</option>
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED}">Ngừng kích hoạt</option>
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).DELETED}">Nghỉ việc</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -120,15 +122,6 @@
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" th:field="*{address.line}" placeholder="Nhập địa chỉ cụ thể...">
                                                     <p class="error" th:if="${errorsAddress['line']}" th:text="${errorsAddress['line']}" th:classappend="text-danger"></p>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Trạng thái</label>
-                                                <div class="col-lg-6">
-                                                    <select class="form-control" th:field="*{employee.status}">
-                                                        <option th:value="ACTIVATED">Kích hoạt</option>
-                                                        <option th:value="NOT_ACTIVATED">Ngừng kích hoạt</option>
-                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group row">

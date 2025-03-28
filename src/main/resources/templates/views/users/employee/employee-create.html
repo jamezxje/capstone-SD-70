@@ -73,10 +73,10 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label" for="roles">Vai trò</label>
+                                                <label class="col-lg-4 col-form-label " for="status">Trạng thái</label>
                                                 <div class="col-lg-6">
-                                                    <select class="form-control" id="roles" th:field="*{employee.roles}">
-                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserRole).ROLE_USER}">Nhân viên</option>
+                                                    <select class="form-control" id="status" th:field="*{employee.status}">
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}">Kích hoạt</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -117,14 +117,6 @@
                                                 <div class="col-lg-6">
                                                     <input type="text" class="form-control" th:field="*{address.line}" name="line" placeholder="Nhập địa chỉ cụ thể...">
                                                     <p class="error" th:if="${errorsAddress['line']}" th:text="${errorsAddress['line']}" th:classappend="text-danger"></p>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Trạng thái</label>
-                                                <div class="col-lg-6">
-                                                    <select class="form-control" th:field="*{employee.status}" name="employeeStatus">
-                                                        <option th:value="ACTIVATED">Kích hoạt</option>
-                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -258,180 +250,6 @@
         fetchAllProvinces();
     });
 </script>
-<!--<script>-->
-<!--    document.addEventListener("DOMContentLoaded", function () {-->
-<!--        const avatarPreview = document.getElementById("avatarPreview");-->
-<!--        const modalPreviewImage = document.getElementById("modalPreviewImage");-->
-<!--        const viewAvatarBtn = document.getElementById("viewAvatarBtn");-->
-<!--        const deleteAvatarBtn = document.getElementById("deleteAvatarBtn");-->
-<!--        const chooseAvatarBtn = document.getElementById("chooseAvatarBtn");-->
-<!--        const avatarInput = document.getElementById("avatarInput");-->
-<!--        const deleteAvatarFlag = document.getElementById("deleteAvatarFlag");-->
-<!--        const avatarFileName = document.getElementById("avatarFileName");-->
-
-<!--        // Ẩn/hiện nút tùy theo trạng thái ảnh-->
-<!--        function updateButtonVisibility() {-->
-<!--            const hasImage = avatarPreview.src && avatarPreview.src !== window.location.href;-->
-<!--            avatarPreview.style.display = hasImage ? "block" : "none";-->
-<!--            viewAvatarBtn.style.display = hasImage ? "inline-block" : "none";-->
-<!--            deleteAvatarBtn.style.display = hasImage ? "inline-block" : "none";-->
-<!--            chooseAvatarBtn.style.display = hasImage ? "none" : "inline-block";-->
-<!--        }-->
-<!--        updateButtonVisibility();-->
-
-<!--        // Xem ảnh trong modal-->
-<!--        viewAvatarBtn.addEventListener("click", function () {-->
-<!--            modalPreviewImage.src = avatarPreview.src;-->
-<!--            document.getElementById("imageName").textContent = avatarFileName.value || avatarPreview.src.split("/").pop();-->
-<!--        });-->
-
-<!--        // Xóa ảnh-->
-<!--        deleteAvatarBtn.addEventListener("click", function () {-->
-<!--            avatarPreview.src = "";-->
-<!--            avatarFileName.value = "";-->
-<!--            deleteAvatarFlag.value = "true";-->
-<!--            updateButtonVisibility();-->
-<!--        });-->
-
-<!--        // Xem trước ảnh khi chọn file-->
-<!--        avatarInput.addEventListener("change", function () {-->
-<!--            const file = avatarInput.files[0];-->
-<!--            if (file) {-->
-<!--                const reader = new FileReader();-->
-<!--                reader.onload = function (e) {-->
-<!--                    avatarPreview.src = e.target.result;-->
-<!--                    avatarFileName.value = file.name; // Giữ nguyên tên file-->
-<!--                    deleteAvatarFlag.value = "false";-->
-<!--                    updateButtonVisibility();-->
-<!--                };-->
-<!--                reader.readAsDataURL(file);-->
-<!--            }-->
-<!--        });-->
-
-<!--        // Mở modal xem ảnh-->
-<!--        document.querySelector("[data-target='#previewModal']").addEventListener("click", function () {-->
-<!--            modalPreviewImage.src = avatarPreview.src;-->
-<!--            document.getElementById("imageName").textContent = avatarFileName.value || avatarPreview.src.split("/").pop();-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
-<!--    <script>-->
-<!--        document.addEventListener("DOMContentLoaded", function () {-->
-<!--            let avatarInput = document.getElementById("avatarInput");-->
-<!--            let avatarPreview = document.getElementById("avatarPreview");-->
-<!--            let avatarUrlInput = document.getElementById("avatarUrl");-->
-<!--            let viewAvatarBtn = document.getElementById("viewAvatarBtn");-->
-<!--            let deleteAvatarBtn = document.getElementById("deleteAvatarBtn");-->
-<!--            let modalPreviewImage = document.getElementById("modalPreviewImage");-->
-
-<!--            // Kiểm tra nếu đã có ảnh thì hiện nút "Xem" và "Xóa"-->
-<!--            if (avatarPreview.src && !avatarPreview.src.includes("default-avatar.jpg")) {-->
-<!--                viewAvatarBtn.style.display = "block";-->
-<!--                deleteAvatarBtn.style.display = "block";-->
-<!--            }-->
-<!--            // Xử lý khi chọn ảnh mới-->
-<!--            avatarInput.addEventListener("change", function () {-->
-<!--                let file = avatarInput.files[0];-->
-<!--                if (file) {-->
-<!--                    let reader = new FileReader();-->
-<!--                    reader.onload = function (e) {-->
-<!--                        avatarPreview.src = e.target.result; // Hiển thị ảnh xem trước-->
-<!--                        avatarUrlInput.value = e.target.result; // Lưu URL vào input ẩn-->
-<!--                        viewAvatarBtn.style.display = "block"; // Hiện nút Xem-->
-<!--                        deleteAvatarBtn.style.display = "block"; // Hiện nút Xóa-->
-<!--                    };-->
-<!--                    reader.readAsDataURL(file);-->
-<!--                }-->
-<!--            });-->
-
-<!--            // Xem ảnh lớn hơn trong modal-->
-<!--            viewAvatarBtn.addEventListener("click", function () {-->
-<!--                modalPreviewImage.src = avatarPreview.src;-->
-<!--            });-->
-
-<!--            // Xóa ảnh-->
-<!--            deleteAvatarBtn.addEventListener("click", function () {-->
-<!--                avatarPreview.src = "/assets/images/avatar/default-avatar.jpg"; // Quay lại ảnh mặc định-->
-<!--                avatarInput.value = ""; // Xóa file đã chọn-->
-<!--                avatarUrlInput.value = ""; // Xóa đường dẫn-->
-<!--                viewAvatarBtn.style.display = "none"; // Ẩn nút Xem-->
-<!--                deleteAvatarBtn.style.display = "none"; // Ẩn nút Xóa-->
-<!--            });-->
-<!--        });-->
-<!--    </script>-->
-
-    <!--    <script>-->
-<!--        document.addEventListener("DOMContentLoaded", function () {-->
-<!--            const avatarPreview = document.getElementById("avatarPreview");-->
-<!--            const modalPreviewImage = document.getElementById("modalPreviewImage");-->
-<!--            const viewAvatarBtn = document.getElementById("viewAvatarBtn");-->
-<!--            const deleteAvatarBtn = document.getElementById("deleteAvatarBtn");-->
-<!--            const chooseAvatarBtn = document.getElementById("chooseAvatarBtn");-->
-<!--            const avatarInput = document.getElementById("avatarInput");-->
-<!--            const avatarUrl = document.getElementById("avatarUrl");-->
-
-<!--            // Ẩn/hiện nút khi có ảnh-->
-<!--            function updateButtonVisibility() {-->
-<!--                const hasImage = avatarPreview.src && avatarPreview.src !== window.location.href;-->
-<!--                viewAvatarBtn.style.display = hasImage ? "inline-block" : "none";-->
-<!--                deleteAvatarBtn.style.display = hasImage ? "inline-block" : "none";-->
-<!--            }-->
-<!--            updateButtonVisibility();-->
-
-<!--            // Xem trước ảnh khi chọn file-->
-<!--            avatarInput.addEventListener("change", function () {-->
-<!--                const file = avatarInput.files[0];-->
-<!--                if (file) {-->
-<!--                    const reader = new FileReader();-->
-<!--                    reader.onload = function (e) {-->
-<!--                        avatarPreview.src = e.target.result;-->
-<!--                        avatarPreview.style.display = "block";-->
-<!--                        uploadToCloudinary(file); // Tự động upload-->
-<!--                    };-->
-<!--                    reader.readAsDataURL(file);-->
-<!--                }-->
-<!--            });-->
-
-<!--            // Xóa ảnh-->
-<!--            deleteAvatarBtn.addEventListener("click", function () {-->
-<!--                avatarPreview.src = "/assets/images/avatar/default-avatar.jpg";-->
-<!--                avatarUrl.value = "";-->
-<!--                updateButtonVisibility();-->
-<!--            });-->
-
-<!--            // Xem ảnh trong modal-->
-<!--            viewAvatarBtn.addEventListener("click", function () {-->
-<!--                modalPreviewImage.src = avatarPreview.src;-->
-<!--                document.getElementById("imageName").textContent = avatarUrl.value || "Ảnh đại diện";-->
-<!--            });-->
-
-<!--            // Upload lên Cloudinary-->
-<!--            function uploadToCloudinary(file) {-->
-<!--                const cloudName = "dwsu2j5pf";  // Thay bằng Cloud Name của bạn-->
-<!--                const uploadPreset = "default_preset";  // Đổi sang upload preset của bạn-->
-
-<!--                let formData = new FormData();-->
-<!--                formData.append("file", file);-->
-<!--                formData.append("upload_preset", uploadPreset);  // Cần thiết để upload thành công-->
-
-<!--                fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {-->
-<!--                    method: "POST",-->
-<!--                    body: formData-->
-<!--                })-->
-<!--                    .then(response => response.json())-->
-<!--                    .then(data => {-->
-<!--                        if (data.secure_url) {-->
-<!--                            document.getElementById("avatarPreview").src = data.secure_url;-->
-<!--                            document.getElementById("avatarUrl").value = data.secure_url;-->
-<!--                        } else {-->
-<!--                            console.error("Lỗi Cloudinary:", data);-->
-<!--                        }-->
-<!--                    })-->
-<!--                    .catch(error => console.error("Upload thất bại:", error));-->
-<!--            }-->
-<!--        });-->
-
-<!--    </script>-->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             function readURLAvatar(input) {
@@ -449,6 +267,7 @@
         });
     </script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 </th:block>
 </body>
 </html>

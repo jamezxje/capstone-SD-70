@@ -8,6 +8,12 @@
 </head>
 <body>
 <th:block id="th-body">
+	<div id="toast-container" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;">
+	</div>
 	<div class="content-body" style="min-height: 876px;">
 		<div class="container-fluid">
 			<div class="card">
@@ -37,8 +43,8 @@
 										name="status" style="flex: 1; min-width: 250px; border-radius: 5px; padding: 5px; cursor: pointer;"
 										onchange="this.form.submit()">
 									<option value="">Tất cả</option>
-									<option value="ACTIVATED" th:selected="${status == 'ACTIVATED'}">Đang sử dụng</option>
-									<option value="NOT_ACTIVATED" th:selected="${status == 'NOT_ACTIVATED'}">Ngừng sử dụng</option>
+									<option value="ACTIVATED" th:selected="${status == 'ACTIVATED'}">Kích hoạt</option>
+									<option value="NOT_ACTIVATED" th:selected="${status == 'NOT_ACTIVATED'}">Ngừng kích hoạt</option>
 								</select>
 							</form>
 						</div>
@@ -142,6 +148,55 @@
 		</div>
 	</div>
 </div>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+	<script>
+		function showToast(message) {
+			const toastContainer = document.getElementById("toast-container");
+			const toast = document.createElement("div");
+
+			toast.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i> ${message}`;
+			toast.style.cssText = `
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.5s, transform 0.5s ease-in-out;
+            margin-bottom: 10px;
+            position: relative;
+            min-width: 250px;
+        `;
+
+			toastContainer.appendChild(toast);
+
+			// Hiện thông báo (trượt từ phải vào)
+			setTimeout(() => {
+				toast.style.opacity = "1";
+				toast.style.transform = "translateX(0)";
+			}, 100);
+
+			// Ẩn sau 3 giây (trượt ra phải)
+			setTimeout(() => {
+				toast.style.opacity = "0";
+				toast.style.transform = "translateX(100%)";
+				setTimeout(() => toast.remove(), 500);
+			}, 3000);
+		}
+
+		// Hiển thị thông báo nếu có từ server
+		document.addEventListener("DOMContentLoaded", function () {
+			let successMessage = "[[${successMessage}]]";
+			if (successMessage && successMessage.trim() !== "") {
+				showToast(successMessage);
+			}
+		});
+	</script>
 </th:block>
 </body>
 </html>

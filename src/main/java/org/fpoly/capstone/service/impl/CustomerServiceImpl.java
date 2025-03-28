@@ -94,7 +94,7 @@ public class CustomerServiceImpl implements CustomerService {
         newUser.setGender(user.getGender());
         newUser.setAvatar(urlAvatar);
         newUser.setRoles(UserRole.ROLE_CUSTOMER);
-        newUser.setStatus(UserStatus.ACTIVATED);
+        newUser.setStatus(user.getStatus());
         newUser.setCreatedBy(userServiceName);
         newUser.setUpdatedBy(userServiceName);
         newUser.setCreateDate(new Date());
@@ -106,7 +106,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         if (address != null) {
             Address newAddress = new Address();
-            newAddress.setAddressStatus(AddressStatus.DANG_SU_DUNG);
+            newAddress.setStatus(AddressStatus.DANG_SU_DUNG);
             newAddress.setProvinceId(address.getProvinceId());
             newAddress.setToDistrictId(address.getToDistrictId());
             newAddress.setWardCode(address.getWardCode());
@@ -143,9 +143,10 @@ public class CustomerServiceImpl implements CustomerService {
         }
         String userServiceName = userService.getName();
 
-        String urlAvatar = null;
+        // Nếu có file mới => Upload lên Cloudinary, ngược lại giữ nguyên ảnh cũ
+        String urlAvatar = existingCustomer.getAvatar(); // Giữ ảnh cũ
         if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryService.uploadAvatar(file);
+            urlAvatar = cloudinaryService.uploadAvatar(file); // Upload ảnh mới
         }
 
         // Cập nhật thông tin khách hàng
@@ -162,6 +163,7 @@ public class CustomerServiceImpl implements CustomerService {
         // Cập nhật hoặc thêm mới địa chỉ
         Address existingAddress = addressService.getDefaultAddress(existingCustomer.getId());
         if (existingAddress != null) {
+            existingAddress.setStatus(AddressStatus.DANG_SU_DUNG);
             existingAddress.setProvinceId(address.getProvinceId());
             existingAddress.setToDistrictId(address.getToDistrictId());
             existingAddress.setWardCode(address.getWardCode());
@@ -176,7 +178,7 @@ public class CustomerServiceImpl implements CustomerService {
             addressService.saveAddress(existingAddress);
         } else {
             Address newAddress = new Address();
-            newAddress.setAddressStatus(AddressStatus.DANG_SU_DUNG);
+            newAddress.setStatus(AddressStatus.DANG_SU_DUNG);
             newAddress.setProvinceId(address.getProvinceId());
             newAddress.setToDistrictId(address.getToDistrictId());
             newAddress.setWardCode(address.getWardCode());

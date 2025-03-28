@@ -3,6 +3,7 @@ package org.fpoly.capstone.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.entity.enum_status.AddressStatus;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.EmployeeRepository;
 import org.fpoly.capstone.service.AddressService;
@@ -15,13 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 
@@ -41,6 +39,11 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @InitBinder("address")
+    public void initBinder(WebDataBinder binder) {
+        binder.setDisallowedFields("status"); // Chặn status chỉ của Address
+    }
 
     @GetMapping("/detail/{id}")
     public String employeeDetail(@PathVariable Long id, Model model) {
@@ -80,13 +83,13 @@ public class EmployeeController {
 
     @GetMapping("/view-add")
         public String showAddForm(Model model) {
-            User employee = new User();
-            Address address = new Address();
-            Map<String, String> errors = new HashMap<>();
-            Map<String, String> errorsAddress = new HashMap<>();
+        User employee = new User();
+        Address address = new Address();
+        Map<String, String> errors = new HashMap<>();
+        Map<String, String> errorsAddress = new HashMap<>();
 
             // Gán address vào danh sách địa chỉ của employee
-            employee.setAddresses(new ArrayList<>(List.of(address)));
+        employee.setAddresses(new ArrayList<>(List.of(address)));
         model.addAttribute("address", address);
         model.addAttribute("employee", employee);
         model.addAttribute("errors", errors);
@@ -98,7 +101,7 @@ public class EmployeeController {
     public String saveEmployee(@ModelAttribute("employee") User user,
                                @ModelAttribute("address") Address address,
                                @RequestParam("file") MultipartFile file,
-                               Model model) {
+                               Model model, RedirectAttributes redirectAttributes) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
 
@@ -117,8 +120,6 @@ public class EmployeeController {
             user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
-            model.addAttribute("employee", user);
-            model.addAttribute("address", address);
             return "views/users/employee/employee-create";
         }
 
@@ -128,7 +129,7 @@ public class EmployeeController {
 
         // Gọi service để tạo nhân viên và địa chỉ
         employeeService.createEmployee(user, address,file);
-//        employeeService.createEmployee(user, address);
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm thành công!");
         return "redirect:/staff-management";
     }
 
@@ -154,14 +155,13 @@ public class EmployeeController {
                                  @ModelAttribute("employee") User user,
                                  @ModelAttribute("address") Address address,
                                  @RequestParam(value = "file", required = false) MultipartFile file,
-                                 Model model) {
+                                 Model model,RedirectAttributes redirectAttributes) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
 
         if (file == null || file.isEmpty()) {
             model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
         }
-
         // Validate dữ liệu chung
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "citizenIdentity", "gender");
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
@@ -172,8 +172,6 @@ public class EmployeeController {
             user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
-            model.addAttribute("employee", user);
-            model.addAttribute("address", address);
             return "views/users/employee/employee-update";
         }
 
@@ -186,7 +184,7 @@ public class EmployeeController {
         System.out.println("Avatar: " + user.getAvatar());
         // Gọi service để cập nhật nhân viên và địa chỉ
 
-//        employeeService.updateEmployee(id, user, address);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
         employeeService.updateEmployee(id, user, address,file);
         return "redirect:/staff-management";
     }

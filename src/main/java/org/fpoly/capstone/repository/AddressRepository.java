@@ -17,7 +17,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     SELECT ad
     FROM Address ad
     WHERE ad.user.id = :userId
-    AND ad.addressStatus = :status
+    AND ad.status = :status
     """)
     Optional<Address> findDefaultAddressByUserId(@Param("userId") Long userId, @Param("status") AddressStatus status);
 
