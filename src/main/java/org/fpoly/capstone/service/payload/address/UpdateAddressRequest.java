@@ -10,13 +10,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateAddressRequest {
-
+    private Integer customerId;
     private String province;
-    private Long provinceId;
+    private Integer provinceId;
     private String district;
-    private Long districtId;
+    private Integer districtId;
     private String ward;
-    private Long wardCode;
+    private String wardCode;
     private String detailAddress;
 
 }

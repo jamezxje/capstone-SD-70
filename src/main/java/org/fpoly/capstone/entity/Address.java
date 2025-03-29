@@ -17,6 +17,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fpoly.capstone.entity.enum_status.AddressStatus;
@@ -27,6 +28,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "address")
 public class Address {
 
@@ -37,6 +39,9 @@ public class Address {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     private User user;
+
+    @Column(name = "detail_address", length = 255)
+    private String detailAddress;
 
     @Column(name = "line", length = 255)
     private String line;

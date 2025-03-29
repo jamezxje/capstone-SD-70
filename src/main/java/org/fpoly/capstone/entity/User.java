@@ -1,5 +1,6 @@
 package org.fpoly.capstone.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -92,6 +93,7 @@ public class User {
     private String updatedBy;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonManagedReference
     private List<Address> addresses;
 
 }

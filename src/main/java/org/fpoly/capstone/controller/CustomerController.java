@@ -1,6 +1,5 @@
 package org.fpoly.capstone.controller;
 
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -177,20 +175,5 @@ public class CustomerController {
         customerService.updateCustomer(id, user, address,file);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
         return "redirect:/customer-management";
-    }
-
-    @GetMapping(path = "view-update-profile/{id}")
-    public String onOpenCustomerProfile(Model model,@PathVariable Long id) {
-        User customer = customerService.getCustomerById(id);
-
-//        User loggedUser = customerService.getCustomerById(id);
-//
-//        List<Address> listAddress = this.customerService.getListAddressByUser();
-//        model.addAttribute("loggedUser", loggedUser);
-//        model.addAttribute("listAddress", listAddress);
-//        model.addAttribute("createAddressRequest", new CreateAddressRequest());
-//        model.addAttribute("updateAddressRequest", new CreateAddressRequest());
-
-        return "views/users/customer/customer-profile";
     }
 }

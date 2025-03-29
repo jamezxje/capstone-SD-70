@@ -14,7 +14,7 @@
     right: 20px;
     z-index: 1000;">
 	</div>
-	<div class="content-body" style="min-height: 876px;">
+	<div class="content-body">
 		<div class="container-fluid">
 			<div class="card">
 				<div class="card-header d-sm-flex d-block">
@@ -53,7 +53,8 @@
 				<hr>
 				<div class="card-body">
 					<div class="table-responsive">
-						<div id="ListDatatableView_wrapper" class="dataTables_wrapper no-footer"><table class="table style-1 dataTable no-footer" id="ListDatatableView" role="grid" aria-describedby="ListDatatableView_info">
+						<div id="ListDatatableView_wrapper" class="dataTables_wrapper no-footer">
+							<table class="table style-1 dataTable no-footer" id="ListDatatableView" role="grid" aria-describedby="ListDatatableView_info">
 							<thead>
 							<tr role="row">
 								<th class="sorting_asc" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending" style="width: 40.2px;">STT</th>
@@ -112,11 +113,12 @@
 												<path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
 											</svg>
 										</a>
-<!--										<a th:href="@{/customer-management/view-update-profile/{id}(id=${customer.id})}" title="Cập nhật khách hàng" href="javascript:void(0);" class="ml-2 btn btn-info btn-xs light px-2">-->
-<!--											<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="">-->
-<!--												<path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>-->
-<!--											</svg>-->
-<!--										</a>-->
+										<a th:href="@{/address/address-list/{id}(id=${customer.id})}" title="Xem địa chỉ" class="ml-2 btn btn-success btn-xs light px-2">
+											<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="">
+												<path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+												<path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+											</svg>
+										</a>
 									</div>
 								</td>
 							</tr>

@@ -12,11 +12,10 @@ import lombok.Setter;
 public class CreateAddressRequest {
 
     private String province;
-    private Long provinceId;
+    private Integer provinceId;
     private String district;
-    private Long districtId;
+    private Integer districtId;
     private String ward;
-    private Long wardCode;
+    private String wardCode;
     private String detailAddress;
-
 }

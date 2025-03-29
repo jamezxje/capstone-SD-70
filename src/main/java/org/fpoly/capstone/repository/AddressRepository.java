@@ -21,5 +21,14 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     """)
     Optional<Address> findDefaultAddressByUserId(@Param("userId") Long userId, @Param("status") AddressStatus status);
 
-    List<Address> findByUserId(Long userId);
+    @Query("""
+        SELECT ad
+        FROM Address ad
+        WHERE ad.user.id = :userId
+        ORDER BY ad.lastModifiedDate DESC
+    """)
+    List<Address> findByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT a FROM Address a WHERE a.user.id = :userId ORDER BY a.lastModifiedDate DESC")
+    List<Address> findAddressByUserId(@Param("userId") Long userId);
 }

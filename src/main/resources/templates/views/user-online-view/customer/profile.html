@@ -21,7 +21,6 @@
       </div>
     </div>
     <!--End Page Title-->
-    
     <div class="container">
       <div class="row billing-fields">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 sm-margin-30px-bottom">
@@ -32,17 +31,17 @@
                 <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                     <label for="input-lastname">Full Name <span class="required-f">*</span></label>
-                    <input name="lastname" th:value="${customer.fullName}" id="input-lastname" type="text">
+                    <input name="lastname" th:value="${loggedUser.fullName}" id="input-lastname" type="text">
                   </div>
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                     <label for="input-email">E-Mail <span class="required-f">*</span></label>
-                    <input name="email" th:value="${customer.email}" id="input-email" type="email">
+                    <input name="email" th:value="${loggedUser.email}" id="input-email" type="email">
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                     <label for="input-telephone">Telephone <span class="required-f">*</span></label>
-                    <input name="telephone" th:value="${customer.phoneNumber}" id="input-telephone" type="tel">
+                    <input name="telephone" th:value="${loggedUser.phoneNumber}" id="input-telephone" type="tel">
                   </div>
                 </div>
               </fieldset>
@@ -107,7 +106,6 @@
                                 <!--                                <i class="fa-solid fa-pencil"></i>-->
                                 Edit
                               </button>
-                              
                               <button type="button"
                                       data-toggle="modal"
                                       data-target="#deleteAddressModal"
@@ -128,10 +126,8 @@
         </div>
       </div>
     </div>
-  
   </div>
   <!--End Body Content-->
-  
   <!--Create address modal start-->
   <div class="modal fade bd-example-modal-xl" id="createAddressModal" tabindex="-1" role="dialog"
        aria-hidden="true">
@@ -197,7 +193,6 @@
     </div>
   </div>
   <!--Create address modal end-->
-  
   <!-- Edit Address Modal -->
   <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -247,7 +242,6 @@
     </div>
   </div>
   <!-- Edit Address Modal -->
-  
   <!-- Delete Address Modal -->
   <div class="modal fade" id="deleteAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -271,7 +265,6 @@
     </div>
   </div>
   <!-- Delete Address Modal -->
-  
   <!-- Delete Address Modal -->
   <div class="modal fade" id="setDefaultAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -295,8 +288,7 @@
     </div>
   </div>
   <!-- Delete Address Modal -->
-  
-  
+
   <!--Scoll Top-->
   <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
   <!--End Scoll Top-->
