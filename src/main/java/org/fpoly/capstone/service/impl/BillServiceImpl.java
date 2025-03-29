@@ -313,7 +313,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<BaseAddressRequest> getAllAddressUser(Long idUser) {
-        List<Object[]> listAddress = addressRepository.findByUserId(idUser);
+        List<Object[]> listAddress = addressRepository.findByAddressUserIdBIll(idUser);
         for (Object[] result : listAddress) {
             for (int i = 0; i < result.length; i++) {
                 System.out.println("Index " + i + ": " + result[i] + " (type: " + result[i].getClass().getName() + ")");
@@ -327,8 +327,8 @@ public class BillServiceImpl implements BillService {
            String district = (String) list[2];
            String province = (String) list[3];
            String ward = (String) list[4];
-           Integer districtId = (Integer) list[5];
-           Integer provinceId = (Integer) list[6];
+           String districtId = (String) list[5];
+           String provinceId = (String) list[6];
            String wardCode = (String) list[7];
            String fullName = (String) list[8];
            String phoneNumber = (String) list[9];

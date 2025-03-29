@@ -16,8 +16,8 @@ public class BaseAddressRequest {
     private String district;
     private String province;
     private String ward;
-    private Integer districtId;
-    private Integer provinceId;
+    private String districtId;
+    private String provinceId;
     private String wardCode;
     private String fullName;
     private String phoneNumber;

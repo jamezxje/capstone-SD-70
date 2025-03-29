@@ -29,6 +29,6 @@ SELECT
   ad.user.id as userId
  from Address ad where ad.user.id = :userId
 """)
-    List<Object[]> findByUserId(@Param("userId") Long userId);
+    List<Object[]> findByAddressUserIdBIll(@Param("userId") Long userId);
 
 }
