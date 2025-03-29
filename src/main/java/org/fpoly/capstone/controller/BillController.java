@@ -11,7 +11,6 @@ import org.fpoly.capstone.service.BillHistoryService;
 import org.fpoly.capstone.service.BillService;
 import org.fpoly.capstone.service.VoucherDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -94,8 +93,7 @@ public class BillController {
         Bill bill = billOptional.get();
         List<BillDetailDTO> billDetails = billDetaiService.getBillDetails(id); // ✅ Lấy dữ liệu từ service
         List<BillHistory> billHistorys = billHistotyRepository.findByBillId(id);
-
-        // ✅ Lấy dữ liệu VoucherDetail từ Service (trả về DTO)
+        // Lấy dữ liệu VoucherDetail từ Service (trả về DTO)
         Optional<VoucherDetailDTO> voucherDetail = voucherDetailService.getVoucherDetailsByBillId(id);
 
         model.addAttribute("bill", bill);
@@ -103,7 +101,7 @@ public class BillController {
         model.addAttribute("billHistorys", billHistorys);
         model.addAttribute("allStatuses", BillStatus.values());
 
-        // ✅ Nếu có dữ liệu VoucherDetail, thêm vào Model
+        // Nếu có dữ liệu VoucherDetail, thêm vào Model
         voucherDetail.ifPresent(dto -> model.addAttribute("voucherDetail", dto));
 
         return "views/billDetail";

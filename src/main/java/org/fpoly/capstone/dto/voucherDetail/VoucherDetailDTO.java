@@ -6,11 +6,14 @@ public class VoucherDetailDTO {
     private BigDecimal beforePrice;
     private BigDecimal afterPrice;
     private BigDecimal discountPrice;
+    private BigDecimal moneyShip;
 
-    public VoucherDetailDTO(BigDecimal beforePrice, BigDecimal afterPrice, BigDecimal discountPrice) {
+
+    public VoucherDetailDTO(BigDecimal beforePrice, BigDecimal afterPrice, BigDecimal discountPrice, BigDecimal moneyShip) {
         this.beforePrice = beforePrice;
         this.afterPrice = afterPrice;
         this.discountPrice = discountPrice;
+        this.moneyShip = moneyShip;
     }
 
     // Getters & Setters
@@ -22,4 +25,8 @@ public class VoucherDetailDTO {
 
     public BigDecimal getDiscountPrice() { return discountPrice; }
     public void setDiscountPrice(BigDecimal discountPrice) { this.discountPrice = discountPrice; }
+
+    public BigDecimal getMoneyShip() { return moneyShip; }
+    public void setMoneyShip(BigDecimal moneyShip) { this.moneyShip = moneyShip; }
+
 }

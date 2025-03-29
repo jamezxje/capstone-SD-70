@@ -113,10 +113,7 @@ public class BillDetailServiceImpl implements BillDetaiService {
             } else {
                 System.out.println("No BillDetail found for Bill ID: " + id_bill); // Logging khi không có BillDetail
             }
-
-
-
-            // Cập nhật ngày hoàn thành
+             // Cập nhật ngày hoàn thành
             bill.get().setCompletionDate(Calendar.getInstance().getTime());
             System.out.println("Bill status updated to XAC_NHAN, Completion date set.");
         } else if (bill.get().getStatus() == BillStatus.DA_THANH_TOAN) {
@@ -226,17 +223,11 @@ public class BillDetailServiceImpl implements BillDetaiService {
         billHistotyRepository.save(billHistory);
         billRepository.save(bill.get());
         return bill.get();
-
-
-
     }
-
-
     private Date getCurrentTimestampInVietnam () {
         Instant instant = Instant.now();
         ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         long timestamp = instant.atZone(zoneId).toEpochSecond() * 1000;
-
         return new Date(timestamp);
     }
 }

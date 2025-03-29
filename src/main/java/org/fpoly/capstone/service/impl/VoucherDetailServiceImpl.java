@@ -23,8 +23,8 @@ public class VoucherDetailServiceImpl implements VoucherDetailService {
             BigDecimal beforePrice = (row[0] != null) ? new BigDecimal(row[0].toString()) : BigDecimal.ZERO;
             BigDecimal afterPrice = (row[1] != null) ? new BigDecimal(row[1].toString()) : BigDecimal.ZERO;
             BigDecimal discountPrice = (row[2] != null) ? new BigDecimal(row[2].toString()) : BigDecimal.ZERO;
-
-            return Optional.of(new VoucherDetailDTO(beforePrice, afterPrice, discountPrice));
+            BigDecimal moneyShip = (row[3] != null) ? new BigDecimal(row[3].toString()) : BigDecimal.ZERO;
+            return Optional.of(new VoucherDetailDTO(beforePrice, afterPrice, discountPrice, moneyShip));
         }
         return Optional.empty();
     }

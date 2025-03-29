@@ -14,12 +14,13 @@ public interface VoucherDetailRepository extends JpaRepository<VoucherDetail, Lo
     List<VoucherDetail> findByBillId(Long id);
 
     @Query(value = """
-            SELECT vd.before_price, 
-                   vd.after_price, 
-                   vd.discount_price
+            SELECT vd.before_price,\s
+                   vd.after_price,\s
+                   vd.discount_price,
+                   b.money_ship
             FROM voucher_detail vd
             INNER JOIN bill b ON vd.id_bill = b.id
-            WHERE b.id = :id
+            WHERE b.id = :id;
             """, nativeQuery = true)
     List<Object[]> findPricesByBillId(@Param("id") Long id);
 }

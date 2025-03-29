@@ -118,7 +118,6 @@ function updateTimelineStatus(status) {
         case "CHO_VAN_CHUYEN":
             if (document.getElementById("waiting-shipping").style.display === "none") {
                 document.getElementById("waiting-shipping").style.display = "block";
-
             }
             break;
         case "VAN_CHUYEN":
@@ -144,6 +143,7 @@ function updateTimelineStatus(status) {
                 document.getElementById('cancel').style.display = 'block';
                 document.getElementById('changeStatusButton').style.display = 'none'
                 document.getElementById('cancelBill').style.display = 'none'
+                document.getElementById('changeInfor').style.display = 'none'
             }
         default:
             console.error("Unknown status", status);
@@ -240,6 +240,7 @@ function getStatusId(status) {
         case "DA_HUY":
             document.getElementById('changeStatusButton').style.display = 'none'
             document.getElementById('cancelBill').style.display = 'none'
+            document.getElementById('changeInfor').style.display = 'none'
             return "cancel";
         default:
             return null;
