@@ -1,4 +1,4 @@
-package org.fpoly.capstone.service.payload.address;
+package org.fpoly.capstone.service.payload.addressCustomer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,13 +10,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateAddressRequest {
+
+    private String fullName;
+    private String phoneNumber;
     private Integer customerId;
     private String province;
-    private Integer provinceId;
+    private Long provinceId;
     private String district;
-    private Integer districtId;
+    private Long districtId;
     private String ward;
-    private String wardCode;
-    private String detailAddress;
-
+    private Long wardCode;
+    private String line;
 }

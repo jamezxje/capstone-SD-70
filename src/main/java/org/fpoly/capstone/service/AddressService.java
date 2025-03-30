@@ -1,8 +1,8 @@
 package org.fpoly.capstone.service;
 
 import org.fpoly.capstone.entity.Address;
-import org.fpoly.capstone.service.payload.address.CreateAddressRequest;
-import org.fpoly.capstone.service.payload.address.UpdateAddressRequest;
+import org.fpoly.capstone.service.payload.addressCustomer.CreateAddressRequest;
+import org.fpoly.capstone.service.payload.addressCustomer.UpdateAddressRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

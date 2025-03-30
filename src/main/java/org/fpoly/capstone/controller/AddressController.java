@@ -1,24 +1,26 @@
 package org.fpoly.capstone.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.service.AddressService;
 import org.fpoly.capstone.service.CustomerService;
-import org.fpoly.capstone.service.UserService;
-import org.fpoly.capstone.service.payload.address.CreateAddressRequest;
-import org.fpoly.capstone.service.payload.address.UpdateAddressRequest;
+import org.fpoly.capstone.service.payload.addressCustomer.CreateAddressRequest;
+import org.fpoly.capstone.service.payload.addressCustomer.UpdateAddressRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
-@RequestMapping("address")
+@RequestMapping("customer-management-address")
 @RequiredArgsConstructor
 public class AddressController {
 
@@ -39,18 +41,18 @@ public class AddressController {
         model.addAttribute("updateAddressRequest", new CreateAddressRequest()); // Fix nhầm lẫn
         return "/views/users/customer/address-list";
     }
-    @PostMapping(path = "address/delete/{id}")
-    public String deleteAddress(@PathVariable Integer id) {
-
+    @PostMapping(path = "/delete/{id}")
+    public String deleteAddress(@PathVariable Integer id,
+     @RequestParam("customerId") Integer customerId) {  // Lấy customerId từ query string
         try {
             this.addressService.deleteAddress(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "redirect:/address/address-list/"+id;
+        return "redirect:/customer-management-address/address-list/"+customerId;
     }
 
-    @PostMapping(path = "address/set-default/{id}")
+    @PostMapping(path = "/set-default/{id}")
     public String setDefaultAddress(
             @PathVariable Integer id,
             @RequestParam("customerId") Integer customerId) {  // Lấy customerId từ query string
@@ -60,7 +62,7 @@ public class AddressController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "redirect:/address/address-list/" + customerId; // Sử dụng customerId cho đúng
+        return "redirect:/customer-management-address/address-list/" + customerId; // Sử dụng customerId cho đúng
     }
 
     @PostMapping("/address/{customerId}")

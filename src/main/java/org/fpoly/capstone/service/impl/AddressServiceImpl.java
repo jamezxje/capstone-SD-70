@@ -7,12 +7,13 @@ import org.fpoly.capstone.entity.enum_status.AddressStatus;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.service.AddressService;
 import org.fpoly.capstone.service.CustomerService;
-import org.fpoly.capstone.service.payload.address.CreateAddressRequest;
-import org.fpoly.capstone.service.payload.address.UpdateAddressRequest;
+import org.fpoly.capstone.service.payload.addressCustomer.CreateAddressRequest;
+import org.fpoly.capstone.service.payload.addressCustomer.UpdateAddressRequest;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -41,13 +42,17 @@ public class AddressServiceImpl implements AddressService {
         User customer = customerService.getCustomerById(id);
 
         Address address = Address.builder()
+                .fullName(request.getFullName()) // Thêm fullName
+                .phoneNumber(request.getPhoneNumber()) // Thêm phoneNumber
                 .province(request.getProvince())
-                .provinceId(request.getProvinceId())  // Đảm bảo provinceId là Integer
+                .provinceId(String.valueOf(request.getProvinceId()))
                 .district(request.getDistrict())
-                .toDistrictId(request.getDistrictId())
+                .toDistrictId(String.valueOf(request.getDistrictId()))
                 .ward(request.getWard())
-                .wardCode(request.getWardCode())
-                .detailAddress(request.getDetailAddress())
+                .wardCode(String.valueOf(request.getWardCode()))
+                .line(request.getLine())
+                .createDate(new Date())
+                .lastModifiedDate(new Date())
                 .user(customer)
                 .build();
         List<Address> existingAddressList = this.addressRepository.findAddressByUserId(customer.getId());
@@ -69,13 +74,16 @@ public class AddressServiceImpl implements AddressService {
         Address existingAddress = this.addressRepository
                 .findById(Long.valueOf(addressId))
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy địa chỉ với ID:" + addressId));
+        existingAddress.setFullName(request.getFullName()); // Thêm fullName
+        existingAddress.setPhoneNumber(request.getPhoneNumber()); // Thêm phoneNumber
         existingAddress.setDistrict(request.getDistrict());
-        existingAddress.setToDistrictId(request.getDistrictId());
+        existingAddress.setToDistrictId(String.valueOf(request.getDistrictId()));
         existingAddress.setProvince(request.getProvince());
-        existingAddress.setProvinceId(request.getProvinceId());
+        existingAddress.setProvinceId(String.valueOf(request.getProvinceId()));
         existingAddress.setWard(request.getWard());
-        existingAddress.setWardCode(request.getWardCode());
-        existingAddress.setDetailAddress(request.getDetailAddress());
+        existingAddress.setWardCode(String.valueOf(request.getWardCode()));
+        existingAddress.setLine(request.getLine());
+        existingAddress.setLastModifiedDate(new Date());
         // Save the updated address
         this.addressRepository.save(existingAddress);
     }
@@ -111,7 +119,6 @@ public class AddressServiceImpl implements AddressService {
         Address defaultAddress = this.addressRepository
                 .findById(Long.valueOf(addressId))
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + addressId));
-
         // Cập nhật tất cả các địa chỉ còn lại thành 'NGUNG_SU_DUNG'
         for (Address address : this.addressRepository.findAll()) {
             if (!address.getId().equals(defaultAddress.getId())) {
@@ -119,7 +126,6 @@ public class AddressServiceImpl implements AddressService {
                 this.addressRepository.save(address);
             }
         }
-
         // Đặt địa chỉ mặc định với trạng thái 'DANG_SU_DUNG'
         defaultAddress.setStatus(AddressStatus.DANG_SU_DUNG);
         this.addressRepository.save(defaultAddress);

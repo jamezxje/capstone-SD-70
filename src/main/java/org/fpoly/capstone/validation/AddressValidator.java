@@ -22,13 +22,13 @@ public class AddressValidator {
         }
 
         if (fieldsToValidate.contains("provinceId")) {
-            if (address.getProvinceId() == null) {
+            if (address.getProvinceId() == null || address.getProvinceId().trim().isEmpty()) {
                 errors.put("provinceId", "Vui lòng không để trống tỉnh/thành phố");
             }
         }
 
         if (fieldsToValidate.contains("toDistrictId")) {
-            if (address.getToDistrictId() == null) {
+            if (address.getToDistrictId() == null|| address.getToDistrictId().trim().isEmpty()) {
                 errors.put("toDistrictId", "Vui lòng không để trống quận/huyện");
             }
         }

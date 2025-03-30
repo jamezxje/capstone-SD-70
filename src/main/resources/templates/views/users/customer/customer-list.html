@@ -101,11 +101,9 @@
 								<td>
 									<div class="d-flex action-button">
 										<a th:href="@{/customer-management/detail/{id}(id=${customer.id})}" title="Chi tiết khách hàng" href="javascript:void(0);" class=" btn btn-xs px-2 light btn-danger">
-											<svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect>
-													<circle fill="#000000" cx="5" cy="12" r="2"></circle>
-													<circle fill="#000000" cx="12" cy="12" r="2"></circle>
-													<circle fill="#000000" cx="19" cy="12" r="2"></circle></g>
+											<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<path d="M12 14C8.686 14 6 16.686 6 20H18C18 16.686 15.314 14 12 14Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+												<path d="M12 12C14.209 12 16 10.209 16 8C16 5.791 14.209 4 12 4C9.791 4 8 5.791 8 8C8 10.209 9.791 12 12 12Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 											</svg>
 										</a>
 										<a th:href="@{/customer-management/view-update/{id}(id=${customer.id})}" title="Cập nhật khách hàng" href="javascript:void(0);" class="ml-2 btn btn-info btn-xs light px-2">
@@ -113,10 +111,12 @@
 												<path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
 											</svg>
 										</a>
-										<a th:href="@{/address/address-list/{id}(id=${customer.id})}" title="Xem địa chỉ" class="ml-2 btn btn-success btn-xs light px-2">
-											<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="">
-												<path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-												<path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+										<a th:href="@{/customer-management-address/address-list/{id}(id=${customer.id})}"
+										   title="Xem địa chỉ" class="ml-2 btn btn-success btn-xs light px-2">
+											<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<path d="M9 21L3 18V6L9 3L15 6L21 3V18L15 21L9 18Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+												<path d="M9 3V18" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+												<path d="M15 6V21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 											</svg>
 										</a>
 									</div>

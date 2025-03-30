@@ -49,29 +49,4 @@ public interface CustomerRepository extends JpaRepository<User, Long> {
 
     User getById(Long id);
 
-
-//    @Query(value = """
-//        SELECT
-//            ROW_NUMBER() OVER (ORDER BY a.last_modified_date DESC) AS stt,
-//            a.id AS id,
-//            CONCAT(a.line, ', ', a.district, ', ', a.ward, ', ', a.province) AS address,
-//            a.line AS line,
-//            a.district AS district,
-//            a.province AS province,
-//            a.ward AS ward,
-//            a.status AS status,
-//            a.province_id AS provinceId,
-//            a.to_district_id AS toDistrictId,
-//            a.ward_code AS wardCode,
-//            a.full_name AS fullName,
-//            a.phone_number AS phoneNumber,
-//            u.id AS userId
-//        FROM address a
-//        LEFT JOIN user u ON a.id_user = u.id
-//        WHERE u.id = :userId
-//        GROUP BY a.id
-//        ORDER BY a.status ASC
-//        """, nativeQuery = true)
-//    List<Object[]> findCustomerAddresses(@Param("userId") Long userId);
-
 }

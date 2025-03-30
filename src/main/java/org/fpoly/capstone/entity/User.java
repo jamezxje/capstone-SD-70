@@ -1,6 +1,5 @@
 package org.fpoly.capstone.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +13,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,8 +36,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Vui lòng nhập họ và tên")
-    @Column(name = "full_name", length = 50)
+    @Column(name = "full_name", length = 30)
     private String fullName;
 
     @Temporal(TemporalType.DATE)
@@ -47,13 +44,13 @@ public class User {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @NotEmpty(message = "Vui lòng nhập số điện thoại")
-    @Pattern(regexp = "^(0\\d{9})$", message = "Số điện thoại không hợp lệ")
+//    @Column(name = "date_or_birth")
+//    @Temporal(TemporalType.DATE)
+//    private Date dateOfBirth;
+
     @Column(name = "phone_number", length = 10)
     private String phoneNumber;
 
-    @NotEmpty(message = "Vui lòng nhập email")
-    @Email(message = "Email không hợp lệ")
     @Column(name = "email", length = 255)
     private String email;
 
@@ -70,7 +67,6 @@ public class User {
     @Column(name = "status")
     private UserStatus status;
 
-    @NotEmpty(message = "Vui lòng nhập mật khẩu")
     @Column(name = "password")
     private String password;
 
@@ -93,7 +89,6 @@ public class User {
     private String updatedBy;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-    @JsonManagedReference
     private List<Address> addresses;
 
 }

@@ -13,9 +13,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,9 +37,6 @@ public class Address {
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     private User user;
 
-    @Column(name = "detail_address", length = 255)
-    private String detailAddress;
-
     @Column(name = "line", length = 255)
     private String line;
 
@@ -59,10 +53,10 @@ public class Address {
     private String wardCode;
 
     @Column(name = "province_id", length = 50)
-    private Integer provinceId;
+    private String provinceId;
 
     @Column(name = "to_district_id", length = 50)
-    private Integer toDistrictId;
+    private String toDistrictId;
 
     @Column(name = "full_name", length = 50)
     private String fullName;
