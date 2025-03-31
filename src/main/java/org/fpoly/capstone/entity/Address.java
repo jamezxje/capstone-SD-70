@@ -28,8 +28,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "address")
 @Builder
+@Table(name = "address")
 public class Address {
 
     @Id

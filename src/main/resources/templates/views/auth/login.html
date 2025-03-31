@@ -27,39 +27,47 @@
                     <div class="text-center mb-3">
                       <img src="/assets/admin-dashboard/images/logo-full.png" alt="">
                     </div>
-                    <h4 class="text-center mb-4">Sign in your account</h4>
+                    <h4 class="text-center mb-4">Đăng nhập tài khoản</h4>
                     <div th:if="${param.error}">
-                      <div class="alert alert-danger">Invalid email or password</div>
+                      <div class="alert alert-danger">email hoặc mật khẩu sai</div>
                     </div>
                     <div th:if="${param.logout}">
-                      <div class="alert alert-success">You have been logged out</div>
+                      <div class="alert alert-success">Bạn đã đăng xuất</div>
                     </div>
                     <form th:action="@{/auth/login}" method="post">
                       <div class="form-group">
                         <label class="mb-1"><strong>Email</strong></label>
+<<<<<<< HEAD
                         <input type="email" name="username" class="form-control" placeholder="hello@example.com" value="admin@gmail.com">
                       </div>
                       <div class="form-group">
                         <label class="mb-1"><strong>Password</strong></label>
                         <input type="password" name="password" class="form-control" placeholder="Password" value="1234">
+=======
+                        <input type="email" name="username" class="form-control" placeholder="hello@example.com" value="c@gmail.com">
+                      </div>
+                      <div class="form-group">
+                        <label class="mb-1"><strong>Password</strong></label>
+                        <input type="password" name="password" class="form-control" placeholder="Password" value="123456">
+>>>>>>> origin/chienhl
                       </div>
                       <div class="form-row d-flex justify-content-between mt-4 mb-2">
                         <div class="form-group">
                           <div class="custom-control custom-checkbox ml-1">
                             <input type="checkbox" class="custom-control-input" id="basic_checkbox_1">
-                            <label class="custom-control-label" for="basic_checkbox_1">Remember my preference</label>
+                            <label class="custom-control-label" for="basic_checkbox_1">Ghi nhớ tài khoản</label>
                           </div>
                         </div>
                         <div class="form-group">
-                          <a href="page-forgot-password.html">Forgot Password?</a>
+                          <a th:href="@{/auth/forgot-password}">Quyên mật khẩu</a>
                         </div>
                       </div>
                       <div class="text-center">
-                        <button type="submit" class="btn btn-primary btn-block">Sign Me In</button>
+                        <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
                       </div>
                     </form>
                     <div class="new-account mt-3">
-                      <p>Don't have an account? <a class="text-primary" th:href="@{/auth/register}">Sign up</a></p>
+                      <p>Bạn chưa có tài khoản? <a class="text-primary" th:href="@{/auth/register}">Đăng ký</a></p>
                     </div>
                   </div>
                 </div>

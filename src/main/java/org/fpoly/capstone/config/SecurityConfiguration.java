@@ -57,6 +57,8 @@ public class SecurityConfiguration {
             "/products/**",
             "/getAllProductDetail" ,
             "/auth/register",
+            "/auth/register/save",
+            "/auth/forgot-password",
             "/home",
             "/login",
             "/register",

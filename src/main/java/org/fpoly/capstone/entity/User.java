@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -18,8 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
 @Builder
+@Table(name = "user")
 
 public class User {
 
@@ -30,11 +31,14 @@ public class User {
     @Column(name = "full_name", length = 100)
     private String fullName;
 
-    @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd") // Định dạng theo input type="date"
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @Column(name = "phone_number", length = 15)
+
+
+    @Column(name = "phone_number", length = 10)
     private String phoneNumber;
 
     @Column(name = "email", length = 255)
