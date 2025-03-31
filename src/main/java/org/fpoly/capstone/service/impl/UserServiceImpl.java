@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -68,8 +70,54 @@ public class UserServiceImpl implements UserService {
         newUser.setCreateDate(new Date());
         newUser.setLastModifiedDate(new Date());
         userRepository.save(newUser);
-        String subject = "Chào mừng bạn đến với CAPSTONE! Tài khoản của bạn đã được tạo thành công. Đừng quên cập nhật thông tin để có trải nghiệm tốt nhất!";
+        String subject = "Chúc mừng! Bạn đã đăng ký thành công tài khoản CAPSTONE.";
         emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return newUser;
+    }
+
+    private String generateRandomPassword() {
+        int length = 10; // Độ dài mật khẩu
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
+        Random random = new Random();
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            password.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return password.toString();
+    }
+
+//    @Override
+//    @Transactional
+//    public String processForgotPassword(String email) {
+//        Optional<User> userOptional = userRepository.findByEmailPassword(email);
+//        if (userOptional.isEmpty()) {
+//            return "Email không tồn tại trong hệ thống.";
+//        }
+//        User user = userOptional.get();
+//        String newPassword = generateRandomPassword();
+//        String encodedPassword = passwordEncoder.encode(newPassword);
+//        user.setPassword(encodedPassword);
+//        userRepository.save(user);
+//        String subject = "Khôi phục mật khẩu - CAPSTONE";
+//        emailService.sendEmailPassword(user.getEmail(), subject, newPassword);
+//        return "Mật khẩu mới đã được gửi về email của bạn.";
+//    }
+
+
+    //validate
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.getUserByEmail(email).isPresent();
+    }
+
+    @Override
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        return userRepository.getUserBySDT(phoneNumber).isPresent();
+    }
+
+    @Override
+    public boolean existsByCitizenIdentity(String citizenIdentity) {
+        return userRepository.getUserByCCCD(citizenIdentity).isPresent();
     }
 }

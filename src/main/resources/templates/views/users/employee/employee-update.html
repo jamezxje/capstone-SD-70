@@ -31,7 +31,7 @@
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label" for="email">Email</label>
                                                 <div class="col-lg-6">
-                                                    <input type="text" class="form-control" id="email" th:field="*{employee.email}" placeholder="Nhập email...">
+                                                    <input type="text" class="form-control" name="email" id="email" th:field="*{employee.email}" placeholder="Nhập email...">
                                                     <p class="error" th:if="${errors['email']}" th:text="${errors['email']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
@@ -89,7 +89,7 @@
                                                 <div class="col-lg-6">
                                                     <select class="form-control" id="provinceSelect" th:field="*{address.provinceId}"
                                                         th:attr="data-province=${address.provinceId}">
-                                                        <option value="">Chọn</option>
+                                                        <option value="">Chọn Tỉnh / Thành Phố</option>
                                                     </select>
                                                     <input type="hidden" id="provinceName" th:field="*{address.province}">
                                                     <p class="error" th:if="${errorsAddress['provinceId']}" th:text="${errorsAddress['provinceId']}" th:classappend="text-danger"></p>
@@ -100,7 +100,7 @@
                                                 <div class="col-lg-6">
                                                     <select class="form-control" id="districtSelect" th:field="*{address.toDistrictId}"
                                                             th:attr="data-district=${address.toDistrictId}">
-                                                        <option value="">Chọn</option>
+                                                        <option value="">Chọn Quận / Huyện</option>
                                                     </select>
                                                     <input type="hidden" id="districtName" th:field="*{address.district}">
                                                     <p class="error" th:if="${errorsAddress['toDistrictId']}" th:text="${errorsAddress['toDistrictId']}" th:classappend="text-danger"></p>
@@ -111,7 +111,7 @@
                                                 <div class="col-lg-6">
                                                     <select class="form-control" id="wardSelect" th:field="*{address.wardCode}"
                                                             th:attr="data-ward=${address.wardCode}">
-                                                        <option value="">Chọn</option>
+                                                        <option value="">Chọn Phường / Xã</option>
                                                     </select>
                                                     <input type="hidden" id="wardName" th:field="*{address.ward}">
                                                     <p class="error" th:if="${errorsAddress['wardCode']}" th:text="${errorsAddress['wardCode']}" th:classappend="text-danger"></p>
@@ -135,7 +135,7 @@
                                                             <label for="upload" class="btn btn-light m-0 rounded-pill px-4 d-flex align-items-center justify-content-center w-100">
                                                                 <i class="fa fa-cloud-upload mr-2 text-muted"></i>
                                                                 <small class="text-uppercase font-weight-bold text-muted mb-0">
-                                                                    Chọn file
+                                                                    Chọn ảnh
                                                                 </small>
                                                             </label>
                                                         </div>
@@ -164,22 +164,22 @@
             </div>
         </div>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function readURLAvatar(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        document.getElementById('avatarPreview').src = e.target.result;
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function readURLAvatar(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
             }
-            document.getElementById('upload').addEventListener('change', function () {
-                readURLAvatar(this);
-            });
+        }
+        document.getElementById('upload').addEventListener('change', function () {
+            readURLAvatar(this);
         });
-    </script>
+    });
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';
@@ -201,7 +201,7 @@
             axios.get(urlProvince, { headers: { token: tokenApiGHN } })
                 .then(response => {
                     const selectElement = document.getElementById('provinceSelect');
-                    selectElement.innerHTML = '<option value="">Chọn tỉnh</option>';
+                    selectElement.innerHTML = '<option value="">Chọn Tỉnh / Thành Phố</option>';
                     response.data.data.forEach(province => {
                         const option = new Option(province.ProvinceName, province.ProvinceID);
                         selectElement.add(option);
@@ -224,7 +224,7 @@
                 headers: { token: tokenApiGHN }
             })
                 .then(response => {
-                    districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
+                    districtSelect.innerHTML = '<option value="">Chọn Quận / Huyện</option>';
                     response.data.data.forEach(district => {
                         const option = new Option(district.DistrictName, district.DistrictID);
                         districtSelect.add(option);
@@ -244,7 +244,7 @@
                 headers: { token: tokenApiGHN }
             })
                 .then(response => {
-                    wardSelect.innerHTML = '<option value="">Chọn xã</option>';
+                    wardSelect.innerHTML = '<option value="">Chọn Phường / Xã</option>';
                     response.data.data.forEach(ward => {
                         const option = new Option(ward.WardName, ward.WardCode);
                         wardSelect.add(option);
@@ -265,8 +265,8 @@
             if (provinceId) {
                 fetchProvinceDistricts(provinceId);
             } else {
-                districtSelect.innerHTML = '<option value="">Chọn huyện</option>';
-                wardSelect.innerHTML = '<option value="">Chọn xã</option>';
+                districtSelect.innerHTML = '<option value="">Chọn Quận / Huyện</option>';
+                wardSelect.innerHTML = '<option value="">Chọn Phường / Xã</option>';
             }
             document.getElementById('provinceName').value = this.options[this.selectedIndex].text;
         });
@@ -277,7 +277,7 @@
             if (districtId) {
                 fetchProvinceWard(districtId);
             } else {
-                wardSelect.innerHTML = '<option value="">Chọn xã</option>';
+                wardSelect.innerHTML = '<option value="">Chọn Phường / Xã</option>';
             }
             document.getElementById('districtName').value = this.options[this.selectedIndex].text;
         });

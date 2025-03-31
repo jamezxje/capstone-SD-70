@@ -25,43 +25,42 @@
 									<div class="row">
 										<div class="col-xl-6">
 											<div class="form-group row">
-												<label class="col-lg-4 col-form-label" for="val-username">ID nhân viên</label>
+												<label class="col-lg-4 col-form-label" for="val-username">ID khách hàng</label>
 												<div class="col-lg-6">
-													<input th:value="${employee.id}" type="text" readonly=""  class="form-control"placeholder="Enter a username..">
+													<input th:value="${employee.id}" type="text" readonly=""  class="form-control"placeholder="">
 												</div>
 											</div>
 											<div class="form-group row">
 												<label class="col-lg-4 col-form-label" for="val-username">Họ và tên</label>
 												<div class="col-lg-6">
-													<input th:value="${employee.fullName}" type="text" readonly=""  class="form-control" id="val-username" name="val-username" placeholder="Enter a username..">
+													<input th:value="${employee?.fullName ?: ''}" type="text" readonly=""  class="form-control" id="val-username" name="val-username" placeholder="">
 												</div>
 											</div>
 											<div class="form-group row">
 												<label class="col-lg-4 col-form-label" for="val-email">Email
 												</label>
 												<div class="col-lg-6">
-													<input th:value="${employee.email}" type="text" readonly="" class="form-control" id="val-email" name="val-email" placeholder="Your valid email..">
+													<input th:value="${employee?.email ?: ''}" type="text" readonly="" class="form-control" id="val-email" name="val-email" placeholder="">
 												</div>
 											</div>
 											<div class="form-group row">
 												<label class="col-lg-4 col-form-label" for="val-sodienthoai">Số điện thoại
 												</label>
 												<div class="col-lg-6">
-													<input th:value="${employee.phoneNumber}" type="text" readonly="" class="form-control" id="val-sodienthoai" name="val-sodienthoai" placeholder="Your valid phone number..">
+													<input th:value="${employee?.phoneNumber ?: ''}" type="text" readonly="" class="form-control" id="val-sodienthoai" name="val-sodienthoai" placeholder="">
 												</div>
 											</div>
 											<div class="form-group row">
 												<label class="col-lg-4 col-form-label" for="val-sodienthoai">Ngày sinh
 												</label>
 												<div class="col-lg-6">
-													<input type="date" class="form-control" readonly th:value="${#dates.format(employee.dateOfBirth, 'yyyy-MM-dd')}">
+													<input type="date" class="form-control" readonly  th:value="${employee?.dateOfBirth != null ? #dates.format(employee.dateOfBirth, 'yyyy-MM-dd') : ''}">
 												</div>
 											</div>
 											<div class="form-group row">
-												<label class="col-lg-4 col-form-label" for="val-cccd">Căn cước công dân
-												</label>
+												<label class="col-lg-4 col-form-label" for="citizenIdentity">Căn cước công dân</label>
 												<div class="col-lg-6">
-													<input th:value="${employee.citizenIdentity}" type="text" readonly="" class="form-control" id="val-cccd" name="val-cccd" placeholder="Your valid CCCD..">
+													<input type="text" class="form-control" id="citizenIdentity" th:value="${employee?.citizenIdentity ?: ''}" placeholder="">
 												</div>
 											</div>
 											<div class="form-group row">
@@ -94,27 +93,28 @@
 												<label class="col-lg-4 col-form-label" >Tỉnh/Thành Phố
 												</label>
 												<div class="col-lg-6">
-													<input th:value="${address.province}" type="text" readonly="" class="form-control" placeholder="Your valid phone number..">
+													<input th:value="${address?.province ?: ''}" type="text" readonly="" class="form-control" placeholder="">
 												</div>
 											</div>
 											<div class="form-group row">
 												<label class="col-lg-4 col-form-label" >Quận/Huyện
 												</label>
 												<div class="col-lg-6">
-													<input th:value="${address.district}" type="text" readonly="" class="form-control" placeholder="Your valid phone number..">
+													<input th:value="${address?.district ?: ''}" type="text" readonly="" class="form-control" placeholder="">
 												</div>
-											</div><div class="form-group row">
-											<label class="col-lg-4 col-form-label" >Xã/Phường
-											</label>
-											<div class="col-lg-6">
-												<input th:value="${address.ward}" type="text" readonly="" class="form-control" placeholder="Your valid phone number..">
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" >Xã/Phường
+												</label>
+												<div class="col-lg-6">
+												<input th:value="${address?.ward ?: ''}" type="text" readonly="" class="form-control" placeholder="">
 												</div>
 											</div>
 											<!-- Địa chỉ cụ thể-->
 											<div class="form-group row">
 												<label class="col-lg-4 col-form-label">Số nhà/Ngõ/Đường</label>
 												<div class="col-lg-6">
-													<input type="text" class="form-control" readonly="" name="line" th:value="${address?.line}" placeholder="Nhập địa chỉ cụ thể...">
+													<input type="text" class="form-control" readonly="" name="line" th:value="${address?.line ?: ''}" placeholder="">
 												</div>
 											</div>
 											<div class="form-group row">

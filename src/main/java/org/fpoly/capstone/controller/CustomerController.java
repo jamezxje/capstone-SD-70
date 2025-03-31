@@ -5,6 +5,7 @@ import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.service.AddressService;
 import org.fpoly.capstone.service.CustomerService;
+import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.validation.AddressValidator;
 import org.fpoly.capstone.validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class CustomerController {
     @Autowired
     private AddressService addressService;
 
+    @Autowired
+    private UserService userService;
+
     @InitBinder("address")
     public void initBinder(WebDataBinder binder) {
         binder.setDisallowedFields("status"); // Chặn status chỉ của Address
@@ -44,6 +48,9 @@ public class CustomerController {
         }
         log.info("Customer ID: {}", customer.getId());
         Address address = addressService.getDefaultAddress(customer.getId());
+        if (address == null) {
+            address = new Address();
+        }
         model.addAttribute("customer", customer);
         model.addAttribute("address", address);
         return "views/users/customer/customer-detail";
@@ -101,7 +108,12 @@ public class CustomerController {
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
         Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
         Map<String, String> errorsAddress = AddressValidator.validate(address, addressFieldsToValidate);
-
+        if (userService.existsByEmail(user.getEmail())) {
+            errors.put("email", "Email đã tồn tại!");
+        }
+        if (userService.existsByPhoneNumber(user.getPhoneNumber())) {
+            errors.put("phoneNumber", "Số điện thoại đã tồn tại!");
+        }
         if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
             user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
             model.addAttribute("errors", errors);
@@ -129,7 +141,9 @@ public class CustomerController {
         Map<String, String> errors = new HashMap<>();
         Map<String, String> errorsAddress = new HashMap<>();
         Address address = addressService.getDefaultAddress(customer.getId());
-
+        if (address == null) {
+            address = new Address();
+        }
         model.addAttribute("customer", customer);
         model.addAttribute("address", address);
         model.addAttribute("errors", errors);
@@ -145,7 +159,7 @@ public class CustomerController {
                                  Model model, RedirectAttributes redirectAttributes) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
-
+        User existingUser = customerService.getCustomerById(id);
         if (file == null || file.isEmpty()) {
             model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
         }
@@ -155,7 +169,12 @@ public class CustomerController {
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
         Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
         Map<String, String> errorsAddress = AddressValidator.validate(address, addressFieldsToValidate);
-
+        if (!user.getEmail().equals(existingUser.getEmail()) && userService.existsByEmail(user.getEmail())) {
+            errors.put("email", "Email đã tồn tại!");
+        }
+        if (!user.getPhoneNumber().equals(existingUser.getPhoneNumber()) && userService.existsByPhoneNumber(user.getPhoneNumber())) {
+            errors.put("phoneNumber", "Số điện thoại đã tồn tại!");
+        }
         if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
             user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
             model.addAttribute("errors", errors);

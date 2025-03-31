@@ -33,7 +33,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address getDefaultAddress(Long userId) {
-        return addressRepository.findDefaultAddressByUserId(userId, AddressStatus.DANG_SU_DUNG).orElse(null);
+        return addressRepository.findDefaultAddressByUserId(userId, AddressStatus.DANG_SU_DUNG).orElse(new Address());
     }
 //-------------------------------------------------------
 

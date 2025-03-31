@@ -8,6 +8,7 @@ import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.EmployeeRepository;
 import org.fpoly.capstone.service.AddressService;
 import org.fpoly.capstone.service.EmployeeService;
+import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.validation.AddressValidator;
 import org.fpoly.capstone.validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class EmployeeController {
     private AddressRepository addressRepository;
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private UserService userService;
 
     @InitBinder("address")
     public void initBinder(WebDataBinder binder) {
@@ -53,6 +54,9 @@ public class EmployeeController {
         }
         log.info("Employee ID: {}", employee.getId());
         Address address = addressService.getDefaultAddress(employee.getId());
+        if (address == null) {
+            address = new Address();
+        }
         model.addAttribute("employee", employee);
         model.addAttribute("address", address);
         return "views/users/employee/employee-detail";
@@ -115,7 +119,15 @@ public class EmployeeController {
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
         Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
         Map<String, String> errorsAddress = AddressValidator.validate(address, addressFieldsToValidate);
-
+        if (userService.existsByEmail(user.getEmail())) {
+            errors.put("email", "Email đã tồn tại!");
+        }
+        if (userService.existsByPhoneNumber(user.getPhoneNumber())) {
+            errors.put("phoneNumber", "Số điện thoại đã tồn tại!");
+        }
+        if (userService.existsByCitizenIdentity(user.getCitizenIdentity())) {
+            errors.put("citizenIdentity", "Căn cước công dân đã tồn tại!");
+        }
         if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
             user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
             model.addAttribute("errors", errors);
@@ -143,6 +155,9 @@ public class EmployeeController {
         Map<String, String> errorsAddress = new HashMap<>();
         // Gán address vào danh sách địa chỉ của employee
         Address address = addressService.getDefaultAddress(employee.getId());
+        if (address == null) {
+            address = new Address();
+        }
         model.addAttribute("employee", employee);
         model.addAttribute("address", address);
         model.addAttribute("errors", errors);
@@ -158,7 +173,7 @@ public class EmployeeController {
                                  Model model,RedirectAttributes redirectAttributes) {
         System.out.println("User nhận từ form: " + user);
         System.out.println("Address nhận từ form: " + address);
-
+        User existingUser = employeeService.getEmployeeById(id);
         if (file == null || file.isEmpty()) {
             model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
         }
@@ -167,6 +182,16 @@ public class EmployeeController {
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
         Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
         Map<String, String> errorsAddress = AddressValidator.validate(address, addressFieldsToValidate);
+
+        if (!user.getEmail().equals(existingUser.getEmail()) && userService.existsByEmail(user.getEmail())) {
+            errors.put("email", "Email đã tồn tại!");
+        }
+        if (!user.getPhoneNumber().equals(existingUser.getPhoneNumber()) && userService.existsByPhoneNumber(user.getPhoneNumber())) {
+            errors.put("phoneNumber", "Số điện thoại đã tồn tại!");
+        }
+        if (!user.getCitizenIdentity().equals(existingUser.getCitizenIdentity()) && userService.existsByCitizenIdentity(user.getCitizenIdentity())) {
+            errors.put("citizenIdentity", "Căn cước công dân đã tồn tại!");
+        }
 
         if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
             user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user

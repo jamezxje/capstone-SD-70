@@ -22,6 +22,7 @@ public class SecurityConfiguration {
             "/",
             "/auth/register",
             "/auth/register/save",
+            "/auth/forgot-password",
             "/home",
             "/login",
             "/register",

@@ -75,29 +75,29 @@
 									<div class="media style-1">
 										<img th:src="${employees.avatar}" class="img-fluid mr-2" alt="">
 										<div class="media-body">
-											<h6 th:text="${employees.fullName != null ? employees.fullName : 'Không có dữ liệu'}"></h6>
-											<span><a th:text="${employees.email != null ? employees.email : 'Không có dữ liệu'}" class="__cf_email__" data-cfemail="6c060304020803092c0b010d0500420f0301">[email&nbsp;protected]</a></span>
+											<h6 th:text="${employees.fullName != null ? employees.fullName : ''}"></h6>
+											<span><a th:text="${employees.email != null ? employees.email : ''}" class="__cf_email__" data-cfemail="6c060304020803092c0b010d0500420f0301">[email&nbsp;protected]</a></span>
 										</div>
 									</div>
 								</td>
 								<td>
 									<div>
-										<h6 th:text="${employees.phoneNumber != null ? employees.phoneNumber : 'Không có dữ liệu'}"></h6>
+										<h6 th:text="${employees.phoneNumber != null ? employees.phoneNumber : ''}"></h6>
 									</div>
 								</td>
 								<td>
 									<div>
-										<h6 th:text="${employees.citizenIdentity != null ? employees.citizenIdentity : 'Không có dữ liệu'}"></h6>
+										<h6 th:text="${employees.citizenIdentity != null ? employees.citizenIdentity : ''}"></h6>
 									</div>
 								</td>
 								<td>
 									<div>
-										<h6 class="text-primary" th:text="${employees.dateOfBirth != null ? #dates.format(employees.dateOfBirth, 'dd/MM/yyyy') : 'Không có dữ liệu'}"></h6>
+										<h6 class="text-primary" th:text="${employees.dateOfBirth != null ? #dates.format(employees.dateOfBirth, 'dd/MM/yyyy') : ''}"></h6>
 									</div>
 								</td>
 								<td>
 									<div>
-										<h6 class="text-primary" th:text="${employees.gender != null ? (employees.gender ? 'Nam' : 'Nữ') : 'Không có dữ liệu'}"></h6>
+										<h6 class="text-primary" th:text="${employees.gender != null ? (employees.gender ? 'Nam' : 'Nữ') : ''}"></h6>
 									</div>
 								</td>
 								<td><span class="badge badge-warning"  th:text="${employees.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED ? 'Kích hoạt'
