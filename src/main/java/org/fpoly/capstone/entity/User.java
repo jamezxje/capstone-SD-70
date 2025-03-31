@@ -2,8 +2,21 @@ package org.fpoly.capstone.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,7 +56,7 @@ public class User {
     @Column(name = "gender")
     private Boolean gender;
 
-    @Column(name = "avata", length = 255)
+    @Column(name = "avatar", length = 255)
     private String avatar;
 
     @Column(name = "citizen_identity", length = 20)
@@ -77,14 +90,16 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonManagedReference
     private List<Address> addresses;
+
     @PrePersist
     public void prePersist() {
-        this.lastModifiedDate= new Date();
+        this.lastModifiedDate = new Date();
         this.createDate = new Date();
     }
+
     @PreUpdate
     public void preUpdate() {
-        this.lastModifiedDate= new Date();
+        this.lastModifiedDate = new Date();
     }
 
     @OneToMany(mappedBy = "user")
