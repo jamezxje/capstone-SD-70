@@ -3,8 +3,6 @@ package org.fpoly.capstone.controller.user_online.api;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.fpoly.capstone.entity.Cart;
-import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.service.BillService;
 import org.fpoly.capstone.service.CartDetailService;
@@ -22,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
+import java.text.Normalizer;
+import java.util.regex.Pattern;
 
 @RestController
 @Log4j2
@@ -40,9 +40,8 @@ public class ApiOnlineBillController {
     @PostMapping("save")
     public ResponseEntity<?> onSaveBillOnline(@RequestBody CreateBillRequest createBillRequest) {
         try {
-            User loggedUser = this.userService.getUserFromContext();
-            Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
-            this.billService.saveToBillForOnlineUser(cart, createBillRequest);
+
+            this.billService.saveToBillForOnlineUser(createBillRequest);
 
             log.info("Bill saved successfully");
 
@@ -64,9 +63,26 @@ public class ApiOnlineBillController {
     public String submidOrder(@RequestParam("amount") int orderTotal,
                               @RequestParam("orderInfo") String orderInfo,
                               HttpServletRequest request) throws UnsupportedEncodingException {
+
+        // Loại bỏ dấu trong orderInfo trước khi gửi
+        String cleanOrderInfo = removeAccents(orderInfo);
+
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = this.vnPayService.createOrder(request, orderTotal, orderInfo, baseUrl);
+        String vnpayUrl = this.vnPayService.createOrder(request, orderTotal, cleanOrderInfo, baseUrl);
         return vnpayUrl;
+    }
+
+    public static String removeAccents(String text) {
+        if (text == null) {
+            return null;
+        }
+        // Normalize và loại bỏ dấu
+        String nfdNormalizedString = Normalizer.normalize(text, Normalizer.Form.NFD);
+        String withoutAccents = Pattern.compile("\\p{InCombiningDiacriticalMarks}+").matcher(nfdNormalizedString).replaceAll("");
+
+        // Thay thế các ký tự đặc biệt (như Đ thành D)
+        withoutAccents = withoutAccents.replace('Đ', 'D').replace('đ', 'd');
+        return withoutAccents;
     }
 
 

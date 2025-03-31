@@ -174,12 +174,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="cart : ${cartDetailList}">
-                      <td class="text-left" th:text="${cart.productName}">Spike Jacket</td>
-                      <td th:text="${#numbers.formatDecimal(cart.price, 0, 'POINT', 0, 'POINT')}">$99</td>
-                      <td th:text="${cart.sizeName}">S</td>
-                      <td th:text="${cart.quantity}">1</td>
-                      <td th:text="${#numbers.formatDecimal(cart.subtotal, 0, 'POINT', 0, 'POINT')}">$99</td>
+                    <tr th:each="billDetail : ${billDetailList}">
+                      <td class="text-left" th:text="${billDetail.productDetail.product.name}">Spike Jacket</td>
+                      <td th:text="${#numbers.formatDecimal(billDetail.productDetail.price, 0, 'POINT', 0, 'POINT')}">
+                        $99
+                      </td>
+                      <td th:text="${billDetail.productDetail.size.name}">S</td>
+                      <td th:text="${billDetail.quantity}">1</td>
+                      <td th:text="${#numbers.formatDecimal(totalMoney, 0, 'POINT', 0, 'POINT')}">$99</td>
                     </tr>
                     </tbody>
                     <tfoot class="font-weight-600">
@@ -194,7 +196,7 @@
                     <tr>
                       <td colspan="4" class="text-right">Total</td>
                       <td id="totalPriceWithShipping"
-                          th:text="${#numbers.formatDecimal(shoppingCart.totalPrice, 0, 'POINT', 0, 'POINT')}">
+                          th:text="${#numbers.formatDecimal(totalMoney, 0, 'POINT', 0, 'POINT')}">
                         $845.00
                       </td>
                     </tr>
@@ -251,7 +253,7 @@
 </script>
 <th:block id="th-js">
   <script th:inline="javascript">
-    const cartTotalMoney = /*[[${cartTotalMoney}]]*/ [];
+    const totalMoney = /*[[${totalMoney}]]*/ [];
   </script>
   <script>
     // Function to calculate shipping
@@ -311,13 +313,13 @@
             
             document.getElementById("shipFee").value = totalShippingCost;  // Assuming the response is in VND
             
-            var totalPrice = cartTotalMoney; // giá trị totalPrice trong VND
+            var totalPrice = totalMoney; // giá trị totalPrice trong VND
             var shipFeeText = document.getElementById('shipFee').textContent.replace(' VND', '').replace('.', '').trim();
             
             var shipFee = parseInt(shipFeeText.replace(' VND', '').replace('.', '').trim());
             
             
-            console.log("total price: ", cartTotalMoney);
+            console.log("total price: ", totalMoney);
             console.log("ship fee: ", shipFee)
             
             // Tính tổng
@@ -484,8 +486,7 @@
       
       // Kiểm tra nếu phương thức thanh toán là "chuyen_khoan"
       if (paymentMethod === 'CHUYEN_KHOAN') {
-        const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}, data_buyType: addToCart, data_address: ${address}`;
-        
+        const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}, data_buyType: buyNow, data_address: ${address}`;
         // Gọi API "online-payment"
         $.ajax({
           url: '/bill/online-payment',
@@ -496,6 +497,7 @@
           }, // Truyền grandTotal dưới dạng tham số query
           success: function (paymentUrl) {
             console.log("payment url khi thành coong: ", paymentUrl);
+            console.log("order info: ", orderInfo)
             // Nếu gọi API thành công và trả về URL, chuyển hướng người dùng
             window.location.href = paymentUrl; // Chuyển hướng người dùng tới URL thanh toán
           },
@@ -507,7 +509,7 @@
       } else {
         // Nếu không phải phương thức thanh toán "chuyen_khoan", gửi form như bình thường
         $.ajax({
-          url: "/bill/save",
+          url: "/buy-now/save",
           type: "POST",
           contentType: "application/json",
           data: JSON.stringify(requestBody),
