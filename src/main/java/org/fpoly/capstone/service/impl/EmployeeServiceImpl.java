@@ -33,7 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailService emailService;
+    private EmailServiceImpl emailServiceImpl;
 
     @Autowired
     private UserService userService;
@@ -42,7 +42,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private AddressService addressService;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private CloudinaryServiceImpl cloudinaryServiceImpl;
 
     @Override
     public Page<User> getEmployeesPaginated(Pageable pageable) {
@@ -82,7 +82,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
         // xử lý ảnh
         String urlAvatar = null;
         if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryService.uploadAvatar(file);
+            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file);
         }
         // Tạo đối tượng User bằng Builder
         User newUser = User.builder()
@@ -128,7 +128,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
 //        }
         System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
         String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên CAPSTONE";
-        emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
+        emailServiceImpl.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return savedUser;
     }
 
@@ -144,7 +144,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
         // Nếu có file mới => Upload lên Cloudinary, ngược lại giữ nguyên ảnh cũ
         String urlAvatar = existingEmployee.getAvatar(); // Giữ ảnh cũ
         if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryService.uploadAvatar(file); // Upload ảnh mới
+            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file); // Upload ảnh mới
         }
         // Cập nhật thông tin nhân viên
         existingEmployee.setFullName(user.getFullName());

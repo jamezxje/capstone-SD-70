@@ -1,4 +1,4 @@
-package org.fpoly.capstone.service;
+package org.fpoly.capstone.service.impl;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailService {
+public class EmailServiceImpl {
 
     @Autowired
     private JavaMailSender javaMailSender;

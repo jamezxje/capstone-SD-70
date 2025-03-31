@@ -7,7 +7,6 @@ import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.repository.UserRepository;
-import org.fpoly.capstone.service.EmailService;
 import org.fpoly.capstone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -31,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private EmailService emailService;
+    private EmailServiceImpl emailServiceImpl;
 
     @Override
     public User getUserFromContext() {
@@ -71,7 +69,7 @@ public class UserServiceImpl implements UserService {
         newUser.setLastModifiedDate(new Date());
         userRepository.save(newUser);
         String subject = "Chúc mừng! Bạn đã đăng ký thành công tài khoản CAPSTONE.";
-        emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
+        emailServiceImpl.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return newUser;
     }
 

@@ -1,4 +1,4 @@
-package org.fpoly.capstone.service;
+package org.fpoly.capstone.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @Service
-public class CloudinaryService {
+public class CloudinaryServiceImpl {
 
     @Autowired
     private Cloudinary cloudinary;

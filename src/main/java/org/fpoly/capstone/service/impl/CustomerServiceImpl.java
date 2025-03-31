@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailService emailService;
+    private EmailServiceImpl emailServiceImpl;
 
     @Autowired
     private UserService userService;
@@ -42,7 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
     private AddressService addressService;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private CloudinaryServiceImpl cloudinaryServiceImpl;
 
     @Override
     public Page<User> getCustomerPaginated(Pageable pageable) {
@@ -81,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         String urlAvatar = null;
         if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryService.uploadAvatar(file);
+            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file);
         }
 
         // Tạo đối tượng user
@@ -129,7 +129,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
         String subject = "Xin chào, bạn đã đăng ký thành công tài khoản CAPSTONE";
-        emailService.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
+        emailServiceImpl.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return savedUser;
 //        return employeeRepository.save(newUser);
     }
@@ -146,7 +146,7 @@ public class CustomerServiceImpl implements CustomerService {
         // Nếu có file mới => Upload lên Cloudinary, ngược lại giữ nguyên ảnh cũ
         String urlAvatar = existingCustomer.getAvatar(); // Giữ ảnh cũ
         if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryService.uploadAvatar(file); // Upload ảnh mới
+            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file); // Upload ảnh mới
         }
 
         // Cập nhật thông tin khách hàng
