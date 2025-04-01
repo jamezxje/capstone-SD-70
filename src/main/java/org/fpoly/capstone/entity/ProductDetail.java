@@ -1,5 +1,6 @@
 package org.fpoly.capstone.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,17 +11,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fpoly.capstone.common.CommonUtils;
 import org.fpoly.capstone.entity.enum_status.Gender;
 import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -36,6 +38,7 @@ public class ProductDetail {
 
     @ManyToOne
     @JoinColumn(name = "id_product", referencedColumnName = "id")
+    @JsonBackReference
     private Product product;
 
     @ManyToOne
@@ -68,16 +71,14 @@ public class ProductDetail {
     @Column(name = "status")
     private ProductVariantStatus status;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @Column(name = "create_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate;
+    private LocalDateTime createDate;
 
     @Column(name = "last_modified_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     @Column(name = "created_by", length = 255)
     private String createdBy;
@@ -86,6 +87,32 @@ public class ProductDetail {
     private String updatedBy;
 
     @OneToMany(mappedBy = "productDetail")
+    @JsonBackReference
     private List<Image> images;
+
+    @Column(name = "feature_image", length = 255)
+    private String featureImage;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createDate == null) {
+            this.createDate = LocalDateTime.now();
+        }
+        this.createdBy = CommonUtils.getPrincipal();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        if (this.lastModifiedDate == null) {
+            this.lastModifiedDate = LocalDateTime.now();
+        }
+
+        this.updatedBy = CommonUtils.getPrincipal();
+    }
+    
+    @Override
+    public int hashCode() {
+        return this.getClass().hashCode(); // Avoid circular reference in hashCode
+    }
 
 }

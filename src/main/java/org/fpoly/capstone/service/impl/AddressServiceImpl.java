@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -51,8 +53,8 @@ public class AddressServiceImpl implements AddressService {
                 .ward(request.getWard())
                 .wardCode(String.valueOf(request.getWardCode()))
                 .line(request.getLine())
-                .createDate(new Date())
-                .lastModifiedDate(new Date())
+                .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
+                .lastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                 .user(customer)
                 .build();
         List<Address> existingAddressList = this.addressRepository.findAddressByUserId(customer.getId());
@@ -83,7 +85,7 @@ public class AddressServiceImpl implements AddressService {
         existingAddress.setWard(request.getWard());
         existingAddress.setWardCode(String.valueOf(request.getWardCode()));
         existingAddress.setLine(request.getLine());
-        existingAddress.setLastModifiedDate(new Date());
+        existingAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         // Save the updated address
         this.addressRepository.save(existingAddress);
     }
@@ -115,19 +117,24 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void setDefaultAddress(Integer addressId) {
-        // Tìm địa chỉ mặc định từ ID
+        // Tìm địa chỉ từ ID
         Address defaultAddress = this.addressRepository
                 .findById(Long.valueOf(addressId))
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + addressId));
-        // Cập nhật tất cả các địa chỉ còn lại thành 'NGUNG_SU_DUNG'
-        for (Address address : this.addressRepository.findAll()) {
+        // Lấy userId từ defaultAddress
+        Long userId = defaultAddress.getUser().getId();
+        // Cập nhật tất cả các địa chỉ của user này thành 'NGUNG_SU_DUNG' trừ địa chỉ mặc định
+        List<Address> userAddresses = this.addressRepository.findAddressByUserId(userId);
+        for (Address address : userAddresses) {
             if (!address.getId().equals(defaultAddress.getId())) {
                 address.setStatus(AddressStatus.NGUNG_SU_DUNG);
-                this.addressRepository.save(address);
             }
         }
-        // Đặt địa chỉ mặc định với trạng thái 'DANG_SU_DUNG'
+        // Đặt địa chỉ mặc định thành 'DANG_SU_DUNG'
         defaultAddress.setStatus(AddressStatus.DANG_SU_DUNG);
+
+        // Lưu tất cả thay đổi
+        this.addressRepository.saveAll(userAddresses);
         this.addressRepository.save(defaultAddress);
     }
 

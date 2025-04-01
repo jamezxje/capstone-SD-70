@@ -1,5 +1,19 @@
 package org.fpoly.capstone.service.impl;
 
+import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.repository.CustomerRepository;
+import org.fpoly.capstone.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+
+
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.AddressStatus;
@@ -48,7 +62,10 @@ public class CustomerServiceImpl implements CustomerService {
     public Page<User> getCustomerPaginated(Pageable pageable) {
         return customerRepository.findCustomersSortedByLastModifiedDate(UserRole.ROLE_CUSTOMER, pageable);
     }
-
+    @Override
+    public List<User> findAllCustomers() {
+        return customerRepository.findAll();
+    }
     @Override
     public Page<User> searchAndFilterCustomer(String keyword, String status, Pageable pageable) {
         UserStatus userStatus = null;
@@ -174,7 +191,7 @@ public class CustomerServiceImpl implements CustomerService {
             existingAddress.setFullName(user.getFullName());
             existingAddress.setPhoneNumber(user.getPhoneNumber());
             existingAddress.setUpdatedBy(userServiceName);
-            existingAddress.setLastModifiedDate(new Date());
+            existingAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             addressService.saveAddress(existingAddress);
         } else {
             Address newAddress = new Address();
@@ -189,7 +206,7 @@ public class CustomerServiceImpl implements CustomerService {
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
             newAddress.setUpdatedBy(userServiceName);
-            newAddress.setLastModifiedDate(new Date());
+            newAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             newAddress.setUser(existingCustomer);
 
             if (existingCustomer.getAddresses() == null) {

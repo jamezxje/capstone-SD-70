@@ -1,5 +1,10 @@
 package org.fpoly.capstone.service;
 
+import org.fpoly.capstone.entity.User;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
 import org.springframework.data.domain.Page;
@@ -7,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface CustomerService {
-
+    List<User> findAllCustomers();
     Page<User> getCustomerPaginated(Pageable pageable);
     User getCustomerById(Long id);
 //    User createCustomer(User user , Address address);

@@ -10,6 +10,7 @@ public interface UserService {
     User getUserFromContext();
 
     String getName();
+
     User createUserRegister(User user);
 
 //    String processForgotPassword(String email);

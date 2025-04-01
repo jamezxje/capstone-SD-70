@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="utf-8">
+  <th:block id="th-css">
+  </th:block>
+
+</head>
+
+<body>
+<th:block id="th-body">
+  <div class="content-body">
+    <div class="container-fluid">
+      <!-- Add Project -->
+      <div class="modal fade" id="addProjectSidebar">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Create Project</h5>
+              <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label class="text-black font-w500">Project Name</label>
+                  <input type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="text-black font-w500">Deadline</label>
+                  <input type="date" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="text-black font-w500">Client Name</label>
+                  <input type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <button type="button" class="btn btn-primary">CREATE</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row page-titles mx-0">
+        <div class="col-sm-6 p-md-0">
+          <div class="welcome-text">
+            <h4>Hi, Chào mừng bạn trở lại!</h4>
+            <p class="mb-0">Sửa voucher</p>
+          </div>
+        </div>
+        <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Voucher</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Sửa Voucher</a></li>
+          </ol>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+
+                <div class="col-lg-8 order-lg-1">
+                  <h4 class="mb-3">Sửa voucher</h4>
+                  <form th:action="@{/dashboard/product-management/voucher/update}" th:object="${voucher}" method="post" class="needs-validation" novalidate="">
+                    <input type="hidden" class="form-control" id="id" th:field="*{id}"  th:value="${voucher.id}" placeholder="" value="" required="">
+                    <div class="row">
+
+                      <div class="col-md-6 mb-3">
+                        <label for="name">Tên</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="" value="" required="">
+                        <div class="invalid-feedback">
+                          Valid name is required.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="value">Số tiền</label>
+                      <input type="text" class="form-control" id="value" th:field="*{value}" oninput="formatCurrency(event)" onfocus="this.select()" onblur="removeFormatting(event)">
+                      <div class="invalid-feedback">
+                        Please enter a valid email address for shipping updates.
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="quantity">Số lượng</label>
+                      <input type="number" class="form-control" id="quantity"  th:field="*{quantity}">
+                      <div class="invalid-feedback">
+                        Please enter a valid email address for shipping updates.
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="startDate">Ngày bắt đầu</label>
+                      <input type="datetime-local" class="form-control" id="startDate" th:value="${voucher.startDate}">
+                      <div class="invalid-feedback">
+                        Please enter a valid email address for shipping updates.
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="endDate">Ngày kết thúc</label>
+                      <input type="datetime-local" class="form-control" id="endDate" th:value="${voucher.endDate}" >
+                      <div class="invalid-feedback">
+                        Please enter a valid email address for shipping updates.
+                      </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                      <label for="status">Trạng thái</label>
+                      <select class="form-control" id="status" name="status">
+                        <option value="">Chọn trạng thái</option>
+                        <option th:each="status : ${status}"
+                                th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
+                            (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}"
+                                th:value="${status}"
+                                th:selected="*{status} == ${status}"></option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select a valid status.
+                      </div>
+                    </div>
+
+
+
+                    <hr class="mb-4">
+
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Sửa</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Định dạng tiền tệ khi người dùng nhập vào
+ function formatCurrency(event) {
+     let input = event.target;
+     let value = input.value;
+
+     // Xóa tất cả ký tự không phải là số
+     value = value.replace(/\D/g, '');
+
+     // Định dạng thành tiền tệ với dấu phân cách hàng nghìn
+     let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
+
+     // Cập nhật lại giá trị trong input
+     input.value = formattedValue;
+ }
+
+ // Loại bỏ dấu phân cách khi mất focus để có giá trị sạch
+ function removeFormatting(event) {
+     let input = event.target;
+     let value = input.value;
+
+     // Loại bỏ dấu phân cách
+     value = value.replace(/\D/g, '');
+
+     // Cập nhật lại giá trị input sau khi loại bỏ dấu phân cách
+     input.value = value;
+ }
+
+
+
+  </script>
+</th:block>
+</body>
+
+
+</html>

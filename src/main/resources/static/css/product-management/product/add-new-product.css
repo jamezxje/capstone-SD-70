@@ -5,6 +5,9 @@
 #upload {
     opacity: 0;
 }
+.table-orange-border {
+    border: 1px solid orange !important;
+}
 
 #upload-label {
     position: absolute;

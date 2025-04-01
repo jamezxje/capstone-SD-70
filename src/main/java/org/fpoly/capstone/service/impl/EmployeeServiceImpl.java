@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -116,8 +118,8 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
             newAddress.setLine(address.getLine());
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
-            newAddress.setCreateDate(new Date());
-            newAddress.setLastModifiedDate(new Date());
+            newAddress.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            newAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             newAddress.setCreatedBy(userServiceName);
             newAddress.setUpdatedBy(userServiceName);
             newAddress.setUser(savedUser); // Không cần tìm lại user nữa
@@ -172,7 +174,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
             existingAddress.setFullName(user.getFullName());
             existingAddress.setPhoneNumber(user.getPhoneNumber());
             existingAddress.setUpdatedBy(userServiceName);
-            existingAddress.setLastModifiedDate(new Date());
+            existingAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             addressService.saveAddress(existingAddress);
         } else {
             Address newAddress = new Address();
@@ -187,7 +189,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
             newAddress.setUpdatedBy(userServiceName);
-            newAddress.setLastModifiedDate(new Date());
+            newAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             newAddress.setUser(existingEmployee);
 
             if (existingEmployee.getAddresses() == null) {
