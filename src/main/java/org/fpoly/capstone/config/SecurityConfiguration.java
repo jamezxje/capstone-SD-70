@@ -64,6 +64,7 @@ public class SecurityConfiguration {
             "/register",
             "/index",
             "/bill/**" ,
+            "/bill/listBill/**",
             "/bill/detail/**" ,
             "/change-status/**" ,
             "/updateCustomer-bill/**" ,

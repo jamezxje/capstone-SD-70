@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
 <head>
     <meta charset="UTF-8">
     <title>Quản lý Hóa đơn</title>
@@ -131,7 +131,7 @@
                                         <span th:case="*">Không xác định</span>
                                     </span>
                                 </td>
-                                <td th:text="${#dates.format(bill.createDate, 'HH:mm:ss dd/MM/yyyy')}"></td>
+<!--                                <td th:text="${#dates.format(bill.createDate, 'HH:mm:ss dd/MM/yyyy')}"></td>-->
                                 <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
                                 <td>
                                     <a th:href="@{/bill/detail/{id}(id=${bill.id})}" class="btn btn-info">Xem</a>
