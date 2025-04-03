@@ -17,9 +17,7 @@ import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.repository.*;
-import org.fpoly.capstone.service.BillDetaiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
