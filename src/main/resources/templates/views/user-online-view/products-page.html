@@ -58,12 +58,12 @@
           <div class="sidebar_tags">
             <!--Categories-->
             <div class="sidebar_widget categories filter-widget">
-              <div class="widget-title"><h2>Categories</h2></div>
+              <div class="widget-title"><h2>Danh mục</h2></div>
               <div class="widget-content">
                 <ul class="sidebar_categories">
                   <li class="lvl-1">
                     <a th:href="@{/shop}" class="site-nav">
-                      All category
+                      Tất cả danh mục
                     </a>
                   </li>
                   <li class="lvl-1" th:each="category : ${categoryList}">
@@ -78,7 +78,7 @@
             <!--Price Filter-->
             <div class="sidebar_widget filterBox filter-widget">
               <div class="widget-title">
-                <h2>Price(thousand VND)</h2>
+                <h2>Khoảng giá (nghìn VND)</h2>
               </div>
               <form th:action="@{/shop}" method="GET" class="price-filter">
                 <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
@@ -102,7 +102,7 @@
             <!--End Price Filter-->
             <!--Color Swatches-->
             <div class="sidebar_widget filterBox filter-widget">
-              <div class="widget-title"><h2>Color</h2></div>
+              <div class="widget-title"><h2>Màu sắc</h2></div>
               <div class="filter-color swacth-list clearfix">
                 <a class="swacth-btn none" th:href="@{/shop}"></a>
                 <a th:each="color : ${colorList}" class="swacth-btn" th:classappend="${color.code}"
@@ -112,11 +112,11 @@
             <!--End Color Swatches-->
             <!--Brand-->
             <div class="sidebar_widget filterBox filter-widget">
-              <div class="widget-title"><h2>Brands</h2></div>
+              <div class="widget-title"><h2>Brand</h2></div>
               <ul>
                 <li class="lv-1">
                   <a th:href="@{/shop}" class="site-nav">
-                    All brand
+                    Tất cả brand
                   </a>
                 </li>
                 <li class="lvl-1" th:each="brand : ${brandList}">
