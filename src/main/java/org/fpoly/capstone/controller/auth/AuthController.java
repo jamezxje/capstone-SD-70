@@ -7,6 +7,7 @@ import org.fpoly.capstone.validation.UserValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/register/save")
-    public String registerUser(@ModelAttribute("userRegister") User userRegister, Model model) {
+    public String registerUser(@ModelAttribute("userRegister") User userRegister, Model model, RedirectAttributes redirectAttributes) {
         Set<String> userFieldsToValidate = Set.of("fullName", "phoneNumber", "email", "password");
         Map<String, String> errors = UserValidator.validate(userRegister, userFieldsToValidate);
         if (userService.existsByEmail(userRegister.getEmail())) {
@@ -53,28 +54,28 @@ public class AuthController {
         }
         System.out.println("RegisterDTO: " + userRegister);
         userService.createUserRegister(userRegister);
+        redirectAttributes.addFlashAttribute("successMessage", "Đăng ký thành công!");
         return "redirect:/auth/login";
     }
 
-    @GetMapping(path = "forgot-password")
-    public String forgotPasswordPage(Model model) {
-        model.addAttribute("error", null);
-        model.addAttribute("message", null);
+    @GetMapping(path = "/forgot-password")
+    public String forgotPasswordPage(Model model, @ModelAttribute("error") String error) {
+        if (!error.isEmpty()) {
+            model.addAttribute("error", error);
+        }
         return "views/auth/forgot-password";
     }
 
-//    @PostMapping(path = "forgot-password")
-//    public String handleForgotPassword(@RequestParam("email") String email, Model model) {
-//        String responseMessage = userService.processForgotPassword(email);
-//
-//        if (responseMessage.startsWith("Email không tồn tại")) {
-//            model.addAttribute("error", responseMessage);
-//            model.addAttribute("message", null);
-//        } else {
-//            model.addAttribute("message", responseMessage);
-//            model.addAttribute("error", null);
-//        }
-//        return "views/auth/forgot-password";
-//    }
+    @PostMapping(path = "/forgot-password/save")
+    public String handleForgotPassword(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
+        String responseMessage = userService.processForgotPassword(email);
 
+        if (responseMessage.startsWith("Email không tồn tại")) {
+            redirectAttributes.addFlashAttribute("error", responseMessage);
+            return "redirect:/auth/forgot-password";
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "Vui lòng kiểm tra email của bạn!");
+            return "redirect:/auth/login";
+        }
+    }
 }

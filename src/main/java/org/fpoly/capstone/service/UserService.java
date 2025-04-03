@@ -13,7 +13,7 @@ public interface UserService {
 
     User createUserRegister(User user);
 
-//    String processForgotPassword(String email);
+    String processForgotPassword(String email);
 
     boolean existsByEmail(String email);
     boolean existsByPhoneNumber(String phoneNumber);

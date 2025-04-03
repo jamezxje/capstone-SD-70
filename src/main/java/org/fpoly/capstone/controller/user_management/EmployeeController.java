@@ -1,11 +1,9 @@
-package org.fpoly.capstone.controller;
+package org.fpoly.capstone.controller.user_management;
 
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
-import org.fpoly.capstone.entity.enum_status.AddressStatus;
 import org.fpoly.capstone.repository.AddressRepository;
-import org.fpoly.capstone.repository.EmployeeRepository;
 import org.fpoly.capstone.service.AddressService;
 import org.fpoly.capstone.service.EmployeeService;
 import org.fpoly.capstone.service.UserService;

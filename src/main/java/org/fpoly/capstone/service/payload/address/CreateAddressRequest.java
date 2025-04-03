@@ -11,6 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CreateAddressRequest {
 
+    private String fullName;
+    private String phoneNumber;
     private String province;
     private Long provinceId;
     private String district;

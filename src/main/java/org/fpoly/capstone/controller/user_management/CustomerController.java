@@ -1,4 +1,4 @@
-package org.fpoly.capstone.controller;
+package org.fpoly.capstone.controller.user_management;
 
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.entity.Address;
