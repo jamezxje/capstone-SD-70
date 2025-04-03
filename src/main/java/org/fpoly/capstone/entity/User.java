@@ -3,6 +3,7 @@ package org.fpoly.capstone.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -94,5 +95,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonBackReference
     private List<Bill> billList;
+
 
 }

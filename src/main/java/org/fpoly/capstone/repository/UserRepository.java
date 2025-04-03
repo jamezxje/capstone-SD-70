@@ -24,4 +24,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.citizenIdentity = :citizenIdentity")
     Optional<User> getUserByCCCD(@Param("citizenIdentity") String citizenIdentity);
 
+    Optional<User> findByFullName(String fullName);
 }

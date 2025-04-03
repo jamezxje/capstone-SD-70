@@ -1,0 +1,230 @@
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin: 50px 0;
+    padding: 20px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 80%; /* Di chuyển thanh gạch ngang xuống dưới */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #007bff;
+    transform: translateY(10px); /* Thêm một khoảng cách nhỏ giữa thanh và các item */
+}
+
+.timeline-item {
+    position: relative;
+    text-align: center;
+    padding-bottom: 20px; /* Tạo không gian cho vòng tròn không bị đè lên */
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    top: 105px; /* Đặt vòng tròn ở trên cùng */
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #007bff;
+    border: 2px solid #fff;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 1; /* Đảm bảo vòng tròn nằm dưới văn bản */
+}
+
+.timeline-item .text {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.timeline-item .date {
+    font-size: 12px;
+    color: gray;
+}
+/* Tùy chỉnh cho cả hai nút */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Nút Chuyển trạng thái */
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Nút Hủy */
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* Khi hover vào cả hai nút */
+button:active {
+    transform: scale(0.98);
+}
+
+/* Modal */
+.modal {
+    display: none; /* Ẩn modal mặc định */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% 0 0 40%;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-family: Arial, sans-serif;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.closehuy {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-family: Arial, sans-serif;
+}
+
+.closehuy:hover,
+.closehuy:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.closehistory {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-family: Arial, sans-serif;
+}
+
+.closehistory:hover,
+.closehistory:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+textarea {
+    padding: 10px;
+}
+/* Modal - Nền tối */
+.modal {
+    display: none; /* Ẩn modal mặc định */
+    position: fixed;
+    z-index: 1; /* Đảm bảo modal luôn hiển thị trên cùng */
+    left: 0;
+    top: 0;
+    width: 100%; /* Toàn bộ chiều rộng của trang */
+    height: 100%; /* Toàn bộ chiều cao của trang */
+    overflow: auto; /* Nếu nội dung lớn hơn màn hình, có thể cuộn */
+    background-color: rgba(0, 0, 0, 0.4); /* Màu nền tối */
+    padding-top: 60px; /* Thêm khoảng cách từ trên xuống */
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Chỉnh sửa chiều rộng của modal */
+    max-width: 600px;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    margin-left: 530px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Nút đóng modal khi hover */
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Định dạng các input, select trong modal */
+input[type="text"], select {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Nút "Lưu thay đổi" */
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}

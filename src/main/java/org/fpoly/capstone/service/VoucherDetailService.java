@@ -5,6 +5,8 @@ import org.fpoly.capstone.exceptions.NotException;
 
 import java.util.List;
 
+import java.util.Optional;
+import org.fpoly.capstone.dto.voucherDetail.VoucherDetailDTO;
 public interface VoucherDetailService {
 
     List<VoucherDetail> findAll();
@@ -16,4 +18,7 @@ public interface VoucherDetailService {
     VoucherDetail delete(VoucherDetail voucherDetail);
 
     VoucherDetail findById(Long id);
+    Optional<VoucherDetailDTO> getVoucherDetailsByBillId(Long billId);
+
+
 }

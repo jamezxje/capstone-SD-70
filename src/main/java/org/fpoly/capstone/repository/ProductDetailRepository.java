@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+import java.util.Optional;
 @Repository
 public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long>, JpaSpecificationExecutor<ProductDetail> {
     List<ProductDetail> findAll();
@@ -98,4 +98,5 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     @Query("SELECT pd FROM ProductDetail pd WHERE pd.product.id = :productId")
     List<ProductDetail> findByProductId(@Param("productId") Long productId);
 
+    Optional<ProductDetail> findById(long id);
 }

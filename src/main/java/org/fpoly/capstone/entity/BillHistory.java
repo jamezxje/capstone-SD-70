@@ -60,4 +60,6 @@ public class BillHistory {
     protected void onUpdate() {
         this.lastModifiedDate = new Date();
     }
+
+
 }

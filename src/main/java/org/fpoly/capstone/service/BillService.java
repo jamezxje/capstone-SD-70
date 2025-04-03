@@ -11,7 +11,10 @@ import org.fpoly.capstone.entity.Bill;
 import org.fpoly.capstone.entity.Bill;
 import org.fpoly.capstone.entity.Cart;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
-
+import org.fpoly.capstone.entity.Bill;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface BillService {
@@ -66,5 +69,8 @@ public interface BillService {
     void saveToBillForOnlineUser(Cart cart, CreateBillRequest request);
 
     List<Bill> findBillsByCustomerId(Long customerId);
+    Page<Bill> searchBills(String keyword, String orderType, LocalDate startDate, LocalDate endDate, Pageable pageable);
+
+
 
 }
