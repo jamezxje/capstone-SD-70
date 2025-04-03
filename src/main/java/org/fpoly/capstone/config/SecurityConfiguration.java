@@ -59,6 +59,7 @@ public class SecurityConfiguration {
             "/auth/register",
             "/auth/register/save",
             "/auth/forgot-password",
+            "/auth/forgot-password/save",
             "/home",
             "/login",
             "/register",

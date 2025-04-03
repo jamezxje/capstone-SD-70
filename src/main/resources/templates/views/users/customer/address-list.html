@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
 <head>
     <meta charset="UTF-8">
     <title>Quản lý khách hàng</title>
@@ -46,7 +46,7 @@
                                                                     <div class="my-2">
                                                                     <span class="font-weight-bold"
                                                                           th:text="${address.fullName} + ', ' + ${address.phoneNumber}"></span>
-                                                                                                    </div>
+                                                                    </div>
                                                                     <div class="my-2">
                                                                     <span class="font-weight-bold"
                                                                           th:text="${address.line} + ', ' + ${address.ward} + ', ' + ${address.district} + ', ' + ${address.province} "></span>
@@ -248,64 +248,6 @@
                             <button type="submit" class="btn btn-primary">Cập nhật</button>
                         </div>
                     </form>
-
-                    <!--                    <form id="editAddressForm">-->
-<!--                        <div class="form-group row">-->
-<!--                            <label class="col-lg-4 col-form-label">Họ và Tên</label>-->
-<!--                            <div class="col-lg-8">-->
-<!--                                <input type="text" placeholder="Nhập họ và tên..." id="edit_full_name" class="form-control" name="fullName">-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                        <div class="form-group row">-->
-<!--                            <label class="col-lg-4 col-form-label">Số điện thoại</label>-->
-<!--                            <div class="col-lg-8">-->
-<!--                                <input type="text" placeholder="Nhập số điện thoại..." id="edit_phone_number" class="form-control" name="phoneNumber">-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                        <div class="form-group row">-->
-<!--                            <label class="col-lg-4 col-form-label">Tỉnh / Thành Phố</label>-->
-<!--                            <div class="col-lg-8">-->
-<!--                                <select id="edit_address_province" class="form-control address-select">-->
-<!--                                    <option value="">Chọn Tỉnh / Thành Phố</option>-->
-<!--                                </select>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                        <div class="form-group row">-->
-<!--                            <label class="col-lg-4 col-form-label">Quận / Huyện</label>-->
-<!--                            <div class="col-lg-8">-->
-<!--                                <select id="edit_address_district" class="form-control address-select">-->
-<!--                                    <option value="">Chọn Quận / Huyện</option>-->
-<!--                                </select>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                        <div class="form-group row">-->
-<!--                            <label class="col-lg-4 col-form-label">Phường / Xã</label>-->
-<!--                            <div class="col-lg-8">-->
-<!--                                <select id="edit_address_ward" class="form-control address-select">-->
-<!--                                    <option value="">Chọn Phường / Xã</option>-->
-<!--                                </select>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                        <div class="form-group row">-->
-<!--                            <label class="col-lg-4 col-form-label">Số nhà / Ngõ / Đường</label>-->
-<!--                            <div class="col-lg-8">-->
-<!--                                <textarea id="edit_address_line" placeholder="Nhập địa chỉ cụ thể..." name="line" class="form-control"></textarea>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                        <input type="hidden" id="edit_address_id" name="id"> &lt;!&ndash; Hidden field for address ID &ndash;&gt;-->
-<!--                        <input type="hidden" id="edit_customer_id" th:value="${customer.id}">-->
-
-<!--                        <div class="modal-footer">-->
-<!--                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>-->
-<!--                            <button type="submit" class="btn btn-primary">Cập nhật</button>-->
-<!--                        </div>-->
-<!--                    </form>-->
                 </div>
             </div>
         </div>

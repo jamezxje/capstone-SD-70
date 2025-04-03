@@ -11,9 +11,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
-    Optional<User> findById(Long id);
 
-//    Optional<User> findByEmailPassword(String email);
+    Optional<User> findById(Long id);
 
     @Query("SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber")
     Optional<User> getUserBySDT(@Param("phoneNumber") String phoneNumber);

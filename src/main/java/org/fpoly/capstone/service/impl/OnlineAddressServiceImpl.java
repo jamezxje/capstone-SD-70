@@ -28,6 +28,8 @@ public class OnlineAddressServiceImpl implements OnlineAddressService {
 
         // Tạo địa chỉ mới từ request
         Address address = Address.builder()
+                .fullName(request.getFullName()) // Thêm fullName
+                .phoneNumber(request.getPhoneNumber()) // Thêm phoneNumber
                 .province(request.getProvince())
                 .provinceId(String.valueOf(request.getProvinceId()))
                 .district(request.getDistrict())
@@ -62,7 +64,8 @@ public class OnlineAddressServiceImpl implements OnlineAddressService {
         Address existingAddress = this.onlineAddressRepository
                 .findById(Long.valueOf(addressId))
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found with id:" + addressId));
-
+        existingAddress.setFullName(request.getFullName()); // Thêm fullName
+        existingAddress.setPhoneNumber(request.getPhoneNumber()); // Thêm phoneNumber
         existingAddress.setDistrict(request.getDistrict());
         existingAddress.setToDistrictId(String.valueOf(request.getDistrictId()));
         existingAddress.setProvince(request.getProvince());
@@ -107,22 +110,44 @@ public class OnlineAddressServiceImpl implements OnlineAddressService {
 
     @Override
     public void setDefaultAddress(Integer addressId) {
-        // Tìm địa chỉ mặc định từ ID
+        // Tìm địa chỉ từ ID
         Address defaultAddress = this.onlineAddressRepository
                 .findById(Long.valueOf(addressId))
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + addressId));
-
-        // Cập nhật tất cả các địa chỉ còn lại thành 'NGUNG_SU_DUNG'
-        for (Address address : this.onlineAddressRepository.findAll()) {
+        // Lấy userId từ defaultAddress
+        Long userId = defaultAddress.getUser().getId();
+        // Cập nhật tất cả các địa chỉ của user này thành 'NGUNG_SU_DUNG' trừ địa chỉ mặc định
+        List<Address> userAddresses = this.onlineAddressRepository.findAddressByUserId(userId);
+        for (Address address : userAddresses) {
             if (!address.getId().equals(defaultAddress.getId())) {
                 address.setStatus(AddressStatus.NGUNG_SU_DUNG);
-                this.onlineAddressRepository.save(address);
             }
         }
-
-        // Đặt địa chỉ mặc định với trạng thái 'DANG_SU_DUNG'
+        // Đặt địa chỉ mặc định thành 'DANG_SU_DUNG'
         defaultAddress.setStatus(AddressStatus.DANG_SU_DUNG);
+
+        // Lưu tất cả thay đổi
+        this.onlineAddressRepository.saveAll(userAddresses);
         this.onlineAddressRepository.save(defaultAddress);
     }
+//    @Override
+//    public void setDefaultAddress(Integer addressId) {
+//        // Tìm địa chỉ mặc định từ ID
+//        Address defaultAddress = this.onlineAddressRepository
+//                .findById(Long.valueOf(addressId))
+//                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + addressId));
+//
+//        // Cập nhật tất cả các địa chỉ còn lại thành 'NGUNG_SU_DUNG'
+//        for (Address address : this.onlineAddressRepository.findAll()) {
+//            if (!address.getId().equals(defaultAddress.getId())) {
+//                address.setStatus(AddressStatus.NGUNG_SU_DUNG);
+//                this.onlineAddressRepository.save(address);
+//            }
+//        }
+//
+//        // Đặt địa chỉ mặc định với trạng thái 'DANG_SU_DUNG'
+//        defaultAddress.setStatus(AddressStatus.DANG_SU_DUNG);
+//        this.onlineAddressRepository.save(defaultAddress);
+//    }
 
 }

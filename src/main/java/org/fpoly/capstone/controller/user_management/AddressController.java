@@ -1,6 +1,5 @@
-package org.fpoly.capstone.controller;
+package org.fpoly.capstone.controller.user_management;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
@@ -12,12 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("customer-management-address")
