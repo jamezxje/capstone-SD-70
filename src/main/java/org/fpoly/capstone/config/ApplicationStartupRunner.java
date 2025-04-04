@@ -32,13 +32,13 @@ public class ApplicationStartupRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-//        this.userRepository.saveAll(USER_LIST);
-//        this.brandRepository.saveAll(BRAND_LIST);
-//        this.categoryRepository.saveAll(CATEGORY_LIST);
-//        this.colorRepository.saveAll(COLOR_LIST);
-//        this.materialRepository.saveAll(MATERIAL_LIST);
-//        this.sizeRepository.saveAll(SIZE_LIST);
-//        this.productRepository.saveAll(PRODUCT_LIST);
+        this.userRepository.saveAll(USER_LIST);
+        this.brandRepository.saveAll(BRAND_LIST);
+        this.categoryRepository.saveAll(CATEGORY_LIST);
+        this.colorRepository.saveAll(COLOR_LIST);
+        this.materialRepository.saveAll(MATERIAL_LIST);
+        this.sizeRepository.saveAll(SIZE_LIST);
+        this.productRepository.saveAll(PRODUCT_LIST);
 
     }
 }

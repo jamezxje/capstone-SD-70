@@ -1,8 +1,6 @@
 package org.fpoly.capstone.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,7 +63,7 @@ public class Bill {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "use_name")
+    @Column(name = "user_name")
     private String userName;
 
     @Column(name = "email")
