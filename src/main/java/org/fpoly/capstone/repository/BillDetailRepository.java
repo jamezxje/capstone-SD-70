@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,4 +63,9 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
                 WHERE bd.id_bill = :id 
             """, nativeQuery = true)
     List<Object[]> getProductByBillId(@Param("id") Long billId);
+
+    List<BillDetail> findByCreateDate(Date date);
+
+    @Query("SELECT bd FROM BillDetail bd WHERE bd.createDate BETWEEN :startOfDay AND :endOfDay")
+    List<BillDetail> findByCreateDateBetween(@Param("startOfDay") Date startOfDay, @Param("endOfDay") Date endOfDay);
 }

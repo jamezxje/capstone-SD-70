@@ -43,6 +43,7 @@ public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "code")
     private String code;
 
@@ -55,7 +56,6 @@ public class Bill {
     @JoinColumn(name = "id_employee", referencedColumnName = "id")
     @JsonBackReference
     private User employee;
-
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -129,7 +129,7 @@ public class Bill {
     @JsonBackReference
     private List<VoucherDetail> voucherDetailList;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bill")
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonBackReference
     private List<BillDetail> billDetailList;
 

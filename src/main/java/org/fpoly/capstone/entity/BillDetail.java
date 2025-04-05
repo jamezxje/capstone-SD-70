@@ -42,7 +42,7 @@ public class BillDetail {
     @JsonBackReference
     private ProductDetail productDetail;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_bill", referencedColumnName = "id")
     @JsonBackReference
     private Bill bill;

@@ -32,4 +32,6 @@ public class Brand {
     @Column(name = "status")
     private BrandStatus status;
 
+
+
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
       th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+
 <head>
   <meta charset="utf-8">
   <th:block id="th-css">
@@ -65,49 +66,47 @@
 
                 <div class="col-lg-8 order-lg-1">
                   <h4 class="mb-3">Sửa voucher</h4>
-                  <form th:action="@{/dashboard/product-management/voucher/update}" th:object="${voucher}" method="post" class="needs-validation" novalidate="">
-                    <input type="hidden" class="form-control" id="id" th:field="*{id}"  th:value="${voucher.id}" placeholder="" value="" required="">
-                    <div class="row">
 
-                      <div class="col-md-6 mb-3">
-                        <label for="name">Tên</label>
-                        <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="" value="" required="">
-                        <div class="invalid-feedback">
-                          Valid name is required.
-                        </div>
-                      </div>
-                    </div>
-
+                  <form id="voucherForm" class="needs-validation" novalidate th:action="@{/dashboard/product-management/voucher/update}" th:object="${voucher}" method="post">
+                    <input type="hidden" class="form-control" id="id" th:field="*{id}" th:value="${voucher.id}" placeholder="" value="" required="">
                     <div class="mb-3">
-                      <label for="value">Số tiền</label>
-                      <input type="text" class="form-control" id="value" th:field="*{value}" oninput="formatCurrency(event)" onfocus="this.select()" onblur="removeFormatting(event)">
+                      <label for="name">Tên Voucher</label>
+                      <input type="text" class="form-control" id="name" th:field="*{name}" required
+                             pattern="^[A-Za-zÀ-Ỹà-ỹ\s]{3,}$" oninput="validateName()">
                       <div class="invalid-feedback">
-                        Please enter a valid email address for shipping updates.
+                        Tên phải có ít nhất 3 ký tự và không chứa số hoặc ký tự đặc biệt.
                       </div>
                     </div>
 
+                    <!-- Số tiền -->
+                    <div class="mb-3">
+                      <label for="value">Số tiền (VND)</label>
+                      <input type="text" class="form-control" id="value" th:field="*{value}" required
+                             oninput="formatCurrency(event)">
+                      <div class="invalid-feedback">Số tiền không hợp lệ.</div>
+                    </div>
+
+                    <!-- Số lượng -->
                     <div class="mb-3">
                       <label for="quantity">Số lượng</label>
-                      <input type="number" class="form-control" id="quantity"  th:field="*{quantity}">
-                      <div class="invalid-feedback">
-                        Please enter a valid email address for shipping updates.
-                      </div>
+                      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1">
+                      <div class="invalid-feedback">Số lượng phải lớn hơn 0.</div>
                     </div>
 
+                    <!-- Ngày bắt đầu -->
                     <div class="mb-3">
                       <label for="startDate">Ngày bắt đầu</label>
-                      <input type="datetime-local" class="form-control" id="startDate" th:value="${voucher.startDate}">
-                      <div class="invalid-feedback">
-                        Please enter a valid email address for shipping updates.
-                      </div>
+                      <input type="datetime-local" class="form-control" id="startDate" name="startDate"
+                             th:value="${#temporals.format(startDate, 'yyyy-MM-dd''T''HH:mm')}" required>
+                      <div class="invalid-feedback">Ngày bắt đầu không được để trống.</div>
                     </div>
 
+                    <!-- Ngày kết thúc -->
                     <div class="mb-3">
                       <label for="endDate">Ngày kết thúc</label>
-                      <input type="datetime-local" class="form-control" id="endDate" th:value="${voucher.endDate}" >
-                      <div class="invalid-feedback">
-                        Please enter a valid email address for shipping updates.
-                      </div>
+                      <input type="datetime-local" class="form-control" id="endDate" name="endDate"
+                             th:value="${#temporals.format(endDate, 'yyyy-MM-dd''T''HH:mm')}" required>
+                      <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
                     </div>
 
 
@@ -126,10 +125,7 @@
                       </div>
                     </div>
 
-
-
                     <hr class="mb-4">
-
                     <button class="btn btn-primary btn-lg btn-block" type="submit">Sửa</button>
                   </form>
                 </div>
@@ -141,35 +137,91 @@
     </div>
   </div>
   <script>
-    // Định dạng tiền tệ khi người dùng nhập vào
+    document.addEventListener("DOMContentLoaded", function () {
+     const startDate = `[[${startDate}]]`;
+     const endDate = `[[${endDate}]]`;
+
+     // Kiểm tra nếu có giá trị hợp lệ thì gán vào input
+     if (startDate) {
+         document.getElementById("startDate").value = formatDateTime(startDate);
+     }
+     if (endDate) {
+         document.getElementById("endDate").value = formatDateTime(endDate);
+     }
+ });
+
+ // Định dạng tiền tệ khi nhập số tiền
+
+
  function formatCurrency(event) {
-     let input = event.target;
-     let value = input.value;
-
-     // Xóa tất cả ký tự không phải là số
-     value = value.replace(/\D/g, '');
-
-     // Định dạng thành tiền tệ với dấu phân cách hàng nghìn
-     let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
-
-     // Cập nhật lại giá trị trong input
-     input.value = formattedValue;
+   let input = event.target;
+   let value = input.value.replace(/\D/g, ''); // Xóa tất cả ký tự không phải số
+   let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
+   input.value = formattedValue;
  }
 
- // Loại bỏ dấu phân cách khi mất focus để có giá trị sạch
- function removeFormatting(event) {
-     let input = event.target;
-     let value = input.value;
+ // Kiểm tra dữ liệu nhập vào form
+ document.getElementById("voucherForm").addEventListener("submit", function(event) {
+   let form = this;
+   let isValid = true;
 
-     // Loại bỏ dấu phân cách
-     value = value.replace(/\D/g, '');
+   // Kiểm tra Tên Voucher
+   let nameInput = document.getElementById("name");
+   let nameRegex = /^[A-Za-zÀ-Ỹà-ỹ\s]{3,}$/;
+   if (!nameRegex.test(nameInput.value.trim())) {
+     nameInput.classList.add("is-invalid");
+     isValid = false;
+   } else {
+     nameInput.classList.remove("is-invalid");
+   }
 
-     // Cập nhật lại giá trị input sau khi loại bỏ dấu phân cách
-     input.value = value;
- }
+   // Kiểm tra số tiền hợp lệ
+   let valueInput = document.getElementById("value");
+   let numericValue = valueInput.value.replace(/\D/g, '');
+   if (!numericValue || parseInt(numericValue) <= 0) {
+     valueInput.classList.add("is-invalid");
+     isValid = false;
+   } else {
+     valueInput.classList.remove("is-invalid");
+   }
 
+   // Kiểm tra số lượng hợp lệ
+   let quantityInput = document.getElementById("quantity");
+   if (parseInt(quantityInput.value) < 1 || isNaN(quantityInput.value)) {
+     quantityInput.classList.add("is-invalid");
+     isValid = false;
+   } else {
+     quantityInput.classList.remove("is-invalid");
+   }
 
+   // Kiểm tra ngày bắt đầu và ngày kết thúc
+   let startDate = new Date(document.getElementById("startDate").value);
+   let endDate = new Date(document.getElementById("endDate").value);
+   if (isNaN(startDate.getTime())) {
+     document.getElementById("startDate").classList.add("is-invalid");
+     isValid = false;
+   } else {
+     document.getElementById("startDate").classList.remove("is-invalid");
+   }
 
+   if (isNaN(endDate.getTime()) || endDate <= startDate) {
+     document.getElementById("endDate").classList.add("is-invalid");
+     isValid = false;
+   } else {
+     document.getElementById("endDate").classList.remove("is-invalid");
+   }
+
+   // Ngăn chặn gửi form nếu không hợp lệ
+   if (!isValid) {
+     event.preventDefault();
+     event.stopPropagation();
+   } else {
+     // Chuyển số tiền về dạng số trước khi gửi form (loại bỏ dấu phẩy)
+     valueInput.value = numericValue;
+   }
+
+   form.classList.add("was-validated");
+ });
   </script>
 </th:block>
 </body>

@@ -72,11 +72,18 @@ public interface BillService {
     Page<Bill> searchBills(String keyword, String orderType, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
 
-
     void buyNowForOnlineUser(BuyNowBillRequest request);
 
     List<Bill> findLastestBillByCustomerId();
 
     void saveToBillForBuyNow(CreateBillRequest createBillRequest);
+
+    List<Bill> findByCreateDate(LocalDate date);
+
+    List<Bill> findByCreateDateBetween(LocalDate start, LocalDate end);
+
+    List<Bill> findAll();
+
+
 
 }

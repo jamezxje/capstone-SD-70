@@ -764,4 +764,27 @@ public class BillServiceImpl implements BillService {
 
         return billRepository.findAll(example, pageable);
     }
+
+    @Override
+    public List<Bill> findByCreateDate(LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+
+        return billRepository.findByCreateDateBetween(startOfDay, endOfDay);
+    }
+
+    @Override
+    public List<Bill> findByCreateDateBetween(LocalDate start, LocalDate end) {
+        LocalDateTime startDate = start.atStartOfDay();
+        LocalDateTime endDate = end.atTime(23, 59, 59);
+
+        return billRepository.findByCreateDateBetween(startDate, endDate);
+    }
+
+    @Override
+    public List<Bill> findAll() {
+        return billRepository.findAll();
+    }
+
 }

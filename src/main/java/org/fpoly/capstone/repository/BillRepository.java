@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.fpoly.capstone.entity.Bill;
@@ -36,6 +38,12 @@ SELECT b.id FROM Bill b where b.vnpTransaction = :code
     @Query("select b.id from Bill b")
     List<Long> findByAllIds();
     Page<Bill> findAll(Pageable pageable);
+
+    List<Bill> findByCreateDate(LocalDateTime createDate);
+
+    @Query("SELECT b FROM Bill b WHERE b.createDate BETWEEN :startOfDay AND :endOfDay")
+    List<Bill> findByCreateDateBetween(@Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
+
 
 
 }

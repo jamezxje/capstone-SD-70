@@ -5,6 +5,210 @@
 <head>
   <meta charset="utf-8">
   <th:block id="th-css">
+    <style>
+      /* General Body Styles */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fc;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+
+      .content-body {
+        padding: 40px;
+      }
+
+      .container-fluid {
+        margin-top: 30px;
+      }
+
+      /* Search Form Styling */
+      .form-search {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background-color: #fff;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-search .form-group {
+        margin-right: 15px;
+        flex: 1;
+      }
+
+      .form-search input,
+      .form-search select {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        background-color: #f8f9fc;
+        transition: border-color 0.3s ease-in-out;
+      }
+
+      /* Input and Select focus effect */
+      .form-search input:focus,
+      .form-search select:focus {
+        border-color: #ff6f00; /* Cam */
+        box-shadow: 0 0 0 0.25rem rgba(255, 111, 0, 0.25); /* Cam */
+        outline: none;
+      }
+
+      /* Button Styling */
+      .btn-search {
+        background-color: #ff6f00; /* Cam */
+        color: white;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 8px;
+        border: none;
+        transition: background-color 0.3s ease-in-out;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn-search:hover {
+        background-color: #e65c00; /* Cam đậm */
+      }
+
+      .btn-search svg {
+        margin-left: 10px;
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Danh sách Phiếu Giảm Giá */
+      .card-header {
+        background-color: #ff6f00; /* Màu cam */
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .card-header h4 {
+        margin: 0;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .form-search {
+          flex-direction: column;
+        }
+
+        .form-search .form-group {
+          margin-right: 0;
+          margin-bottom: 10px;
+        }
+
+        .form-search input,
+        .form-search select,
+        .btn-search {
+          width: 100%;
+        }
+      }
+      /* General Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th, table td {
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 400; /* Màu chữ nhẹ hơn cho dữ liệu */
+}
+
+table th {
+  background-color: #ff6f00; /* Màu cam cho tiêu đề cột */
+  color: white;
+  font-weight: 600; /* Chữ đậm cho tiêu đề */
+  border-bottom: 2px solid #e5e5e5;
+}
+
+table td {
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 14px;
+  font-family: 'Arial', sans-serif; /* Chọn font đẹp và dễ đọc */
+  color: #333; /* Màu chữ tối cho dễ đọc */
+}
+
+/* Phần tbody */
+table tbody {
+  font-family: 'Roboto', sans-serif; /* Dùng font dễ đọc và hiện đại */
+  font-size: 15px; /* Tăng chút kích thước chữ để dễ đọc hơn */
+  line-height: 1.5; /* Tăng khoảng cách dòng để dễ nhìn */
+  color: #666; /* Chữ màu xám nhẹ, dễ nhìn và không quá chói */
+}
+
+/* Làm nổi bật các hàng khi hover */
+table tr:hover {
+  background-color: #ffe6b3; /* Màu nền nhẹ khi hover */
+  transition: background-color 0.3s ease;
+}
+
+/* Màu nền cho các hàng chẵn */
+table tr:nth-child(even) {
+  background-color: #f8f9fc; /* Màu nền nhẹ cho các hàng chẵn */
+}
+
+/* Thêm viền tròn cho các ô */
+table th, table td {
+  border-radius: 5px;
+}
+
+/* Chỉnh font chữ cho số trang trong phân trang */
+.pagination .page-link {
+  font-size: 14px; /* Tăng kích thước chữ cho số trang */
+  font-weight: 500;
+  padding: 10px 15px;
+  color: #ff6f00; /* Màu cam cho các số trang */
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+/* Hover effect for pagination links */
+.pagination .page-link:hover {
+  background-color: #ff6f00; /* Màu cam khi hover */
+  color: white;
+}
+
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0;
+}
+
+.pagination li {
+  margin: 0 5px;
+}
+
+.pagination .page-item.disabled a {
+  color: #dcdcdc;
+}
+
+.pagination .active .page-link {
+  background-color: #ff6f00;
+  color: white;
+  border-color: #ff6f00;
+}
+
+    </style>
+
   </th:block>
 
 </head>
@@ -13,60 +217,41 @@
 <th:block id="th-body">
   <div class="content-body">
     <div class="container-fluid">
-
       <div class="card">
 
-        <form th:action="@{/dashboard/product-management/voucher/search}" method="get">
-        <div class="row m-5">
-          <div class="col-md-5 mb-3">
+        <!-- Tìm kiếm -->
+        <form th:action="@{/dashboard/product-management/voucher/search}" method="get" class="form-search">
+          <div class="form-group">
             <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên tìm kiếm">
           </div>
 
-          <div class="mb-3">
-
+          <div class="form-group">
             <select class="form-control" id="status" name="status">
               <option value="">Chọn trạng thái</option>
               <option th:each="status : ${status}"
                       th:value="${status}"
                       th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
                             (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}">
-
               </option>
             </select>
           </div>
 
-<!--          <div class="mb-3 ml-3">-->
-<!--            <input type="datetime-local" class="form-control" id="createBy" name="createBy">-->
-<!--          </div>-->
+          <button type="submit" class="btn-search">
+            Tìm kiếm
+            <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 16L19 20M17 14C18.5 12.25 18.5 9.25 17 7.5C15.5 5.75 12.5 5.75 11 7.5C9.5 9.25 9.5 12.25 11 14C12.5 15.75 15.5 15.75 17 14Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </form>
 
-        </div>
-
-        <div class="mr-5 d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-        </div>
-      </form>
-
+        <!-- Tiêu đề "Danh Sách Phiếu Giảm Giá" -->
         <div class="card-header d-sm-flex d-block">
-          <div class="mr-auto mb-sm-0 mb-3">
-            <h4 class="card-title mb-2">Danh sách Voucher</h4>
-          </div>
-
-
-<!--          <form th:action="@{/dashboard/product-management/voucher/search}" method="get">-->
-<!--                    <div class="input-group search-area right d-lg-inline-flex d-none">-->
-<!--                      <input type="text" class="form-control" id="name" name="name" placeholder="Tìm kiếm...">-->
-<!--                      <div class="input-group-append">-->
-<!--          									<span class="input-group-text">-->
-<!--          										<a href="javascript:void(0)">-->
-<!--          											<button class="border border-gray-300" type="submit"><i class="flaticon-381-search-2"></i></button>-->
-<!--          										</a>-->
-<!--          									</span>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--          </form>-->
+          <h4 class="card-title mb-2 text-light">Danh sách phiếu giảm giá</h4>
           <a th:href="@{/dashboard/product-management/voucher/create}" class="btn btn-info">+ Thêm voucher</a>
         </div>
+
         <div class="card-body">
+          <!-- Table Content -->
           <div class="table-responsive">
             <script>
               // Định dạng tiền tệ cho giá trị voucher khi trang tải
@@ -79,68 +264,42 @@
               });
             </script>
 
+
             <table class="table table-bordered table-hover" id="ListDatatableView" border="1">
               <thead>
               <tr>
                 <th>#</th>
                 <th>Code</th>
-                <th>Tên voucher</th>
+                <th>Tên phiếu giảm giá</th>
                 <th>Ngày tạo</th>
                 <th>Số lượng</th>
                 <th>Số tiền</th>
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
-                <th>STATUS</th>
-
+                <th>Trạng thái</th>
                 <th>ACTION</th>
               </tr>
               </thead>
               <tbody>
-              <tr th:each="voucher : ${voucherPage}">
-                <td>
-                  <div th:text="${voucher.id}"></div>
-                </td>
-                <td>
-                  <div class="media style-1">
-                    <div class="media-body"
-                         th:text="${voucher.code}">
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div
-                    th:text="${voucher.name}">
-                  </div>
-                </td>
-                <td>
-                  <div th:text="${voucher.createDate}">
 
-                  </div>
-                </td>
+              <tr th:each="voucher,iterStat : ${voucherPage}">
+                <td><div th:text="${iterStat.index + 1}"></div></td>
+                <td><div class="media style-1"><div class="media-body" th:text="${voucher.code}"></div></div></td>
+                <td><div th:text="${voucher.name}"></div></td>
+                <td><div th:text="${#dates.format(voucher.createDate, 'dd/MM/yyyy HH:mm')}"></div></td>
+                <td><div th:text="${voucher.quantity}"></div></td>
+                <td class="voucher-value" th:text="${voucher.value}"></td>
+                <td><div th:text="${#temporals.format(voucher.startDate, 'dd/MM/yyyy HH:mm')}"></div></td>
+                <td><div th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy HH:mm')}"></div></td>
                 <td>
-                  <div th:text="${voucher.quantity}"></div>
-                </td>
-                <td class="voucher-value"  th:text="${voucher.value}"></td>
-                <td>
-                  <div th:text="${voucher.startDate}">
-                  </div>
-                </td>
-                <td>
-                  <div th:text="${voucher.endDate}">
-                  </div>
+                  <h6 class="text-primary">
+                 <span class="badge" th:classappend="${voucher.status == voucher.status.ACTIVE ? 'badge-success' : (voucher.status == voucher.status.INACTIVE ? 'badge-warning' : 'badge-danger')}">
+                   <span th:text="${voucher.status == voucher.status.ACTIVE ? 'Hoạt động' : (voucher.status == voucher.status.INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}"
+                   ></span>
+                </span>
+                  </h6>
                 </td>
 
-                <td>
-                  <div th:if="${voucher.status == voucher.status.ACTIVE}">
-                    <h6 class="text-primary"><span class="badge badge-success">Hoạt động</span></h6>
-                  </div>
-                  <div th:if="${voucher.status == voucher.status.INACTIVE}">
-                    <h6 class="text-primary"><span class="badge badge-warning">Chưa hoạt động</span></h6>
-                  </div>
-                  <div th:if="${voucher.status == voucher.status.EXPIRED}">
-                    <h6 class="text-primary"><span class="badge badge-danger">Hết hạn</span></h6>
-                  </div>
-                </td>
                 <td>
                   <div class="d-flex action-button">
                     <a th:href="@{/dashboard/product-management/voucher/{id}(id=${voucher.id})}" class="btn btn-info btn-xs light px-2">
@@ -148,20 +307,17 @@
                         <path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                       </svg>
                     </a>
-                    <a th:href="@{/dashboard/product-management/voucher/delete/{id}(id=${voucher.id})}"
-                       class="ml-2 btn btn-xs px-2 light btn-danger"
-                       onclick="return confirm('Bạn có chắc chắn muốn xóa voucher này?');">
-                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                      </svg>
-
-                    </a>
-
+<!--                    <a th:href="@{/dashboard/product-management/voucher/delete/{id}(id=${voucher.id})}"-->
+<!--                       class="ml-2 btn btn-xs px-2 light btn-danger"-->
+<!--                       onclick="return confirm('Bạn có chắc chắn muốn xóa voucher này?');">-->
+<!--                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--                        <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>-->
+<!--                        <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>-->
+<!--                      </svg>-->
+<!--                    </a>-->
                   </div>
                 </td>
               </tr>
-
               </tbody>
             </table>
             <th:block th:if="${!voucherPage.isEmpty()}">
@@ -195,7 +351,6 @@
     </div>
   </div>
 </th:block>
-
 </body>
 
 
