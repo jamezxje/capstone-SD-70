@@ -33,7 +33,7 @@ public class DataSeeder {
             new User(
                     1L, "Admin One", new Date(90, 5, 20), "0123456789", "admin1@example.com",
                     true, "avatar1.jpg", "123456789", UserStatus.ACTIVATED,
-                    passwordEncoder().encode("adminPass1"), UserRole.ROLE_ADMIN,
+                    passwordEncoder().encode("12345"), UserRole.ROLE_ADMIN,
                     new Date(), new Date(), "system", "system", null, null
             ),
             new User(

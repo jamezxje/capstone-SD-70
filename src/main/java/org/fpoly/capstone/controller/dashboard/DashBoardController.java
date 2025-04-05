@@ -16,5 +16,5 @@ public class DashBoardController {
     public String showDashBoard() {
         return "views/admin-dashboard/dashboard";
     }
-    
+
 }
