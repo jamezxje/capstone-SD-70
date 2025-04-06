@@ -1,6 +1,8 @@
 package org.fpoly.capstone.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,7 +45,6 @@ public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "code")
     private String code;
 
@@ -57,13 +58,14 @@ public class Bill {
     @JsonBackReference
     private User employee;
 
+
     @Column(name = "phone_number")
     private String phoneNumber;
 
     @Column(name = "address")
     private String address;
 
-    @Column(name = "user_name")
+    @Column(name = "use_name")
     private String userName;
 
     @Column(name = "email")
@@ -129,7 +131,7 @@ public class Bill {
     @JsonBackReference
     private List<VoucherDetail> voucherDetailList;
 
-    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bill")
     @JsonBackReference
     private List<BillDetail> billDetailList;
 

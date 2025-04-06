@@ -7,7 +7,7 @@ import org.fpoly.capstone.controller.payload.bill_detail.BillDetailViewModel;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.Bill;
-import org.fpoly.capstone.entity.BillDetail;
+import org.fpoly.capstone.entity.Cart;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.PaymentMethod;
 import org.fpoly.capstone.repository.CartRepository;
@@ -28,8 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -77,31 +75,6 @@ public class OnlineBillController {
         return "/views/user-online-view/checkout-form";
     }
 
-    @GetMapping(path = "checkout/buy-now")
-    public String onOpenCheckoutViewForBuyNow(Model model) {
-
-        User loggedUser = this.userService.getUserFromContext();
-
-        Address defaultAddress = this.onlineAddressService.findDefaultAddressByUserId();
-
-        List<Address> addressList = this.onlineAddressService.getListAddressByLoggedUser();
-
-        List<Bill> lastestBill = this.billService.findLastestBillByCustomerId();
-
-        List<BillDetail> billDetailList = lastestBill.get(0).getBillDetailList();
-
-        BillDetail billDetail = billDetailList.get(0);
-
-
-        model.addAttribute("loggedUser", loggedUser);
-        model.addAttribute("addressList", addressList);
-        model.addAttribute("defaultAddress", defaultAddress);
-        model.addAttribute("billDetailList", billDetailList);
-        model.addAttribute("totalMoney", billDetail.getPrice().doubleValue() * billDetail.getQuantity());
-
-        return "/views/user-online-view/checkout-form-buy-now";
-    }
-
 //    @PostMapping("save")
 //    public String onSaveBill(Model model, @ModelAttribute("createBillRequest") CreateBillRequest createBillRequest) {
 //        User loggedUser = this.userService.getUserFromContext();
@@ -139,63 +112,25 @@ public class OnlineBillController {
         // Kiểm tra trạng thái thanh toán từ VNPAY
         int paymentStatus = this.vnPayService.orderReturn(request);
 
-// Lấy thông tin từ tham số URL
+        // Lấy thông tin từ tham số URL
         String orderInfo = request.getParameter("vnp_OrderInfo");
         String paymentTime = request.getParameter("vnp_PayDate");
         String transactionId = request.getParameter("vnp_TransactionNo");
         String totalPrice = request.getParameter("vnp_Amount");
 
-// Giải mã orderInfo để lấy receiveDate và moneyShip
+        // Giải mã orderInfo để lấy receiveDate và moneyShip
+        String[] orderInfoParts = orderInfo.split(", "); // Tách chuỗi theo dấu phẩy và khoảng trắng
         String receiveDate = null;
         String moneyShip = null;
-        String transactionType = null;
-        String address = null;
 
-        log.info("orderInfo: {}", orderInfo);
-
-// Kiểm tra và lấy giá trị từ orderInfo
-        if (orderInfo != null && !orderInfo.isEmpty()) {
-            // Tìm và lấy phần data_receiveDate
-            if (orderInfo.contains("data_receiveDate")) {
-                int receiveDateStart = orderInfo.indexOf("data_receiveDate") + "data_receiveDate:".length();
-                int receiveDateEnd = orderInfo.indexOf(",", receiveDateStart);
-                if (receiveDateEnd == -1) {
-                    receiveDateEnd = orderInfo.length();  // Nếu không có dấu phẩy, lấy đến cuối chuỗi
-                }
-                receiveDate = orderInfo.substring(receiveDateStart, receiveDateEnd).trim();
-            }
-
-            // Tìm và lấy phần data_shipFee
-            if (orderInfo.contains("data_shipFee")) {
-                int shipFeeStart = orderInfo.indexOf("data_shipFee") + "data_shipFee:".length();
-                int shipFeeEnd = orderInfo.indexOf(",", shipFeeStart);
-                if (shipFeeEnd == -1) {
-                    shipFeeEnd = orderInfo.length();
-                }
-                moneyShip = orderInfo.substring(shipFeeStart, shipFeeEnd).trim();
-            }
-
-            // Tìm và lấy phần data_buyType
-            if (orderInfo.contains("data_buyType")) {
-                int buyTypeStart = orderInfo.indexOf("data_buyType") + "data_buyType:".length();
-                int buyTypeEnd = orderInfo.indexOf(",", buyTypeStart);
-                if (buyTypeEnd == -1) {
-                    buyTypeEnd = orderInfo.length();
-                }
-                transactionType = orderInfo.substring(buyTypeStart, buyTypeEnd).trim();
-            }
-
-            // Tìm và lấy phần data_address
-            if (orderInfo.contains("data_address")) {
-                int addressStart = orderInfo.indexOf("data_address") + "data_address:".length();
-                address = orderInfo.substring(addressStart).trim(); // Lấy tất cả phần còn lại là địa chỉ
-                address = URLDecoder.decode(address, StandardCharsets.UTF_8); // Giải mã địa chỉ
+        // Kiểm tra và lấy giá trị từ orderInfo
+        for (String part : orderInfoParts) {
+            if (part.startsWith("data_receiveDate")) {
+                receiveDate = part.split(": ")[1].trim(); // Lấy ngày nhận hàng
+            } else if (part.startsWith("data_shipFee")) {
+                moneyShip = part.split(": ")[1].trim(); // Lấy phí vận chuyển
             }
         }
-
-        log.info("transactionType: {}", transactionType);
-        log.info("address: {}", address);
-
 
         // Kiểm tra nếu nhận được thông tin ngày nhận hàng và phí vận chuyển
         if (receiveDate != null && moneyShip != null) {
@@ -204,21 +139,18 @@ public class OnlineBillController {
             // Nếu thanh toán thành công, lưu hóa đơn vào cơ sở dữ liệu
             if (paymentStatus == 1) {
                 try {
+                    User loggedUser = this.userService.getUserFromContext();
+                    Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+
                     // Tạo đối tượng CreateBillRequest để lưu hóa đơn
                     CreateBillRequest createBillRequest = new CreateBillRequest();
                     createBillRequest.setGrandTotal(BigDecimal.valueOf(Long.parseLong(totalPrice) / 100)); // Tổng giá trị hóa đơn
                     createBillRequest.setPaymentMethod(PaymentMethod.CHUYEN_KHOAN); // Phương thức thanh toán
                     createBillRequest.setReceiveDate(this.parseDate(receiveDate)); // Lấy từ orderInfo và chuyển đổi thành Date
                     createBillRequest.setMoneyShip(BigDecimal.valueOf(Long.parseLong(moneyShip))); // Lấy từ orderInfo
-                    createBillRequest.setAddress(address);
 
-                    if ("addToCart".equals(transactionType)) {
-                        // Gọi phương thức lưu hóa đơn cho giỏ hàng
-                        this.billService.saveToBillForOnlineUser(createBillRequest);
-                    } else if ("buyNow".equals(transactionType)) {
-                        // Gọi phương thức lưu hóa đơn cho mua ngay
-                        this.billService.saveToBillForBuyNow(createBillRequest);
-                    }
+                    // Lưu hóa đơn vào cơ sở dữ liệu
+                    this.billService.saveToBillForOnlineUser(cart, createBillRequest);
 
                     log.info("Bill saved successfully after VNPAY payment.");
 

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface VoucherService {
-    Voucher createVoucher(Voucher voucher);
+    Voucher createVoucher(Voucher voucher, VoucherStatus voucherStatus);
 
     Page<Voucher> findAll(Pageable pageable);
 
@@ -18,8 +18,7 @@ public interface VoucherService {
 
     List<Voucher> findAll();
 
-    Voucher updateVoucher(Voucher voucher, VoucherStatus voucherStatus,
-                          LocalDateTime startDate, LocalDateTime endDate) throws NotException;
+    Voucher updateVoucher(Voucher voucher, VoucherStatus voucherStatus) throws NotException;
 
     Voucher deleteVoucher(Long voucherId) throws NotException;
 
@@ -27,4 +26,5 @@ public interface VoucherService {
 
     Page<Voucher> search(Pageable pageable, String name, VoucherStatus status);
 
+    List<Voucher> getAllVouchers();
 }

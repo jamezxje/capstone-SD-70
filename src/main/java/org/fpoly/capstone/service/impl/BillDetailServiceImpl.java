@@ -6,7 +6,6 @@ import org.fpoly.capstone.service.BillDetailService;
 import org.fpoly.capstone.service.payload.bill_detail.BillDetailResponse;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.fpoly.capstone.dto.billDetail.BillDetailDTO;
@@ -244,28 +243,6 @@ public class BillDetailServiceImpl implements BillDetailService {
         ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         long timestamp = instant.atZone(zoneId).toEpochSecond() * 1000;
         return new Date(timestamp);
-    }
-
-    @Override
-    public List<BillDetail> findByCreateDate(LocalDate date) {
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(23, 59, 59);
-
-        Date startDate = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
-        return billDetailRepository.findByCreateDateBetween(startDate, endDate);
-    }
-
-    @Override
-    public List<BillDetail> findByCreateDateBetween(LocalDate start, LocalDate end) {
-        Date startDate = Date.from(start.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(end.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
-        return billDetailRepository.findByCreateDateBetween(startDate, endDate);
-    }
-
-    @Override
-    public List<BillDetail> findAll() {
-        return billDetailRepository.findAll();
     }
 }
 

@@ -1,7 +1,19 @@
 package org.fpoly.capstone.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,8 +36,9 @@ public class ProductDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "id_product", referencedColumnName = "id")
+    @JsonBackReference
     private Product product;
 
     @ManyToOne
@@ -73,16 +86,12 @@ public class ProductDetail {
     @Column(name = "updated_by", length = 255)
     private String updatedBy;
 
-    @OneToMany(mappedBy = "productDetail", fetch = FetchType.EAGER)
-    private List<BillDetail> billDetail;
-
     @OneToMany(mappedBy = "productDetail")
     @JsonBackReference
     private List<Image> images;
 
     @Column(name = "feature_image", length = 255)
     private String featureImage;
-
 
     @PrePersist
     public void prePersist() {
@@ -100,7 +109,7 @@ public class ProductDetail {
 
         this.updatedBy = CommonUtils.getPrincipal();
     }
-
+    
     @Override
     public int hashCode() {
         return this.getClass().hashCode(); // Avoid circular reference in hashCode

@@ -11650,7 +11650,7 @@ a:hover, a:focus, a.active {
 
 @media only screen and (max-width: 1200px) {
     .content-body .container.max {
-        /*margin-top: 30px;*/
+        margin-top: 30px;
         padding-right: 30px;
         padding-left: 30px;
         max-width: 100%;
@@ -12970,7 +12970,7 @@ svg.pulse-svg .third-circle {
 }
 
 [data-header-position="fixed"] .content-body {
-    padding-top: 4.5rem;
+    padding-top: 7.5rem;
 }
 
 [data-header-position="fixed"] .deznav {

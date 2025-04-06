@@ -185,7 +185,7 @@ createInvoice.addEventListener(
                 const invoiceData = response.data;
                 invoiceCount++
                 createInvoiceTab(invoiceCount, response);
-                location.reload();
+                // location.reload();
             })
             .catch(error => {
                 console.log(error);
@@ -280,12 +280,8 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Giá trị không hợp lệ:", priceValue);
         }
     });
-    const billData = JSON.parse(localStorage.getItem('billData'));
-    if (billData) {
-        console.log("Có cha vào")
-    }
-});
 
+});
 
 let idCusomter = null, name = null, phoneNumber = null, mail = null;
 function  attachChoseCustomer() {
