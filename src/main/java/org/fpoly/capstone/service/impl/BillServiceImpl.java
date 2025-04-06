@@ -171,6 +171,7 @@ public class BillServiceImpl implements BillService {
         if (!findIdBill.isPresent()) {
             throw new RuntimeException("Bill not found");
         }
+        System.out.println("Check user" + request.getIdUser());
         Optional<User> user = userRepository.findById(request.getIdUser());
         if (!user.isPresent()) {
             throw new RuntimeException("User not found");
@@ -328,6 +329,7 @@ public class BillServiceImpl implements BillService {
         });
         return optional.get();
     }
+
 
     @Override
     public List<BaseAddressRequest> getAllAddressUser(Long idUser) {

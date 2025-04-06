@@ -42,7 +42,7 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
     @Query("SELECT bd FROM BillDetail bd WHERE bd.bill.id = :billId")
     List<BillDetail> findByBillId(Long billId);
 
-    void deleteByProductDetailId(Long billId);
+    void deleteByProductDetailId(Long idProduct);
     List<BillDetailRequest> findBillDetailByBill(Bill bill);
 
     Long id(Long id);

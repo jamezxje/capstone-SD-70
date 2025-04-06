@@ -129,9 +129,10 @@ public class Bill {
     @JsonBackReference
     private List<VoucherDetail> voucherDetailList;
 
-    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "bill", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<BillDetail> billDetailList;
+
 
     @PrePersist
     public void prePersist() {
