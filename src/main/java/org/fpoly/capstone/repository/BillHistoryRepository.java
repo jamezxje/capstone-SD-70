@@ -18,5 +18,10 @@ public interface BillHistoryRepository extends JpaRepository<BillHistory, Long> 
 //    @Query("DELETE FROM BillHistory bh WHERE bh.bill.id = :billId")
     void deleteAllByBillId( Long billId);
 
+    List<BillHistory> findByBillId(Long id);
+
     List<BillHistory> findAllByBill(Bill bill);
+
+    @Query("SELECT h.id , h.status as status , h.createDate as createDate FROM BillHistory h WHERE h.status != 'TAO_HOA_DON' AND h.bill.id = :id")
+    List<Object[]> findAllStatusExcludingTaoHoaDon(@Param("id") Long id);
 }

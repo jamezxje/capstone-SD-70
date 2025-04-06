@@ -36,7 +36,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
     @Autowired
     private BillHistoryRepository billHistoryRepository;
     @Autowired
-    private VoucherDetailReponsitory voucherDetailReponsitory;
+    private VoucherDetailRepository voucherDetailReponsitory;
     @Autowired
     private VoucherRepository voucherRepository;
     @Autowired
