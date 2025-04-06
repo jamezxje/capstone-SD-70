@@ -1,5 +1,7 @@
 package org.fpoly.capstone.entity;
 
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +24,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "voucher_detail")
 public class VoucherDetail {
 
@@ -36,7 +40,7 @@ public class VoucherDetail {
     @JoinColumn(name = "id_voucher", referencedColumnName = "id")
     private Voucher voucher;
 
-    @Column(name = "befor_price")
+    @Column(name = "before_price")
     private BigDecimal beforePrice;
 
     @Column(name = "after_price")
@@ -58,5 +62,14 @@ public class VoucherDetail {
 
     @Column(name = "updated_by")
     private String updatedBy;
+    @PrePersist
+    protected void onCreate() {
+        this.createDate = new Date();
+        this.lastModifiedDate = new Date();
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastModifiedDate = new Date();
+    }
 
 }

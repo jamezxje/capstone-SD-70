@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      th:replace="~{views/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
 <head>
     <meta charset="UTF-8">
     <title>Quản lý Hóa đơn</title>
@@ -10,154 +10,6 @@
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
         <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>
-        <style>
-            .progress-bar-custom {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                padding: 20px 0;
-            }
-            .progress-step {
-                width: 25%;
-                text-align: center;
-                position: relative;
-            }
-            .progress-step::before {
-                content: '';
-                position: absolute;
-                top: 20px;
-                left: 50%;
-                width: 100%;
-                height: 5px;
-                background: lightgray;
-                z-index: -1;
-            }
-            .progress-step:first-child::before {
-                width: 50%;
-                left: 50%;
-            }
-            .progress-step:last-child::before {
-                width: 50%;
-                left: 0;
-            }
-            .progress-step.active .icon {
-                background: blue;
-                color: white;
-            }
-            .icon {
-                width: 40px;
-                height: 40px;
-                line-height: 40px;
-                border-radius: 50%;
-                background: lightgray;
-                display: inline-block;
-            }
-            body {
-                font-family: Arial, sans-serif;
-                margin: 20px;
-                background-color: #f5f5f5;
-            }
-            .table-container {
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 10px;
-                text-align: left;
-                border-bottom: 1px solid #ddd;
-            }
-            th {
-                background: #ff7f00;
-                color: white;
-            }
-            .delete-btn {
-                background: red;
-                color: white;
-                border: none;
-                padding: 5px 10px;
-                cursor: pointer;
-                border-radius: 5px;
-            }
-            body {
-                font-family: Arial, sans-serif;
-                margin: 20px;
-                padding: 20px;
-                background-color: #f5f5f5;
-            }
-            .order-container {
-                border: 1px solid #ddd;
-                border-radius: 10px;
-                padding: 15px;
-                margin-bottom: 20px;
-                background: #fff;
-            }
-            .order-header h2 {
-                font-size: 18px;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-            .order-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                background: #f8f9fa;
-                padding: 10px;
-                border-radius: 5px;
-            }
-            .order-info, .customer-info {
-                width: 48%;
-            }
-            .order-content {
-                display: flex;
-                justify-content: space-between;
-                padding: 10px 0;
-            }
-            .status-label {
-                background: #007bff;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 5px;
-            }
-            .type-label {
-                background: #6f42c1;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 5px;
-            }
-            .order-buttons {
-                display: flex;
-                gap: 10px;
-            }
-            .btn {
-                padding: 8px 15px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-            .btn-update {
-                background-color: #007bff;
-                color: white;
-                padding: 5px 10px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-
-            .order-content {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 10px;
-            }
-            .modal {
-                margin: auto;
-            }
-        </style>
     </th:block>
 </head>
 <body>
@@ -255,7 +107,7 @@
                                         </td>
                                         <td th:text="${billHistory.actionDescription}"></td>
                                         <td th:text="${billHistory.createDate}"></td>
-                                        <td th:text="${billHistory.user.fullName}"></td>
+<!--                                        <td th:text="${billHistory.user.fullName}"></td>-->
                                     </tr>
                                 </tbody>
                             </table>

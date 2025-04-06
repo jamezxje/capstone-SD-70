@@ -1,15 +1,29 @@
 package org.fpoly.capstone.controller;
 
+import org.fpoly.capstone.entity.ProductDetail;
+import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.entity.Voucher;
+import org.fpoly.capstone.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+
+
+
+
 import org.fpoly.capstone.dto.billDetail.BillDetailDTO;
 import org.fpoly.capstone.dto.voucherDetail.VoucherDetailDTO;
 import org.fpoly.capstone.entity.Bill;
 import org.fpoly.capstone.entity.BillHistory;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.repository.*;
-import org.fpoly.capstone.service.BillDetaiService;
-import org.fpoly.capstone.service.BillHistoryService;
 import org.fpoly.capstone.service.BillService;
-import org.fpoly.capstone.service.VoucherDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +47,7 @@ public class BillController {
     private BillService billService;
 
     @Autowired
-    private BillDetaiService billDetaiService; // ✅ Sử dụng interface thay vì repository
+    private BillDetailService billDetaiService;
 
     @Autowired
     private BillHistotyRepository billHistotyRepository;
@@ -44,7 +58,7 @@ public class BillController {
     @Autowired
     private BillHistoryService billHistoryService;
 
-    @GetMapping
+    @GetMapping("/listBill")
     public String listBills(Model model,
                             @RequestParam(defaultValue = "1") int page,
                             @RequestParam(defaultValue = "10") int size,

@@ -1,5 +1,13 @@
 package org.fpoly.capstone.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.fpoly.capstone.repository.BillDetailRespository;
+import org.fpoly.capstone.service.BillDetailService;
+import org.fpoly.capstone.service.payload.bill_detail.BillDetailResponse;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import org.fpoly.capstone.dto.billDetail.BillDetailDTO;
 import org.fpoly.capstone.dto.billDetail.ChangeStatusBillRequest;
 import org.fpoly.capstone.dto.billDetail.StatusBillDetailRequest;
@@ -9,9 +17,7 @@ import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.repository.*;
-import org.fpoly.capstone.service.BillDetaiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -19,9 +25,11 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.logging.Logger;
 
-
 @Service
-public class BillDetailServiceImpl implements BillDetaiService {
+@RequiredArgsConstructor
+public class BillDetailServiceImpl implements BillDetailService {
+
+    private final BillDetailRespository billDetailRespository;
     @Autowired
     private BillRepository billRepository;
     @Autowired
@@ -32,6 +40,12 @@ public class BillDetailServiceImpl implements BillDetaiService {
     private UserRepository userRepository;
     @Autowired
     private ProductDetailRepository productDetailRepository;
+
+    @Override
+    public List<BillDetailResponse> findBillDetailByBillId(Long billId) {
+        return this.billDetailRespository.findBillDetailByBillId(billId);
+    }
+
 
     private static final Logger LOGGER = Logger.getLogger(BillDetailServiceImpl.class.getName());
 
@@ -113,7 +127,7 @@ public class BillDetailServiceImpl implements BillDetaiService {
             } else {
                 System.out.println("No BillDetail found for Bill ID: " + id_bill); // Logging khi không có BillDetail
             }
-             // Cập nhật ngày hoàn thành
+            // Cập nhật ngày hoàn thành
             bill.get().setCompletionDate(Calendar.getInstance().getTime());
             System.out.println("Bill status updated to XAC_NHAN, Completion date set.");
         } else if (bill.get().getStatus() == BillStatus.DA_THANH_TOAN) {
@@ -123,7 +137,7 @@ public class BillDetailServiceImpl implements BillDetaiService {
                 bill.get().setCompletionDate(getCurrentTimestampInVietnam());
             }
         }
-        bill.get().setLastModifiedDate(Calendar.getInstance().getTime());
+        bill.get().setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         bill.get().setEmployee(user.get());
         BillHistory billHistory = new BillHistory();
         billHistory.setBill(bill.get());
@@ -212,7 +226,7 @@ public class BillDetailServiceImpl implements BillDetaiService {
                 }
             }
         }
-        bill.get().setLastModifiedDate(Calendar.getInstance().getTime());
+        bill.get().setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         bill.get().setStatus(BillStatus.DA_HUY);
         bill.get().setEmployee(user.get());
         BillHistory billHistory = new BillHistory();
@@ -231,4 +245,6 @@ public class BillDetailServiceImpl implements BillDetaiService {
         return new Date(timestamp);
     }
 }
+
+
 

@@ -3,6 +3,7 @@ package org.fpoly.capstone.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
@@ -13,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "bill_history")
 public class BillHistory {
 
@@ -49,13 +51,15 @@ public class BillHistory {
 
     @Column(name = "updated_by")
     private String updatedBy;
-@PrePersist
-    public void prePersist() {
-    createDate = new Date();
-    lastModifiedDate = createDate;
-}
-@PreUpdate
-    public void preUpdate() {
-    lastModifiedDate = new Date();
-}
+    @PrePersist
+    protected void onCreate() {
+        this.createDate = new Date();
+        this.lastModifiedDate = new Date();
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastModifiedDate = new Date();
+    }
+
+
 }

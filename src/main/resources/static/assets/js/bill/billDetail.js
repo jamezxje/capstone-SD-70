@@ -45,6 +45,7 @@ cancelButton.onclick = function () {
         actionDescription = reason;
         cancelReason.value = '';
         cancelBill();
+        location.reload();
     }else{
         alert("Vui lòng nhập 20 ký tự")
     }
@@ -59,6 +60,7 @@ confirmButton.onclick = function() {
         actionDescription = reason;
         confirmationReason.value = ""
         changeStatus();
+        location.reload();
     } else {
         alert("Vui lòng nhập tối thiểu 5 ký tự.");
     }
@@ -66,6 +68,7 @@ confirmButton.onclick = function() {
 
 document.getElementById('btn-changeInfor').addEventListener('click' , function () {
     updateInforBill(billId);
+    location.reload();
     const modal = document.getElementById("changeAddressModal");
     modal.style.display = "none";
 })

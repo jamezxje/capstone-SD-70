@@ -1,0 +1,187 @@
+package org.fpoly.capstone.service.impl;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.fpoly.capstone.common.CommonUtils;
+import org.fpoly.capstone.entity.Category;
+import org.fpoly.capstone.entity.Product;
+import org.fpoly.capstone.entity.ProductDetail;
+import org.fpoly.capstone.entity.enum_status.Gender;
+import org.fpoly.capstone.entity.enum_status.ProductStatus;
+import org.fpoly.capstone.exceptions.ResourceNotFoundException;
+import org.fpoly.capstone.repository.CategoryRepository;
+import org.fpoly.capstone.repository.ProductDetailRepository;
+import org.fpoly.capstone.repository.ProductRepository;
+import org.fpoly.capstone.service.ImageService;
+import org.fpoly.capstone.service.ProductDetailService;
+import org.fpoly.capstone.service.ProductService;
+import org.fpoly.capstone.service.payload.product.ProductFilterRequest;
+import org.fpoly.capstone.service.payload.product.ProductRequest;
+import org.fpoly.capstone.service.payload.product.ProductResponse;
+import org.fpoly.capstone.service.payload.product.ProductUserResponse;
+import org.fpoly.capstone.service.payload.product_detail.ProductDetailRequest;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Log4j2
+@Service
+@RequiredArgsConstructor
+public class ProductServiceImpl implements ProductService {
+
+    private final ProductRepository productRepository;
+    private final ProductDetailRepository productDetailRepository;
+    private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
+    private final ProductDetailService productDetailService;
+    private final ImageService imageService;
+    private static final String PRODUCT_NOT_FOUND_WITH_ID = "Product not found with id: ";
+
+    @Override
+    public List<Product> getAllProduct() {
+        return this.productRepository.findAll();
+    }
+
+    @Override
+    public List<Product> getAllActiveProduct() {
+        return this.productRepository.findAllActiveProduct();
+    }
+
+    @Override
+    public Page<ProductResponse> getAllProduct(Pageable pageable) {
+        return this.productRepository.findAll(pageable)
+                .map(product -> this.modelMapper.map(product, ProductResponse.class));
+    }
+
+    @Override
+    public Page<ProductResponse> searchProduct(ProductFilterRequest request, Pageable pageable) {
+        return this.productRepository.findByFilter(request, pageable);
+    }
+
+    @Override
+    public void createProduct(ProductRequest request) throws Exception {
+        Category category = this.categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        String productCode = CommonUtils.generateProductCode();
+
+        Product product = Product.builder()
+                .category(category)
+                .code(productCode)
+                .name(request.getName())
+                .status(ProductStatus.DANG_SU_DUNG)
+                .build();
+
+        Product savedProduct = this.productRepository.save(product);
+
+        //Lấy ra các thuộc tính chung của sản phẩm chi tiết
+        List<ProductRequest.ProductDetailRequest> productDetailRequestList = request.getProductVariantList();
+        Long brandVariantId = productDetailRequestList.get(0).getBrandId();
+        Long materialVariantId = productDetailRequestList.get(0).getMaterialId();
+        Gender genderVariant = productDetailRequestList.get(0).getGender();
+        String descriptionVariant = productDetailRequestList.get(0).getDescription();
+        MultipartFile featureImageVariant = productDetailRequestList.get(0).getFeatureImage();
+        MultipartFile[] imagesVariant = productDetailRequestList.get(0).getImages();
+
+        // Lọc qua list các biến thể, với mỗi biến thể sẽ tạo thêm một sản phẩm chi tiết
+        for (ProductRequest.ProductDetailRequest variantRequest : request.getProductVariantList()) {
+            variantRequest.setProductId(savedProduct.getId());
+            variantRequest.setBrandId(brandVariantId);
+            variantRequest.setMaterialId(materialVariantId);
+            variantRequest.setGender(genderVariant);
+            variantRequest.setDescription(descriptionVariant);
+            variantRequest.setFeatureImage(featureImageVariant);
+            variantRequest.setImages(imagesVariant);
+            log.info("Processing variant request: {}", variantRequest);
+            ProductDetailRequest productDetailRequest = this.modelMapper.map(variantRequest, ProductDetailRequest.class);
+            this.productDetailService.createProductDetail(productDetailRequest);
+            log.info("Created ProductDetail: {}", productDetailRequest);
+        }
+
+        this.modelMapper.map(savedProduct, ProductResponse.class);
+
+    }
+
+    @Override
+    public void updateProduct(Long productId, ProductRequest request) {
+        Product existingProduct = this.productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + productId));
+
+        Category category = this.categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        existingProduct.setCategory(category);
+        existingProduct.setCode(request.getCode());
+        existingProduct.setName(request.getName());
+        existingProduct.setStatus(request.getStatus());
+
+        Product updatedProduct = this.productRepository.save(existingProduct);
+
+        this.modelMapper.map(updatedProduct, ProductResponse.class);
+    }
+
+    @Override
+    public void deleteProduct(Long productId) {
+        Product existingProduct = this.productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + productId));
+
+        this.productRepository.delete(existingProduct);
+    }
+
+    @Override
+    public ProductResponse getProductById(Long productId) {
+        Product existingProduct = this.productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_ID + productId));
+
+        return this.modelMapper.map(existingProduct, ProductResponse.class);
+    }
+
+    @Override
+    public List<ProductUserResponse> getProductForOnlineUser() {
+        // Fetch all product details
+        List<ProductDetail> productDetails = this.productDetailRepository.findAll();
+
+        // Group the product details by id_product
+        Map<Long, ProductDetail> groupedProducts = new HashMap<>();
+
+        // Iterate over the products and pick the first product for each id_product
+        for (ProductDetail pd : productDetails) {
+            if (!groupedProducts.containsKey(pd.getProduct().getId())) {
+                groupedProducts.put(pd.getProduct().getId(), pd);
+            }
+        }
+
+        // Convert the map of grouped products to a list of ProductUserResponse
+        List<ProductUserResponse> productUserResponses = groupedProducts.values().stream()
+                .map(this::convertToProductUserResponse)
+                .collect(Collectors.toList());
+
+        return productUserResponses;
+    }
+
+    private ProductUserResponse convertToProductUserResponse(ProductDetail pd) {
+        return new ProductUserResponse(
+                pd.getProduct().getId(),
+                pd.getId(),
+                pd.getProduct().getCode(),
+                pd.getProduct().getName(),
+                pd.getProduct().getStatus(),
+                pd.getProduct().getCategory().getName(),
+                pd.getBrand().getName(),
+                pd.getColor().getName(),
+                pd.getMaterial().getName(),
+                pd.getGender(),
+                pd.getPrice(),
+                pd.getDescription(),
+                pd.getFeatureImage()
+        );
+    }
+
+}
