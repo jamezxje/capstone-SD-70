@@ -125,8 +125,7 @@ document.getElementById('changeSale').addEventListener('click' , function (){
     }
     console.log("Check repon ửi đi " , response)
     if (response.vnp_ResponseCode === "00") {
-localStorage.setItem('billData' , JSON.stringify(response))
-        window.location.href = '/sale-counter';
+
         axios.post('/vnpay-success', response)
             .then(response => {
                 console.log("Thanh toán thành công", response.data)

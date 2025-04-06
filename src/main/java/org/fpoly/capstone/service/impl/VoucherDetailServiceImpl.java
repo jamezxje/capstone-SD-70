@@ -2,7 +2,6 @@ package org.fpoly.capstone.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.fpoly.capstone.dto.voucherDetail.VoucherDetailDTO;
 import org.fpoly.capstone.entity.Bill;
 import org.fpoly.capstone.entity.Voucher;
 import org.fpoly.capstone.entity.VoucherDetail;
@@ -16,8 +15,14 @@ import org.fpoly.capstone.service.VoucherDetailService;
 import org.fpoly.capstone.service.VoucherService;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import org.fpoly.capstone.dto.voucherDetail.VoucherDetailDTO;
+import org.fpoly.capstone.repository.VoucherDetailRepository;
+import org.fpoly.capstone.service.VoucherDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +34,7 @@ public class VoucherDetailServiceImpl implements VoucherDetailService {
     private final VoucherDetailRepository detailRepository;
     private final VoucherService voucherService;
     private final UserService userService;
+
     private final BillService billService;
 
     @Override
@@ -55,7 +61,6 @@ public class VoucherDetailServiceImpl implements VoucherDetailService {
         newVoucherDetail.setDiscountPrice(voucherDetail.getDiscountPrice());
         newVoucherDetail.setCreateDate(new Date());
         newVoucherDetail.setCreatedBy(user);
-        newVoucherDetail.setLastModifiedDate(new Date());
         newVoucherDetail.setUpdatedBy(user);
 
 
@@ -77,7 +82,6 @@ public class VoucherDetailServiceImpl implements VoucherDetailService {
         newVoucherDetail.setBeforePrice(voucherDetail.getBeforePrice());
         newVoucherDetail.setDiscountPrice(voucherDetail.getDiscountPrice());
         newVoucherDetail.setUpdatedBy(user);
-        newVoucherDetail.setLastModifiedDate(new Date());
 
 
         log.info("(update) :" + newVoucherDetail);
@@ -95,8 +99,6 @@ public class VoucherDetailServiceImpl implements VoucherDetailService {
                 .orElseThrow();
         return detail;
     }
-
-
     @Override
     public Optional<VoucherDetailDTO> getVoucherDetailsByBillId(Long billId) {
         List<Object[]> results = detailRepository.findPricesByBillId(billId);
@@ -111,3 +113,5 @@ public class VoucherDetailServiceImpl implements VoucherDetailService {
         return Optional.empty();
     }
 }
+
+

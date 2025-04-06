@@ -45,17 +45,28 @@ public class VoucherController {
         Integer size = 5;
         Pageable pageable = PageRequest.of(numPage-1,size);
         Page<Voucher> voucherPage  = voucherService.findAll(pageable);
+
+
+
         model.addAttribute("voucherPage", voucherPage);
         model.addAttribute("currentPage", (numPage == null || numPage <= 0) ? 1 : numPage);
         model.addAttribute("totalPages", voucherPage.getTotalPages() > 0 ? voucherPage.getTotalPages() : 1);
+
+
         model.addAttribute("status", VoucherStatus.values());
 
+        model.addAttribute("voucherPage", voucherPage);
         return "views/voucher/listVoucher";
     }
 
     @PostMapping("/create")
-    public String createVoucher(@ModelAttribute("voucher") Voucher voucher){
-        voucherService.createVoucher(voucher);
+    public String createVoucher(@Valid @ModelAttribute("voucher") Voucher voucher,
+                                BindingResult result
+                                ,@RequestParam("status") VoucherStatus voucherStatus){
+        if(result.hasErrors()){
+            return "views/voucher/createVoucher";
+        }
+        voucherService.createVoucher(voucher, voucherStatus);
         return "redirect:/dashboard/product-management/voucher/list";
     }
 
@@ -66,20 +77,15 @@ public class VoucherController {
 
         model.addAttribute("status", VoucherStatus.values());
         model.addAttribute("voucher", voucher);
-        model.addAttribute("startDate", voucher.getStartDate());
-        model.addAttribute("endDate", voucher.getEndDate());
         return "views/voucher/updateVoucher";
     }
 
     @PostMapping("/update")
     public String update(@ModelAttribute("voucher") Voucher voucher,
-            @RequestParam("status") VoucherStatus voucherStatus,
-                         @RequestParam("startDate") LocalDateTime startDate,
-                         @RequestParam("endDate") LocalDateTime endDate
+            @RequestParam("status") VoucherStatus voucherStatus
                          ) throws NotException {
 
-        log.info("(update): " + startDate + endDate);
-        voucherService.updateVoucher(voucher, voucherStatus, startDate, endDate);
+        voucherService.updateVoucher(voucher, voucherStatus);
         return "redirect:/dashboard/product-management/voucher/list";
     }
 
@@ -91,9 +97,6 @@ public class VoucherController {
         Integer size = 5;
         Pageable pageable = PageRequest.of(numPage-1,size);
         Page<Voucher> voucherPage = voucherService.search(pageable, name, status);
-        model.addAttribute("currentPage", (numPage == null || numPage <= 0) ? 1 : numPage);
-        model.addAttribute("totalPages", voucherPage.getTotalPages() > 0 ? voucherPage.getTotalPages() : 1);
-        model.addAttribute("status", VoucherStatus.values());
         if(voucherPage.isEmpty()){
             voucherPage = voucherService.findAll(pageable);
         }
