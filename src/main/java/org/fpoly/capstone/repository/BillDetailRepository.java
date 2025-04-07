@@ -67,6 +67,7 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
 
     @Query("SELECT bd FROM BillDetail bd WHERE bd.createDate BETWEEN :startOfDay AND :endOfDay")
     List<BillDetail> findByCreateDateBetween(@Param("startOfDay") Date startOfDay, @Param("endOfDay") Date endOfDay);
+
     @Query("SELECT NEW org.fpoly.capstone.service.payload.bill_detail.BillDetailResponse(" +
             "bd.id, " +
             "bd.productDetail.id, " +

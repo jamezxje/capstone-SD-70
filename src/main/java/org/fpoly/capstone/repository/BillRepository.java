@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -44,11 +45,11 @@ SELECT b.id FROM Bill b where b.vnpTransaction = :code
     List<Bill> getBillByCustomerId(@Param("customerId") Long customerId);
 
     @Query("SELECT b FROM Bill  b where b.user.id = :customerId ORDER BY b.createDate DESC ")
+
     List<Bill> getLastestBill(@Param("customerId") Long customerId, Pageable pageable);
-    List<Bill> findByCreateDate(Date createDate);
 
     @Query("SELECT b FROM Bill b WHERE b.createDate BETWEEN :startOfDay AND :endOfDay")
-    List<Bill> findByCreateDateBetween(@Param("startOfDay") Date startOfDay, @Param("endOfDay") Date endOfDay);
+    List<Bill> findByCreateDateBetween(@Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
 
 
 

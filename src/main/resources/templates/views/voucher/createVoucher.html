@@ -1,48 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
       th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+
 <head>
   <meta charset="utf-8">
   <th:block id="th-css">
   </th:block>
-
 </head>
 
 <body>
 <th:block id="th-body">
   <div class="content-body">
     <div class="container-fluid">
-      <!-- Add Project -->
-      <div class="modal fade" id="addProjectSidebar">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Create Project</h5>
-              <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div class="form-group">
-                  <label class="text-black font-w500">Project Name</label>
-                  <input type="text" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label class="text-black font-w500">Deadline</label>
-                  <input type="date" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label class="text-black font-w500">Client Name</label>
-                  <input type="text" class="form-control">
-                </div>
-                <div class="form-group">
-                  <button type="button" class="btn btn-primary">CREATE</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div class="row page-titles mx-0">
         <div class="col-sm-6 p-md-0">
           <div class="welcome-text">
@@ -50,105 +20,146 @@
             <p class="mb-0">Tạo voucher</p>
           </div>
         </div>
-        <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Voucher</a></li>
-            <li class="breadcrumb-item active"><a href="javascript:void(0)">Thêm Voucher</a></li>
-          </ol>
-        </div>
       </div>
+
       <div class="row">
         <div class="col-xl-12">
           <div class="card">
             <div class="card-body">
               <div class="row">
-
                 <div class="col-lg-8 order-lg-1">
                   <h4 class="mb-3">Tạo voucher</h4>
-                  <form class="needs-validation" novalidate="" th:action="@{/dashboard/product-management/voucher/create}" th:object="${voucher}" method="post">
-                    <div class="row">
 
-                      <div class="col-md-6 mb-3">
-                        <label for="name">Tên</label>
-                        <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="" required="required">
-                        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger error"></span>
+                  <form id="voucherForm" class="needs-validation" novalidate
+                        th:action="@{/dashboard/product-management/voucher/create}"
+                        th:object="${voucher}" method="post">
+
+                    <!-- Tên Voucher -->
+                    <div class="mb-3">
+                      <label for="name">Tên Voucher</label>
+                      <input type="text" class="form-control" id="name" th:field="*{name}" required
+                             pattern="^[A-Za-zÀ-Ỹà-ỹ\s]{3,}$" oninput="validateName()">
+                      <div class="invalid-feedback">
+                        Tên phải có ít nhất 3 ký tự và không chứa số hoặc ký tự đặc biệt.
                       </div>
                     </div>
 
+                    <!-- Số tiền -->
                     <div class="mb-3">
-                      <label for="value">Số tiền</label>
-                      <input type="text" class="form-control" id="value" th:field="*{value}" required="required" oninput="formatCurrency(event)">
-                      <span th:if="${#fields.hasErrors('value')}" th:errors="*{value}" class="text-danger error"></span>
+                      <label for="value">Số tiền (VND)</label>
+                      <input type="text" class="form-control" id="value" th:field="*{value}" required
+                             oninput="formatCurrency(event)">
+                      <div class="invalid-feedback">Số tiền không hợp lệ.</div>
                     </div>
 
+                    <!-- Số lượng -->
                     <div class="mb-3">
                       <label for="quantity">Số lượng</label>
-                      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required="required">
-                      <span th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="text-danger error"></span>
+                      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1">
+                      <div class="invalid-feedback">Số lượng phải lớn hơn 0.</div>
                     </div>
 
+                    <!-- Ngày bắt đầu -->
                     <div class="mb-3">
                       <label for="startDate">Ngày bắt đầu</label>
-                      <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}" required="required">
-                      <span th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger error"></span>
+                      <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}" required>
+                      <div class="invalid-feedback">Ngày bắt đầu không được để trống.</div>
                     </div>
 
+                    <!-- Ngày kết thúc -->
                     <div class="mb-3">
                       <label for="endDate">Ngày kết thúc</label>
-                      <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}" required="required">
-                      <span th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger error"></span>
+                      <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}" required>
+                      <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
                     </div>
-
-
-                    <div class="mb-3">
-                      <label for="status">Trạng thái</label>
-                      <select class="form-control" id="status" name="status" required="">
-                        <option value="">Chọn trạng thái</option>
-
-                        <option th:each="status : ${status}"
-                                th:value="${status}"
-                                th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
-                            (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}">
-
-                          </option>
-
-                      </select>
-                      <div class="invalid-feedback">
-                        Please select a valid status.
-                      </div>
-                    </div>
-
-
 
                     <hr class="mb-4">
-
                     <button class="btn btn-primary btn-lg btn-block" type="submit">Gửi</button>
                   </form>
+
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
+
   <script>
+    // Định dạng tiền tệ khi nhập số tiền
     function formatCurrency(event) {
-     let input = event.target;
-     let value = input.value;
+      let input = event.target;
+      let value = input.value.replace(/\D/g, ''); // Xóa tất cả ký tự không phải số
+      let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
+      input.value = formattedValue;
+    }
 
-     // Xóa tất cả ký tự không phải là số
-     value = value.replace(/\D/g, '');
+    // Kiểm tra dữ liệu nhập vào form
+    document.getElementById("voucherForm").addEventListener("submit", function(event) {
+      let form = this;
+      let isValid = true;
 
-     // Định dạng thành tiền tệ với dấu phân cách hàng nghìn
-     let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
+      // Kiểm tra Tên Voucher
+      let nameInput = document.getElementById("name");
+      let nameRegex = /^[A-Za-zÀ-Ỹà-ỹ\s]{3,}$/;
+      if (!nameRegex.test(nameInput.value.trim())) {
+        nameInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        nameInput.classList.remove("is-invalid");
+      }
 
-     // Cập nhật lại giá trị trong input
-     input.value = formattedValue;
- }
+      // Kiểm tra số tiền hợp lệ
+      let valueInput = document.getElementById("value");
+      let numericValue = valueInput.value.replace(/\D/g, '');
+      if (!numericValue || parseInt(numericValue) <= 0) {
+        valueInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        valueInput.classList.remove("is-invalid");
+      }
 
+      // Kiểm tra số lượng hợp lệ
+      let quantityInput = document.getElementById("quantity");
+      if (parseInt(quantityInput.value) < 1 || isNaN(quantityInput.value)) {
+        quantityInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        quantityInput.classList.remove("is-invalid");
+      }
+
+      // Kiểm tra ngày bắt đầu và ngày kết thúc
+      let startDate = new Date(document.getElementById("startDate").value);
+      let endDate = new Date(document.getElementById("endDate").value);
+      if (isNaN(startDate.getTime())) {
+        document.getElementById("startDate").classList.add("is-invalid");
+        isValid = false;
+      } else {
+        document.getElementById("startDate").classList.remove("is-invalid");
+      }
+
+      if (isNaN(endDate.getTime()) || endDate <= startDate) {
+        document.getElementById("endDate").classList.add("is-invalid");
+        isValid = false;
+      } else {
+        document.getElementById("endDate").classList.remove("is-invalid");
+      }
+
+      // Ngăn chặn gửi form nếu không hợp lệ
+      if (!isValid) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        // Chuyển số tiền về dạng số trước khi gửi form (loại bỏ dấu phẩy)
+        valueInput.value = numericValue;
+      }
+
+      form.classList.add("was-validated");
+    });
   </script>
+
 </th:block>
 </body>
-
 </html>

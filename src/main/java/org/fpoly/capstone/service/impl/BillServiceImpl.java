@@ -624,9 +624,7 @@ public class BillServiceImpl implements BillService {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
-        Date startDate = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
-        return billRepository.findByCreateDateBetween(startDate, endDate);
+        return billRepository.findByCreateDateBetween(startOfDay, endOfDay);
     }
     @Override
     public List<Bill> findAll() {
@@ -636,8 +634,8 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<Bill> findByCreateDateBetween(LocalDate start, LocalDate end) {
-        Date startDate = Date.from(start.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(end.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+        LocalDateTime startDate = start.atStartOfDay();
+        LocalDateTime endDate = end.atTime(23, 59, 59);
         return billRepository.findByCreateDateBetween(startDate, endDate);
     }
 
