@@ -33,7 +33,8 @@ public class RevenueController {
         model.addAttribute("bestSellingProducts", revenueService.getBestSellingProduct());
         model.addAttribute("totalProductCandel", revenueService.totalProductCanel());
         model.addAttribute("totalProductCandelToday", revenueService.totalProductCanelToday());
-
+        String timePeriod = "Ngày hôm nay";
+        model.addAttribute("timePeriod", timePeriod);
 
 
         return "views/revenue/revenue";
@@ -50,6 +51,7 @@ public class RevenueController {
         Integer totalProducts = 0;
         Integer refundProduct = 0;
         Integer totalProductCanel = 0;
+        String timePeriod = "";
 
         log.info("(searchRevenue)"+ year);
         log.info("(searchRevenue)" + monthYear);
@@ -58,6 +60,8 @@ public class RevenueController {
             totalProducts = revenueService.totalProductDate(date);
             refundProduct = revenueService.totalProductRefundDate(date);
             totalProductCanel = revenueService.totalProductCanelDate(date);
+            timePeriod = "Ngày " + date;
+
 
         }else if (monthYear != null && !monthYear.isEmpty() && monthYear.contains("-")){
             int yearM = Integer.parseInt(monthYear.split("-")[0]);  // Lấy năm từ "YYYY-MM"
@@ -65,7 +69,7 @@ public class RevenueController {
             revenue = revenueService.totalRevenueMonthAndYear(month, yearM);
             totalProducts = revenueService.totalProductMonthAndYear(month, yearM);
             refundProduct = revenueService.totalProductRefundMonthAndYear(month, yearM);
-
+            timePeriod = "Tháng " + month +"-"+ yearM;
 
 
         } else if (year != null) {
@@ -73,11 +77,13 @@ public class RevenueController {
             totalProducts = revenueService.totalProductYear(year);
             refundProduct = revenueService.totalProductRefundYear(year);
             totalProductCanel = revenueService.totalProductCanelYear(year);
-
+            timePeriod = "Năm " + year;
         }
 
         log.info("(searchRevenue)"+ revenue);
         log.info("(searchRevenue)"+ totalProducts);
+        log.info("timePeriod: " + timePeriod);  // Kiểm tra giá trị của timePeriod
+
         model.addAttribute("totalRevenueToday", revenue);
         model.addAttribute("totalProductToday", totalProducts);
         model.addAttribute("totalProductRefundToday", refundProduct);
@@ -87,7 +93,7 @@ public class RevenueController {
         model.addAttribute("totalProduct", revenueService.totalProduct());
         model.addAttribute("bestSellingProducts", revenueService.getBestSellingProduct());
         model.addAttribute("totalProductCandel", revenueService.totalProductCanel());
-
+        model.addAttribute("timePeriod", timePeriod);
 
         return "views/revenue/revenue";
     }

@@ -41,21 +41,21 @@
               <div class="col-md-3">
                 <div class="card text-white bg-success shadow-sm text-center p-3">
                   <span class="fs-4 fw-bold" th:text="${totalProduct}"></span>
-                  <p class="mb-0">Tổng sản phẩm</p>
+                  <p class="mb-0">Tổng sản phẩm (Tổng tất cả các đơn)</p>
                 </div>
               </div>
 
               <div class="col-md-3">
                 <div class="card text-white bg-warning shadow-sm text-center p-3">
                   <p class="fs-4 fw-bold" th:text="${totalProductRefund}"></p>
-                  <p class="mb-0">Trả hàng</p>
+                  <p class="mb-0">Trả hàng (Tổng tất cả các đơn)</p>
                 </div>
               </div>
 
               <div class="col-md-3">
                 <div class="card text-white bg-danger shadow-sm text-center p-3">
                   <p class="fs-4 fw-bold" th:text="${totalProductCandel}"></p>
-                  <p class="mb-0">Hủy hàng</p>
+                  <p class="mb-0">Hủy hàng (Tổng tất cả các đơn)</p>
                 </div>
               </div>
             </div>
@@ -74,23 +74,26 @@
                 <tbody>
                 <tr>
                   <td>
-                    <div class="total-revenue" th:text="${totalRevenueToday}"></div>
+                    <div class="total-revenue" th:text="${totalRevenueToday}">
+                    </div>
+                    (<span th:text="${timePeriod}"></span>)
                   </td>
                   <td>
                     <div class="media style-1">
                       <div class="media-body" th:text="${totalProductToday}">
                       </div>
                     </div>
+                    (<span th:text="${timePeriod}"></span>)
                   </td>
                   <td>
-                    <div
-                            th:text="${totalProductRefundToday}">
+                    <div th:text="${totalProductRefundToday}">
                     </div>
+                    (<span th:text="${timePeriod}"></span>)
                   </td>
                   <td>
                     <div th:text="${totalProductCandelToday}">
-
                     </div>
+                    (<span th:text="${timePeriod}"></span>)
                   </td>
                 </tr>
 
@@ -134,7 +137,7 @@
             <table class="table table-bordered table-hover" id="ListDatatableView" border="1">
               <thead>
               <tr>
-                <th>#</th>
+                <th>STT</th>
                 <th>Tên sản phẩm</th>
                 <th>Tổng số lượng đã bán</th>
               </tr>

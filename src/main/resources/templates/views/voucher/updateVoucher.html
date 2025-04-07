@@ -74,7 +74,7 @@
                       <input type="text" class="form-control" id="name" th:field="*{name}" required
                              pattern="^[A-Za-zÀ-Ỹà-ỹ\s]{3,}$" oninput="validateName()">
                       <div class="invalid-feedback">
-                        Tên phải có ít nhất 3 ký tự và không chứa số hoặc ký tự đặc biệt.
+                        Tên không được trống.
                       </div>
                     </div>
 
@@ -89,7 +89,7 @@
                     <!-- Số lượng -->
                     <div class="mb-3">
                       <label for="quantity">Số lượng</label>
-                      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1">
+                      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1" max="10000">
                       <div class="invalid-feedback">Số lượng phải lớn hơn 0.</div>
                     </div>
 
@@ -137,91 +137,75 @@
     </div>
   </div>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-     const startDate = `[[${startDate}]]`;
-     const endDate = `[[${endDate}]]`;
+    // Định dạng tiền tệ khi nhập số tiền
+    function formatCurrency(event) {
+      let input = event.target;
+      let value = input.value.replace(/\D/g, ''); // Xóa tất cả ký tự không phải số
+      let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
+      input.value = formattedValue;
+    }
 
-     // Kiểm tra nếu có giá trị hợp lệ thì gán vào input
-     if (startDate) {
-         document.getElementById("startDate").value = formatDateTime(startDate);
-     }
-     if (endDate) {
-         document.getElementById("endDate").value = formatDateTime(endDate);
-     }
- });
+    // Kiểm tra dữ liệu nhập vào form
+    document.getElementById("voucherForm").addEventListener("submit", function(event) {
+      let form = this;
+      let isValid = true;
 
- // Định dạng tiền tệ khi nhập số tiền
+      // Kiểm tra Tên Voucher
+      let nameInput = document.getElementById("name");
+      if (nameInput == null) {
+        nameInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        nameInput.classList.remove("is-invalid");
+      }
 
+      // Kiểm tra số tiền hợp lệ
+      let valueInput = document.getElementById("value");
+      let numericValue = valueInput.value.replace(/\D/g, '');
+      if (!numericValue || parseInt(numericValue) <= 0 && !numericValue || parseInt(numericValue) > 100000000) {
+        valueInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        valueInput.classList.remove("is-invalid");
+      }
 
- function formatCurrency(event) {
-   let input = event.target;
-   let value = input.value.replace(/\D/g, ''); // Xóa tất cả ký tự không phải số
-   let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
-   input.value = formattedValue;
- }
+      // Kiểm tra số lượng hợp lệ
+      let quantityInput = document.getElementById("quantity");
+      if (parseInt(quantityInput.value) < 1 && parseInt(quantityInput.value) > 10000 || isNaN(quantityInput.value)) {
+        quantityInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        quantityInput.classList.remove("is-invalid");
+      }
 
- // Kiểm tra dữ liệu nhập vào form
- document.getElementById("voucherForm").addEventListener("submit", function(event) {
-   let form = this;
-   let isValid = true;
+      // Kiểm tra ngày bắt đầu và ngày kết thúc
+      let startDate = new Date(document.getElementById("startDate").value);
+      let endDate = new Date(document.getElementById("endDate").value);
+      if (isNaN(startDate.getTime())) {
+        document.getElementById("startDate").classList.add("is-invalid");
+        isValid = false;
+      } else {
+        document.getElementById("startDate").classList.remove("is-invalid");
+      }
 
-   // Kiểm tra Tên Voucher
-   let nameInput = document.getElementById("name");
-   let nameRegex = /^[A-Za-zÀ-Ỹà-ỹ\s]{3,}$/;
-   if (!nameRegex.test(nameInput.value.trim())) {
-     nameInput.classList.add("is-invalid");
-     isValid = false;
-   } else {
-     nameInput.classList.remove("is-invalid");
-   }
+      if (isNaN(endDate.getTime()) || endDate <= startDate) {
+        document.getElementById("endDate").classList.add("is-invalid");
+        isValid = false;
+      } else {
+        document.getElementById("endDate").classList.remove("is-invalid");
+      }
 
-   // Kiểm tra số tiền hợp lệ
-   let valueInput = document.getElementById("value");
-   let numericValue = valueInput.value.replace(/\D/g, '');
-   if (!numericValue || parseInt(numericValue) <= 0) {
-     valueInput.classList.add("is-invalid");
-     isValid = false;
-   } else {
-     valueInput.classList.remove("is-invalid");
-   }
+      // Ngăn chặn gửi form nếu không hợp lệ
+      if (!isValid) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        // Chuyển số tiền về dạng số trước khi gửi form (loại bỏ dấu phẩy)
+        valueInput.value = numericValue;
+      }
 
-   // Kiểm tra số lượng hợp lệ
-   let quantityInput = document.getElementById("quantity");
-   if (parseInt(quantityInput.value) < 1 || isNaN(quantityInput.value)) {
-     quantityInput.classList.add("is-invalid");
-     isValid = false;
-   } else {
-     quantityInput.classList.remove("is-invalid");
-   }
-
-   // Kiểm tra ngày bắt đầu và ngày kết thúc
-   let startDate = new Date(document.getElementById("startDate").value);
-   let endDate = new Date(document.getElementById("endDate").value);
-   if (isNaN(startDate.getTime())) {
-     document.getElementById("startDate").classList.add("is-invalid");
-     isValid = false;
-   } else {
-     document.getElementById("startDate").classList.remove("is-invalid");
-   }
-
-   if (isNaN(endDate.getTime()) || endDate <= startDate) {
-     document.getElementById("endDate").classList.add("is-invalid");
-     isValid = false;
-   } else {
-     document.getElementById("endDate").classList.remove("is-invalid");
-   }
-
-   // Ngăn chặn gửi form nếu không hợp lệ
-   if (!isValid) {
-     event.preventDefault();
-     event.stopPropagation();
-   } else {
-     // Chuyển số tiền về dạng số trước khi gửi form (loại bỏ dấu phẩy)
-     valueInput.value = numericValue;
-   }
-
-   form.classList.add("was-validated");
- });
+      form.classList.add("was-validated");
+    });
   </script>
 </th:block>
 </body>
