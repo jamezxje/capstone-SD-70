@@ -138,17 +138,12 @@ public class CustomerServiceImpl implements CustomerService {
             newUser.setCreatedBy(userServiceName);
             newUser.setUpdatedBy(userServiceName);
             newAddress.setUser(savedUser); // Không cần tìm lại user nữa
-
-            // Lưu địa chỉ vào database
-//            addressRepository.save(newAddress);
-            Address savedAddress = addressRepository.save(newAddress);
-            System.out.println("Address ID: " + savedAddress.getId()); // Debug xem có lưu không
+            addressRepository.save(newAddress);
         }
         System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
         String subject = "Xin chào, bạn đã đăng ký thành công tài khoản CAPSTONE";
         emailServiceImpl.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return savedUser;
-//        return employeeRepository.save(newUser);
     }
 
     @Transactional
@@ -176,6 +171,7 @@ public class CustomerServiceImpl implements CustomerService {
         existingCustomer.setAvatar(urlAvatar); // Cập nhật avatar
         existingCustomer.setUpdatedBy(userServiceName);
         existingCustomer.setLastModifiedDate(new Date());
+        User savedUser = customerRepository.save(existingCustomer);
 
         // Cập nhật hoặc thêm mới địa chỉ
         Address existingAddress = addressService.getDefaultAddress(existingCustomer.getId());
@@ -192,6 +188,7 @@ public class CustomerServiceImpl implements CustomerService {
             existingAddress.setPhoneNumber(user.getPhoneNumber());
             existingAddress.setUpdatedBy(userServiceName);
             existingAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            existingAddress.setUser(savedUser);
             addressService.saveAddress(existingAddress);
         } else {
             Address newAddress = new Address();
@@ -207,17 +204,15 @@ public class CustomerServiceImpl implements CustomerService {
             newAddress.setPhoneNumber(user.getPhoneNumber());
             newAddress.setUpdatedBy(userServiceName);
             newAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-            newAddress.setUser(existingCustomer);
-
+            newAddress.setUser(savedUser);
             if (existingCustomer.getAddresses() == null) {
                 existingCustomer.setAddresses(new ArrayList<>());
             }
             existingCustomer.getAddresses().add(newAddress);
             addressService.saveAddress(newAddress);
         }
-
         // Lưu khách hàng
-        return customerRepository.save(existingCustomer);
+        return savedUser;
     }
 
 }

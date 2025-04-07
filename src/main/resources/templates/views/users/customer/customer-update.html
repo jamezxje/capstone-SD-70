@@ -64,10 +64,11 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label" for="roles">Vai trò</label>
+                                                <label class="col-lg-4 col-form-label">Trạng thái</label>
                                                 <div class="col-lg-6">
-                                                    <select class="form-control" id="roles" th:field="*{customer.roles}">
-                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserRole).ROLE_CUSTOMER}">Khách hàng</option>
+                                                    <select class="form-control" th:field="*{customer.status}">
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}">Kích hoạt</option>
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED}">Ngừng kích hoạt</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -114,15 +115,6 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Trạng thái</label>
-                                                <div class="col-lg-6">
-                                                    <select class="form-control" th:field="*{customer.status}">
-                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}">Kích hoạt</option>
-                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED}">Ngừng kích hoạt</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">Ảnh đại diện</label>
                                                 <div class="col-lg-6 d-flex flex-column align-items-center">
                                                     <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm" style="max-width: 300px; width: 100%;">
@@ -139,9 +131,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="image-area mt-4">
-                                                        <img id="avatarPreview" th:src="${customer.avatar}"
+                                                        <!-- Chỉ cần 1 ảnh duy nhất -->
+                                                        <img id="avatarPreview"
+                                                             th:src="${customer.avatar != null ? customer.avatar : ''}"
                                                              class="img-fluid rounded shadow-sm"
-                                                             style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;">
+                                                             style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                                                             onerror="this.style.display='none';" />
                                                     </div>
                                                     <div th:if="${fileError}" class="text-danger mt-2">
                                                         <p th:text="${fileError}"></p>
@@ -162,21 +157,19 @@
             </div>
         </div>
     </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function readURLAvatar(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('avatarPreview').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+    <script>
+    // JS để preview ảnh mới
+    function readURLAvatar(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('avatarPreview');
+                preview.src = e.target.result; // base64 tạm thời
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
         }
-        document.getElementById('upload').addEventListener('change', function () {
-            readURLAvatar(this);
-        });
-    });
+    }
 </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

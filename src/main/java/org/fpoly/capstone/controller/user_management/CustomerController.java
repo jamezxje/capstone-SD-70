@@ -48,9 +48,9 @@ public class CustomerController {
         }
         log.info("Customer ID: {}", customer.getId());
         Address address = addressService.getDefaultAddress(customer.getId());
-        if (address == null) {
-            address = new Address();
-        }
+//        if (address == null) {
+//            address = new Address();
+//        }
         model.addAttribute("customer", customer);
         model.addAttribute("address", address);
         return "views/users/customer/customer-detail";
@@ -97,13 +97,6 @@ public class CustomerController {
                                @ModelAttribute("address") Address address,
                                @RequestParam("file") MultipartFile file,
                                Model model, RedirectAttributes redirectAttributes) {
-        System.out.println("User nhận từ form: " + user);
-        System.out.println("Address nhận từ form: " + address);
-
-        if (file == null || file.isEmpty()) {
-            model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
-        }
-        // Validate dữ liệu
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "gender");
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
         Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
@@ -114,19 +107,15 @@ public class CustomerController {
         if (userService.existsByPhoneNumber(user.getPhoneNumber())) {
             errors.put("phoneNumber", "Số điện thoại đã tồn tại!");
         }
-        if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
-            user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
+        if (!errors.isEmpty() || !errorsAddress.isEmpty() || file == null || file.isEmpty()) {
+            user.setAddresses(new ArrayList<>(List.of(address)));
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
-            model.addAttribute("customer", user);
-            model.addAttribute("address", address);
+            if (file == null || file.isEmpty()) {
+                model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
+            }
             return "views/users/customer/customer-create";
         }
-
-        System.out.println("ProvinceId: " + address.getProvinceId());
-        System.out.println("ToDistrictId: " + address.getToDistrictId());
-        System.out.println("WardCode: " + address.getWardCode());
-        // Gọi service để tạo nhân viên và địa chỉ
         customerService.createCustomer(user, address,file);
         redirectAttributes.addFlashAttribute("successMessage", "Thêm thành công!");
         return "redirect:/customer-management";
@@ -141,9 +130,6 @@ public class CustomerController {
         Map<String, String> errors = new HashMap<>();
         Map<String, String> errorsAddress = new HashMap<>();
         Address address = addressService.getDefaultAddress(customer.getId());
-        if (address == null) {
-            address = new Address();
-        }
         model.addAttribute("customer", customer);
         model.addAttribute("address", address);
         model.addAttribute("errors", errors);
@@ -157,14 +143,10 @@ public class CustomerController {
                                  @ModelAttribute("address") Address address,
                                  @RequestParam("file") MultipartFile file,
                                  Model model, RedirectAttributes redirectAttributes) {
-        System.out.println("User nhận từ form: " + user);
-        System.out.println("Address nhận từ form: " + address);
         User existingUser = customerService.getCustomerById(id);
-        if (file == null || file.isEmpty()) {
-            model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
-        }
+        boolean isFileEmpty = file == null || file.isEmpty();
+        boolean isNewAvatarRequired = isFileEmpty && existingUser.getAvatar() == null;
 
-        // Validate dữ liệu
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "gender");
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
         Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
@@ -175,21 +157,21 @@ public class CustomerController {
         if (!user.getPhoneNumber().equals(existingUser.getPhoneNumber()) && userService.existsByPhoneNumber(user.getPhoneNumber())) {
             errors.put("phoneNumber", "Số điện thoại đã tồn tại!");
         }
-        if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
-            user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
+        if (!errors.isEmpty() || !errorsAddress.isEmpty() || isNewAvatarRequired) {
+            // Gán lại avatar cũ nếu có, để giữ ảnh hiển thị khi reload form
+            if (existingUser.getAvatar() != null) {
+                user.setAvatar(existingUser.getAvatar());
+            }
+            if (isNewAvatarRequired) {
+                model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
+            }
+            user.setAddresses(new ArrayList<>(List.of(address)));
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
             model.addAttribute("customer", user);
             model.addAttribute("address", address);
             return "views/users/customer/customer-update";
         }
-        System.out.println("ProvinceId: " + address.getProvinceId());
-        System.out.println("ToDistrictId: " + address.getToDistrictId());
-        System.out.println("WardCode: " + address.getWardCode());
-        System.out.println("Province: " + address.getProvince());
-        System.out.println("District: " + address.getDistrict());
-        System.out.println("Ward: " + address.getWard());
-        // Gọi service để cập nhật nhân viên và địa chỉ
 
         customerService.updateCustomer(id, user, address,file);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");

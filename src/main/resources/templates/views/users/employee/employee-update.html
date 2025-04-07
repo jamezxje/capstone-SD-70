@@ -127,24 +127,28 @@
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">Ảnh đại diện</label>
                                                 <div class="col-lg-6 d-flex flex-column align-items-center">
+                                                    <!-- Ô chọn ảnh -->
                                                     <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm" style="max-width: 300px; width: 100%;">
                                                         <input id="upload" type="file" name="file" onchange="readURLAvatar(this);"
                                                                class="form-control border-0" accept="image/*" hidden>
                                                         <label id="upload-label" for="upload" class="font-weight-light text-muted"></label>
                                                         <div class="input-group-append w-100">
-                                                            <label for="upload" class="btn btn-light m-0 rounded-pill px-4 d-flex align-items-center justify-content-center w-100">
+                                                            <label for="upload"
+                                                                   class="btn btn-light m-0 rounded-pill px-4 d-flex align-items-center justify-content-center w-100">
                                                                 <i class="fa fa-cloud-upload mr-2 text-muted"></i>
-                                                                <small class="text-uppercase font-weight-bold text-muted mb-0">
-                                                                    Chọn ảnh
-                                                                </small>
+                                                                <small class="text-uppercase font-weight-bold text-muted mb-0">Chọn ảnh</small>
                                                             </label>
                                                         </div>
                                                     </div>
+                                                    <!-- Hiển thị ảnh -->
                                                     <div class="image-area mt-4">
-                                                        <img id="avatarPreview" th:src="${employee.avatar}"
+                                                        <img id="avatarPreview"
+                                                             th:src="${employee.avatar != null ? employee.avatar : ''}"
                                                              class="img-fluid rounded shadow-sm"
-                                                             style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;">
+                                                             style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                                                             onerror="this.style.display='none';" />
                                                     </div>
+                                                    <!-- Hiển thị lỗi -->
                                                     <div th:if="${fileError}" class="text-danger mt-2">
                                                         <p th:text="${fileError}"></p>
                                                     </div>
@@ -164,21 +168,20 @@
             </div>
         </div>
     </div>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function readURLAvatar(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('avatarPreview').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+    // JS để preview ảnh mới
+    function readURLAvatar(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('avatarPreview');
+                preview.src = e.target.result; // base64 tạm thời
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
         }
-        document.getElementById('upload').addEventListener('change', function () {
-            readURLAvatar(this);
-        });
-    });
+    }
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {

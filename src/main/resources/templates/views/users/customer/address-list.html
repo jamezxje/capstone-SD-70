@@ -51,9 +51,8 @@
                                                                     <span class="font-weight-bold"
                                                                           th:text="${address.line} + ', ' + ${address.ward} + ', ' + ${address.district} + ', ' + ${address.province} "></span>
                                                                     </div>
-                                                                    <span
-                                                                            th:if="${address.status == T(org.fpoly.capstone.entity.enum_status.AddressStatus).DANG_SU_DUNG}"
-                                                                            class="badge light badge-success" th:text="${address.status}"></span>
+                                                                    <span th:if="${address.status == T(org.fpoly.capstone.entity.enum_status.AddressStatus).DANG_SU_DUNG}"
+                                                                          class="badge light badge-success">MẶC ĐỊNH</span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-12 col-md-6 text-right">

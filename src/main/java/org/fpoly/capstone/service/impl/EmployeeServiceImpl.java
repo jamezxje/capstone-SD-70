@@ -51,24 +51,24 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findEmployeesSortedByLastModifiedDate(UserRole.ROLE_USER, pageable);
     }
 
-@Override
-public Page<User> searchAndFilterEmployees(String keyword, String status, Pageable pageable) {
-    UserStatus userStatus = null;
+    @Override
+    public Page<User> searchAndFilterEmployees(String keyword, String status, Pageable pageable) {
+        UserStatus userStatus = null;
 
-    // Chuyển đổi status từ String sang Enum UserStatus
-    if (status != null && !status.isEmpty()) {
-        try {
-            userStatus = UserStatus.valueOf(status.toUpperCase()); // Chuyển về chữ hoa
-        } catch (IllegalArgumentException e) {
-            userStatus = null; // Nếu không khớp với Enum, đặt null để lấy tất cả
+        // Chuyển đổi status từ String sang Enum UserStatus
+        if (status != null && !status.isEmpty()) {
+            try {
+                userStatus = UserStatus.valueOf(status.toUpperCase()); // Chuyển về chữ hoa
+            } catch (IllegalArgumentException e) {
+                userStatus = null; // Nếu không khớp với Enum, đặt null để lấy tất cả
+            }
         }
+        // Nếu keyword rỗng, đặt về null để tránh lỗi truy vấn
+        if (keyword != null && keyword.trim().isEmpty()) {
+            keyword = null;
+        }
+        return employeeRepository.searchAndFilterEmployees(keyword, userStatus, UserRole.ROLE_USER, pageable);
     }
-    // Nếu keyword rỗng, đặt về null để tránh lỗi truy vấn
-    if (keyword != null && keyword.trim().isEmpty()) {
-        keyword = null;
-    }
-    return employeeRepository.searchAndFilterEmployees(keyword, userStatus, UserRole.ROLE_USER, pageable);
-}
     @Override
     public User getEmployeeById(Long id) {
         return employeeRepository.findEmployAddresses(id).orElse(null);
@@ -107,26 +107,26 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
         User savedUser = employeeRepository.save(newUser);
         System.out.println("User ID: " + savedUser.getId()); // Debug xem có ID không
 //        if (address != null) {
-            Address newAddress = new Address();
-            newAddress.setStatus(AddressStatus.DANG_SU_DUNG);
-            newAddress.setProvinceId(address.getProvinceId());
-            newAddress.setToDistrictId(address.getToDistrictId());
-            newAddress.setWardCode(address.getWardCode());
-            newAddress.setProvince(address.getProvince());
-            newAddress.setDistrict(address.getDistrict());
-            newAddress.setWard(address.getWard());
-            newAddress.setLine(address.getLine());
-            newAddress.setFullName(user.getFullName());
-            newAddress.setPhoneNumber(user.getPhoneNumber());
-            newAddress.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-            newAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-            newAddress.setCreatedBy(userServiceName);
-            newAddress.setUpdatedBy(userServiceName);
-            newAddress.setUser(savedUser); // Không cần tìm lại user nữa
-            // Lưu địa chỉ vào database
+        Address newAddress = new Address();
+        newAddress.setStatus(AddressStatus.DANG_SU_DUNG);
+        newAddress.setProvinceId(address.getProvinceId());
+        newAddress.setToDistrictId(address.getToDistrictId());
+        newAddress.setWardCode(address.getWardCode());
+        newAddress.setProvince(address.getProvince());
+        newAddress.setDistrict(address.getDistrict());
+        newAddress.setWard(address.getWard());
+        newAddress.setLine(address.getLine());
+        newAddress.setFullName(user.getFullName());
+        newAddress.setPhoneNumber(user.getPhoneNumber());
+        newAddress.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        newAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        newAddress.setCreatedBy(userServiceName);
+        newAddress.setUpdatedBy(userServiceName);
+        newAddress.setUser(savedUser); // Không cần tìm lại user nữa
+        // Lưu địa chỉ vào database
 
-            Address savedAddress = addressRepository.save(newAddress);
-            System.out.println("Address ID: " + savedAddress.getId()); // Debug xem có lưu không
+        Address savedAddress = addressRepository.save(newAddress);
+        System.out.println("Address ID: " + savedAddress.getId()); // Debug xem có lưu không
 //        }
         System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
         String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên CAPSTONE";
@@ -159,7 +159,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
         existingEmployee.setStatus(user.getStatus() == null ? UserStatus.ACTIVATED : user.getStatus());
         existingEmployee.setUpdatedBy(userServiceName);
         existingEmployee.setLastModifiedDate(new Date());
-
+        User savedUser = employeeRepository.save(existingEmployee);
         // Cập nhật hoặc thêm mới địa chỉ
         Address existingAddress = addressService.getDefaultAddress(existingEmployee.getId());
         if (existingAddress != null) {
@@ -175,6 +175,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
             existingAddress.setPhoneNumber(user.getPhoneNumber());
             existingAddress.setUpdatedBy(userServiceName);
             existingAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            existingAddress.setUser(savedUser);
             addressService.saveAddress(existingAddress);
         } else {
             Address newAddress = new Address();
@@ -190,8 +191,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
             newAddress.setPhoneNumber(user.getPhoneNumber());
             newAddress.setUpdatedBy(userServiceName);
             newAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-            newAddress.setUser(existingEmployee);
-
+            newAddress.setUser(savedUser);
             if (existingEmployee.getAddresses() == null) {
                 existingEmployee.setAddresses(new ArrayList<>());
             }
@@ -199,7 +199,6 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
             addressService.saveAddress(newAddress);
         }
         // Lưu nhân viên
-        return employeeRepository.save(existingEmployee);
+        return savedUser;
     }
-
 }

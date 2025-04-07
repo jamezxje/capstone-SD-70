@@ -37,8 +37,6 @@ public class User {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-
-
     @Column(name = "phone_number", length = 10)
     private String phoneNumber;
 
