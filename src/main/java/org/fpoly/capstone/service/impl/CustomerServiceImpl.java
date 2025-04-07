@@ -1,19 +1,5 @@
 package org.fpoly.capstone.service.impl;
 
-import org.fpoly.capstone.entity.User;
-import org.fpoly.capstone.repository.CustomerRepository;
-import org.fpoly.capstone.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
-
-
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.AddressStatus;
@@ -21,7 +7,9 @@ import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.CustomerRepository;
-import org.fpoly.capstone.service.*;
+import org.fpoly.capstone.service.AddressService;
+import org.fpoly.capstone.service.CustomerService;
+import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.utils.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,8 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {

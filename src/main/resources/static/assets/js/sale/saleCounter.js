@@ -185,7 +185,7 @@ createInvoice.addEventListener(
                 const invoiceData = response.data;
                 invoiceCount++
                 createInvoiceTab(invoiceCount, response);
-                // location.reload();
+                location.reload();
             })
             .catch(error => {
                 console.log(error);
@@ -280,8 +280,13 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Giá trị không hợp lệ:", priceValue);
         }
     });
-
+    const printVNPAY = localStorage.getItem('printBillVNPAY');
+    if (printVNPAY === 'true') {
+        printBillVnPay();
+        localStorage.removeItem('printBillVNPAY');
+    }
 });
+
 
 let idCusomter = null, name = null, phoneNumber = null, mail = null;
 function  attachChoseCustomer() {
@@ -459,14 +464,13 @@ function addProductToInvoice(id, name, size, color, quantity, price , image) {
 
     // Kiểm tra xem sản phẩm đã có trong bảng chưa
     for (let row of tbody.rows) {
-        const rowName = row.cells[1].textContent;
-        const rowSize = row.cells[2].textContent;
-        const rowColor = row.cells[3].textContent;
-
+        const rowName = row.cells[2].textContent;
+        const rowSize = row.cells[3].textContent;
+        const rowColor = row.cells[4].textContent;
         if (rowName === name && rowSize === size && rowColor === color) {
-            const rowQuantityCell = row.cells[4];
-            const rowPriceCell = row.cells[5];
-            const rowTotalCell = row.cells[6];
+            const rowQuantityCell = row.cells[5];
+            const rowPriceCell = row.cells[6];
+            const rowTotalCell = row.cells[7];
             let currentQuantity = parseInt(rowQuantityCell.textContent);
 
             // Cập nhật số lượng
@@ -505,9 +509,10 @@ function addProductToInvoice(id, name, size, color, quantity, price , image) {
 
     let totalAmount = 0;
     for (let row of tbody.rows) {
-        const rowTotalCell = row.cells[6];
+        const rowTotalCell = row.cells[7];
         totalAmount += parseFloat(rowTotalCell.textContent.replace(/[^\d.-]/g, ''));  // Loại bỏ ký tự không phải số
     }
+
     totalBill = totalAmount;
 
     document.getElementById('total-price').innerText = formatVND(totalAmount) + "đ";
@@ -525,16 +530,17 @@ function addProductToInvoice1(id, name, size, color, quantity, price , image) {
     let productExists = false;
     let productTotal = 0;
 
+    let products = JSON.parse(localStorage.getItem('invoiceProducts')) || [];
     // Kiểm tra xem sản phẩm đã có trong bảng chưa
     for (let row of tbody.rows) {
-        const rowName = row.cells[1].textContent;
-        const rowSize = row.cells[2].textContent;
-        const rowColor = row.cells[3].textContent;
+        const rowName = row.cells[2].textContent;
+        const rowSize = row.cells[3].textContent;
+        const rowColor = row.cells[4].textContent;
 
         if (rowName === name && rowSize === size && rowColor === color) {
-            const rowQuantityCell = row.cells[4];
-            const rowPriceCell = row.cells[5];
-            const rowTotalCell = row.cells[6];
+            const rowQuantityCell = row.cells[5];
+            const rowPriceCell = row.cells[6];
+            const rowTotalCell = row.cells[7];
             let currentQuantity = parseInt(rowQuantityCell.textContent);
 
             // Cập nhật số lượng
@@ -544,6 +550,12 @@ function addProductToInvoice1(id, name, size, color, quantity, price , image) {
             rowTotalCell.textContent = formatVND(productTotal);
 
             productExists = true;
+
+            const existingProductIndex = products.findIndex(product => product.id === id);
+            if (existingProductIndex !== -1) {
+                products[existingProductIndex].quantity += quantity;
+                products[existingProductIndex].total = products[existingProductIndex].quantity * products[existingProductIndex].price;
+            }
             break;
         }
     }
@@ -566,16 +578,28 @@ function addProductToInvoice1(id, name, size, color, quantity, price , image) {
         `;
 
         tbody.appendChild(newRow);
+        const newProduct = {
+            id,
+            name,
+            size,
+            color,
+            quantity,
+            price,
+            total: productTotal,
+            image
+        };
+        products.push(newProduct);
+
         console.log("data-product-id của dòng mới: ", newRow.getAttribute('data-product-id'));
     }
-
+    localStorage.setItem('invoiceProducts', JSON.stringify(products));
     let totalAmount = 0;
     for (let row of tbody.rows) {
-        const rowTotalCell = row.cells[6];
+        const rowTotalCell = row.cells[7];
         totalAmount += parseFloat(rowTotalCell.textContent.replace(/[^\d.-]/g, ''));  // Loại bỏ ký tự không phải số
     }
     totalBill = totalAmount;
-
+    console.log("Check totalPrice 1" , formatVND(totalAmount))
     document.getElementById('total-price').innerText = formatVND(totalAmount) + "đ";
     document.getElementById('total-amount').innerText = formatVND(totalAmount) + "đ";
     document.getElementById('amount').innerText = formatVND(totalAmount) + "đ";
@@ -737,11 +761,11 @@ btnPaymentSuccess.addEventListener('click', async () => {
         if (isDelivery === true) {
             const isNameValid = checkName();
             const isPhoneValid = checkPhone();
-            const isDistrictValid = checkDistrict();
-            const isProvinceValid = checkProvince();
-            const isWardValid = checkWard();
-
-            if (!isNameValid || !isPhoneValid || !isDistrictValid || !isProvinceValid || !isWardValid) {
+            // const isDistrictValid = checkDistrict();
+            // const isProvinceValid = checkProvince();
+            // const isWardValid = checkWard();
+        // || !isDistrictValid || !isProvinceValid || !isWardValid
+            if (!isNameValid || !isPhoneValid ) {
                 toastr.options.positionClass = 'toast-top-right';
                 toastr.error('Vui lòng kiểm tra lại các thông tin giao hàng');
                 return;
@@ -1277,7 +1301,7 @@ function saveBill(id) {
     }
     console.log("Check date ship ", dateShip)
     console.log("voucherDetail:", voucherDetail);
-    let changeIDCustomer = idCusomter || "13";
+    let changeIDCustomer = idCusomter || 3;
     const billData = {
         idUser: changeIDCustomer,
         userName: nameCustomer,
@@ -1286,7 +1310,7 @@ function saveBill(id) {
         email: mail,
         openDelivery: isDelivery,
         itemDiscount: voucherValueLocal,
-        totalMoney: customerPayMentInput,
+        totalMoney: customerPayMentInput -totalShipLocal,
         moneyShip: totalShipLocal,
         type: 'OFFLINE',
         address: fullAddress,
@@ -1305,6 +1329,119 @@ function saveBill(id) {
 
 }
 
+function  printBillVnPay() {
+    const code = localStorage.getItem('code');
+    const name = localStorage.getItem('name');
+    const phone = localStorage.getItem('phone');
+    const userName = localStorage.getItem('userName');
+    const totalPrice = localStorage.getItem('totalPrice');
+    const totalPayment = localStorage.getItem('totalPayment');
+    const phoneNumber = localStorage.getItem('phoneNumber');
+    const itemDiscount = localStorage.getItem('itemDiscount');
+    const moneyShip = localStorage.getItem('moneyShip');
+    const address = localStorage.getItem('address');
+    const deliveryDate = localStorage.getItem('deliveryDate');
+    document.getElementById('printCode').innerText = code;
+    document.getElementById('printCreateDate').innerText = new Date().toLocaleDateString('vi-VN');
+document.getElementById('printNameCustomer').innerText = name || 'Khách lẻ';
+document.getElementById('printNumberPhoneCustomer').innerText = phone || '';
+
+    document.getElementById('printTotal').innerText = formatVND(totalPrice) || '0đ';
+    document.getElementById('printDiscount').innerText = formatVND(itemDiscount) || '0đ';
+    document.getElementById('printShip').innerText = formatVND(moneyShip) || '0đ';
+
+    document.getElementById('printTotalPayment').innerText = formatVND(totalPayment) || '0đ';
+    document.getElementById('printCustomerPayment').innerText = formatVND(totalPayment) || '0đ';
+    document.getElementById('printMethod').innerText = 'VNPAY';
+
+    if (!deliveryDate || deliveryDate === "null" || deliveryDate === "") {
+        document.getElementById('p-printShipDay').style.display = 'none';
+        document.getElementById('printInforShip').style.display = 'none';
+        document.getElementById('p-printNameShip').style.display = 'none';
+        document.getElementById('p-printPhoneShip').style.display = 'none'
+        document.getElementById('p-printAddress').style.display = 'none'
+
+    } else {
+        document.getElementById('printShipDay').innerText = deliveryDate;
+        document.getElementById('printNameShip').innerText = userName;
+        document.getElementById('printPhoneShip').innerText = phoneNumber;
+        document.getElementById('printAddress').innerText = address || '';
+        document.getElementById('p-printShipDay').style.display = 'block';
+        document.getElementById('printInforShip').style.display = 'block';
+    }
+    const printTableBody = document.querySelector('#printable-content #ttt tbody');
+    printTableBody.innerHTML = '';
+
+    const products = JSON.parse(localStorage.getItem('invoiceProducts')) || [];
+
+    products.forEach((product, index) => {
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${product.name}</td>
+            <td>${product.size}</td>
+            <td>${product.color}</td>
+            <td>${product.quantity}</td>
+            <td>${formatVND(product.price)}</td>
+            <td>${formatVND(product.total)}</td>
+        `;
+        printTableBody.appendChild(newRow);
+    });
+    localStorage.removeItem('invoiceProducts')
+    printJS({
+        printable: 'printable-content',
+        type: 'html', // Loại in là HTML
+        header: 'Hóa Đơn Thanh Toán',
+        style: `
+            /* Đảm bảo tất cả CSS in ấn được áp dụng */
+            @media print {
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                }
+                #printable-content {
+                    display: block !important;
+                    padding: 20px;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f4f4f4;
+                }
+                .rightCustomer {
+            margin: 0;
+            padding: 0;
+            }  
+                p {
+                    font-size: 16px;
+                    margin: 5px 0;
+                }
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+            }
+        `
+    });
+
+    document.getElementById("printable-content").style.display = 'none';
+    setTimeout(() => {
+        if (!document.hidden) {
+            location.reload();
+        }
+    }, 1000);
+}
 
 function printBill(billData) {
     console.log('Check configMayMent', confirmPayemt)
@@ -1355,17 +1492,24 @@ function printBill(billData) {
     const tbody = tabContent.querySelector('tbody');
 
     for (let row of tbody.rows) {
-        const rowName = row.cells[1].textContent;
-        const rowQuantity = row.cells[4].textContent;
-        const rowPrice = row.cells[5].textContent;
+        const rowName = row.cells[2].textContent;
+        const rowSize = row.cells[3].textContent;
+        const rowColor = row.cells[4].textContent;
+        const rowQuantity = row.cells[5].textContent;
+        const rowPrice = row.cells[6].textContent;
+        const totalPrice = row.cells[7].textContent;
 
         // Tạo dòng mới trong bảng in hóa đơn
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
             <td>${row.cells[0].textContent}</td>
             <td>${rowName}</td>
+            <td>${rowSize}</td>
+            <td>${rowColor}</td>
             <td>${rowQuantity}</td>
             <td>${rowPrice}</td>
+            <td>${totalPrice}</td>
+            
         `;
 
         // Thêm dòng mới vào bảng
@@ -1640,9 +1784,9 @@ function checkFullAddress() {
         return true;
     }
 }
-document.getElementById("provinceSelect").addEventListener('change', checkProvince);
-document.getElementById("districtSelect").addEventListener('change', checkDistrict);
-document.getElementById("wardSelect").addEventListener('change', checkWard);
+// document.getElementById("provinceSelect").addEventListener('change', checkProvince);
+// document.getElementById("districtSelect").addEventListener('change', checkDistrict);
+// document.getElementById("wardSelect").addEventListener('change', checkWard);
 
 document.getElementById("nameCustomer").addEventListener('input', checkName);
 document.getElementById("numberPhoneCustomer").addEventListener('input', checkPhone);
@@ -1790,6 +1934,8 @@ fetchProducts(currentPage1);
 
 document.getElementById('btn-bank').addEventListener('click', function () {
     const vnp_Amount = totalShipLocal !== 0 && totalShipLocal ? priceAmountBillAndShipNoVoucher : totalCustomerPayment || 0;
+    localStorage.setItem('totalPayment' , vnp_Amount)
+    localStorage.setItem('totalPrice' , totalBill)
     const payModel = {
         vnp_Amount: vnp_Amount,
         vnp_OrderInfo: "Thanh toán cho đơn hàng",
@@ -1799,10 +1945,26 @@ document.getElementById('btn-bank').addEventListener('click', function () {
     const nameCustomer = document.getElementById('nameCustomer').value;
     const phoneCustomer = document.getElementById('numberPhoneCustomer').value;
     let idCustomerPay = idCusomter || "13";
+    // let billData = {
+    //     code : invoiceCodeLocal ,
+    //     name : name ,
+    //     phoneNumber : phoneNumber,
+    //     nameCustomer : nameCustomer ,
+    //     phoneCustomer : phoneCustomer ,
+    //     fullAddress : fullAddress ,
+    //     dateShip : dateShip ,
+    //     totalBill : totalBill,
+    //     itemDiscount: voucherValueLocal ,
+    //     moneyShip : totalShipLocal,
+    // }
+    // localStorage.setItem('billDataaaaa', JSON.stringify(billData));
     localStorage.setItem('idUser', idCustomerPay);
+    localStorage.setItem('name' , name);
+    localStorage.setItem('phone' , phoneNumber)
     localStorage.setItem('userName', nameCustomer);
     localStorage.setItem('note', "Office");
     localStorage.setItem('phoneNumber', phoneCustomer);
+    localStorage.setItem('code', invoiceCodeLocal);
     localStorage.setItem('email', mail);
     localStorage.setItem('openDelivery', isDelivery);
     localStorage.setItem('itemDiscount', voucherValueLocal);

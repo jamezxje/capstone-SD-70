@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+
+<head>
+  <meta charset="utf-8">
+  <th:block id="th-css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  </th:block>
+
+</head>
+
+<body>
+<th:block id="th-body">
+  <script>
+    // Định dạng tiền tệ cho giá trị voucher khi trang tải
+    document.addEventListener("DOMContentLoaded", function() {
+        const valueElements = document.querySelectorAll('.total-revenue');
+        valueElements.forEach(function (element) {
+            const value = parseFloat(element.innerText.replace(/\D/g, ''));  // Loại bỏ các ký tự không phải số
+            element.innerText = new Intl.NumberFormat('vi-VN').format(value) + ' VND';
+        });
+    });
+  </script>
+
+      <div class="content-body">
+        <div class="container-fluid">
+
+          <div class="card">
+
+
+            <div class="row m-4 gx-2">
+              <div class="col-md-3">
+                <div class="card text-white bg-primary shadow-sm text-center p-3">
+                  <span class="fs-4 fw-bold total-revenue" th:text="${totalRevenue}"></span>
+                  <p class="mb-0">Tổng doanh thu (Cửa hàng)</p>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="card text-white bg-success shadow-sm text-center p-3">
+                  <span class="fs-4 fw-bold" th:text="${totalProduct}"></span>
+                  <p class="mb-0">Tổng sản phẩm (Tổng tất cả các đơn)</p>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="card text-white bg-warning shadow-sm text-center p-3">
+                  <p class="fs-4 fw-bold" th:text="${totalProductRefund}"></p>
+                  <p class="mb-0">Trả hàng (Tổng tất cả các đơn)</p>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="card text-white bg-danger shadow-sm text-center p-3">
+                  <p class="fs-4 fw-bold" th:text="${totalProductCandel}"></p>
+                  <p class="mb-0">Hủy hàng (Tổng tất cả các đơn)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="m-5">
+              <table class="table table-bordered table-hover" id="ListDatatableViewToday" border="1">
+                <thead>
+                <tr>
+                  <th>Tổng doanh thu</th>
+                  <th>Tổng số lương sản phẩm</th>
+                  <th>Trả hàng</th>
+                  <th>Hủy đơn hàng</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>
+                    <div class="total-revenue" th:text="${totalRevenueToday}">
+                    </div>
+                    (<span th:text="${timePeriod}"></span>)
+                  </td>
+                  <td>
+                    <div class="media style-1">
+                      <div class="media-body" th:text="${totalProductToday}">
+                      </div>
+                    </div>
+                    (<span th:text="${timePeriod}"></span>)
+                  </td>
+                  <td>
+                    <div th:text="${totalProductRefundToday}">
+                    </div>
+                    (<span th:text="${timePeriod}"></span>)
+                  </td>
+                  <td>
+                    <div th:text="${totalProductCandelToday}">
+                    </div>
+                    (<span th:text="${timePeriod}"></span>)
+                  </td>
+                </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+
+            <div class="m-5">
+              <form th:action="@{/dashboard/product-management/revenue/search}" method="GET" class="row">
+                <div class="col-3 mb-3">
+                  <label for="date" class="form-label">Ngày:</label>
+                  <input type="date" id="date" name="date" class="form-control">
+                </div>
+
+                  <div class="col-3 mb-3">
+                    <label for="month" class="form-label">Tháng năm:</label>
+                    <input type="month" id="month" name="month" class="form-control">
+                  </div>
+
+                <div class="col-3 mb-3">
+                  <label for="year" class="form-label">Năm:</label>
+                  <input type="number" id="year" name="year" class="form-control" min="1900" max="2100" placeholder="Nhập năm">
+                </div>
+
+                <div class="col-3 text-center mt-4">
+                  <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                </div>
+              </form>
+
+            </div>
+
+
+            <div class="justify-content-center m-5">
+              <canvas id="myChart" style="width:100%;max-width:90%"></canvas>
+            </div>
+
+
+          <div class="m-5">
+            <h4>Sản phẩm bán chạy</h4>
+            <table class="table table-bordered table-hover" id="ListDatatableView" border="1">
+              <thead>
+              <tr>
+                <th>STT</th>
+                <th>Tên sản phẩm</th>
+                <th>Tổng số lượng đã bán</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="entry, iterStat : ${bestSellingProducts}">
+                <td th:text="${iterStat.index + 1}"></td>
+                <td th:text="${entry.key.product.name}"></td> <!-- entry.key là ProductDetail -->
+<!--                <td th:text="${entry.value}"></td>-->
+                <td th:text="${entry.value}"></td>   <!-- entry.value là tổng số lượng đã bán -->
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          </div>
+    </div>
+
+
+
+
+  </div>
+</th:block>
+<th:block id="th-js">
+  <script>
+    const totalProductToday = [[${totalProductToday}]];
+    const totalRevenueToday = [[${totalRevenueToday}]];
+
+    const xValues = ["Sản phẩm", "Doanh thu"];
+    const yValues = [totalProductToday, totalRevenueToday];
+    const barColors = ["red", "blue"];
+
+    new Chart("myChart", {
+  type: "bar",
+  data: {
+    labels: ["Sản phẩm", "Doanh thu"],
+    datasets: [{
+      label: "Sản phẩm bán",
+      backgroundColor: "red",
+      data: [totalProductToday, 0], // Chỉ cho sản phẩm hiển thị trên trục Y1
+      yAxisID: "y-axis-1"
+    },
+    {
+      label: "Doanh thu",
+      backgroundColor: "blue",
+      data: [0, totalRevenueToday], // Chỉ cho doanh thu hiển thị trên trục Y2
+      yAxisID: "y-axis-2"
+    }]
+  },
+  options: {
+    scales: {
+      yAxes: [{
+        id: "y-axis-1",
+        type: "linear",
+        position: "left",
+        ticks: {
+          beginAtZero: true
+        }
+      },
+      {
+        id: "y-axis-2",
+        type: "linear",
+        position: "right",
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
+  }
+});
+
+  </script>
+
+</th:block>
+
+</body>
+</html>

@@ -37,12 +37,13 @@ public class BillDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_product_detail", referencedColumnName = "id")
     @JsonBackReference
     private ProductDetail productDetail;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @ManyToOne
     @JoinColumn(name = "id_bill", referencedColumnName = "id")
     @JsonBackReference
     private Bill bill;

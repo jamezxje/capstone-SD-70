@@ -94,6 +94,7 @@ document.getElementById('changeSale').addEventListener('click' , function (){
     const idVoucher = localStorage.getItem('idVoucher');
     const voucherDetails = JSON.parse(localStorage.getItem('voucherDetails'));
     const idBill = localStorage.getItem('idBill');
+    localStorage.setItem('printBillVNPAY' , 'true')
     const response = {
         idUser: idUser,
         userName: userName,

@@ -2,6 +2,7 @@ package org.fpoly.capstone.service.impl;
 
 
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.constant.MessageError;
@@ -12,9 +13,8 @@ import org.fpoly.capstone.dto.voucher.VoucherRequest;
 import org.fpoly.capstone.entity.*;
 import org.fpoly.capstone.entity.enum_status.*;
 import org.fpoly.capstone.repository.*;
-import org.fpoly.capstone.service.BillService;
-import org.fpoly.capstone.service.EmailService;
-import org.fpoly.capstone.service.VoucherService;
+import org.fpoly.capstone.service.*;
+import org.fpoly.capstone.service.payload.bill.BuyNowBillRequest;
 import org.fpoly.capstone.utils.general.GeneralStringCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import lombok.RequiredArgsConstructor;
+
 import org.fpoly.capstone.entity.Bill;
 import org.fpoly.capstone.entity.BillDetail;
 import org.fpoly.capstone.entity.Cart;
@@ -39,25 +39,17 @@ import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.BillType;
 import org.fpoly.capstone.entity.enum_status.PaymentMethod;
-import org.fpoly.capstone.repository.BillDetailRespository;
-import org.fpoly.capstone.repository.BillRespository;
 import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.service.BillService;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
-import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.fpoly.capstone.entity.Bill;
-import org.fpoly.capstone.entity.enum_status.BillType;
+
 import org.fpoly.capstone.repository.BillRepository;
-import org.fpoly.capstone.service.BillService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+
 @Slf4j
 
 @Service
@@ -83,7 +75,7 @@ public class BillServiceImpl implements BillService {
     @Autowired
     private VoucherRepository voucherRepository;
     @Autowired
-    private VoucherDetailReponsitory voucherDetailReponsitory;
+    private VoucherDetailRepository voucherDetailReponsitory;
     @Autowired
     private VoucherService voucherService;
     @Autowired
@@ -103,6 +95,9 @@ public class BillServiceImpl implements BillService {
 
     @Autowired
     private EmailService emailService;
+    private final CartRepository cartRepository;
+    private final UserService userService;
+    private final ProductDetailService productDetailService;
     @Override
     public CreateBillRequest create(CreateBillRequest createBillDTO) {
         return new CreateBillRequest();
@@ -163,6 +158,7 @@ public class BillServiceImpl implements BillService {
         if (!findIdBill.isPresent()) {
             throw new RuntimeException("Bill not found");
         }
+        System.out.println("Check user" + request.getIdUser());
         Optional<User> user = userRepository.findById(request.getIdUser());
         if (!user.isPresent()) {
             throw new RuntimeException("User not found");
@@ -321,6 +317,7 @@ public class BillServiceImpl implements BillService {
         return optional.get();
     }
 
+
     @Override
     public List<BaseAddressRequest> getAllAddressUser(Long idUser) {
         List<Object[]> listAddress = addressRepository.findByAddressUserIdBIll(idUser);
@@ -449,9 +446,7 @@ public class BillServiceImpl implements BillService {
         }
         return new PageImpl<>(cusomters, pageable, results.getTotalElements());
     }
-    private final BillDetailRespository billDetailRespository;
-    private final BillRespository billRespository;
-    private final CartRepository cartRepository;
+
 
     @Override
     public void saveToBillForOnlineUser(Cart cart, CreateBillRequest request) {
@@ -474,7 +469,7 @@ public class BillServiceImpl implements BillService {
             billDetail.setProductDetail(cartDetail.getProductDetail());
             billDetail.setQuantity(cartDetail.getQuantity());
             billDetail.setPrice(cartDetail.getPrice());
-            this.billDetailRespository.save(billDetail);
+            this.billDetailRepository.save(billDetail);
             billDetailList.add(billDetail);
         }
 
@@ -494,7 +489,7 @@ public class BillServiceImpl implements BillService {
 
         bill.setBillDetailList(billDetailList);
         this.cartRepository.deleteById(cart.getId());
-        this.billRespository.save(bill);
+        this.billRepository.save(bill);
 
     }
 
@@ -625,12 +620,32 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+    public List<Bill> findByCreateDate(LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+        return billRepository.findByCreateDateBetween(startOfDay, endOfDay);
+    }
+    @Override
+    public List<Bill> findAll() {
+        return billRepository.findAll();
+
+    }
+
+    @Override
+    public List<Bill> findByCreateDateBetween(LocalDate start, LocalDate end) {
+        LocalDateTime startDate = start.atStartOfDay();
+        LocalDateTime endDate = end.atTime(23, 59, 59);
+        return billRepository.findByCreateDateBetween(startDate, endDate);
+    }
+
+    @Override
     public Bill findById(Long id) {
         Bill bill = billRepository.findById(id).orElseThrow();
         return bill;
     }
     public List<Bill> findBillsByCustomerId(Long customerId) {
-        return this.billRespository.getBillByCustomerId(customerId);
+        return this.billRepository.getBillByCustomerId(customerId);
     }
 
 
@@ -657,4 +672,93 @@ public class BillServiceImpl implements BillService {
 
         return billRepository.findAll(example, pageable);
     }
+    @Override
+    public void buyNowForOnlineUser(BuyNowBillRequest request) {
+        User loggedUser = this.userService.getUserFromContext();
+
+        if (loggedUser == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+        //find product detail by productId and sizeId and colorId from request
+        ProductDetail productDetailRequest = this.productDetailService
+                .findProductDetailByIdAndSizeAndColor(request.getProductId(), request.getSizeId(), request.getColorId());
+
+        if (productDetailRequest == null) {
+            log.error("Product detail not found for Product ID: {} and Size ID: {} and ColorId: {}", request.getProductId(), request.getSizeId(), request.getColorId());
+            throw new EntityNotFoundException("Product detail not found for the given product and size and color.");
+        }
+
+        //check if quantity from request is valid or not
+        if (request.getQuantity() > productDetailRequest.getQuantity()) {
+            log.error("Not enough product quantity: {}",
+                    request.getQuantity());
+            throw new RuntimeException("Not enough quantity");
+        }
+
+        Bill bill = new Bill();
+
+        bill.setUser(loggedUser);
+        bill.setType(BillType.ONLINE);
+        bill.setStatus(BillStatus.CHO_XAC_NHAN);
+
+        double totalPrice = request.getQuantity() * productDetailRequest.getPrice().doubleValue();
+        bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
+
+        List<BillDetail> billDetailList = new ArrayList<>();
+
+        BillDetail billDetail = new BillDetail();
+        billDetail.setBill(bill);
+        billDetail.setProductDetail(productDetailRequest);
+        billDetail.setQuantity(request.getQuantity());
+        billDetail.setPrice(productDetailRequest.getPrice());
+        this.billDetailRepository.save(billDetail);
+        billDetailList.add(billDetail);
+
+
+        bill.setBillDetailList(billDetailList);
+        this.billRepository.save(bill);
+
+    }
+    @Override
+    public void saveToBillForBuyNow(CreateBillRequest request) {
+        List<Bill> lastestBillList = this.findLastestBillByCustomerId();
+
+        if (lastestBillList.isEmpty()) {
+            throw new EntityNotFoundException("No bill found for the user.");
+        }
+
+        Bill lastestBill = lastestBillList.get(0); // Lấy hóa đơn mới nhất
+
+        log.info("Lastest bill id: ", lastestBill.getId());
+
+        BigDecimal moneyShip = request.getMoneyShip();
+        Date receiveDate = request.getReceiveDate();
+        BigDecimal grandTotal = request.getGrandTotal();
+        String address = request.getAddress();
+        String note = request.getNote();
+        PaymentMethod paymentMethod = request.getPaymentMethod();
+
+        // Cập nhật các giá trị của bill
+        lastestBill.setTotalMoney(grandTotal);
+        lastestBill.setMoneyShip(moneyShip);
+        lastestBill.setReceiveDate(receiveDate);
+        lastestBill.setAddress(address);
+        lastestBill.setNote(note);
+        lastestBill.setMethod(paymentMethod);
+
+        // Lưu hóa đơn đã cập nhật
+        this.billRepository.save(lastestBill); // Không tạo một bill mới, chỉ cập nhật hóa đơn hiện tại
+    }
+    @Override
+    public List<Bill> findLastestBillByCustomerId() {
+        User loggedUser = this.userService.getUserFromContext();
+
+        if (loggedUser == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+        return this.billRepository.getLastestBill(loggedUser.getId(), PageRequest.ofSize(1));
+    }
+
 }

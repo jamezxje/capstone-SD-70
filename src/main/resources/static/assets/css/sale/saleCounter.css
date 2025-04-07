@@ -582,7 +582,11 @@ body {
     display: flex;
     justify-content: space-between;
     border-top: 1px solid #000;
-    padding-top: 10px;
+    /*padding-top: 10px;*/
+}
+.address-info .rightCustomer {
+    margin: 0;
+    padding: 0;
 }
 
 .address-info div {

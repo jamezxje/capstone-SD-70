@@ -1,6 +1,5 @@
 package org.fpoly.capstone.service.impl;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.entity.Voucher;
@@ -33,7 +32,7 @@ public class VoucherServiceImpl implements VoucherService {
     private final UserService userService;
 
     @Override
-    public Voucher createVoucher(Voucher voucher, VoucherStatus voucherStatus) {
+    public Voucher createVoucher(Voucher voucher) {
         String user = userService.getName();
 
         if(voucher.getStartDate().isAfter(voucher.getEndDate())){
@@ -50,9 +49,10 @@ public class VoucherServiceImpl implements VoucherService {
         newVoucher.setQuantity(voucher.getQuantity());
         newVoucher.setStartDate(voucher.getStartDate());
         newVoucher.setEndDate(voucher.getEndDate());
-        newVoucher.setStatus(voucherStatus);
-//        newVoucher.setMinimumBill(voucher.getMinimumBill());
+
+        updateVoucherStatus(newVoucher);
         newVoucher.setCreateDate(new Date());
+        newVoucher.setLastModifiedDate(LocalDateTime.now());
         newVoucher.setCreatedBy(user);
         newVoucher.setUpdatedBy(user);
         log.info("{createVoucher}: "+ voucher);
@@ -63,7 +63,7 @@ public class VoucherServiceImpl implements VoucherService {
     public Page<Voucher> findAll(Pageable pageable) {
         Page<Voucher> list = voucherRepository.findAll(pageable);
 
-      return list;
+        return list;
     }
 
 
@@ -88,7 +88,8 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Voucher updateVoucher(Voucher voucher, VoucherStatus voucherStatus) throws NotException {
+    public Voucher updateVoucher(Voucher voucher, VoucherStatus voucherStatus,
+                                 LocalDateTime startDate, LocalDateTime endDate) throws NotException {
 
         Voucher update = findById(voucher.getId());
 
@@ -96,10 +97,10 @@ public class VoucherServiceImpl implements VoucherService {
         update.setName(voucher.getName());
         update.setValue(voucher.getValue());
         update.setQuantity(voucher.getQuantity());
-//        update.setStartDate(voucher.getStartDate());
-//        update.setEndDate(voucher.getEndDate());
+        update.setStartDate(startDate);
+        update.setEndDate(endDate);
         update.setStatus(voucherStatus);
-//        update.setMinimumBill(voucher.getMinimumBill());
+        update.setLastModifiedDate(LocalDateTime.now());
         return voucherRepository.save(update);
     }
 
@@ -144,9 +145,9 @@ public class VoucherServiceImpl implements VoucherService {
         }
     }
 
-    @Override
-    public List<Voucher> getAllVouchers() {
-        return voucherRepository.findAll();
-    }
+
+
+
+
 
 }

@@ -135,6 +135,7 @@ public class Bill {
     @JsonBackReference
     private List<BillDetail> billDetailList;
 
+
     @PrePersist
     public void prePersist() {
         if (this.createDate == null) {

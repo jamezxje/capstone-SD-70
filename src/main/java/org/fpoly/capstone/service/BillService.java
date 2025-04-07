@@ -5,6 +5,7 @@ import org.fpoly.capstone.dto.bill.*;
 import org.fpoly.capstone.dto.billDetail.BillProductDTO;
 import org.fpoly.capstone.dto.voucher.VoucherRequest;
 import org.fpoly.capstone.entity.*;
+import org.fpoly.capstone.service.payload.bill.BuyNowBillRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.fpoly.capstone.entity.Bill;
@@ -64,12 +65,22 @@ public interface BillService {
 
     List<Long> findAllById();
 
+
+    List<Bill> findByCreateDate(LocalDate date);
+
+    List<Bill> findAll();
+
+    List<Bill> findByCreateDateBetween(LocalDate start, LocalDate end);
+
     Bill findById(Long id);
 
     void saveToBillForOnlineUser(Cart cart, CreateBillRequest request);
-
+    void buyNowForOnlineUser(BuyNowBillRequest request);
+    void saveToBillForBuyNow(CreateBillRequest createBillRequest);
     List<Bill> findBillsByCustomerId(Long customerId);
     Page<Bill> searchBills(String keyword, String orderType, LocalDate startDate, LocalDate endDate, Pageable pageable);
+
+    List<Bill> findLastestBillByCustomerId();
 
 
 
