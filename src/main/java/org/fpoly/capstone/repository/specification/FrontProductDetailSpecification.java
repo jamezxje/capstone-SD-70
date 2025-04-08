@@ -43,6 +43,8 @@ public class FrontProductDetailSpecification {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("status"), ProductVariantStatus.DANG_SU_DUNG));
             }
 
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("status"), ProductVariantStatus.DANG_SU_DUNG));
+
             // Lọc theo giá
             if (request.getMinPrice() != null && request.getMaxPrice() != null) {
                 // Nhân giá trị với 1000

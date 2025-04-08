@@ -794,7 +794,7 @@
       <!-- Modal content-->
       <div class="display-table splash-bg">
         <div class="newsletter-left">
-          <h2>Please select size before add to cart</h2>
+          <h2>Vui lòng chọn size</h2>
         </div>
       </div>
     </div>
@@ -809,7 +809,7 @@
       <!-- Modal content-->
       <div class="display-table splash-bg">
         <div class="newsletter-left">
-          <h2>You need to log in to add products to the cart</h2>
+          <h2>Đăng nhập để tiếp tục</h2>
         </div>
       </div>
     </div>
@@ -889,14 +889,14 @@
       
       // Check if any size is selected or any color is selected
       if (selectedSize === undefined) {
-        popupMessage = "Please select size before adding to cart";
+        popupMessage = "Vui lòng chọn size";
       } else if (selectedColor === undefined) {
-        popupMessage = "Please select color before adding to cart";
+        popupMessage = "Vui lòng chọn màu sắc";
       }
       
       // Check if the user is logged in
       if (loggedUserEmail == null) {
-        popupMessage = "Please login before adding to cart";
+        popupMessage = "Đăng nhập để tiếp tục";
       }
       
       // If any validation failed, show the modal
@@ -917,8 +917,8 @@
         
         // If user is not logged in, add login and register buttons
         if (loggedUserEmail == null) {
-          var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Login</a>');
-          var registerButton = $('<button id="registerButton" class="btn">Register</button>');
+          var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Đăng nhập</a>');
+          var registerButton = $('<button id="registerButton" class="btn">Đăng kí</button>');
           
           // Append the buttons to the popup
           $('#popup-container').append(loginButton);
@@ -1038,14 +1038,14 @@
 // Log the email of the logged-in user
       // Check if any size is selected or any color is selected
       if (selectedSize === undefined) {
-        popupMessage = "Please select size before adding to cart";
+        popupMessage = "Vui lòng chọn size";
       } else if (selectedColor === undefined) {
-        popupMessage = "Please select color before adding to cart";
+        popupMessage = "Vui lòng chọn màu sắc";
       }
       
       // Check if the user is logged in
       if (loggedUserEmail == null) {
-        popupMessage = "Please login before adding to cart";
+        popupMessage = "Đăng nhập để tiếp tục";
       }
       
       // If any validation failed, show the modal
@@ -1066,8 +1066,8 @@
         
         // If user is not logged in, add login and register buttons
         if (loggedUserEmail == null) {
-          var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Login</a>');
-          var registerButton = $('<button id="registerButton" class="btn">Register</button>');
+          var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Đăng nhập</a>');
+          var registerButton = $('<button id="registerButton" class="btn">Đăng kí</button>');
           
           // Append the buttons to the popup
           $('#popup-container').append(loginButton);
