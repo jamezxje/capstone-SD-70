@@ -3,7 +3,6 @@ package org.fpoly.capstone.controller.user_management;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
-import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.service.AddressService;
 import org.fpoly.capstone.service.EmployeeService;
 import org.fpoly.capstone.service.UserService;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
@@ -34,14 +32,11 @@ public class EmployeeController {
     private AddressService addressService;
 
     @Autowired
-    private AddressRepository addressRepository;
-
-    @Autowired
     private UserService userService;
 
     @InitBinder("address")
     public void initBinder(WebDataBinder binder) {
-        binder.setDisallowedFields("status"); // Chặn status chỉ của Address
+        binder.setDisallowedFields("status");
     }
 
     @GetMapping("/detail/{id}")
@@ -52,9 +47,6 @@ public class EmployeeController {
         }
         log.info("Employee ID: {}", employee.getId());
         Address address = addressService.getDefaultAddress(employee.getId());
-        if (address == null) {
-            address = new Address();
-        }
         model.addAttribute("employee", employee);
         model.addAttribute("address", address);
         return "views/users/employee/employee-detail";
@@ -67,7 +59,6 @@ public class EmployeeController {
                                     Model model) {
         int size = 5; // Số nhân viên mỗi trang
         Pageable pageable = PageRequest.of(numPage - 1, size);
-
         Page<User> employees;
         if ((keyword != null && !keyword.isEmpty()) || (status != null && !status.isEmpty())) {
             employees = employeeService.searchAndFilterEmployees(keyword, status, pageable);
@@ -89,8 +80,6 @@ public class EmployeeController {
         Address address = new Address();
         Map<String, String> errors = new HashMap<>();
         Map<String, String> errorsAddress = new HashMap<>();
-
-            // Gán address vào danh sách địa chỉ của employee
         employee.setAddresses(new ArrayList<>(List.of(address)));
         model.addAttribute("address", address);
         model.addAttribute("employee", employee);
@@ -102,17 +91,9 @@ public class EmployeeController {
     @PostMapping("/add")
     public String saveEmployee(@ModelAttribute("employee") User user,
                                @ModelAttribute("address") Address address,
-                               @RequestParam("file") MultipartFile file,
+//                               @RequestParam("file") MultipartFile file,
+                               @RequestParam("avatar") String avatarUrl,
                                Model model, RedirectAttributes redirectAttributes) {
-        System.out.println("User nhận từ form: " + user);
-        System.out.println("Address nhận từ form: " + address);
-
-        // Kiểm tra xem file có null không & có rỗng không
-        if (file == null || file.isEmpty()) {
-            model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
-        }
-
-        // Validate dữ liệu
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "citizenIdentity", "gender");
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
         Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
@@ -126,19 +107,17 @@ public class EmployeeController {
         if (userService.existsByCitizenIdentity(user.getCitizenIdentity())) {
             errors.put("citizenIdentity", "Căn cước công dân đã tồn tại!");
         }
-        if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
-            user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
+        if (!errors.isEmpty() || !errorsAddress.isEmpty() || avatarUrl == null || avatarUrl.isEmpty()) {
+            user.setAddresses(List.of(address));
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
+            if (avatarUrl == null || avatarUrl.isEmpty()) {
+                model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
+            }
             return "views/users/employee/employee-create";
         }
-
-        System.out.println("ProvinceId: " + address.getProvinceId());
-        System.out.println("ToDistrictId: " + address.getToDistrictId());
-        System.out.println("WardCode: " + address.getWardCode());
-
-        // Gọi service để tạo nhân viên và địa chỉ
-        employeeService.createEmployee(user, address,file);
+        user.setAvatar(avatarUrl);
+        employeeService.createEmployee(user, address);
         redirectAttributes.addFlashAttribute("successMessage", "Thêm thành công!");
         return "redirect:/staff-management";
     }
@@ -151,11 +130,8 @@ public class EmployeeController {
         }
         Map<String, String> errors = new HashMap<>();
         Map<String, String> errorsAddress = new HashMap<>();
-        // Gán address vào danh sách địa chỉ của employee
         Address address = addressService.getDefaultAddress(employee.getId());
-        if (address == null) {
-            address = new Address();
-        }
+
         model.addAttribute("employee", employee);
         model.addAttribute("address", address);
         model.addAttribute("errors", errors);
@@ -167,17 +143,19 @@ public class EmployeeController {
     public String updateEmployee(@PathVariable Long id,
                                  @ModelAttribute("employee") User user,
                                  @ModelAttribute("address") Address address,
-                                 @RequestParam(value = "file", required = false) MultipartFile file,
-                                 Model model,RedirectAttributes redirectAttributes) {
-        System.out.println("User nhận từ form: " + user);
-        System.out.println("Address nhận từ form: " + address);
+                                 @RequestParam(value = "avatar", required = false) String avatar,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
+
         User existingUser = employeeService.getEmployeeById(id);
-        if (file == null || file.isEmpty()) {
-            model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
-        }
-        // Validate dữ liệu chung
+
+        // Nếu không có ảnh mới và ảnh cũ cũng null => lỗi
+        boolean isNewAvatarRequired = (avatar == null || avatar.isBlank()) && existingUser.getAvatar() == null;
+
+        // Validate
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "citizenIdentity", "gender");
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
+
         Set<String> addressFieldsToValidate = Set.of("line", "wardCode", "provinceId", "toDistrictId");
         Map<String, String> errorsAddress = AddressValidator.validate(address, addressFieldsToValidate);
 
@@ -191,25 +169,29 @@ public class EmployeeController {
             errors.put("citizenIdentity", "Căn cước công dân đã tồn tại!");
         }
 
-        if (!errors.isEmpty() || !errorsAddress.isEmpty()) {
-            user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
+        if (!errors.isEmpty() || !errorsAddress.isEmpty() || isNewAvatarRequired) {
+            // Gán lại avatar nếu chưa có
+            if (existingUser.getAvatar() != null && (user.getAvatar() == null || user.getAvatar().isBlank())) {
+                user.setAvatar(existingUser.getAvatar());
+            }
+
+            if (isNewAvatarRequired) {
+                model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
+            }
+
+            user.setAddresses(new ArrayList<>(List.of(address)));
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
+            model.addAttribute("employee", user);
+            model.addAttribute("address", address);
+
             return "views/users/employee/employee-update";
         }
 
-        System.out.println("ProvinceId: " + address.getProvinceId());
-        System.out.println("ToDistrictId: " + address.getToDistrictId());
-        System.out.println("WardCode: " + address.getWardCode());
-        System.out.println("Province: " + address.getProvince());
-        System.out.println("District: " + address.getDistrict());
-        System.out.println("Ward: " + address.getWard());
-        System.out.println("Avatar: " + user.getAvatar());
-        // Gọi service để cập nhật nhân viên và địa chỉ
-
+        // Set avatar cho user mới từ input (dù là avatar cũ hay mới)
+        user.setAvatar(avatar);
+        employeeService.updateEmployee(id, user, address); // không cần file nữa
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
-        employeeService.updateEmployee(id, user, address,file);
         return "redirect:/staff-management";
     }
-
 }

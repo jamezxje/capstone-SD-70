@@ -64,10 +64,11 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label" for="roles">Vai trò</label>
+                                                <label class="col-lg-4 col-form-label">Trạng thái</label>
                                                 <div class="col-lg-6">
-                                                    <select class="form-control" id="roles" th:field="*{customer.roles}">
-                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserRole).ROLE_CUSTOMER}">Khách hàng</option>
+                                                    <select class="form-control" th:field="*{customer.status}">
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}">Kích hoạt</option>
+                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED}">Ngừng kích hoạt</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -113,15 +114,7 @@
                                                     <p class="error" th:if="${errorsAddress['line']}" th:text="${errorsAddress['line']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
-                                                <label class="col-lg-4 col-form-label">Trạng thái</label>
-                                                <div class="col-lg-6">
-                                                    <select class="form-control" th:field="*{customer.status}">
-                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}">Kích hoạt</option>
-                                                        <option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED}">Ngừng kích hoạt</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                            <input type="hidden" id="avatar" name="avatar" th:value="${customer.avatar}">
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">Ảnh đại diện</label>
                                                 <div class="col-lg-6 d-flex flex-column align-items-center">
@@ -139,9 +132,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="image-area mt-4">
-                                                        <img id="avatarPreview" th:src="${customer.avatar}"
+                                                        <!-- Chỉ cần 1 ảnh duy nhất -->
+                                                        <img id="avatarPreview"
+                                                             th:src="${customer.avatar != null ? customer.avatar : ''}"
                                                              class="img-fluid rounded shadow-sm"
-                                                             style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;">
+                                                             style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+                                                             onerror="this.style.display='none';" />
                                                     </div>
                                                     <div th:if="${fileError}" class="text-danger mt-2">
                                                         <p th:text="${fileError}"></p>
@@ -162,22 +158,37 @@
             </div>
         </div>
     </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+    <script>
         function readURLAvatar(input) {
             if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('avatarPreview').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
+                const formData = new FormData();
+                formData.append("file", input.files[0]);
+
+                fetch("/api/upload/avatar", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error("HTTP Error " + response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Server response:", data);
+                        if (data.url) {
+                            document.getElementById("avatarPreview").src = data.url;
+                            document.getElementById("avatarPreview").style.display = "block";
+                            document.getElementById("avatar").value = data.url;
+                        } else {
+                            alert("Upload ảnh thất bại: " + (data.error || "Không xác định"));
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Upload lỗi:", error);
+                        alert("Đã có lỗi khi upload ảnh.");
+                    });
             }
         }
-        document.getElementById('upload').addEventListener('change', function () {
-            readURLAvatar(this);
-        });
-    });
-</script>
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const tokenApiGHN = '7d67a984-b5fe-11ef-b166-4205c1d15e61';

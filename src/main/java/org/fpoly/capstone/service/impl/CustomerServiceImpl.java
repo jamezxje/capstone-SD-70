@@ -1,19 +1,5 @@
 package org.fpoly.capstone.service.impl;
 
-import org.fpoly.capstone.entity.User;
-import org.fpoly.capstone.repository.CustomerRepository;
-import org.fpoly.capstone.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
-
-
 import org.fpoly.capstone.entity.Address;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.entity.enum_status.AddressStatus;
@@ -21,7 +7,9 @@ import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.CustomerRepository;
-import org.fpoly.capstone.service.*;
+import org.fpoly.capstone.service.AddressService;
+import org.fpoly.capstone.service.CustomerService;
+import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.utils.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,10 +17,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -91,15 +81,15 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public User createCustomer(User user, Address address, MultipartFile file) {
+    public User createCustomer(User user, Address address) {
         String rawPassword = PasswordUtil.generateRandomPassword(8); // Tạo mật khẩu 8 ký tự
         String encodedPassword = passwordEncoder.encode(rawPassword);// Mã hóa mật khẩu
         String userServiceName = userService.getName();
 
-        String urlAvatar = null;
-        if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file);
-        }
+//        String urlAvatar = null;
+//        if (file != null && !file.isEmpty()) {
+//            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file);
+//        }
 
         // Tạo đối tượng user
         User newUser = new User();
@@ -109,7 +99,7 @@ public class CustomerServiceImpl implements CustomerService {
         newUser.setPassword(encodedPassword);
         newUser.setDateOfBirth(user.getDateOfBirth());
         newUser.setGender(user.getGender());
-        newUser.setAvatar(urlAvatar);
+        newUser.setAvatar(user.getAvatar());
         newUser.setRoles(UserRole.ROLE_CUSTOMER);
         newUser.setStatus(user.getStatus());
         newUser.setCreatedBy(userServiceName);
@@ -138,22 +128,17 @@ public class CustomerServiceImpl implements CustomerService {
             newUser.setCreatedBy(userServiceName);
             newUser.setUpdatedBy(userServiceName);
             newAddress.setUser(savedUser); // Không cần tìm lại user nữa
-
-            // Lưu địa chỉ vào database
-//            addressRepository.save(newAddress);
-            Address savedAddress = addressRepository.save(newAddress);
-            System.out.println("Address ID: " + savedAddress.getId()); // Debug xem có lưu không
+            addressRepository.save(newAddress);
         }
         System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
         String subject = "Xin chào, bạn đã đăng ký thành công tài khoản CAPSTONE";
         emailServiceImpl.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return savedUser;
-//        return employeeRepository.save(newUser);
     }
 
     @Transactional
     @Override
-    public User updateCustomer(Long id, User user, Address address,MultipartFile file) {
+    public User updateCustomer(Long id, User user, Address address) {
         User existingCustomer = customerRepository.findById(id).orElse(null);
         if (existingCustomer == null) {
             return null;
@@ -161,10 +146,10 @@ public class CustomerServiceImpl implements CustomerService {
         String userServiceName = userService.getName();
 
         // Nếu có file mới => Upload lên Cloudinary, ngược lại giữ nguyên ảnh cũ
-        String urlAvatar = existingCustomer.getAvatar(); // Giữ ảnh cũ
-        if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file); // Upload ảnh mới
-        }
+        String urlAvatar = user.getAvatar(); // Giữ ảnh cũ
+//        if (file != null && !file.isEmpty()) {
+//            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file); // Upload ảnh mới
+//        }
 
         // Cập nhật thông tin khách hàng
         existingCustomer.setFullName(user.getFullName());
@@ -176,6 +161,7 @@ public class CustomerServiceImpl implements CustomerService {
         existingCustomer.setAvatar(urlAvatar); // Cập nhật avatar
         existingCustomer.setUpdatedBy(userServiceName);
         existingCustomer.setLastModifiedDate(new Date());
+        User savedUser = customerRepository.save(existingCustomer);
 
         // Cập nhật hoặc thêm mới địa chỉ
         Address existingAddress = addressService.getDefaultAddress(existingCustomer.getId());
@@ -192,6 +178,7 @@ public class CustomerServiceImpl implements CustomerService {
             existingAddress.setPhoneNumber(user.getPhoneNumber());
             existingAddress.setUpdatedBy(userServiceName);
             existingAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            existingAddress.setUser(savedUser);
             addressService.saveAddress(existingAddress);
         } else {
             Address newAddress = new Address();
@@ -207,17 +194,15 @@ public class CustomerServiceImpl implements CustomerService {
             newAddress.setPhoneNumber(user.getPhoneNumber());
             newAddress.setUpdatedBy(userServiceName);
             newAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-            newAddress.setUser(existingCustomer);
-
+            newAddress.setUser(savedUser);
             if (existingCustomer.getAddresses() == null) {
                 existingCustomer.setAddresses(new ArrayList<>());
             }
             existingCustomer.getAddresses().add(newAddress);
             addressService.saveAddress(newAddress);
         }
-
         // Lưu khách hàng
-        return customerRepository.save(existingCustomer);
+        return savedUser;
     }
 
 }

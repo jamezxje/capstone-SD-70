@@ -280,6 +280,15 @@
       mainImage.src = newSrc;
     }
   </script>
+  
+  <script>
+    window.onload = function () {
+      const priceInput = document.getElementById('price');
+      const priceValue = parseFloat(priceInput.value);
+      const formattedPrice = priceValue.toLocaleString('de-DE');
+      priceInput.value = formattedPrice;
+    };
+  </script>
 </th:block>
 
 </body>

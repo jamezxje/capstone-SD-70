@@ -22,7 +22,7 @@
 						<h4 class="card-title mb-2">Quản lý nhân viên</h4>
 					</div>
 					<a href="/staff-management" class="btn btn-info light mr-3">Tải lại</a>
-					<a href="/staff-management/view-add" class="btn btn-info">+ Add Nhân Viên</a>
+					<a href="/staff-management/view-add" class="btn btn-info">+ Thêm Nhân Viên</a>
 				</div>
 				<div class="card-body">
 					<div class="d-flex justify-content-between align-items-center w-100">
@@ -54,18 +54,19 @@
 				<hr>
 				<div class="card-body">
 					<div class="table-responsive">
-						<div id="ListDatatableView_wrapper" class="dataTables_wrapper no-footer"><table class="table style-1 dataTable no-footer" id="ListDatatableView" role="grid" aria-describedby="ListDatatableView_info">
-							<thead>
-							<tr role="row">
-								<th class="sorting_asc" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending" style="width: 40.2px;">STT</th>
-								<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="CUSTOMER: activate to sort column ascending" style="width: 232.175px;">NHÂN VIÊN</th>
-								<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="COUNTRY: activate to sort column ascending" style="width: 100.55px;">SỐ ĐIỆN THOẠI</th>
-								<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="COUNTRY: activate to sort column ascending" style="width: 100.55px;">CCCD</th>
-								<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="DATE: activate to sort column ascending" style="width: 119.838px;">NGÀY SINH</th>
-								<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="COMPANY NAME: activate to sort column ascending" style="width: 100.075px;">GIỚI TÍNH</th>
-								<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="STATUS: activate to sort column ascending" style="width: 108.275px;">TRẠNG THÁI</th>
-								<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="ACTION: activate to sort column ascending" style="width: 124.088px;">HÀNH ĐỘNG</th></tr>
-							</thead>
+						<div id="ListDatatableView_wrapper" class="dataTables_wrapper no-footer">
+							<table class="table style-1 dataTable no-footer" id="ListDatatableView" role="grid" aria-describedby="ListDatatableView_info">
+								<thead>
+								<tr role="row">
+									<th class="sorting_asc" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending" style="width: 40.2px;">STT</th>
+									<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="CUSTOMER: activate to sort column ascending" style="width: 232.175px;">NHÂN VIÊN</th>
+									<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="COUNTRY: activate to sort column ascending" style="width: 100.55px;">SỐ ĐIỆN THOẠI</th>
+									<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="COUNTRY: activate to sort column ascending" style="width: 100.55px;">CCCD</th>
+									<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="DATE: activate to sort column ascending" style="width: 119.838px;">NGÀY SINH</th>
+									<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="COMPANY NAME: activate to sort column ascending" style="width: 100.075px;">GIỚI TÍNH</th>
+									<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="STATUS: activate to sort column ascending" style="width: 108.275px;">TRẠNG THÁI</th>
+									<th class="sorting" tabindex="0" aria-controls="ListDatatableView" rowspan="1" colspan="1" aria-label="ACTION: activate to sort column ascending" style="width: 124.088px;">HÀNH ĐỘNG</th></tr>
+								</thead>
 							<tbody>
 							<tr role="row" class="odd" th:each="employees, index : ${employees}">
 								<td class="sorting_1">
@@ -92,17 +93,30 @@
 								</td>
 								<td>
 									<div>
-										<h6 class="text-primary" th:text="${employees.dateOfBirth != null ? #dates.format(employees.dateOfBirth, 'dd/MM/yyyy') : ''}"></h6>
+										<h6 class="" th:text="${employees.dateOfBirth != null ? #dates.format(employees.dateOfBirth, 'dd/MM/yyyy') : ''}"></h6>
 									</div>
 								</td>
 								<td>
 									<div>
-										<h6 class="text-primary" th:text="${employees.gender != null ? (employees.gender ? 'Nam' : 'Nữ') : ''}"></h6>
+										<h6 class="" th:text="${employees.gender != null ? (employees.gender ? 'Nam' : 'Nữ') : ''}"></h6>
 									</div>
 								</td>
-								<td><span class="badge badge-warning"  th:text="${employees.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED ? 'Kích hoạt'
-								  : (employees.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED ? 'Chưa kích hoạt'
-								  : 'Đã nghỉ việc')}"></span>
+								<td>
+									<div th:if="${employees.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}">
+										<h6 class="text-primary">
+											<span class="badge badge-success">Kích hoạt</span>
+										</h6>
+									</div>
+									<div th:if="${employees.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED}">
+										<h6 class="text-primary">
+											<span class="badge badge-warning">Ngừng kích hoạt</span>
+										</h6>
+									</div>
+									<div th:if="${employees.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).DELETED}">
+										<h6 class="text-primary">
+											<span class="badge badge-danger">Đã nghỉ việc</span>
+										</h6>
+									</div>
 								</td>
 								<td>
 									<div class="d-flex action-button">
@@ -121,27 +135,28 @@
 								</td>
 							</tr></tbody>
 						</table>
-							<div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;" class="dataTables_paginate paging_simple_numbers" id="ListDatatableView_paginate">
-								<!-- Nút Previous -->
-								<a class="paginate_button previous"
-								   th:classappend="${currentPage == 1} ? 'disabled'"
-								   th:href="${currentPage > 1} ? @{/staff-management(numPage=${currentPage - 1})} : '#'">
-									<i class="fa fa-angle-double-left" aria-hidden="true"></i>
-								</a>
-
-								<!-- Hiển thị số trang -->
-								<span>
-									<a th:each="i : ${#numbers.sequence(1, totalPages)}" class="paginate_button"
-									   th:classappend="${i == currentPage} ? 'current'"
-									   th:href="@{/staff-management(numPage=${i})}" th:text="${i}"></a>
-								</span>
-
-								<!-- Nút Next -->
-								<a class="paginate_button next"
-								   th:classappend="${currentPage == totalPages} ? 'disabled'"
-								   th:href="${currentPage < totalPages} ? @{/staff-management(numPage=${currentPage + 1})} : '#'">
-									<i class="fa fa-angle-double-right" aria-hidden="true"></i>
-								</a>
+							<div style="transform: scale(0.75); transform-origin: right center;">
+								<div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;"
+									 class="dataTables_paginate paging_simple_numbers" id="ListDatatableView_paginate">
+									<!-- Nút Previous -->
+									<a class="paginate_button previous"
+									   th:classappend="${currentPage == 1} ? 'disabled'"
+									   th:href="${currentPage > 1} ? @{/staff-management(numPage=${currentPage - 1})} : '#'">
+										<i class="fa fa-angle-double-left" aria-hidden="true"></i>
+									</a>
+									<!-- Hiển thị số trang -->
+									<span>
+										<a th:each="i : ${#numbers.sequence(1, totalPages)}" class="paginate_button"
+										   th:classappend="${i == currentPage} ? 'current'"
+										   th:href="@{/staff-management(numPage=${i})}" th:text="${i}"></a>
+									</span>
+									<!-- Nút Next -->
+									<a class="paginate_button next"
+									   th:classappend="${currentPage == totalPages} ? 'disabled'"
+									   th:href="${currentPage < totalPages} ? @{/staff-management(numPage=${currentPage + 1})} : '#'">
+										<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>

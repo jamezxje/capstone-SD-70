@@ -47,17 +47,16 @@
                         <input id="upload" type="file" name="productVariantList[0].featureImage"
                                onchange="readURL(this);"
                                class="form-control border-0" required>
-                        <label id="upload-label" for="upload" class="font-weight-light text-muted">Choose file</label>
+                        <label id="upload-label" for="upload" class="font-weight-light text-muted">Chọn ảnh</label>
                         <div class="input-group-append">
                           <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
                               class="fa fa-cloud-upload mr-2 text-muted"></i><small
-                              class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
+                              class="text-uppercase font-weight-bold text-muted">Chọn ảnh</small></label>
                         </div>
                       </div>
                       
                       <!-- Uploaded image area-->
-                      <p class="font-italic text-grey text-center">The image uploaded will be rendered inside the box
-                        below.</p>
+                      <p class="font-italic text-grey text-center">Ảnh được upload sẽ được hiển thị bên dưới.</p>
                       <div class="image-area mt-4">
                         <img id="imageResult" src="#" alt=""
                              class="img-fluid rounded shadow-sm mx-auto d-block">
@@ -94,10 +93,10 @@
                       <input id="productName" type="text" name="name" class="form-control" placeholder="" required>
                     </div>
                     <div class="form-group col-md-4">
-                      <label for="brandId">Brand<span class="text-danger">*</span> </label>
+                      <label for="brandId">Thương hiệu<span class="text-danger">*</span> </label>
                       <select id="brandId" name="productVariantList[0].brandId" class="form-control"
                               required>
-                        <option value="" selected>Chọn brand</option>
+                        <option value="" selected>Chọn thương hiệu</option>
                         <option th:each="brand : ${brands}"
                                 th:value="${brand.id}"
                                 th:text="${brand.name}">
@@ -180,13 +179,19 @@
                       <div class="form-group col-md-3">
                         <label for="quantity">Số lượng <span class="text-danger">*</span></label>
                         <input id="quantity" type="number" name="productVariantList[0].quantity"
-                               class="form-control"
-                               placeholder="" required>
+                               class="form-control" min="0" placeholder="" required>
+                        
+                        <!-- Kiểm tra và hiển thị lỗi nếu có -->
+                        <div th:if="${#fields.hasErrors('productVariantList[0].quantity')}" class="text-danger">
+                          <p th:errors="*{productVariantList[0].quantity}"></p>
+                        </div>
                       </div>
+                      
                       
                       <div class="form-group col-md-3">
                         <label for="price">Giá tiền (VND) <span class="text-danger">*</span></label>
                         <input id="price" type="number" name="productVariantList[0].price"
+                               oninput="formatPrice(this)"
                                class="form-control"
                                placeholder="" required>
                       </div>
@@ -213,7 +218,7 @@
                 <div class="basic-form">
                   <div class="form-row">
                     <div class="form-group col-md-12">
-                      <label for="productMediaGallery">Image gallery</label>
+                      <label for="productMediaGallery">Album sản phẩm</label>
                       <input id="productMediaGallery" name="productVariantList[0].images" type="file"
                              class="form-control" multiple
                              data-preview-file-type="text">

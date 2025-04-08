@@ -22,7 +22,7 @@
 						<h4 class="card-title mb-2">Quản lý khách hàng</h4>
 					</div>
 					<a href="/customer-management" class="btn btn-info light mr-3">Tải lại</a>
-					<a href="/customer-management/view-add" class="btn btn-info">+ Add Khách hàng</a>
+					<a href="/customer-management/view-add" class="btn btn-info">+ Thêm Khách hàng</a>
 				</div>
 				<div class="card-body">
 					<div class="d-flex justify-content-between align-items-center w-100">
@@ -86,17 +86,25 @@
 								</td>
 								<td>
 									<div>
-										<h6 class="text-primary" th:text="${customer.dateOfBirth != null ? #dates.format(customer.dateOfBirth, 'dd/MM/yyyy') : ''}"></h6>
+										<h6 class="" th:text="${customer.dateOfBirth != null ? #dates.format(customer.dateOfBirth, 'dd/MM/yyyy') : ''}"></h6>
 									</div>
 								</td>
 								<td>
 									<div>
-										<h6 class="text-primary" th:text="${customer.gender != null ? (customer.gender ? 'Nam' : 'Nữ') : ''}"></h6>
+										<h6 class="" th:text="${customer.gender != null ? (customer.gender ? 'Nam' : 'Nữ') : ''}"></h6>
 									</div>
 								</td>
-								<td><span class="badge badge-warning"  th:text="${customer.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED ? 'Kích hoạt'
-								  : (customer.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED ? 'Chưa kích hoạt'
-								  : 'Đã nghỉ việc')}"></span>
+								<td>
+									<div th:if="${customer.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}">
+										<h6 class="text-primary">
+											<span class="badge badge-success">Kích hoạt</span>
+										</h6>
+									</div>
+									<div th:if="${customer.status == T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED}">
+										<h6 class="text-primary">
+											<span class="badge badge-warning">Ngừng kích hoạt</span>
+										</h6>
+									</div>
 								</td>
 								<td>
 									<div class="d-flex action-button">
@@ -124,25 +132,27 @@
 							</tr>
 							</tbody>
 						</table>
+						<div style="transform: scale(0.75); transform-origin: right center;">
 							<div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;" class="dataTables_paginate paging_simple_numbers" id="ListDatatableView_paginate">
-							<!-- Nút Previous -->
-							<a class="paginate_button previous"
-							   th:classappend="${currentPage == 1} ? 'disabled'"
-							   th:href="${currentPage > 1} ? @{/customer-management(numPage=${currentPage - 1})} : '#'">
-								<i class="fa fa-angle-double-left" aria-hidden="true"></i>
-							</a>
-							<!-- Hiển thị số trang -->
-							<span>
-								<a th:each="i : ${#numbers.sequence(1, totalPages)}" class="paginate_button"
-								   th:classappend="${i == currentPage} ? 'current'"
-								   th:href="@{/customer-management(numPage=${i})}" th:text="${i}"></a>
-							</span>
-							<!-- Nút Next -->
-							<a class="paginate_button next"
-							   th:classappend="${currentPage == totalPages} ? 'disabled'"
-							   th:href="${currentPage < totalPages} ? @{/customer-management(numPage=${currentPage + 1})} : '#'">
-								<i class="fa fa-angle-double-right" aria-hidden="true"></i>
-							</a>
+						<!-- Nút Previous -->
+						<a class="paginate_button previous"
+						   th:classappend="${currentPage == 1} ? 'disabled'"
+						   th:href="${currentPage > 1} ? @{/customer-management(numPage=${currentPage - 1})} : '#'">
+							<i class="fa fa-angle-double-left" aria-hidden="true"></i>
+						</a>
+						<!-- Hiển thị số trang -->
+						<span>
+							<a th:each="i : ${#numbers.sequence(1, totalPages)}" class="paginate_button"
+							   th:classappend="${i == currentPage} ? 'current'"
+							   th:href="@{/customer-management(numPage=${i})}" th:text="${i}"></a>
+						</span>
+						<!-- Nút Next -->
+						<a class="paginate_button next"
+						   th:classappend="${currentPage == totalPages} ? 'disabled'"
+						   th:href="${currentPage < totalPages} ? @{/customer-management(numPage=${currentPage + 1})} : '#'">
+							<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+						</a>
+					</div>
 						</div>
 					</div>
 				</div>
