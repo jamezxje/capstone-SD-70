@@ -99,13 +99,13 @@
                 <td>
                   <span
                       th:if="${product.status == T(org.fpoly.capstone.entity.enum_status.ProductStatus).NGUNG_SU_DUNG}"
-                      class="badge light badge-danger" th:text="${product.status}"></span>
+                      class="badge light badge-danger">NGƯNG SỬ DỤNG</span>
                   <span
                       th:if="${product.status == T(org.fpoly.capstone.entity.enum_status.ProductStatus).DANG_SU_DUNG}"
-                      class="badge light badge-success" th:text="${product.status}"></span>
+                      class="badge light badge-success">ĐANG SỬ DỤNG</span>
                   <span
                       th:if="${product.status == T(org.fpoly.capstone.entity.enum_status.ProductStatus).HET_SAN_PHAM}"
-                      class="badge light badge-secondary" th:text="${product.status}"></span>
+                      class="badge light badge-secondary">HẾT SẢN PHẨM</span>
                 </td>
                 <td th:text="${product.createDate}"></td>
                 <td th:text="${product.createBy}"></td>
