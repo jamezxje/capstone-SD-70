@@ -10,82 +10,83 @@
 
 <body>
 <th:block id="th-body">
-  <div class="content-body">
-    <div class="container-fluid">
 
-      <div class="row page-titles mx-0">
-        <div class="col-sm-6 p-md-0">
-          <div class="welcome-text">
-            <h4>Hi, welcome back!</h4>
-            <p class="mb-0">Tạo voucher</p>
-          </div>
-        </div>
-      </div>
+   <div class="content-body">
+     <div class="container-fluid">
 
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-lg-8 order-lg-1">
-                  <h4 class="mb-3">Tạo voucher</h4>
+       <div class="row page-titles mx-0">
+         <div class="col-sm-6 p-md-0">
+           <div class="welcome-text">
+             <h4>Hi, welcome back!</h4>
+             <p class="mb-0">Tạo voucher</p>
+           </div>
+         </div>
+       </div>
 
-                  <form id="voucherForm" class="needs-validation" novalidate
-                        th:action="@{/dashboard/product-management/voucher/create}"
-                        th:object="${voucher}" method="post">
+       <div class="row">
+         <div class="col-xl-12">
+           <div class="card">
+             <div class="card-body">
+               <div class="row">
+                 <div class="col-lg-8 order-lg-1">
+                   <h4 class="mb-3">Tạo voucher</h4>
 
-                    <!-- Tên Voucher -->
-                    <div class="mb-3">
-                      <label for="name">Tên Voucher</label>
-                      <input type="text" class="form-control" id="name" th:field="*{name}" required
-                             pattern="^[A-Za-zÀ-Ỹà-ỹ\s]{3,}$" oninput="validateName()">
-                      <div class="invalid-feedback">
-                        Tên không được trống.
-                      </div>
-                    </div>
+                   <form id="voucherForm" class="needs-validation" novalidate
+                         th:action="@{/dashboard/product-management/voucher/create}"
+                         th:object="${voucher}" method="post">
 
-                    <!-- Số tiền -->
-                    <div class="mb-3">
-                      <label for="value">Số tiền (VND)</label>
-                      <input type="text" class="form-control" id="value" th:field="*{value}" required
-                             oninput="formatCurrency(event)">
-                      <div class="invalid-feedback">Số tiền không hợp lệ.</div>
-                    </div>
+                     <!-- Tên Voucher -->
+                     <div class="mb-3">
+                       <label for="name">Tên Voucher</label>
+                       <input type="text" class="form-control" id="name" th:field="*{name}" required oninput="validateName()">
+                       <div class="invalid-feedback">
+                         Tên không được trống.
+                       </div>
+                     </div>
 
-                    <!-- Số lượng -->
-                    <div class="mb-3">
-                      <label for="quantity">Số lượng</label>
-                      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1" max="10000">
-                      <div class="invalid-feedback">Số lượng phải lớn hơn 0.</div>
-                    </div>
+                     <!-- Số tiền -->
+                     <div class="mb-3">
+                       <label for="value">Số tiền (VND)</label>
+                       <input type="text" class="form-control" id="value" name="value" th:field="*{value}" required
+                              oninput="formatCurrency(event)">
+                       <div class="invalid-feedback">Số tiền không hợp lệ.</div>
+                     </div>
 
-                    <!-- Ngày bắt đầu -->
-                    <div class="mb-3">
-                      <label for="startDate">Ngày bắt đầu</label>
-                      <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}" required>
-                      <div class="invalid-feedback">Ngày bắt đầu không được để trống.</div>
-                    </div>
+                     <!-- Số lượng -->
+                     <div class="mb-3">
+                       <label for="quantity">Số lượng</label>
+                       <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1" max="10000">
+                       <div class="invalid-feedback">Số lượng phải lớn hơn 0 và nhỏ hơn 100.000.</div>
+                     </div>
 
-                    <!-- Ngày kết thúc -->
-                    <div class="mb-3">
-                      <label for="endDate">Ngày kết thúc</label>
-                      <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}" required>
-                      <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
-                    </div>
+                     <!-- Ngày bắt đầu -->
+                     <div class="mb-3">
+                       <label for="startDate">Ngày bắt đầu</label>
+                       <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}" required>
+                       <div class="invalid-feedback">Ngày bắt đầu không được để trống.</div>
+                     </div>
 
-                    <hr class="mb-4">
-                    <button class="btn btn-primary btn-lg btn-block" type="submit">Gửi</button>
-                  </form>
+                     <!-- Ngày kết thúc -->
+                     <div class="mb-3">
+                       <label for="endDate">Ngày kết thúc</label>
+                       <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}" required>
+                       <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
+                     </div>
 
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                     <hr class="mb-4">
+                     <button class="btn btn-primary btn-lg btn-block" type="submit">Gửi</button>
+                   </form>
 
-    </div>
-  </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+
+     </div>
+   </div>
+
 
   <script>
     // Định dạng tiền tệ khi nhập số tiền
@@ -113,7 +114,7 @@
       // Kiểm tra số tiền hợp lệ
       let valueInput = document.getElementById("value");
       let numericValue = valueInput.value.replace(/\D/g, '');
-      if (!numericValue || parseInt(numericValue) <= 0 && !numericValue || parseInt(numericValue) > 50000000) {
+      if (!numericValue || parseInt(numericValue) <= 0 || parseInt(numericValue) >= 100000000) {
         valueInput.classList.add("is-invalid");
         isValid = false;
       } else {
@@ -122,7 +123,7 @@
 
       // Kiểm tra số lượng hợp lệ
       let quantityInput = document.getElementById("quantity");
-      if (parseInt(quantityInput.value) < 1 && parseInt(quantityInput.value) > 10000 || isNaN(quantityInput.value)) {
+      if (parseInt(quantityInput.value) < 1 || parseInt(quantityInput.value) > 100000 || isNaN(quantityInput.value)) {
         quantityInput.classList.add("is-invalid");
         isValid = false;
       } else {

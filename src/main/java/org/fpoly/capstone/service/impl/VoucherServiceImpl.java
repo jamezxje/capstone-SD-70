@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -34,15 +36,11 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     public Voucher createVoucher(Voucher voucher) {
         String user = userService.getName();
-
         if(voucher.getStartDate().isAfter(voucher.getEndDate())){
             throw new IllegalArgumentException("Start date cannot be after end date.");
         }
-
         String code = "VC" + String.format("%05d", new Random().nextInt(100000));  ;
-
         Voucher newVoucher = new Voucher();
-
         newVoucher.setCode(code);
         newVoucher.setName(voucher.getName());
         newVoucher.setValue(voucher.getValue());
@@ -89,13 +87,13 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public Voucher updateVoucher(Voucher voucher, VoucherStatus voucherStatus,
-                                 LocalDateTime startDate, LocalDateTime endDate) throws NotException {
+                                 LocalDateTime startDate, LocalDateTime endDate, BigDecimal value) throws NotException {
 
         Voucher update = findById(voucher.getId());
 
 
         update.setName(voucher.getName());
-        update.setValue(voucher.getValue());
+        update.setValue(value);
         update.setQuantity(voucher.getQuantity());
         update.setStartDate(startDate);
         update.setEndDate(endDate);

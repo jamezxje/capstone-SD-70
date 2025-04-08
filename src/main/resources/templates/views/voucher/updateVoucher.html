@@ -47,8 +47,6 @@
       <div class="row page-titles mx-0">
         <div class="col-sm-6 p-md-0">
           <div class="welcome-text">
-            <h4>Hi, Chào mừng bạn trở lại!</h4>
-            <p class="mb-0">Sửa voucher</p>
           </div>
         </div>
         <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
@@ -81,7 +79,7 @@
                     <!-- Số tiền -->
                     <div class="mb-3">
                       <label for="value">Số tiền (VND)</label>
-                      <input type="text" class="form-control" id="value" th:field="*{value}" required
+                      <input type="text" class="form-control" id="value" name="value" th:value="${formattedValue}" required
                              oninput="formatCurrency(event)">
                       <div class="invalid-feedback">Số tiền không hợp lệ.</div>
                     </div>
@@ -90,7 +88,7 @@
                     <div class="mb-3">
                       <label for="quantity">Số lượng</label>
                       <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1" max="10000">
-                      <div class="invalid-feedback">Số lượng phải lớn hơn 0.</div>
+                      <div class="invalid-feedback">Số lượng phải lớn hơn 0 nhỏ hơn 100.000.</div>
                     </div>
 
                     <!-- Ngày bắt đầu -->
@@ -162,7 +160,7 @@
       // Kiểm tra số tiền hợp lệ
       let valueInput = document.getElementById("value");
       let numericValue = valueInput.value.replace(/\D/g, '');
-      if (!numericValue || parseInt(numericValue) <= 0 && !numericValue || parseInt(numericValue) > 100000000) {
+      if (!numericValue || parseInt(numericValue) <= 0 || !numericValue || parseInt(numericValue) > 100000000) {
         valueInput.classList.add("is-invalid");
         isValid = false;
       } else {
@@ -171,7 +169,7 @@
 
       // Kiểm tra số lượng hợp lệ
       let quantityInput = document.getElementById("quantity");
-      if (parseInt(quantityInput.value) < 1 && parseInt(quantityInput.value) > 10000 || isNaN(quantityInput.value)) {
+      if (parseInt(quantityInput.value) < 1 || parseInt(quantityInput.value) > 100000 || isNaN(quantityInput.value)) {
         quantityInput.classList.add("is-invalid");
         isValid = false;
       } else {

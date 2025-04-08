@@ -11,6 +11,7 @@ import org.fpoly.capstone.entity.enum_status.VoucherStatus;
 
 import java.math.BigDecimal;
 
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -75,6 +76,5 @@ public class Voucher {
 
     @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VoucherDetail> voucherDetails;
-
 
 }

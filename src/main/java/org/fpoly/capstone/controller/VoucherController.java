@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -64,10 +65,14 @@ public class VoucherController {
     public String findById(@PathVariable("id") Long id, Model model) throws NotException {
         Voucher voucher = voucherService.findById(id);
 
+        DecimalFormat formatter = new DecimalFormat("###,###.##");
+        String formattedValue = formatter.format(voucher.getValue());
+
         model.addAttribute("status", VoucherStatus.values());
         model.addAttribute("voucher", voucher);
         model.addAttribute("startDate", voucher.getStartDate());
         model.addAttribute("endDate", voucher.getEndDate());
+        model.addAttribute("formattedValue", formattedValue);
         return "views/voucher/updateVoucher";
     }
 
@@ -75,11 +80,13 @@ public class VoucherController {
     public String update(@ModelAttribute("voucher") Voucher voucher,
                          @RequestParam("status") VoucherStatus voucherStatus,
                          @RequestParam("startDate") LocalDateTime startDate,
-                         @RequestParam("endDate") LocalDateTime endDate
+                         @RequestParam("endDate") LocalDateTime endDate,
+                         @RequestParam("value") String value
     ) throws NotException {
 
         log.info("(update): " + startDate + endDate);
-        voucherService.updateVoucher(voucher, voucherStatus, startDate, endDate);
+        BigDecimal bigDecimal = new BigDecimal(value);
+        voucherService.updateVoucher(voucher, voucherStatus, startDate, endDate, bigDecimal);
         return "redirect:/dashboard/product-management/voucher/list";
     }
 

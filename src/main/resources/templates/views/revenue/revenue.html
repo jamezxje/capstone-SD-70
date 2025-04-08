@@ -6,7 +6,22 @@
   <meta charset="utf-8">
   <th:block id="th-css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      td img {
+  width: 50px;  /* Chiều rộng ảnh */
+  height: 50px; /* Chiều cao ảnh */
+  object-fit: cover;  /* Đảm bảo ảnh không bị méo, cắt để phù hợp với vùng chứa */
+  border-radius: 50%;  /* Nếu bạn muốn ảnh tròn, thay 50% với border-radius */
+  object-position: center; /* Căn giữa ảnh nếu ảnh bị cắt */
+}
 
+/* Nếu bạn muốn border quanh ảnh */
+.img-thumbnail {
+  border: 1px solid #ddd; /* Đặt border xung quanh ảnh */
+  padding: 2px; /* Khoảng cách giữa ảnh và border */
+  border-radius: 5px; /* Viền ảnh tròn */
+}
+    </style>
   </th:block>
 
 </head>
@@ -139,6 +154,7 @@
               <tr>
                 <th>STT</th>
                 <th>Tên sản phẩm</th>
+                <th>Ảnh</th>
                 <th>Tổng số lượng đã bán</th>
               </tr>
               </thead>
@@ -147,6 +163,9 @@
                 <td th:text="${iterStat.index + 1}"></td>
                 <td th:text="${entry.key.product.name}"></td> <!-- entry.key là ProductDetail -->
 <!--                <td th:text="${entry.value}"></td>-->
+                <td>
+                  <img th:src="${entry.key.featureImage}" class="img-thumbnail" alt="Image">
+                </td>
                 <td th:text="${entry.value}"></td>   <!-- entry.value là tổng số lượng đã bán -->
               </tr>
               </tbody>
