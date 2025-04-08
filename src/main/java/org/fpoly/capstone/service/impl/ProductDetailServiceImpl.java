@@ -1,14 +1,5 @@
 package org.fpoly.capstone.service.impl;
 
-import org.fpoly.capstone.entity.ProductDetail;
-import org.fpoly.capstone.repository.ProductDetailRepository;
-import org.fpoly.capstone.service.ProductDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +32,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,29 +87,42 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         Size size = this.findEntityById(request.getSizeId(),
                 this.sizeRepository, "Size not found");
 
+        BigDecimal price = request.getPrice();
+        BigDecimal multiplier = new BigDecimal(1000);
+
+        // Kiểm tra số lượng
+        if (request.getQuantity() < 0) {
+            throw new IllegalArgumentException("Số lượng không thể nhỏ hơn 0");
+        } else if (request.getQuantity() == 0) {
+            productDetail.setStatus(ProductVariantStatus.HET_SAN_PHAM); // Giả sử ProductStatus có giá trị HET_SAN_PHAM
+            productDetail.setQuantity(0);
+        } else {
+            productDetail.setQuantity(request.getQuantity());
+        }
+
         productDetail.setProduct(product);
         productDetail.setBrand(brand);
         productDetail.setColor(color);
         productDetail.setMaterial(material);
         productDetail.setSize(size);
         productDetail.setGender(request.getGender());
-        productDetail.setQuantity(request.getQuantity());
-        productDetail.setPrice(request.getPrice());
+        productDetail.setPrice(price.multiply(multiplier));
         productDetail.setDescription(request.getDescription());
     }
 
     @Override
     public List<ProductDetail> getAllProductDetails() {
-        return productDetailRepository.findAll();
+        return this.productDetailRepository.findAll();
     }
+
     @Override
     @Transactional
     public void createProductDetail(ProductDetailRequest request) throws Exception {
         ProductDetail productDetail = new ProductDetail();
 
-        this.setCommonProductDetailProperties(productDetail, request);
+        productDetail.setStatus(ProductVariantStatus.DANG_SU_DUNG);
 
-        productDetail.setStatus(ProductVariantStatus.DANG_SU_DUNG);  // Trạng thái mặc định khi tạo mới
+        this.setCommonProductDetailProperties(productDetail, request);
 
         this.handleImageUpload(productDetail, request.getFeatureImage(), request.getImages());
 
