@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -39,25 +40,29 @@ public class AddressController {
     }
     @PostMapping(path = "/delete/{id}")
     public String deleteAddress(@PathVariable Integer id,
-     @RequestParam("customerId") Integer customerId) {  // Lấy customerId từ query string
+                                @RequestParam("customerId") Integer customerId,// Lấy customerId từ query string
+                                RedirectAttributes redirectAttributes) {
         try {
             this.addressService.deleteAddress(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        redirectAttributes.addFlashAttribute("successMessage", "Xóa thành công!");
         return "redirect:/customer-management-address/address-list/"+customerId;
     }
 
     @PostMapping(path = "/set-default/{id}")
     public String setDefaultAddress(
             @PathVariable Integer id,
-            @RequestParam("customerId") Integer customerId) {  // Lấy customerId từ query string
+            @RequestParam("customerId") Integer customerId,
+            RedirectAttributes redirectAttributes) {  // Lấy customerId từ query string
         try {
             System.out.println("Setting default address ID: " + id + " for customer: " + customerId);
             this.addressService.setDefaultAddress(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        redirectAttributes.addFlashAttribute("successMessage", "Đặt địa chỉ mặc định thành công!");
         return "redirect:/customer-management-address/address-list/" + customerId; // Sử dụng customerId cho đúng
     }
 

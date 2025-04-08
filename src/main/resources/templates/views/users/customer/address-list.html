@@ -38,21 +38,24 @@
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-md-12 col-lg-12 col-xl-12">
-                                                <div class="request-wrapper">
-                                                    <div th:each="address : ${listAddress}" class="py-2 px-3 bg-white shadow-sm my-3 rounded">
+                                                <div class="request-wrapper" style="min-height: 400px;">
+                                                    <div th:each="address, index : ${listAddress}" class="py-2 px-3 bg-white shadow-sm my-3 rounded">
                                                         <div class="row d-flex justify-content-between align-items-center">
                                                             <div class="col-12 col-md-6 d-flex align-items-center justify-content-start">
-                                                                <div>
-                                                                    <div class="my-2">
-                                                                    <span class="font-weight-bold"
-                                                                          th:text="${address.fullName} + ', ' + ${address.phoneNumber}"></span>
+                                                                <div class="mb-3 p-3 rounded border bg-light shadow-sm">
+                                                                    <div class="mb-1">
+                                                                        <span class="text-muted fw-semibold">Địa chỉ <span th:text="${index.count}"></span></span>
                                                                     </div>
-                                                                    <div class="my-2">
-                                                                    <span class="font-weight-bold"
-                                                                          th:text="${address.line} + ', ' + ${address.ward} + ', ' + ${address.district} + ', ' + ${address.province} "></span>
+                                                                    <div class="mb-1">
+                                                                        <span class="fw-medium text-dark" th:text="${address.fullName} + ', ' + ${address.phoneNumber}"></span>
+                                                                    </div>
+                                                                    <div class="mb-1">
+                                                                        <span class="fw-semibold text-body"
+                                                                              th:text="${address.line} + ', ' + ${address.ward} + ', ' + ${address.district} + ', ' + ${address.province}">
+                                                                        </span>
                                                                     </div>
                                                                     <span th:if="${address.status == T(org.fpoly.capstone.entity.enum_status.AddressStatus).DANG_SU_DUNG}"
-                                                                          class="badge light badge-success">MẶC ĐỊNH</span>
+                                                                          class="badge bg-success text-white fw-semibold px-3 py-1 rounded-pill">MẶC ĐỊNH</span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-12 col-md-6 text-right">
@@ -60,13 +63,13 @@
                                                                     <button type="button"
                                                                             data-toggle="modal"
                                                                             data-target="#setDefaultAddressModal"
-                                                                            class="btn btn-sm btn-outline-warning mx-2"
+                                                                            class="btn btn-sm btn-outline-success mx-2"
                                                                             th:if="${address.status != T(org.fpoly.capstone.entity.enum_status.AddressStatus).DANG_SU_DUNG}"
                                                                             th:data-addressId="${address.id}"
                                                                             th:data-customerId="${customer.id}">
                                                                         Chọn làm mặc định
                                                                     </button>
-                                                                    <button type="button" class="btn btn-sm btn-outline-primary mx-2"
+                                                                    <button type="button" class="btn btn-sm btn-outline-warning mx-2"
                                                                             data-toggle="modal"
                                                                             data-target="#editAddressModal"
                                                                             th:data-fullName="${address.fullName}"
@@ -81,7 +84,7 @@
                                                                     <button type="button"
                                                                             data-toggle="modal"
                                                                             data-target="#deleteAddressModal"
-                                                                            class="btn btn-sm btn-outline-warning mx-2"
+                                                                            class="btn btn-sm btn-outline-primary mx-2"
                                                                             th:data-addressId="${address.id}"
                                                                             th:data-customerId="${customer.id}">
                                                                         Xóa
@@ -685,7 +688,7 @@
             let textColor = type === "success" ? "#155724" : "#721c24";
             let borderColor = type === "success" ? "#28a745" : "#dc3545";
 
-            toast.innerHTML = message;
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i> ${message}`;
             toast.style.cssText = `
             background-color: ${bgColor};
             color: ${textColor};
@@ -701,7 +704,7 @@
             transition: opacity 0.5s, transform 0.5s ease-in-out;
             margin-bottom: 10px;
             position: relative;
-            min-width: 250px;
+            min-width: 280px;
         `;
 
             toastContainer.appendChild(toast);
@@ -718,6 +721,54 @@
             }, 2000);
         }
     </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script>
+        function showToast(message) {
+            const toastContainer = document.getElementById("toast-container");
+            const toast = document.createElement("div");
 
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i> ${message}`;
+            toast.style.cssText = `
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.5s, transform 0.5s ease-in-out;
+            margin-bottom: 10px;
+            position: relative;
+            min-width: 280px;
+        `;
+
+            toastContainer.appendChild(toast);
+
+            // Hiện thông báo (trượt từ phải vào)
+            setTimeout(() => {
+                toast.style.opacity = "1";
+                toast.style.transform = "translateX(0)";
+            }, 100);
+
+            // Ẩn sau 3 giây (trượt ra phải)
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transform = "translateX(100%)";
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // Hiển thị thông báo nếu có từ server
+        document.addEventListener("DOMContentLoaded", function () {
+            let successMessage = "[[${successMessage}]]";
+            if (successMessage && successMessage.trim() !== "") {
+                showToast(successMessage);
+            }
+        });
+    </script>
 </th:block>
 </html>
