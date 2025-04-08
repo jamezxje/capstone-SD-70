@@ -28,7 +28,7 @@
             <form th:action="@{/dashboard/product-management/product}" method="GET" id="searchForm">
               <div class="form-row">
                 <div class="form-group col-md-3">
-                  <label for="searchCategoryId">Category</label>
+                  <label for="searchCategoryId">Danh mục</label>
                   <select class="form-control" id="searchCategoryId" name="categoryId">
                     <option value="" selected>Danh mục</option>
                     <option th:each="category : ${categories}"
@@ -44,7 +44,7 @@
                          placeholder="Nhập code sản phẩm tìm kiếm">
                 </div>
                 <div class="form-group col-md-3">
-                  <label>Name</label>
+                  <label>Tên</label>
                   <input id="searchName" type="text" name="name" class="form-control" th:value="${request.name}"
                          placeholder="Nhập tên sản phẩm tìm hiếm">
                 </div>
@@ -54,10 +54,16 @@
                     <option value="" selected>Trạng thái</option>
                     <option
                         th:each="statusOpt : ${T(org.fpoly.capstone.entity.enum_status.ProductStatus).values()}"
-                        th:value="${statusOpt}" th:text="${statusOpt}"
+                        th:value="${statusOpt}"
                         th:selected="${statusOpt == request.status}">
+                      
+                      <span th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductStatus).DANG_SU_DUNG}">ĐANG SỬ DỤNG</span>
+                      <span
+                          th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductStatus).NGUNG_SU_DUNG}">NGỪNG SỬ DỤNG</span>
+                      <span th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductStatus).HET_SAN_PHAM}">HẾT SẢN PHẨM</span>
                     </option>
                   </select>
+                
                 </div>
               </div>
               <div class="d-flex justify-content-end">
@@ -99,13 +105,13 @@
                 <td>
                   <span
                       th:if="${product.status == T(org.fpoly.capstone.entity.enum_status.ProductStatus).NGUNG_SU_DUNG}"
-                      class="badge light badge-danger" th:text="${product.status}"></span>
+                      class="badge light badge-danger">NGƯNG SỬ DỤNG</span>
                   <span
                       th:if="${product.status == T(org.fpoly.capstone.entity.enum_status.ProductStatus).DANG_SU_DUNG}"
-                      class="badge light badge-success" th:text="${product.status}"></span>
+                      class="badge light badge-success">ĐANG SỬ DỤNG</span>
                   <span
                       th:if="${product.status == T(org.fpoly.capstone.entity.enum_status.ProductStatus).HET_SAN_PHAM}"
-                      class="badge light badge-secondary" th:text="${product.status}"></span>
+                      class="badge light badge-secondary">HẾT SẢN PHẨM</span>
                 </td>
                 <td th:text="${product.createDate}"></td>
                 <td th:text="${product.createBy}"></td>

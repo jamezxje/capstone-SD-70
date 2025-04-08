@@ -29,13 +29,13 @@
             <form th:action="@{/dashboard/product-management/product-detail}" method="GET" id="searchForm">
               <div class="form-row">
                 <div class="form-group col-md-3">
-                  <label>Name</label>
+                  <label>Tên</label>
                   <input id="searchName" type="text" name="productName" class="form-control"
                          th:value="${request.productName}"
                          placeholder="Nhập tên sản phẩm tìm hiếm">
                 </div>
                 <div class="form-group col-md-3">
-                  <label for="searchCategoryId">Category</label>
+                  <label for="searchCategoryId">Danh mục</label>
                   <select class="form-control" id="searchCategoryId" name="categoryId">
                     <option value="" selected>Danh mục</option>
                     <option th:each="category : ${categories}"
@@ -46,9 +46,9 @@
                   </select>
                 </div>
                 <div class="form-group col-md-3">
-                  <label>Brand</label>
+                  <label>Thương hiệu</label>
                   <select id="searchBrandId" class="form-control" name="brandId">
-                    <option value="" selected>Brand</option>
+                    <option value="" selected>Thương hiệu</option>
                     <option th:each="brand : ${brands}"
                             th:value="${brand.id}"
                             th:text="${brand.name}"
@@ -107,8 +107,14 @@
                     <option value="" selected>Trạng thái</option>
                     <option
                         th:each="statusOpt : ${T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).values()}"
-                        th:value="${statusOpt}" th:text="${statusOpt}"
+                        th:value="${statusOpt}"
                         th:selected="${statusOpt == request.status}">
+                      <span
+                          th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).DANG_SU_DUNG}">ĐANG SỬ DỤNG</span>
+                      <span
+                          th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).NGUNG_SU_DUNG}">NGỪNG SỬ DỤNG</span>
+                      <span
+                          th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).HET_SAN_PHAM}">HẾT SẢN PHẨM</span>
                     </option>
                   </select>
                 </div>
@@ -167,13 +173,13 @@
                 <td>
                   <span
                       th:if="${productDetail.status == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).DANG_SU_DUNG}"
-                      class="badge light badge-success" th:text="${productDetail.status}"></span>
+                      class="badge light badge-success">ĐANG SỬ DỤNG</span>
                   <span
                       th:if="${productDetail.status == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).NGUNG_SU_DUNG}"
-                      class="badge light badge-danger" th:text="${productDetail.status}"></span>
+                      class="badge light badge-danger">NGƯNG SỬ DỤNG</span>
                   <span
                       th:if="${productDetail.status == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).HET_SAN_PHAM}"
-                      class="badge light badge-secondary" th:text="${productDetail.status}"></span>
+                      class="badge light badge-secondary">HẾT SẢN PHẨM</span>
                 </td>
                 <td>
                   <div class="d-flex action-button">
