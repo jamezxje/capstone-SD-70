@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
@@ -92,7 +91,8 @@ public class EmployeeController {
     @PostMapping("/add")
     public String saveEmployee(@ModelAttribute("employee") User user,
                                @ModelAttribute("address") Address address,
-                               @RequestParam("file") MultipartFile file,
+//                               @RequestParam("file") MultipartFile file,
+                               @RequestParam("avatar") String avatarUrl,
                                Model model, RedirectAttributes redirectAttributes) {
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "citizenIdentity", "gender");
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
@@ -107,17 +107,17 @@ public class EmployeeController {
         if (userService.existsByCitizenIdentity(user.getCitizenIdentity())) {
             errors.put("citizenIdentity", "Căn cước công dân đã tồn tại!");
         }
-        if (!errors.isEmpty() || !errorsAddress.isEmpty() || file == null || file.isEmpty()) {
-            user.setAddresses(new ArrayList<>(List.of(address))); // Set lại address vào user
+        if (!errors.isEmpty() || !errorsAddress.isEmpty() || avatarUrl == null || avatarUrl.isEmpty()) {
+            user.setAddresses(List.of(address));
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
-            if (file == null || file.isEmpty()) {
+            if (avatarUrl == null || avatarUrl.isEmpty()) {
                 model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
             }
             return "views/users/employee/employee-create";
         }
-
-        employeeService.createEmployee(user, address,file);
+        user.setAvatar(avatarUrl);
+        employeeService.createEmployee(user, address);
         redirectAttributes.addFlashAttribute("successMessage", "Thêm thành công!");
         return "redirect:/staff-management";
     }
@@ -143,13 +143,16 @@ public class EmployeeController {
     public String updateEmployee(@PathVariable Long id,
                                  @ModelAttribute("employee") User user,
                                  @ModelAttribute("address") Address address,
-                                 @RequestParam(value = "file", required = false) MultipartFile file,
-                                 Model model, RedirectAttributes redirectAttributes) {
+                                 @RequestParam(value = "avatar", required = false) String avatar,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
 
         User existingUser = employeeService.getEmployeeById(id);
-        boolean isFileEmpty = file == null || file.isEmpty();
-        boolean isNewAvatarRequired = isFileEmpty && existingUser.getAvatar() == null;
 
+        // Nếu không có ảnh mới và ảnh cũ cũng null => lỗi
+        boolean isNewAvatarRequired = (avatar == null || avatar.isBlank()) && existingUser.getAvatar() == null;
+
+        // Validate
         Set<String> userFieldsToValidate = Set.of("fullName", "dateOfBirth", "phoneNumber", "email", "citizenIdentity", "gender");
         Map<String, String> errors = UserValidator.validate(user, userFieldsToValidate);
 
@@ -165,14 +168,17 @@ public class EmployeeController {
         if (!user.getCitizenIdentity().equals(existingUser.getCitizenIdentity()) && userService.existsByCitizenIdentity(user.getCitizenIdentity())) {
             errors.put("citizenIdentity", "Căn cước công dân đã tồn tại!");
         }
+
         if (!errors.isEmpty() || !errorsAddress.isEmpty() || isNewAvatarRequired) {
-            // Gán lại avatar cũ nếu có, để giữ ảnh hiển thị khi reload form
-            if (existingUser.getAvatar() != null) {
+            // Gán lại avatar nếu chưa có
+            if (existingUser.getAvatar() != null && (user.getAvatar() == null || user.getAvatar().isBlank())) {
                 user.setAvatar(existingUser.getAvatar());
             }
+
             if (isNewAvatarRequired) {
                 model.addAttribute("fileError", "Vui lòng chọn ảnh đại diện.");
             }
+
             user.setAddresses(new ArrayList<>(List.of(address)));
             model.addAttribute("errors", errors);
             model.addAttribute("errorsAddress", errorsAddress);
@@ -182,8 +188,10 @@ public class EmployeeController {
             return "views/users/employee/employee-update";
         }
 
+        // Set avatar cho user mới từ input (dù là avatar cũ hay mới)
+        user.setAvatar(avatar);
+        employeeService.updateEmployee(id, user, address); // không cần file nữa
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công!");
-        employeeService.updateEmployee(id, user, address, file);
         return "redirect:/staff-management";
     }
 }

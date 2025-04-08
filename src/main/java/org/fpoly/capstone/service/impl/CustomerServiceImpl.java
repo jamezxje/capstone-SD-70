@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -82,15 +81,15 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public User createCustomer(User user, Address address, MultipartFile file) {
+    public User createCustomer(User user, Address address) {
         String rawPassword = PasswordUtil.generateRandomPassword(8); // Tạo mật khẩu 8 ký tự
         String encodedPassword = passwordEncoder.encode(rawPassword);// Mã hóa mật khẩu
         String userServiceName = userService.getName();
 
-        String urlAvatar = null;
-        if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file);
-        }
+//        String urlAvatar = null;
+//        if (file != null && !file.isEmpty()) {
+//            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file);
+//        }
 
         // Tạo đối tượng user
         User newUser = new User();
@@ -100,7 +99,7 @@ public class CustomerServiceImpl implements CustomerService {
         newUser.setPassword(encodedPassword);
         newUser.setDateOfBirth(user.getDateOfBirth());
         newUser.setGender(user.getGender());
-        newUser.setAvatar(urlAvatar);
+        newUser.setAvatar(user.getAvatar());
         newUser.setRoles(UserRole.ROLE_CUSTOMER);
         newUser.setStatus(user.getStatus());
         newUser.setCreatedBy(userServiceName);
@@ -139,7 +138,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public User updateCustomer(Long id, User user, Address address,MultipartFile file) {
+    public User updateCustomer(Long id, User user, Address address) {
         User existingCustomer = customerRepository.findById(id).orElse(null);
         if (existingCustomer == null) {
             return null;
@@ -147,10 +146,10 @@ public class CustomerServiceImpl implements CustomerService {
         String userServiceName = userService.getName();
 
         // Nếu có file mới => Upload lên Cloudinary, ngược lại giữ nguyên ảnh cũ
-        String urlAvatar = existingCustomer.getAvatar(); // Giữ ảnh cũ
-        if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file); // Upload ảnh mới
-        }
+        String urlAvatar = user.getAvatar(); // Giữ ảnh cũ
+//        if (file != null && !file.isEmpty()) {
+//            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file); // Upload ảnh mới
+//        }
 
         // Cập nhật thông tin khách hàng
         existingCustomer.setFullName(user.getFullName());

@@ -118,6 +118,7 @@
                                                     <p class="error" th:if="${errorsAddress['line']}" th:text="${errorsAddress['line']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
+                                            <input type="hidden" id="avatar" name="avatar" th:value="${customer.avatar}">
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label">Ảnh đại diện</label>
                                                 <div class="col-lg-6 d-flex flex-column align-items-center">
@@ -162,16 +163,33 @@
         </div>
     </div>
     <script>
-        // JS để preview ảnh mới
         function readURLAvatar(input) {
             if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const preview = document.getElementById('avatarPreview');
-                    preview.src = e.target.result; // base64 tạm thời
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(input.files[0]);
+                const formData = new FormData();
+                formData.append("file", input.files[0]);
+
+                fetch("/api/upload/avatar", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error("HTTP Error " + response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Server response:", data);
+                        if (data.url) {
+                            document.getElementById("avatarPreview").src = data.url;
+                            document.getElementById("avatarPreview").style.display = "block";
+                            document.getElementById("avatar").value = data.url;
+                        } else {
+                            alert("Upload ảnh thất bại: " + (data.error || "Không xác định"));
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Upload lỗi:", error);
+                        alert("Đã có lỗi khi upload ảnh.");
+                    });
             }
         }
     </script>

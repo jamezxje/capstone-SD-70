@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -78,23 +77,23 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
 
     @Transactional
     @Override
-    public User createEmployee(User user, Address address, MultipartFile file) {
+    public User createEmployee(User user, Address address) {
         String rawPassword = PasswordUtil.generateRandomPassword(8); // Tạo mật khẩu 8 ký tự
         String encodedPassword = passwordEncoder.encode(rawPassword);
         String userServiceName = userService.getName();
 
         // xử lý ảnh
-        String urlAvatar = null;
-        if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file);
-        }
+//        String urlAvatar = null;
+//        if (file != null && !file.isEmpty()) {
+//            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file);
+//        }
         // Tạo đối tượng User bằng Builder
         User newUser = User.builder()
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .password(encodedPassword)
-                .avatar(urlAvatar) // Đường dẫn ảnh từ Cloudinary
+                .avatar(user.getAvatar()) // Đường dẫn ảnh từ Cloudinary
                 .dateOfBirth(user.getDateOfBirth())
                 .citizenIdentity(user.getCitizenIdentity())
                 .gender(user.getGender())
@@ -138,7 +137,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
 
     @Transactional
     @Override
-    public User updateEmployee(Long id, User user, Address address, MultipartFile file) {
+    public User updateEmployee(Long id, User user, Address address) {
         User existingEmployee = employeeRepository.findById(id).orElse(null);
         if (existingEmployee == null) {
             return null;
@@ -146,10 +145,10 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
         String userServiceName = userService.getName();
 
         // Nếu có file mới => Upload lên Cloudinary, ngược lại giữ nguyên ảnh cũ
-        String urlAvatar = existingEmployee.getAvatar(); // Giữ ảnh cũ
-        if (file != null && !file.isEmpty()) {
-            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file); // Upload ảnh mới
-        }
+        String urlAvatar = user.getAvatar(); // Giữ ảnh cũ
+//        if (file != null && !file.isEmpty()) {
+//            urlAvatar = cloudinaryServiceImpl.uploadAvatar(file); // Upload ảnh mới
+//        }
         // Cập nhật thông tin nhân viên
         existingEmployee.setFullName(user.getFullName());
         existingEmployee.setEmail(user.getEmail());
