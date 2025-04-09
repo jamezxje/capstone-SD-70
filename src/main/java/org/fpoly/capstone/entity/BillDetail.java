@@ -1,7 +1,6 @@
 package org.fpoly.capstone.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -37,13 +38,12 @@ public class BillDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product_detail", referencedColumnName = "id")
     @JsonBackReference
     private ProductDetail productDetail;
 
-
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_bill", referencedColumnName = "id")
     @JsonBackReference
     private Bill bill;
@@ -71,15 +71,17 @@ public class BillDetail {
 
     @Column(name = "updated_by")
     private String updatedBy;
-@PrePersist
+
+    @PrePersist
     protected void onCreate() {
-    this.createDate = new Date();
-    this.lastModifiedDate = new Date();
-}
-@PreUpdate
+        this.createDate = new Date();
+        this.lastModifiedDate = new Date();
+    }
+
+    @PreUpdate
     protected void onUpdate() {
-    this.lastModifiedDate = new Date();
-}
+        this.lastModifiedDate = new Date();
+    }
 
     @Override
     public int hashCode() {
