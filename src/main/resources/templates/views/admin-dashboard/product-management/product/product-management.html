@@ -81,7 +81,7 @@
             <table class="table style-1">
               <thead>
               <tr>
-                <th>#</th>
+                <th>STT</th>
                 <th>Danh mục</th>
                 <th>Tên</th>
                 <th>Code</th>
@@ -113,9 +113,9 @@
                       th:if="${product.status == T(org.fpoly.capstone.entity.enum_status.ProductStatus).HET_SAN_PHAM}"
                       class="badge light badge-secondary">HẾT SẢN PHẨM</span>
                 </td>
-                <td th:text="${product.createDate}"></td>
+                <td th:text="${@productController.formatDateTime(product.createDate)}"></td>
                 <td th:text="${product.createBy}"></td>
-                <td th:text="${product.lastModifiedDate}"></td>
+                <td th:text="${product.lastModifiedDate != null ? @productController.formatDateTime(product.lastModifiedDate) : ''}"></td>
                 <td th:text="${product.updateBy}"></td>
                 <td>
                   <div class="d-flex action-button">
@@ -133,18 +133,18 @@
                             stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                       </svg>
                     </button>
-                    <a href="#" class="ml-2 btn btn-xs px-2 light btn-danger"
-                       data-toggle="modal"
-                       data-target="#deleteProductModal"
-                       th:data-id="${product.id}">
-                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round"
-                              stroke-linejoin="round"></path>
-                        <path
-                            d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
-                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                      </svg>
-                    </a>
+                    <!--                    <a href="#" class="ml-2 btn btn-xs px-2 light btn-danger"-->
+                    <!--                       data-toggle="modal"-->
+                    <!--                       data-target="#deleteProductModal"-->
+                    <!--                       th:data-id="${product.id}">-->
+                    <!--                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+                    <!--                        <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round"-->
+                    <!--                              stroke-linejoin="round"></path>-->
+                    <!--                        <path-->
+                    <!--                            d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"-->
+                    <!--                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>-->
+                    <!--                      </svg>-->
+                    <!--                    </a>-->
                     
                     <a th:href="@{/dashboard/product-management/product-detail?(productId = ${product.id})}"
                        class="ml-2 btn btn-xs px-2 light btn-secondary"

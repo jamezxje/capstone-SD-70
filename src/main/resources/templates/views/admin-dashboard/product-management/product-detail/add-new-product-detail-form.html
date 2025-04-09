@@ -18,14 +18,14 @@
       <div class="row page-titles mx-0">
         <div class="col-sm-6 p-md-0">
           <div class="welcome-text">
-            <h4>Hi, welcome back!</h4>
-            <span>Thêm sản phẩm</span>
+            <h4>Thêm sản phẩm</h4>
+            <!--            <span>Thêm sản phẩm</span>-->
           </div>
         </div>
         <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Form</a></li>
-            <li class="breadcrumb-item active"><a href="javascript:void(0)">Element</a></li>
+            <!--            <li class="breadcrumb-item"><a href="javascript:void(0)">Form</a></li>-->
+            <!--            <li class="breadcrumb-item active"><a href="javascript:void(0)">Element</a></li>-->
           </ol>
         </div>
       </div>
@@ -38,7 +38,7 @@
           <div class="col-lg-3">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Thumbnail</h4>
+                <h4 class="card-title">Ảnh bìa</h4>
               </div>
               <div class="card-body">
                 <div class="basic-form">
@@ -47,17 +47,16 @@
                       <div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
                         <input id="upload" type="file" name="featureImage" onchange="readURL(this);"
                                class="form-control border-0" required>
-                        <label id="upload-label" for="upload" class="font-weight-light text-muted">Choose file</label>
+                        <label id="upload-label" for="upload" class="font-weight-light text-muted">Chọn ảnh</label>
                         <div class="input-group-append">
                           <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
                               class="fa fa-cloud-upload mr-2 text-muted"></i><small
-                              class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
+                              class="text-uppercase font-weight-bold text-muted">Chọn ảnh</small></label>
                         </div>
                       </div>
                       
                       <!-- Uploaded image area-->
-                      <p class="font-italic text-grey text-center">The image uploaded will be rendered inside the box
-                        below.</p>
+                      <p class="font-italic text-grey text-center">Ảnh được upload sẽ được hiển thị bên dưới.</p>
                       <div class="image-area mt-4">
                         <img id="imageResult" src="#" alt=""
                              class="img-fluid rounded shadow-sm mx-auto d-block">
@@ -91,10 +90,10 @@
                       </select>
                     </div>
                     <div class="form-group col-md-3">
-                      <label for="brandId">Brand<span class="text-danger">*</span> </label>
+                      <label for="brandId">Chọn thương hiệu<span class="text-danger">*</span> </label>
                       <select id="brandId" name="brandId" class="form-control"
                               required>
-                        <option value="" selected>Chọn brand</option>
+                        <option value="" selected>Thương hiệu</option>
                         <option th:each="brand : ${brands}"
                                 th:value="${brand.id}"
                                 th:text="${brand.name}">
@@ -186,7 +185,7 @@
                 <div class="basic-form">
                   <div class="form-row">
                     <div class="form-group col-md-12">
-                      <label for="productMediaGallery">Image gallery</label>
+                      <label for="productMediaGallery">Album sản phẩm</label>
                       <input id="productMediaGallery" name="images" type="file" class="form-control" multiple
                              data-preview-file-type="text">
                     </div>
