@@ -35,7 +35,7 @@
                 <th>#</th>
                 <th>Danh mục</th>
                 <th>Trạng thái</th>
-                <th>Action</th>
+                <th>Hành động</th>
               </tr>
               </thead>
               <tbody>
@@ -48,10 +48,10 @@
                 <td class="pr-0">
                   <span
                       th:if="${category.status == T(org.fpoly.capstone.entity.enum_status.CategoryStatus).NGUNG_SU_DUNG}"
-                      class="badge light badge-danger" th:text="${category.status}"></span>
+                      class="badge light badge-danger">NGƯNG SỬ DỤNG</span>
                   <span
                       th:if="${category.status == T(org.fpoly.capstone.entity.enum_status.CategoryStatus).DANG_SU_DUNG}"
-                      class="badge light badge-success" th:text="${category.status}"></span>
+                      class="badge light badge-success">ĐANG SỬ DỤNG</span>
                 </td>
                 <td>
                   <div class="d-flex action-button">
@@ -238,7 +238,12 @@
                                                 id="categoryStatusEdit" th:field="*{status}">
                                           <option
                                               th:each="statusOpt : ${T(org.fpoly.capstone.entity.enum_status.CategoryStatus).values()}"
-                                              th:value="${statusOpt}" th:text="${statusOpt}"></option>
+                                              th:value="${statusOpt}">
+                                             <span
+                                                 th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.CategoryStatus).DANG_SU_DUNG}">ĐANG SỬ DỤNG</span>
+                                            <span
+                                                th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.CategoryStatus).NGUNG_SU_DUNG}">NGỪNG SỬ DỤNG</span>
+                                          </option>
                                         </select>
                                       </div>
                                     </div>

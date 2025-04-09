@@ -153,7 +153,13 @@
                               id="status" name="status" th:field="*{status}" disabled>
                         <option
                             th:each="statusOpt : ${T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).values()}"
-                            th:value="${statusOpt}" th:text="${statusOpt}">
+                            th:value="${statusOpt}">
+                           <span
+                               th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).DANG_SU_DUNG}">ĐANG SỬ DỤNG</span>
+                          <span
+                              th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).NGUNG_SU_DUNG}">NGỪNG SỬ DỤNG</span>
+                          <span
+                              th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductVariantStatus).HET_SAN_PHAM}">HẾT SẢN PHẨM</span>
                         </option>
                       </select>
                     
