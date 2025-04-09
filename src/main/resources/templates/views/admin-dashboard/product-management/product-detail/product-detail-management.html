@@ -90,13 +90,13 @@
                   </select>
                 </div>
                 <div class="form-group col-md-3">
-                  <label>Min price</label>
+                  <label>Giá nhỏ nhất</label>
                   <input id="searchMinPrice" type="number" name="minPrice" class="form-control"
                          th:value="${request.minPrice}"
                          placeholder="Nhập giá nhỏ nhất">
                 </div>
                 <div class="form-group col-md-3">
-                  <label>Max price</label>
+                  <label>Giá lớn nhất</label>
                   <input id="searchMaxPrice" type="number" name="maxPrice" class="form-control"
                          th:value="${request.maxPrice}"
                          placeholder="Nhập giá lớn nhất">
@@ -135,7 +135,7 @@
             <table class="table">
               <thead>
               <tr>
-                <th>#</th>
+                <th>STT</th>
                 <th>Sản phẩm</th>
                 <th>Danh mục</th>
                 <th>Brand</th>
@@ -145,7 +145,7 @@
                 <th>Số lượng</th>
                 <th>Giá</th>
                 <th>Trạng thái</th>
-                <th>Action</th>
+                <th>Hành động</th>
               </tr>
               </thead>
               <tbody>
