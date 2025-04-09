@@ -9,23 +9,23 @@
       /* General Modal Styles */
       .modal-content {
         border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         padding: 30px;
         background-color: #fff;
-        max-width: 600px;
+        max-width: 800px;
         margin: 0 auto;
+        border: 1px solid #FF5722; /* Màu cam cơ */
       }
 
       .modal-header {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #ddd;
+        background-color: #FF5722; /* Màu cam cơ */
+        color: white;
+        border-bottom: 2px solid #E64A19; /* Cam đậm hơn */
         text-align: center;
         padding: 15px;
       }
 
       .modal-title {
-        font-size: 24px;
-        color: #343a40;
+        font-size: 28px;
         font-weight: 600;
         letter-spacing: 0.5px;
       }
@@ -34,94 +34,82 @@
         padding: 20px;
         font-size: 16px;
         color: #495057;
-        max-height: 400px;
-        overflow-y: auto;
         line-height: 1.6;
+        /* Bỏ overflow */
+      }
+
+      /* Card Styles */
+      .card {
+        border-radius: 12px;
+        border: 1px solid #FF5722; /* Màu cam cơ */
+        margin: 20px 0;
+        background: #ffffff;
+        /* Bỏ box-shadow */
       }
 
       /* Voucher Information Styles */
       .voucher-info {
         font-family: 'Roboto', sans-serif;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-gap: 15px;
+        padding-top: 15px;
       }
 
+      /* Styling for each row with orange theme */
       .voucher-info .row {
-        margin-bottom: 25px; /* Increased space between rows */
+        margin-bottom: 15px;
         display: flex;
         align-items: center;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #ffffff; /* White background for each row */
+        border: 1px solid #FF7043; /* Cam nhạt hơn */
+        /* Bỏ box-shadow */
       }
 
+      /* Hover effect for each row */
+      .voucher-info .row:hover {
+        background-color: #FFCCBC; /* Màu cam nhạt khi hover */
+      }
+
+      /* Styling for the label (column 1) */
       .voucher-info .row .col-4 {
         font-weight: bold;
-        color: #6c757d;
-        padding-right: 20px;
+        color: #FF5722; /* Màu cam cơ */
         text-align: right;
-        font-size: 16px; /* Slightly larger font for labels */
+        padding-right: 15px;
+        font-size: 16px;
+        width: 30%;
       }
-
+.modal-title {
+    color: white; /* Màu trắng cho tiêu đề */
+    font-size: 28px; /* Tùy chỉnh kích thước chữ */
+    font-weight: bold; /* Làm đậm chữ */
+  }
+      /* Styling for the value (column 2) */
       .voucher-info .row .col-8 {
         color: #212529;
-        padding-left: 20px;
-        font-size: 16px; /* Slightly larger font for values */
+        font-size: 16px;
+        padding-left: 15px;
+        width: 70%;
       }
 
-      /* Adjusting column widths for better spacing */
-      .voucher-info .row .col-4 {
-        flex: 0 0 30%;
-      }
-
-      .voucher-info .row .col-8 {
-        flex: 1;
-      }
-
-      /* Styling for the modal footer */
-      .modal-footer {
-        text-align: center;
-        border-top: 1px solid #ddd;
-        padding-top: 20px; /* Extra padding on top of the footer */
-      }
-
-      .btn-close {
-        color: #495057;
-        font-size: 18px;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
+      /* Button adjustments */
+      .btn-secondary {
+        padding: 10px 20px;
+        font-size: 16px;
         border-radius: 4px;
-        padding: 8px 20px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, border-color 0.3s ease;
+        background-color: #FF5722; /* Màu cam cơ */
+        color: white;
+        border: none;
       }
 
-      .btn-close:hover {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: #fff;
+      .btn-secondary:hover {
+        background-color: #FF7043; /* Cam nhạt hơn khi hover */
       }
 
-      /* Responsive Design */
-      @media (max-width: 768px) {
-        .modal-content {
-          width: 100%;
-          padding: 20px;
-        }
-
-        .modal-header {
-          padding: 10px;
-        }
-
-        .modal-title {
-          font-size: 22px;
-        }
-
-        .voucher-info .row .col-4 {
-          font-size: 14px;
-        }
-
-        .voucher-info .row .col-8 {
-          font-size: 14px;
-        }
-      }
     </style>
-
   </th:block>
 </head>
 
@@ -157,15 +145,15 @@
                     <div class="col-8" th:text="${voucher.quantity}">50</div>
                   </div>
                   <div class="row">
-                    <div class="col-4">Ngày bắt đầu</div>
+                    <div class="col-4">Ngày bắt đầu:</div>
                     <div class="col-8" th:text="${#temporals.format(voucher.startDate, 'dd/MM/yyyy HH:mm')}">2025-05-01</div>
                   </div>
                   <div class="row">
-                    <div class="col-4">Ngày kết thúc</div>
+                    <div class="col-4">Ngày kết thúc:</div>
                     <div class="col-8" th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy HH:mm')}">2025-06-01</div>
                   </div>
                   <div class="row">
-                    <div class="col-4">Minimum Bill:</div>
+                    <div class="col-4">Hóa đơn tối thiểu:</div>
                     <div class="col-8" th:text="${voucher.minimumBill}">500,000 VND</div>
                   </div>
                   <div class="row">
