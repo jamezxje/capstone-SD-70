@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+
+<head>
+  <meta charset="utf-8">
+  <th:block id="th-css">
+    <style>
+      /* General Modal Styles */
+      .modal-content {
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        background-color: #fff;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #ddd;
+        text-align: center;
+        padding: 15px;
+      }
+
+      .modal-title {
+        font-size: 24px;
+        color: #343a40;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .modal-body {
+        padding: 20px;
+        font-size: 16px;
+        color: #495057;
+        max-height: 400px;
+        overflow-y: auto;
+        line-height: 1.6;
+      }
+
+      /* Voucher Information Styles */
+      .voucher-info {
+        font-family: 'Roboto', sans-serif;
+      }
+
+      .voucher-info .row {
+        margin-bottom: 25px; /* Increased space between rows */
+        display: flex;
+        align-items: center;
+      }
+
+      .voucher-info .row .col-4 {
+        font-weight: bold;
+        color: #6c757d;
+        padding-right: 20px;
+        text-align: right;
+        font-size: 16px; /* Slightly larger font for labels */
+      }
+
+      .voucher-info .row .col-8 {
+        color: #212529;
+        padding-left: 20px;
+        font-size: 16px; /* Slightly larger font for values */
+      }
+
+      /* Adjusting column widths for better spacing */
+      .voucher-info .row .col-4 {
+        flex: 0 0 30%;
+      }
+
+      .voucher-info .row .col-8 {
+        flex: 1;
+      }
+
+      /* Styling for the modal footer */
+      .modal-footer {
+        text-align: center;
+        border-top: 1px solid #ddd;
+        padding-top: 20px; /* Extra padding on top of the footer */
+      }
+
+      .btn-close {
+        color: #495057;
+        font-size: 18px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 8px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      .btn-close:hover {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .modal-content {
+          width: 100%;
+          padding: 20px;
+        }
+
+        .modal-header {
+          padding: 10px;
+        }
+
+        .modal-title {
+          font-size: 22px;
+        }
+
+        .voucher-info .row .col-4 {
+          font-size: 14px;
+        }
+
+        .voucher-info .row .col-8 {
+          font-size: 14px;
+        }
+      }
+    </style>
+
+  </th:block>
+</head>
+
+<body>
+<th:block id="th-body">
+  <div class="container">
+    <div class="content-body">
+      <div class="container-fluid">
+        <div class="card">
+
+          <div class="card-body">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Khuyến mại chi tiết</h5>
+              </div>
+              <div class="modal-body voucher-detail">
+                <div class="voucher-info">
+                  <!-- Voucher properties displayed here -->
+                  <div class="row">
+                    <div class="col-4">Mã:</div>
+                    <div class="col-8" th:text="${voucher.code}">ABC123</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Tên phiếu giảm giá:</div>
+                    <div class="col-8" th:text="${voucher.name}">Discount Voucher</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Số tiền:</div>
+                    <div class="col-8" th:text="${formattedValue}">100,000 VND</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Số lượng:</div>
+                    <div class="col-8" th:text="${voucher.quantity}">50</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Ngày bắt đầu</div>
+                    <div class="col-8" th:text="${#temporals.format(voucher.startDate, 'dd/MM/yyyy HH:mm')}">2025-05-01</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Ngày kết thúc</div>
+                    <div class="col-8" th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy HH:mm')}">2025-06-01</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Minimum Bill:</div>
+                    <div class="col-8" th:text="${voucher.minimumBill}">500,000 VND</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Trạng thái:</div>
+                    <div class="col-8" th:text="${voucher.status}">Active</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Được tạo bởi:</div>
+                    <div class="col-8" th:text="${voucher.createdBy}">Admin</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Được cập nhật bởi:</div>
+                    <div class="col-8" th:text="${voucher.updatedBy}">Admin</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Ngày tạo:</div>
+                    <div class="col-8" th:text="${#dates.format(voucher.createDate, 'dd/MM/yyyy HH:mm')}">2025-04-01 10:00:00</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Ngày sửa cuối:</div>
+                    <div class="col-8" th:text="${voucher.lastModifiedDate}">2025-04-05 14:30:00</div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <a th:href="@{/dashboard/product-management/voucher/list}" class="btn btn-secondary" data-dismiss="modal">Trở lại</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</th:block>
+
+</body>
+</html>

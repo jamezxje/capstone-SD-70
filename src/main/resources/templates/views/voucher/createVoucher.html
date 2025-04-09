@@ -5,87 +5,191 @@
 <head>
   <meta charset="utf-8">
   <th:block id="th-css">
+    <style>
+      /* Global Styles */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f9fc;
+      }
+
+      .container-fluid {
+        padding: 30px;
+      }
+
+      .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        padding: 20px;
+      }
+
+      .card-body {
+        padding: 30px;
+      }
+
+      .page-titles h4 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .welcome-text p {
+        font-size: 18px;
+        color: #555;
+      }
+
+      /* Form Styles */
+      form {
+        margin-top: 20px;
+      }
+
+      .mb-3 label {
+        font-size: 16px;
+        font-weight: 500;
+        color: #495057;
+      }
+
+      /* Full background for input fields */
+      .form-control {
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        background-color: #f1f3f5; /* Light background color */
+        width: 100%; /* Make inputs full width */
+        transition: border-color 0.3s, background-color 0.3s;
+      }
+
+      .form-control:focus {
+        border-color: #007bff;
+        background-color: #e9f5ff; /* Light blue background on focus */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+      }
+
+      .invalid-feedback {
+        color: #e74a3b;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+
+      .is-invalid {
+        border-color: #e74a3b !important;
+      }
+
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 18px;
+        font-weight: 600;
+        width: 100%; /* Full width for button */
+      }
+
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .container-fluid {
+          padding: 15px;
+        }
+
+        .card-body {
+          padding: 20px;
+        }
+
+        .page-titles h4 {
+          font-size: 24px;
+        }
+
+        .form-control {
+          padding: 10px;
+        }
+      }
+    </style>
   </th:block>
 </head>
 
 <body>
 <th:block id="th-body">
+  <div class="container">
+  <div class="content-body">
+    <div class="container-fluid">
 
-   <div class="content-body">
-     <div class="container-fluid">
+      <div class="row page-titles mx-0">
+        <div class="col-sm-6 p-md-0">
+          <div class="welcome-text">
+            <p class="mb-0">Tạo voucher</p>
+          </div>
+        </div>
+      </div>
 
-       <div class="row page-titles mx-0">
-         <div class="col-sm-6 p-md-0">
-           <div class="welcome-text">
-             <h4>Hi, welcome back!</h4>
-             <p class="mb-0">Tạo voucher</p>
-           </div>
-         </div>
-       </div>
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-lg-12"> <!-- Change to col-12 to make it full-width -->
+                  <h4 class="mb-3">Tạo voucher</h4>
 
-       <div class="row">
-         <div class="col-xl-12">
-           <div class="card">
-             <div class="card-body">
-               <div class="row">
-                 <div class="col-lg-8 order-lg-1">
-                   <h4 class="mb-3">Tạo voucher</h4>
+                  <form id="voucherForm" class="needs-validation" novalidate
+                        th:action="@{/dashboard/product-management/voucher/create}"
+                        th:object="${voucher}" method="post">
 
-                   <form id="voucherForm" class="needs-validation" novalidate
-                         th:action="@{/dashboard/product-management/voucher/create}"
-                         th:object="${voucher}" method="post">
+                    <!-- Tên Voucher -->
+                    <div class="mb-3">
+                      <label for="name">Tên Voucher</label>
+                      <input type="text" class="form-control" id="name" th:field="*{name}" required oninput="validateName()">
+                      <div class="invalid-feedback">
+                        Tên không được trống.
+                      </div>
+                    </div>
 
-                     <!-- Tên Voucher -->
-                     <div class="mb-3">
-                       <label for="name">Tên Voucher</label>
-                       <input type="text" class="form-control" id="name" th:field="*{name}" required oninput="validateName()">
-                       <div class="invalid-feedback">
-                         Tên không được trống.
-                       </div>
-                     </div>
+                    <!-- Số tiền -->
+                    <div class="mb-3">
+                      <label for="value">Số tiền (VND)</label>
+                      <input type="text" class="form-control" id="value" name="value" th:field="*{value}" required
+                             oninput="formatCurrency(event)">
+                      <div class="invalid-feedback">Số tiền không hợp lệ.</div>
+                    </div>
 
-                     <!-- Số tiền -->
-                     <div class="mb-3">
-                       <label for="value">Số tiền (VND)</label>
-                       <input type="text" class="form-control" id="value" name="value" th:field="*{value}" required
-                              oninput="formatCurrency(event)">
-                       <div class="invalid-feedback">Số tiền không hợp lệ.</div>
-                     </div>
+                    <!-- Số lượng -->
+                    <div class="mb-3">
+                      <label for="quantity">Số lượng</label>
+                      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1" max="10000">
+                      <div class="invalid-feedback">Số lượng phải lớn hơn 0 và nhỏ hơn 100.000.</div>
+                    </div>
 
-                     <!-- Số lượng -->
-                     <div class="mb-3">
-                       <label for="quantity">Số lượng</label>
-                       <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1" max="10000">
-                       <div class="invalid-feedback">Số lượng phải lớn hơn 0 và nhỏ hơn 100.000.</div>
-                     </div>
+                    <!-- Ngày bắt đầu -->
+                    <div class="mb-3">
+                      <label for="startDate">Ngày bắt đầu</label>
+                      <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}" required>
+                      <div class="invalid-feedback">Ngày bắt đầu không được để trống.</div>
+                    </div>
 
-                     <!-- Ngày bắt đầu -->
-                     <div class="mb-3">
-                       <label for="startDate">Ngày bắt đầu</label>
-                       <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}" required>
-                       <div class="invalid-feedback">Ngày bắt đầu không được để trống.</div>
-                     </div>
+                    <!-- Ngày kết thúc -->
+                    <div class="mb-3">
+                      <label for="endDate">Ngày kết thúc</label>
+                      <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}" required>
+                      <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
+                    </div>
 
-                     <!-- Ngày kết thúc -->
-                     <div class="mb-3">
-                       <label for="endDate">Ngày kết thúc</label>
-                       <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}" required>
-                       <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
-                     </div>
+                    <hr class="mb-4">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Gửi</button>
+                  </form>
 
-                     <hr class="mb-4">
-                     <button class="btn btn-primary btn-lg btn-block" type="submit">Gửi</button>
-                   </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-
-     </div>
-   </div>
+    </div>
+  </div>
 
 
   <script>
@@ -104,7 +208,7 @@
 
       // Kiểm tra Tên Voucher
       let nameInput = document.getElementById("name");
-      if (nameInput == null) {
+      if (nameInput == null || nameInput.value.trim() === "") {
         nameInput.classList.add("is-invalid");
         isValid = false;
       } else {
@@ -160,6 +264,7 @@
     });
   </script>
 
+  </div>
 </th:block>
 </body>
 </html>

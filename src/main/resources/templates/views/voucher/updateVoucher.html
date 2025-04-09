@@ -5,72 +5,143 @@
 <head>
   <meta charset="utf-8">
   <th:block id="th-css">
+    <style>
+      /* Global Styles */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f9fc;
+      }
+
+      .container-fluid {
+        padding: 30px;
+      }
+
+      .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        padding: 20px;
+      }
+
+      .card-body {
+        padding: 30px;
+      }
+
+      .page-titles h4 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .welcome-text p {
+        font-size: 18px;
+        color: #555;
+      }
+
+      /* Form Styles */
+      form {
+        margin-top: 20px;
+      }
+
+      .mb-3 label {
+        font-size: 16px;
+        font-weight: 500;
+        color: #495057;
+      }
+
+      /* Full background for input fields */
+      .form-control {
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        background-color: #f1f3f5; /* Light background color */
+        width: 100%; /* Make inputs full width */
+        transition: border-color 0.3s, background-color 0.3s;
+      }
+
+      .form-control:focus {
+        border-color: #007bff;
+        background-color: #e9f5ff; /* Light blue background on focus */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+      }
+
+      .invalid-feedback {
+        color: #e74a3b;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+
+      .is-invalid {
+        border-color: #e74a3b !important;
+      }
+
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 18px;
+        font-weight: 600;
+        width: 100%; /* Full width for button */
+      }
+
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .container-fluid {
+          padding: 15px;
+        }
+
+        .card-body {
+          padding: 20px;
+        }
+
+        .page-titles h4 {
+          font-size: 24px;
+        }
+
+        .form-control {
+          padding: 10px;
+        }
+      }
+    </style>
   </th:block>
 
 </head>
 
 <body>
 <th:block id="th-body">
+<div class="container">
   <div class="content-body">
     <div class="container-fluid">
-      <!-- Add Project -->
-      <div class="modal fade" id="addProjectSidebar">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Create Project</h5>
-              <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div class="form-group">
-                  <label class="text-black font-w500">Project Name</label>
-                  <input type="text" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label class="text-black font-w500">Deadline</label>
-                  <input type="date" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label class="text-black font-w500">Client Name</label>
-                  <input type="text" class="form-control">
-                </div>
-                <div class="form-group">
-                  <button type="button" class="btn btn-primary">CREATE</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div class="row page-titles mx-0">
         <div class="col-sm-6 p-md-0">
           <div class="welcome-text">
+            <p class="mb-0">Tạo voucher</p>
           </div>
         </div>
-        <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Voucher</a></li>
-            <li class="breadcrumb-item active"><a href="javascript:void(0)">Sửa Voucher</a></li>
-          </ol>
-        </div>
       </div>
+
       <div class="row">
         <div class="col-xl-12">
           <div class="card">
             <div class="card-body">
               <div class="row">
-
-                <div class="col-lg-8 order-lg-1">
-                  <h4 class="mb-3">Sửa voucher</h4>
+                <div class="col-lg-12">
+                <h4 class="mb-3">Sửa voucher</h4>
 
                   <form id="voucherForm" class="needs-validation" novalidate th:action="@{/dashboard/product-management/voucher/update}" th:object="${voucher}" method="post">
                     <input type="hidden" class="form-control" id="id" th:field="*{id}" th:value="${voucher.id}" placeholder="" value="" required="">
                     <div class="mb-3">
                       <label for="name">Tên Voucher</label>
                       <input type="text" class="form-control" id="name" th:field="*{name}" required
-                             pattern="^[A-Za-zÀ-Ỹà-ỹ\s]{3,}$" oninput="validateName()">
+                              oninput="validateName()">
                       <div class="invalid-feedback">
                         Tên không được trống.
                       </div>
@@ -150,7 +221,7 @@
 
       // Kiểm tra Tên Voucher
       let nameInput = document.getElementById("name");
-      if (nameInput == null) {
+      if (nameInput == null || nameInput.value.trim() === "") {
         nameInput.classList.add("is-invalid");
         isValid = false;
       } else {
@@ -205,6 +276,7 @@
       form.classList.add("was-validated");
     });
   </script>
+</div>
 </th:block>
 </body>
 

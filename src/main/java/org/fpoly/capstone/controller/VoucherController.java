@@ -76,6 +76,22 @@ public class VoucherController {
         return "views/voucher/updateVoucher";
     }
 
+    @GetMapping("/detail/{id}")
+    public String detailById(@PathVariable("id") Long id, Model model) throws NotException {
+        Voucher voucher = voucherService.findById(id);
+
+        DecimalFormat formatter = new DecimalFormat("###,###.##");
+        String formattedValue = formatter.format(voucher.getValue());
+
+        model.addAttribute("status", VoucherStatus.values());
+        model.addAttribute("voucher", voucher);
+        model.addAttribute("startDate", voucher.getStartDate());
+        model.addAttribute("endDate", voucher.getEndDate());
+        model.addAttribute("formattedValue", formattedValue);
+        return "views/voucher/detailVoucher";
+    }
+
+
     @PostMapping("/update")
     public String update(@ModelAttribute("voucher") Voucher voucher,
                          @RequestParam("status") VoucherStatus voucherStatus,
