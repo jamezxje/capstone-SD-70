@@ -208,7 +208,7 @@
 
       // Kiểm tra Tên Voucher
       let nameInput = document.getElementById("name");
-      if (nameInput == null || nameInput.value.trim() === "") {
+      if (nameInput == null || nameInput.value.trim() === "" || nameInput.length() > 255) {
         nameInput.classList.add("is-invalid");
         isValid = false;
       } else {
