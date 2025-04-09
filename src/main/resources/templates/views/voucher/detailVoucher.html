@@ -174,7 +174,7 @@
                   </div>
                   <div class="row">
                     <div class="col-4">Ngày sửa cuối:</div>
-                    <div class="col-8" th:text="${voucher.lastModifiedDate}">2025-04-05 14:30:00</div>
+                    <div class="col-8" th:text="${#temporals.format(voucher.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}">2025-04-05 14:30:00</div>
                   </div>
                 </div>
               </div>

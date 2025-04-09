@@ -88,6 +88,7 @@ public class VoucherController {
         model.addAttribute("startDate", voucher.getStartDate());
         model.addAttribute("endDate", voucher.getEndDate());
         model.addAttribute("formattedValue", formattedValue);
+
         return "views/voucher/detailVoucher";
     }
 
