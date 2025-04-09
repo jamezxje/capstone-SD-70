@@ -68,7 +68,7 @@
               </div>
               <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                <button type="button" class="btn btn-secondary ml-2" onclick="clearForm()">Clear</button>
+                <button type="button" class="btn btn-secondary ml-2" onclick="clearForm()">Làm mới</button>
               </div>
             </form>
           </div>
@@ -90,7 +90,7 @@
                 <th>Người tạo</th>
                 <th>Ngày sửa</th>
                 <th>Người sửa</th>
-                <th>Action</th>
+                <th>Hành động</th>
               </tr>
               </thead>
               <tbody>
@@ -316,7 +316,7 @@
                       <div class="col-sm-6 p-md-0">
                         <div class="welcome-text">
                           <h4>Chào mừng quay lại!</h4>
-                          <p class="mb-0">Danh mục</p>
+                          <p class="mb-0">Sản phẩm</p>
                         </div>
                       </div>
                     </div>
@@ -380,8 +380,14 @@
                                                 id="productStatusEdit" th:field="*{status}">
                                           <option
                                               th:each="statusOpt : ${T(org.fpoly.capstone.entity.enum_status.ProductStatus).values()}"
-                                              th:value="${statusOpt}" th:text="${statusOpt}"
+                                              th:value="${statusOpt}"
                                               th:selected="${editProductModel.status == statusOpt.values()}">
+                                             <span
+                                                 th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductStatus).DANG_SU_DUNG}">ĐANG SỬ DỤNG</span>
+                                            <span
+                                                th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductStatus).NGUNG_SU_DUNG}">NGỪNG SỬ DỤNG</span>
+                                            <span
+                                                th:if="${statusOpt == T(org.fpoly.capstone.entity.enum_status.ProductStatus).HET_SAN_PHAM}">HẾT SẢN PHẨM</span>
                                           </option>
                                         </select>
                                       </div>

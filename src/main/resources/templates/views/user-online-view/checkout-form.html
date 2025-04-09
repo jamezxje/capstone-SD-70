@@ -469,6 +469,7 @@
       console.log("grand total: ", grandTotal)
       console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
       
+      const address = $('#customer-address').find(":selected").val();
       
       const requestBody = {
         receiveDate: receiveDate,
@@ -483,7 +484,7 @@
       
       // Kiểm tra nếu phương thức thanh toán là "chuyen_khoan"
       if (paymentMethod === 'CHUYEN_KHOAN') {
-        const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}`;
+        const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}, data_buyType: addToCart, data_address: ${address}`;
         
         // Gọi API "online-payment"
         $.ajax({

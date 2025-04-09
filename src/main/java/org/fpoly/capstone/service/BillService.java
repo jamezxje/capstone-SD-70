@@ -1,20 +1,25 @@
 package org.fpoly.capstone.service;
 
 import org.fpoly.capstone.dto.address.BaseAddressRequest;
-import org.fpoly.capstone.dto.bill.*;
+import org.fpoly.capstone.dto.bill.CreateBillOfflineDTO;
+import org.fpoly.capstone.dto.bill.CreateCustomerBill;
+import org.fpoly.capstone.dto.bill.GetAllCusomter;
+import org.fpoly.capstone.dto.bill.ProductRequest;
+import org.fpoly.capstone.dto.bill.VoucherRequest1;
 import org.fpoly.capstone.dto.billDetail.BillProductDTO;
 import org.fpoly.capstone.dto.voucher.VoucherRequest;
-import org.fpoly.capstone.entity.*;
+import org.fpoly.capstone.entity.Bill;
+import org.fpoly.capstone.entity.Brand;
+import org.fpoly.capstone.entity.Category;
+import org.fpoly.capstone.entity.Color;
+import org.fpoly.capstone.entity.Material;
+import org.fpoly.capstone.entity.Size;
+import org.fpoly.capstone.entity.Voucher;
 import org.fpoly.capstone.service.payload.bill.BuyNowBillRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.fpoly.capstone.entity.Bill;
-import org.fpoly.capstone.entity.Bill;
-import org.fpoly.capstone.entity.Cart;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
-import org.fpoly.capstone.entity.Bill;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -74,14 +79,17 @@ public interface BillService {
 
     Bill findById(Long id);
 
-    void saveToBillForOnlineUser(Cart cart, CreateBillRequest request);
+    void saveToBillForOnlineUser(CreateBillRequest request);
+
     void buyNowForOnlineUser(BuyNowBillRequest request);
+
     void saveToBillForBuyNow(CreateBillRequest createBillRequest);
+
     List<Bill> findBillsByCustomerId(Long customerId);
+
     Page<Bill> searchBills(String keyword, String orderType, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     List<Bill> findLastestBillByCustomerId();
-
 
 
 }
