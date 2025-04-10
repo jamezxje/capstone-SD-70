@@ -190,7 +190,7 @@
                                 th:selected="*{status} == ${status}"></option>
                       </select>
                       <div class="invalid-feedback">
-                        Please select a valid status.
+                        Trạng thái k hợp lệ.
                       </div>
                     </div>
 
@@ -221,7 +221,8 @@
 
       // Kiểm tra Tên Voucher
       let nameInput = document.getElementById("name");
-      if (nameInput == null || nameInput.value.trim() === "") {
+      let specialCharRegex = /[^\p{L}0-9\s]/u;
+      if (nameInput == null || nameInput.value.trim() === "" || nameInput.value.length > 255 || specialCharRegex.test(nameInput.value)) {
         nameInput.classList.add("is-invalid");
         isValid = false;
       } else {
@@ -229,13 +230,15 @@
       }
 
       // Kiểm tra số tiền hợp lệ
-      let valueInput = document.getElementById("value");
-      let numericValue = valueInput.value.replace(/\D/g, '');
-      if (!numericValue || parseInt(numericValue) <= 0 || !numericValue || parseInt(numericValue) > 100000000) {
-        valueInput.classList.add("is-invalid");
-        isValid = false;
+    let valueInput = document.getElementById("value");
+       let numericValue = valueInput.value.replace(/\D/g, ''); // Loại bỏ tất cả ký tự không phải số
+
+      // Kiểm tra nếu giá trị không phải là một số hợp lệ
+      if (!numericValue || isNaN(numericValue) || parseInt(numericValue) <= 10000 || parseInt(numericValue) > 100000000) {
+         valueInput.classList.add("is-invalid");
+         isValid = false;
       } else {
-        valueInput.classList.remove("is-invalid");
+       valueInput.classList.remove("is-invalid");
       }
 
       // Kiểm tra số lượng hợp lệ
@@ -263,6 +266,14 @@
       } else {
         document.getElementById("endDate").classList.remove("is-invalid");
       }
+
+  let statusSelect = document.getElementById("status");
+  if (statusSelect.value === "") {
+    statusSelect.classList.add("is-invalid");
+    isValid = false;
+  } else {
+    statusSelect.classList.remove("is-invalid");
+  }
 
       // Ngăn chặn gửi form nếu không hợp lệ
       if (!isValid) {
