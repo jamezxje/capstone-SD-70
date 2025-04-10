@@ -5,6 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
@@ -16,6 +19,11 @@ public class GlobalControllerAdvice {
         } else {
             model.addAttribute("email", email);
         }
+    }
+
+    public String formatDateTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        return dateTime.format(formatter);
     }
 
 }

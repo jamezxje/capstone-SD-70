@@ -17,7 +17,7 @@
     <!--Page Title-->
     <div class="page section-header text-center mt-5">
       <div class="page-title">
-        <div class="wrapper"><h1 class="page-width">Profile</h1></div>
+        <div class="wrapper"><h1 class="page-width">Thông tin cá nhân</h1></div>
       </div>
     </div>
     <!--End Page Title-->
@@ -27,10 +27,10 @@
           <div class="create-ac-content bg-light-gray padding-20px-all">
             <form>
               <fieldset>
-                <h2 class="login-title mb-3">Your infomation</h2>
+                <h2 class="login-title mb-3">Thông tin của bạn</h2>
                 <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-lastname">Full Name <span class="required-f">*</span></label>
+                    <label for="input-lastname">Họ và tên <span class="required-f">*</span></label>
                     <input name="lastname" th:value="${loggedUser.fullName}" id="input-lastname" type="text">
                   </div>
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
@@ -40,7 +40,7 @@
                 </div>
                 <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-telephone">Telephone <span class="required-f">*</span></label>
+                    <label for="input-telephone">SĐT <span class="required-f">*</span></label>
                     <input name="telephone" th:value="${loggedUser.phoneNumber}" id="input-telephone" type="tel">
                   </div>
                 </div>
@@ -103,14 +103,14 @@
                                       th:data-wardCode="${address.wardCode}"
                                       th:data-addressDetail="${address.detailAddress}"
                                       th:data-addressId="${address.id}">
-                                Edit
+                                Sửa
                               </button>
                               <button type="button"
                                       data-toggle="modal"
                                       data-target="#deleteAddressModal"
                                       class="btn btn-sm btn-outline-warning mx-2"
                                       th:data-addressId="${address.id}">
-                                Delete
+                                Xóa
                               </button>
                             </div>
                           </div>
@@ -153,13 +153,15 @@
                           <div class="form-group col-md-4 col-lg-4 col-xl-4 required">
                             <label>Họ và Tên</label>
                             <div>
-                              <input type="text" placeholder="Nhập họ và tên..." class="form-control" id="create_address_fullname">
+                              <input type="text" placeholder="Nhập họ và tên..." class="form-control"
+                                     id="create_address_fullname">
                             </div>
                           </div>
                           <div class="form-group col-md-4 col-lg-4 col-xl-4 required mr-md-4">
                             <label>Số điện thoại</label>
                             <div>
-                              <input type="text" placeholder="Nhập số điện thoại..." class="form-control" id="create_address_phone">
+                              <input type="text" placeholder="Nhập số điện thoại..." class="form-control"
+                                     id="create_address_phone">
                             </div>
                           </div>
                           <br>
@@ -268,7 +270,7 @@
     </div>
   </div>
   <!-- Edit Address Modal -->
-
+  
   <!-- Delete Address Modal -->
   <div class="modal fade" id="deleteAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -292,7 +294,7 @@
     </div>
   </div>
   <!-- Delete Address Modal -->
-
+  
   <!-- Delete Address Modal -->
   <div class="modal fade" id="setDefaultAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -316,7 +318,7 @@
     </div>
   </div>
   <!-- Delete Address Modal -->
-
+  
   <!--Scoll Top-->
   <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
   <!--End Scoll Top-->
@@ -425,11 +427,11 @@
         }
       });
     }
-
-
+    
+    
     $(document).on('click', '[data-target="#editAddressModal"]', function () {
       const button = $(this);
-
+      
       // Fetch values from data attributes
       const addressId = button.data('addressid');
       const fullName = button.data('fullname');
@@ -438,7 +440,7 @@
       const districtId = button.data('districtid');
       const wardCode = button.data('wardcode');
       const addressDetail = button.data('addressdetail');
-
+      
       console.log('addressId:', addressId);
       console.log('fullName:', fullName);
       console.log('phoneNumber:', phoneNumber);
@@ -446,10 +448,10 @@
       console.log('districtId:', districtId);
       console.log('wardCode:', wardCode);
       console.log('addressDetail:', addressDetail);
-
+      
       // Set the selected province in the modal
       $('#edit_address_province').val(provinceId);
-
+      
       // Fetch and set the districts based on the selected province
       fetchDistricts(provinceId, 'edit', function () {
         $('#edit_address_district').val(districtId);
@@ -457,18 +459,18 @@
           $('#edit_address_ward').val(wardCode);
         });
       });
-
+      
       // Set the other values
       $('#edit_address_detail').val(addressDetail);
       $('#edit_address_id').val(addressId);
       $('#edit_address_fullname').val(fullName); // ✅ Sửa ID
       $('#edit_address_phone').val(phoneNumber); // ✅ Sửa ID
     });
-
+    
     // Handle form submission for Create Address
     $('#createAddressForm').on('submit', function (event) {
       event.preventDefault();
-
+      
       const requestBody = {
         fullName: $('#create_address_fullname').val(),  // ✅ Sửa lỗi cú pháp
         phoneNumber: $('#create_address_phone').val(),
@@ -480,7 +482,7 @@
         wardCode: $('#create_address_ward').val(),
         detailAddress: $('#create_address_detail').val()
       };
-
+      
       $.ajax({
         url: "/online/customer/address",
         type: "POST",
@@ -495,14 +497,14 @@
         }
       });
     });
-
+    
     // Handle form submission for Edit Address
     $('#editAddressForm').on('submit', function (event) {
       event.preventDefault();
-
+      
       const addressId = $('#edit_address_id').val();
       console.log("Updated addressID: ", addressId);
-
+      
       const updatedAddress = {
         fullName: $('#edit_address_fullname').val(),  // ✅ Thêm vào request update
         phoneNumber: $('#edit_address_phone').val(),  // ✅ Thêm vào request update
@@ -514,7 +516,7 @@
         wardCode: $('#edit_address_ward').val(),
         detailAddress: $('#edit_address_detail').val()
       };
-
+      
       $.ajax({
         url: `/online/customer/address/${addressId}`,
         type: 'PUT',
@@ -529,7 +531,7 @@
         }
       });
     });
-
+    
     
     // Event listeners for province, district, and ward selection for both modals
     $('#create_address_province, #edit_address_province').on('change', function () {

@@ -158,7 +158,15 @@
                   </div>
                   <div class="row">
                     <div class="col-4">Trạng thái:</div>
-                    <div class="col-8" th:text="${voucher.status}">Active</div>
+                    <div  th:if="${voucher.status == voucher.status.ACTIVE}">
+                    <div class="col-8">Hoạt động</div>
+                    </div>
+                    <div  th:if="${voucher.status == voucher.status.INACTIVE}">
+                      <div class="col-8">Chưa hoạt động</div>
+                    </div>
+                    <div  th:if="${voucher.status == voucher.status.EXPIRED}">
+                      <div class="col-8">Hết hạn</div>
+                    </div>
                   </div>
                   <div class="row">
                     <div class="col-4">Được tạo bởi:</div>

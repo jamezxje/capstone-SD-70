@@ -1,6 +1,7 @@
 package org.fpoly.capstone.controller;
 
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.entity.Voucher;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -55,7 +57,7 @@ public class VoucherController {
     }
 
     @PostMapping("/create")
-    public String createVoucher(@ModelAttribute("voucher") Voucher voucher){
+    public String createVoucher(@ModelAttribute("voucher") Voucher voucher) throws Exception {
         voucherService.createVoucher(voucher);
         return "redirect:/dashboard/product-management/voucher/list";
     }
@@ -111,17 +113,34 @@ public class VoucherController {
     public String search(@RequestParam(defaultValue = "1") Integer numPage,
                          @RequestParam(name = "name", required = false) String name,
                          @RequestParam(name = "status", required = false) VoucherStatus status,
+                         @RequestParam(name = "startDate", required = false) LocalDate startDate,
+                         @RequestParam(name = "endDate", required = false) LocalDate endDate,
                          Model model) throws NotException {
         Integer size = 5;
         Pageable pageable = PageRequest.of(numPage-1,size);
-        Page<Voucher> voucherPage = voucherService.search(pageable, name, status);
-        model.addAttribute("currentPage", (numPage == null || numPage <= 0) ? 1 : numPage);
-        model.addAttribute("totalPages", voucherPage.getTotalPages() > 0 ? voucherPage.getTotalPages() : 1);
-        model.addAttribute("status", VoucherStatus.values());
+        Page<Voucher> voucherPage = Page.empty();
+
+        if (name != null && name.trim().isEmpty()) {
+            name = null;
+        }
+
+        if(name != null || status != null){
+            voucherPage = voucherService.searchNameOrStatus(pageable, name, status);
+        } else if (startDate != null && endDate != null) {
+            voucherPage = voucherService.search(pageable, null, null, startDate, endDate);
+        }
         if(voucherPage.isEmpty()){
             voucherPage = voucherService.findAll(pageable);
         }
 
+
+        log.info("(startDate) " + startDate);
+        log.info("(endDate) " + endDate);
+        log.info("(name) " + name);
+        log.info("(status) " + status);
+        log.info("(search)" + voucherPage);
+        model.addAttribute("currentPage", (numPage == null || numPage <= 0) ? 1 : numPage);
+        model.addAttribute("totalPages", voucherPage.getTotalPages() > 0 ? voucherPage.getTotalPages() : 1);
         model.addAttribute("status", VoucherStatus.values());
         model.addAttribute("voucherPage", voucherPage);
         return "views/voucher/listVoucher";

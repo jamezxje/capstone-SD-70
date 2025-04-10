@@ -7,11 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public interface VoucherService {
-    Voucher createVoucher(Voucher voucher);
+    Voucher createVoucher(Voucher voucher) throws Exception;
 
     Page<Voucher> findAll(Pageable pageable);
 
@@ -22,10 +24,19 @@ public interface VoucherService {
     Voucher updateVoucher(Voucher voucher, VoucherStatus voucherStatus,
                           LocalDateTime startDate, LocalDateTime endDate, BigDecimal value) throws NotException;
 
+    Voucher findByCode(String code) throws Exception;
+
     Voucher deleteVoucher(Long voucherId) throws NotException;
 
     List<Long> findAllById();
 
-    Page<Voucher> search(Pageable pageable, String name, VoucherStatus status);
+    Page<Voucher> search(Pageable pageable, String name, VoucherStatus status, LocalDate startOfDay, LocalDate endOfDay);
+
+    Page<Voucher> searchNameOrStatus(Pageable pageable, String name, VoucherStatus status);
+
+
+    Page<Voucher> searchByDate(Pageable pageable, LocalDate startOfDay, LocalDate endOfDay);
+
+    Page<Voucher> findByCreateDate(Pageable pageable, LocalDate date);
 
 }
