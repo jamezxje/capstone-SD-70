@@ -22,7 +22,7 @@ public interface VoucherService {
     List<Voucher> findAll();
 
     Voucher updateVoucher(Voucher voucher, VoucherStatus voucherStatus,
-                          LocalDateTime startDate, LocalDateTime endDate, BigDecimal value) throws NotException;
+                          LocalDateTime startDate, LocalDateTime endDate, BigDecimal value, Integer miniBill) throws NotException;
 
     Voucher findByCode(String code) throws Exception;
 
@@ -30,13 +30,12 @@ public interface VoucherService {
 
     List<Long> findAllById();
 
-    Page<Voucher> search(Pageable pageable, String name, VoucherStatus status, LocalDate startOfDay, LocalDate endOfDay);
+    Page<Voucher> searchByStartDateAndEndDate(Pageable pageable, String name, VoucherStatus status, LocalDate startOfDay, LocalDate endOfDay);
 
     Page<Voucher> searchNameOrStatus(Pageable pageable, String name, VoucherStatus status);
 
+    Page<Voucher> searchByCreateAt(Pageable pageable, String name, VoucherStatus status, LocalDate date);
 
-    Page<Voucher> searchByDate(Pageable pageable, LocalDate startOfDay, LocalDate endOfDay);
 
-    Page<Voucher> findByCreateDate(Pageable pageable, LocalDate date);
 
 }

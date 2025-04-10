@@ -19,13 +19,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/dashboard/product-management/voucher")
@@ -70,26 +68,37 @@ public class VoucherController {
         DecimalFormat formatter = new DecimalFormat("###,###.##");
         String formattedValue = formatter.format(voucher.getValue());
 
+        Integer minimumBill = voucher.getMinimumBill();
+        String formatted = "";
+
+        if (minimumBill != null) {
+            NumberFormat formatterMiniBill = NumberFormat.getInstance(new Locale("vi", "VN"));
+            formatted = formatterMiniBill.format(minimumBill) + " VND";
+        } else {
+            formatted = "0 VND"; // hoặc "Không có"
+        }
+
         model.addAttribute("status", VoucherStatus.values());
         model.addAttribute("voucher", voucher);
         model.addAttribute("startDate", voucher.getStartDate());
         model.addAttribute("endDate", voucher.getEndDate());
         model.addAttribute("formattedValue", formattedValue);
+        model.addAttribute("miniBill", formatted);
+
         return "views/voucher/updateVoucher";
     }
 
     @GetMapping("/detail/{id}")
     public String detailById(@PathVariable("id") Long id, Model model) throws NotException {
         Voucher voucher = voucherService.findById(id);
-
         DecimalFormat formatter = new DecimalFormat("###,###.##");
         String formattedValue = formatter.format(voucher.getValue());
-
         model.addAttribute("status", VoucherStatus.values());
         model.addAttribute("voucher", voucher);
         model.addAttribute("startDate", voucher.getStartDate());
         model.addAttribute("endDate", voucher.getEndDate());
         model.addAttribute("formattedValue", formattedValue);
+
 
         return "views/voucher/detailVoucher";
     }
@@ -100,12 +109,14 @@ public class VoucherController {
                          @RequestParam("status") VoucherStatus voucherStatus,
                          @RequestParam("startDate") LocalDateTime startDate,
                          @RequestParam("endDate") LocalDateTime endDate,
-                         @RequestParam("value") String value
+                         @RequestParam("value") String value,
+                         @RequestParam("miniBill") String miniBill
     ) throws NotException {
 
         log.info("(update): " + startDate + endDate);
         BigDecimal bigDecimal = new BigDecimal(value);
-        voucherService.updateVoucher(voucher, voucherStatus, startDate, endDate, bigDecimal);
+        Integer miniBills = Integer.parseInt(miniBill);
+        voucherService.updateVoucher(voucher, voucherStatus, startDate, endDate, bigDecimal, miniBills);
         return "redirect:/dashboard/product-management/voucher/list";
     }
 
@@ -113,6 +124,7 @@ public class VoucherController {
     public String search(@RequestParam(defaultValue = "1") Integer numPage,
                          @RequestParam(name = "name", required = false) String name,
                          @RequestParam(name = "status", required = false) VoucherStatus status,
+                         @RequestParam(name = "createAt", required = false) LocalDate createAt,
                          @RequestParam(name = "startDate", required = false) LocalDate startDate,
                          @RequestParam(name = "endDate", required = false) LocalDate endDate,
                          Model model) throws NotException {
@@ -127,7 +139,9 @@ public class VoucherController {
         if(name != null || status != null){
             voucherPage = voucherService.searchNameOrStatus(pageable, name, status);
         } else if (startDate != null && endDate != null) {
-            voucherPage = voucherService.search(pageable, null, null, startDate, endDate);
+            voucherPage = voucherService.searchByStartDateAndEndDate(pageable, null, null, startDate, endDate);
+        }else if (createAt != null) {
+            voucherPage = voucherService.searchByCreateAt(pageable, null, null, createAt);
         }
         if(voucherPage.isEmpty()){
             voucherPage = voucherService.findAll(pageable);

@@ -92,7 +92,8 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public Voucher updateVoucher(Voucher voucher, VoucherStatus voucherStatus,
-                                 LocalDateTime startDate, LocalDateTime endDate, BigDecimal value) throws NotException {
+                                 LocalDateTime startDate, LocalDateTime endDate,
+                                 BigDecimal value, Integer miniBill) throws NotException {
 
         Voucher update = findById(voucher.getId());
 
@@ -103,7 +104,7 @@ public class VoucherServiceImpl implements VoucherService {
         update.setStartDate(startDate);
         update.setEndDate(endDate);
         update.setStatus(voucherStatus);
-        update.setMinimumBill(voucher.getMinimumBill());
+        update.setMinimumBill(miniBill);
         update.setLastModifiedDate(LocalDateTime.now());
         return voucherRepository.save(update);
     }
@@ -123,10 +124,10 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Page<Voucher> search(Pageable pageable, String name, VoucherStatus status, LocalDate startOfDay, LocalDate endOfDay) {
+    public Page<Voucher> searchByStartDateAndEndDate(Pageable pageable, String name, VoucherStatus status, LocalDate startOfDay, LocalDate endOfDay) {
         LocalDateTime startDate = startOfDay.atStartOfDay();
         LocalDateTime endDate = endOfDay.atTime(23, 59, 59);
-        Page<Voucher> search = voucherRepository.search(pageable, name, status , startDate, endDate);
+        Page<Voucher> search = voucherRepository.searchByStartDateAndEndDate(pageable, name, status , startDate, endDate);
         return search;
     }
 
@@ -136,21 +137,16 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Page<Voucher> searchByDate(Pageable pageable, LocalDate startOfDay, LocalDate endOfDay) {
-        LocalDateTime startDate = startOfDay.atStartOfDay();
-        LocalDateTime endDate = endOfDay.atTime(23, 59, 59);
-        return voucherRepository.findByDateRange(pageable, startDate, endDate);
-    }
-
-    @Override
-    public Page<Voucher> findByCreateDate(Pageable pageable, LocalDate date) {
+    public Page<Voucher> searchByCreateAt(Pageable pageable, String name, VoucherStatus status, LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
         Date startDate = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
-        return voucherRepository.findByCreateDate(startDate, endDate, pageable);
+
+        return voucherRepository.searchByCreateAt(pageable, name, status, startDate, endDate);
     }
+
 
     @Override
     public Voucher deleteVoucher(Long voucherId) throws NotException {
