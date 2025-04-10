@@ -167,7 +167,7 @@
                     <div class="mb-3">
                       <label for="startDate">Ngày bắt đầu</label>
                       <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}" required>
-                      <div class="invalid-feedback">Ngày bắt đầu không được để trống.</div>
+                      <div class="invalid-feedback">Ngày bắt đầu phải trước ngày kết thúc.</div>
                     </div>
 
                     <!-- Ngày kết thúc -->
@@ -251,7 +251,7 @@
       // Kiểm tra ngày bắt đầu và ngày kết thúc
       let startDate = new Date(document.getElementById("startDate").value);
       let endDate = new Date(document.getElementById("endDate").value);
-      if (isNaN(startDate.getTime())) {
+      if (isNaN(startDate.getTime()) || startDate >= endDate) {
         document.getElementById("startDate").classList.add("is-invalid");
         isValid = false;
       } else {
