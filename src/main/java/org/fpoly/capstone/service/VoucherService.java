@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface VoucherService {
-    Voucher createVoucher(Voucher voucher);
+    Voucher createVoucher(Voucher voucher) throws Exception;
 
     Page<Voucher> findAll(Pageable pageable);
 
@@ -21,6 +21,8 @@ public interface VoucherService {
 
     Voucher updateVoucher(Voucher voucher, VoucherStatus voucherStatus,
                           LocalDateTime startDate, LocalDateTime endDate, BigDecimal value) throws NotException;
+
+    Voucher findByCode(String code) throws Exception;
 
     Voucher deleteVoucher(Long voucherId) throws NotException;
 

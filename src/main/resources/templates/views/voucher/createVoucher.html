@@ -144,7 +144,7 @@
                       <label for="name">Tên Voucher</label>
                       <input type="text" class="form-control" id="name" th:field="*{name}" required oninput="validateName()">
                       <div class="invalid-feedback">
-                        Tên không được trống.
+                        Tên không không hợp lệ.
                       </div>
                     </div>
 
@@ -175,6 +175,12 @@
                       <label for="endDate">Ngày kết thúc</label>
                       <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}" required>
                       <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="minimumBill">Hóa đơn tối thiểu</label>
+                      <input type="number" class="form-control" id="minimumBill" th:field="*{minimumBill}" required min="1" max="10000">
+                      <div class="invalid-feedback">Hóa đơn tối thiểu không hợp lệ.</div>
                     </div>
 
                     <hr class="mb-4">
@@ -229,6 +235,8 @@
        valueInput.classList.remove("is-invalid");
       }
 
+
+
       // Kiểm tra số lượng hợp lệ
       let quantityInput = document.getElementById("quantity");
       if (parseInt(quantityInput.value) < 1 || parseInt(quantityInput.value) > 100000 || isNaN(quantityInput.value)) {
@@ -237,6 +245,8 @@
       } else {
         quantityInput.classList.remove("is-invalid");
       }
+
+
 
       // Kiểm tra ngày bắt đầu và ngày kết thúc
       let startDate = new Date(document.getElementById("startDate").value);
@@ -254,6 +264,15 @@
       } else {
         document.getElementById("endDate").classList.remove("is-invalid");
       }
+
+      let minimumBillInput = document.getElementById("minimumBill");
+      if (parseInt(minimumBillInput.value) < 1000 || parseInt(minimumBillInput.value) > 1000000 || isNaN(minimumBillInput.value)) {
+        minimumBillInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        minimumBillInput.classList.remove("is-invalid");
+      }
+
 
       // Ngăn chặn gửi form nếu không hợp lệ
       if (!isValid) {

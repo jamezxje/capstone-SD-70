@@ -298,6 +298,7 @@ table th, table td {
                 <th>Số tiền</th>
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
+                <th>Hóa đơn tối thiểu</th>
                 <th>Trạng thái</th>
                 <th>ACTION</th>
               </tr>
@@ -313,6 +314,7 @@ table th, table td {
                 <td class="voucher-value" th:text="${voucher.value}"></td>
                 <td><div th:text="${#temporals.format(voucher.startDate, 'dd/MM/yyyy HH:mm')}"></div></td>
                 <td><div th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy HH:mm')}"></div></td>
+                <td><div th:text="${voucher.minimumBill}"></div></td>
                 <td>
                   <h6 class="text-primary">
                  <span class="badge" th:classappend="${voucher.status == voucher.status.ACTIVE ? 'badge-success' : (voucher.status == voucher.status.INACTIVE ? 'badge-warning' : 'badge-danger')}">

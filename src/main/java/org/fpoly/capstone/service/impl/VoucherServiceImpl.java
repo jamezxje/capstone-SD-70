@@ -34,13 +34,16 @@ public class VoucherServiceImpl implements VoucherService {
     private final UserService userService;
 
     @Override
-    public Voucher createVoucher(Voucher voucher) {
+    public Voucher createVoucher(Voucher voucher){
         String user = userService.getName();
         if(voucher.getStartDate().isAfter(voucher.getEndDate())){
             throw new IllegalArgumentException("Start date cannot be after end date.");
         }
-        String code = "VC" + String.format("%05d", new Random().nextInt(100000));  ;
+
         Voucher newVoucher = new Voucher();
+
+        String code = "VC" + String.format("%05d", new Random().nextInt(100000));  ;
+
         newVoucher.setCode(code);
         newVoucher.setName(voucher.getName());
         newVoucher.setValue(voucher.getValue());
@@ -50,6 +53,7 @@ public class VoucherServiceImpl implements VoucherService {
 
         updateVoucherStatus(newVoucher);
         newVoucher.setCreateDate(new Date());
+        newVoucher.setMinimumBill(voucher.getMinimumBill());
         newVoucher.setLastModifiedDate(LocalDateTime.now());
         newVoucher.setCreatedBy(user);
         newVoucher.setUpdatedBy(user);
@@ -98,8 +102,18 @@ public class VoucherServiceImpl implements VoucherService {
         update.setStartDate(startDate);
         update.setEndDate(endDate);
         update.setStatus(voucherStatus);
+        update.setMinimumBill(voucher.getMinimumBill());
         update.setLastModifiedDate(LocalDateTime.now());
         return voucherRepository.save(update);
+    }
+
+    @Override
+    public Voucher findByCode(String code) throws Exception {
+        Voucher voucher = findByCode(code);
+        if(voucher == null){
+            throw new NotException("Khong tim thay voucher code");
+        }
+        return voucher;
     }
 
     @Override

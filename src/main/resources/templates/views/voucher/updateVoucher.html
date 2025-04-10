@@ -178,6 +178,11 @@
                       <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
                     </div>
 
+                    <div class="mb-3">
+                      <label for="minimumBill">Hóa đơn tối thiểu</label>
+                      <input type="number" class="form-control" id="minimumBill" th:field="*{minimumBill}" required min="1" max="10000">
+                      <div class="invalid-feedback">Hóa đơn tối thiểu không hợp lệ.</div>
+                    </div>
 
                     <div class="mb-3">
                       <label for="status">Trạng thái</label>
@@ -243,7 +248,7 @@
 
       // Kiểm tra số lượng hợp lệ
       let quantityInput = document.getElementById("quantity");
-      if (parseInt(quantityInput.value) < 1 || parseInt(quantityInput.value) > 100000 || isNaN(quantityInput.value)) {
+      if (quantityInput.value.trim() === "" || /[a-zA-Z]/.test(quantityInput.value) || isNaN(quantityInput.value) || parseInt(quantityInput.value) < 1 || parseInt(quantityInput.value) > 100000) {
         quantityInput.classList.add("is-invalid");
         isValid = false;
       } else {
@@ -266,6 +271,16 @@
       } else {
         document.getElementById("endDate").classList.remove("is-invalid");
       }
+
+
+       let minimumBillInput = document.getElementById("minimumBill");
+      if (minimumBillInput.value.trim() === "" || /[a-zA-Z]/.test(minimumBillInput.value) || isNaN(minimumBillInput.value) ||parseInt(minimumBillInput.value) < 1000 || parseInt(minimumBillInput.value) > 1000000) {
+        minimumBillInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        minimumBillInput.classList.remove("is-invalid");
+      }
+
 
   let statusSelect = document.getElementById("status");
   if (statusSelect.value === "") {

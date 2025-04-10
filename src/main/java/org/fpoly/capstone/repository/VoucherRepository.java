@@ -57,4 +57,6 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     @Query("select v.id from Voucher v")
     List<Long> findByAllIds();
 
+    Voucher findByCode(String code);
+
 }

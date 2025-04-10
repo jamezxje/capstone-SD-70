@@ -55,7 +55,7 @@ public class VoucherController {
     }
 
     @PostMapping("/create")
-    public String createVoucher(@ModelAttribute("voucher") Voucher voucher){
+    public String createVoucher(@ModelAttribute("voucher") Voucher voucher) throws Exception {
         voucherService.createVoucher(voucher);
         return "redirect:/dashboard/product-management/voucher/list";
     }
