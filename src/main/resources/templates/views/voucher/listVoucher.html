@@ -14,90 +14,174 @@
         margin: 0;
         padding: 0;
       }
-
-      .content-body {
-        padding: 40px;
-      }
-
       .container-fluid {
         margin-top: 30px;
       }
 
-      /* Search Form Styling */
-      .form-search {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        background-color: #fff;
-        padding: 15px 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
 
-      .form-search .form-group {
-        margin-right: 15px;
-        flex: 1;
-      }
+form {
+  margin-left: 20px;
+  padding: 0;
+  width: 100%;
+  margin-top:10px;
 
-      .form-search input,
-      .form-search select {
-        width: 100%;
-        padding: 12px 20px;
-        font-size: 14px;
-        border-radius: 8px;
-        border: 1px solid #ced4da;
-        background-color: #f8f9fc;
-        transition: border-color 0.3s ease-in-out;
-      }
+}
 
-      /* Input and Select focus effect */
-      .form-search input:focus,
-      .form-search select:focus {
-        border-color: #ff6f00; /* Cam */
-        box-shadow: 0 0 0 0.25rem rgba(255, 111, 0, 0.25); /* Cam */
-        outline: none;
-      }
+/* Cải thiện các nhóm form */
+.form-group {
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
 
-      /* Button Styling */
-      .btn-search {
-        background-color: #ff6f00; /* Cam */
-        color: white;
-        padding: 12px 30px;
-        font-size: 16px;
-        font-weight: bold;
-        border-radius: 8px;
-        border: none;
-        transition: background-color 0.3s ease-in-out;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+/* Cải tiến label của các trường input */
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: #333;
+}
 
-      .btn-search:hover {
-        background-color: #e65c00; /* Cam đậm */
-      }
+/* Thiết kế cho các input và select trong form */
+.form-control {
 
-      .btn-search svg {
-        margin-left: 10px;
-        width: 16px;
-        height: 16px;
-      }
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+/* Cải thiện nút tìm kiếm */
+.btn-search {
+  background-color: #ff8000;
+  color: white;
+  padding: 10px 15px; /* Giảm padding để nút nhỏ hơn */
+  border-radius: 5px;
+  border: none;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  font-size: 0.9rem; /* Giảm kích thước chữ */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+}
+
+.btn-search:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.btn-search:active {
+  background-color: #004085;
+  transform: scale(0.98);
+}
+
+/* Hiệu ứng cho biểu tượng tìm kiếm */
+.btn-search svg {
+  margin-right: 6px; /* Giảm khoảng cách giữa biểu tượng và văn bản */
+  fill: white;
+  width: 16px; /* Giảm kích thước biểu tượng */
+  height: 16px; /* Giảm kích thước biểu tượng */
+}
+/* Cải thiện sự linh hoạt của các cột trong form */
+.form-group.col-6 {
+  flex: 1 1 48%;
+}
+
+@media (max-width: 768px) {
+  .form-group.col-6 {
+    flex: 1 1 100%;
+  }
+}
+
+/* Responsive design cho các trường input */
+input[type="text"], select, input[type="date"] {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+/* Responsive design cho form */
+@media (max-width: 576px) {
+  .form-group {
+    width: 100%;
+  }
+
+  .btn-search {
+    width: 100%; /* Chiếm toàn bộ chiều rộng trên thiết bị nhỏ */
+    margin-left: 0;
+  }
+}
+
+
 
       /* Danh sách Phiếu Giảm Giá */
-      .card-header {
-        background-color: #ff6f00; /* Màu cam */
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px 8px 0 0;
-      }
+     /* Định dạng chung cho card-header */
+.card-header {
+  background-color: #ff6f00; /* Màu nền cam đậm */
+  color: #fff; /* Màu chữ trắng */
+  padding: 15px 20px; /* Khoảng cách trong của card */
+  border-radius: 8px; /* Bo góc cho card header */
+  display: flex; /* Sử dụng flexbox để căn chỉnh các phần tử */
+  justify-content: space-between; /* Căn giữa các phần tử theo chiều ngang */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ cho phần đầu */
+}
 
-      .card-header h4 {
-        margin: 0;
-        font-weight: bold;
-        font-size: 18px;
-      }
+/* Tiêu đề của card */
+.card-title {
+  font-size: 1.6rem; /* Tăng kích thước font cho tiêu đề */
+  margin-bottom: 0; /* Loại bỏ khoảng cách dưới của h4 */
+  font-weight: 600; /* Làm chữ đậm */
+}
+
+/* Định dạng cho nút Thêm voucher */
+.btn-orange {
+  background-color: #ff6f00; /* Nền cam */
+  color: #fff; /* Màu chữ trắng */
+  border: 2px solid #ff6f00; /* Đường viền cam */
+  padding: 8px 20px; /* Khoảng cách bên trong nút */
+  border-radius: 4px; /* Bo góc cho nút */
+  font-weight: 600; /* Chữ đậm cho nút */
+  transition: all 0.3s ease; /* Hiệu ứng chuyển màu khi hover */
+}
+
+.btn-orange:hover {
+  background-color: #e65100; /* Màu nền khi hover sẽ là cam đậm hơn */
+  color: #fff; /* Màu chữ trắng khi hover */
+  border-color: #e65100; /* Đổi màu viền khi hover */
+}
+
+/* Responsive design cho màn hình nhỏ */
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column; /* Đặt các phần tử theo chiều dọc khi màn hình nhỏ */
+    align-items: flex-start; /* Căn chỉnh các phần tử về phía trái */
+  }
+
+  .card-title {
+    margin-bottom: 10px; /* Khoảng cách giữa tiêu đề và nút */
+  }
+
+  .btn-orange {
+    width: 100%; /* Đặt nút chiếm toàn bộ chiều rộng của card header khi màn hình nhỏ */
+    text-align: center; /* Căn giữa chữ trong nút */
+  }
+}
 
       /* Responsive Design */
       @media (max-width: 768px) {
@@ -117,95 +201,200 @@
         }
       }
       /* General Table Styles */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      table-layout: fixed;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      font-size: 14px;
+      color: #333;
+
+    }
+
+    th {
+      background-color: #ff6f00;
+      color: white;
+      font-weight: bold;
+    }
+
+   th:first-child, td:first-child {
+  width: 50px; /* Hoặc giá trị tùy chỉnh để làm nhỏ ô STT */
+  text-align: center; /* Căn giữa văn bản */
+}
+th:nth-last-child(2), td:nth-last-child(2) {
+  width: 120px; /* Giới hạn chiều rộng của cột */
+  /* Căn giữa văn bản */
+  overflow: hidden; /* Ẩn phần văn bản thừa */
+  white-space: nowrap; /* Ngừng xuống dòng */
+  text-overflow: ellipsis; /* Hiển thị dấu ba chấm nếu văn bản quá dài */
+}
+th:nth-child(5), td:nth-child(5) {
+  /* Các thuộc tính CSS bạn muốn áp dụng */
+  width:50px;
+  overflow: hidden;
+   white-space: nowrap; /* Ngừng xuống dòng */
+  text-overflow: ellipsis;
+}
+/* Cài đặt cho các ô <td> có nội dung dài */
+td {
+  max-width: 150px; /* Giới hạn chiều rộng của ô */
+  overflow: hidden; /* Ẩn phần văn bản vượt quá chiều rộng của ô */
+  text-overflow: ellipsis; /* Hiển thị dấu ba chấm khi văn bản quá dài */
+  white-space: normal;
+}
+/* Cài đặt cho các ô <td> có nội dung dài */
+td.limit-text {
+  max-width: 150px; /* Giới hạn chiều rộng của ô */
+  overflow: hidden; /* Ẩn phần văn bản vượt quá chiều rộng của ô */
+  text-overflow: ellipsis; /* Hiển thị dấu ba chấm khi văn bản quá dài */
+ white-space: normal;
 }
 
-table th, table td {
-  padding: 12px 15px;
-  text-align: left;
-  font-size: 14px;
-  font-weight: 400; /* Màu chữ nhẹ hơn cho dữ liệu */
-}
 
-table th {
-  background-color: #ff6f00; /* Màu cam cho tiêu đề cột */
-  color: white;
-  font-weight: 600; /* Chữ đậm cho tiêu đề */
-  border-bottom: 2px solid #e5e5e5;
-}
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
 
-table td {
-  background-color: #ffffff;
-  border-bottom: 1px solid #f1f1f1;
-  font-size: 14px;
-  font-family: 'Arial', sans-serif; /* Chọn font đẹp và dễ đọc */
-  color: #333; /* Màu chữ tối cho dễ đọc */
-}
+    tr:hover {
+      background-color: #f1f1f1;
+    }
 
-/* Phần tbody */
-table tbody {
-  font-family: 'Roboto', sans-serif; /* Dùng font dễ đọc và hiện đại */
-  font-size: 15px; /* Tăng chút kích thước chữ để dễ đọc hơn */
-  line-height: 1.5; /* Tăng khoảng cách dòng để dễ nhìn */
-  color: #666; /* Chữ màu xám nhẹ, dễ nhìn và không quá chói */
-}
+    .badge {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      color: white;
+    }
 
-/* Làm nổi bật các hàng khi hover */
-table tr:hover {
-  background-color: #ffe6b3; /* Màu nền nhẹ khi hover */
-  transition: background-color 0.3s ease;
-}
+    .badge-success {
+      background-color: #28a745;
+    }
 
-/* Màu nền cho các hàng chẵn */
-table tr:nth-child(even) {
-  background-color: #f8f9fc; /* Màu nền nhẹ cho các hàng chẵn */
-}
+    .badge-warning {
+      background-color: #ffc107;
+    }
 
-/* Thêm viền tròn cho các ô */
-table th, table td {
-  border-radius: 5px;
-}
+    .badge-danger {
+      background-color: #dc3545;
+    }
 
-/* Chỉnh font chữ cho số trang trong phân trang */
-.pagination .page-link {
-  font-size: 14px; /* Tăng kích thước chữ cho số trang */
-  font-weight: 500;
-  padding: 10px 15px;
-  color: #ff6f00; /* Màu cam cho các số trang */
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-  text-decoration: none;
-}
+    /* Action Buttons */
+    .btn-action {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 5px;
+      background-color: #17a2b8;
+      color: white;
+      text-decoration: none;
+      margin: 5px;
+    }
 
-/* Hover effect for pagination links */
-.pagination .page-link:hover {
-  background-color: #ff6f00; /* Màu cam khi hover */
-  color: white;
-}
+    .btn-action:hover {
+      background-color: #138496;
+    }
 
-/* Pagination styles */
+    .btn-action svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
+    }
+
+    /* Table Scroll for Small Screens */
+
+
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    /* Responsive Styling */
+    @media (max-width: 768px) {
+      th, td {
+        font-size: 12px;
+        padding: 8px;
+      }
+
+      .btn-action {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      th, td {
+        font-size: 10px;
+        padding: 6px;
+      }
+
+      .btn-action {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+    }
+
+/* Căn chỉnh nút pagination đẹp và có hiệu ứng hover */
 .pagination {
   display: flex;
-  justify-content: flex-end;
-  padding: 20px 0;
+  justify-content: center; /* Canh giữa */
+  margin: 20px 0;
+  padding: 0;
 }
 
-.pagination li {
-  margin: 0 5px;
+.page-item {
+  margin: 0 4px;
+  border-radius: 5px; /* Góc bo tròn */
+
+
 }
 
-.pagination .page-item.disabled a {
-  color: #dcdcdc;
+.page-link {
+  padding: 68x 15px; /* Tăng kích thước cho nút */
+  font-size: 12px;
+  color: #007bff; /* Màu chữ của nút */
+  background-color: #fff; /* Màu nền của nút */
+  border: 1px solid #ddd; /* Đường viền mờ cho các nút */
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển màu mượt mà */
 }
 
-.pagination .active .page-link {
-  background-color: #ff6f00;
-  color: white;
-  border-color: #ff6f00;
+.page-link:hover {
+  background-color: #007bff; /* Màu nền khi hover */
+  color: #fff; /* Màu chữ khi hover */
 }
+
+.page-item.disabled .page-link {
+  background-color: #f8f9fa; /* Màu nền cho nút disabled */
+  color: #6c757d; /* Màu chữ khi disabled */
+  pointer-events: none; /* Vô hiệu hóa nút khi disabled */
+}
+
+.page-item.active .page-link {
+  background-color: #007bff; /* Màu nền cho trang hiện tại */
+  color: #fff; /* Màu chữ cho trang hiện tại */
+  pointer-events: none; /* Vô hiệu hóa click vào trang hiện tại */
+}
+
+/* Responsive - Giảm kích thước nút trên thiết bị nhỏ */
+@media (max-width: 576px) {
+  .page-link {
+    padding: 6px 12px; /* Giảm padding trên các thiết bị nhỏ */
+    font-size: 14px; /* Giảm kích thước chữ */
+  }
+}
+
+/* Thêm hiệu ứng khi hover và active trên các nút */
+.page-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Thêm hiệu ứng khi focus vào nút */
+}
+
       .btn-white {
     background-color: white;
     color: #FF5722; /* Màu cam cho chữ (hoặc màu bạn muốn) */
@@ -223,24 +412,26 @@ table th, table td {
   }
 
     </style>
-
   </th:block>
-
 </head>
 
 <body>
 <th:block id="th-body">
+
   <div class="content-body">
     <div class="container-fluid">
       <div class="card">
 
-        <!-- Tìm kiếm -->
-        <form th:action="@{/dashboard/product-management/voucher/search}" method="get" class="form-search">
-          <div class="form-group">
+        <form th:action="@{/dashboard/product-management/voucher/search}" method="get" class="">
+          <div class="row d-flex">
+          <div class="col-6 form-group">
+            <label for="name">Tên:</label>
             <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên tìm kiếm">
           </div>
 
-          <div class="form-group">
+
+          <div class="col-6 form-group">
+            <label for="status">Trạng thái:</label>
             <select class="form-control" id="status" name="status">
               <option value="">Chọn trạng thái</option>
               <option th:each="status : ${status}"
@@ -249,21 +440,53 @@ table th, table td {
                             (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}">
               </option>
             </select>
+
           </div>
 
+<!--            <div class="col-4 form-group">-->
+<!--              <label for="createAt">Ngày tạo</label>-->
+<!--              <input type="date" class="form-control" id="createAt" name="createAt" placeholder="Nhập ngày tìm kiếm">-->
+<!--            </div>-->
+
+          <div class="col-4 form-group">
+            <label for="startDate">Ngày bắt đầu</label>
+            <input type="date" class="form-control" id="startDate" name="startDate" placeholder="Nhập ngày bắt đầu tìm kiếm">
+          </div>
+
+
+          <div class="col-4 form-group">
+            <label for="endDate">Ngày kết thúc</label>
+            <input type="date" class="form-control" id="endDate" name="endDate" placeholder="Nhập ngày kết thúc tìm kiếm">
+          </div>
+
+
+
+
           <button type="submit" class="btn-search">
-            Tìm kiếm
+
             <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 16L19 20M17 14C18.5 12.25 18.5 9.25 17 7.5C15.5 5.75 12.5 5.75 11 7.5C9.5 9.25 9.5 12.25 11 14C12.5 15.75 15.5 15.75 17 14Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
+            Tìm kiếm
           </button>
+          </div>
         </form>
+
+      </div>
+
+
+      <div class="card">
+
+        <!-- Tìm kiếm -->
+
+
 
         <!-- Tiêu đề "Danh Sách Phiếu Giảm Giá" -->
         <div class="card-header d-sm-flex d-block">
           <h4 class="card-title mb-2 text-light">Danh sách phiếu giảm giá</h4>
-          <a th:href="@{/dashboard/product-management/voucher/create}" class="btn btn-white">+ Thêm voucher</a>
+          <a th:href="@{/dashboard/product-management/voucher/create}" class="btn btn-orange">+ Thêm voucher</a>
         </div>
+
 
         <div class="card-body">
           <!-- Table Content -->
@@ -298,32 +521,27 @@ table th, table td {
                 <th>Số tiền</th>
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
-                <th>Hóa đơn tối thiểu</th>
                 <th>Trạng thái</th>
-                <th>ACTION</th>
+                <th>Hành động</th>
               </tr>
               </thead>
               <tbody>
-
               <tr th:each="voucher,iterStat : ${voucherPage}">
                 <td><div th:text="${iterStat.index + 1}"></div></td>
-                <td><div class="media style-1"><div class="media-body" th:text="${voucher.code}"></div></div></td>
-                <td><div th:text="${voucher.name}"></div></td>
+                <td class="limit-text"><div th:text="${voucher.code}"></div></td>
+                <td class="limit-text"><div th:text="${voucher.name}"></div></td>
                 <td><div th:text="${#dates.format(voucher.createDate, 'dd/MM/yyyy HH:mm')}"></div></td>
                 <td><div th:text="${voucher.quantity}"></div></td>
-                <td class="voucher-value" th:text="${voucher.value}"></td>
+                <td class="voucher-value limit-text" th:text="${voucher.value}"></td>
                 <td><div th:text="${#temporals.format(voucher.startDate, 'dd/MM/yyyy HH:mm')}"></div></td>
                 <td><div th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy HH:mm')}"></div></td>
-                <td><div th:text="${voucher.minimumBill}"></div></td>
-                <td>
+                <td class="limit-text">
                   <h6 class="text-primary">
-                 <span class="badge" th:classappend="${voucher.status == voucher.status.ACTIVE ? 'badge-success' : (voucher.status == voucher.status.INACTIVE ? 'badge-warning' : 'badge-danger')}">
-                   <span th:text="${voucher.status == voucher.status.ACTIVE ? 'Hoạt động' : (voucher.status == voucher.status.INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}"
-                   ></span>
+                <span class="badge" th:classappend="${voucher.status == voucher.status.ACTIVE ? 'badge-success' : (voucher.status == voucher.status.INACTIVE ? 'badge-warning' : 'badge-danger')}">
+                  <span th:text="${voucher.status == voucher.status.ACTIVE ? 'Hoạt động' : (voucher.status == voucher.status.INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}"></span>
                 </span>
                   </h6>
                 </td>
-
                 <td>
                   <div class="d-flex action-button">
                     <!-- Button to open the modal -->
@@ -367,23 +585,25 @@ table th, table td {
                   <!-- Nút Previous -->
                   <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                     <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage != null && currentPage > 1 ? currentPage - 1 : 1})}" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
+                      <span aria-hidden="true" style="color: black;">&laquo;</span>
                     </a>
                   </li>
 
-                  <!-- Hiển thị trang hiện tại -->
-                  <li th:classappend="${i == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage})}" th:text="${currentPage}"></a>
+                  <!-- Hiển thị tối đa 3 trang -->
+                  <li th:each="i : ${#numbers.sequence(currentPage > 1 ? currentPage - 1 : 1, currentPage + 1 <= totalPages ? currentPage + 1 : totalPages)}"
+                      th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${i})}" th:text="${i}"></a>
                   </li>
 
                   <!-- Nút Next -->
                   <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                     <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage != null && currentPage < totalPages ? currentPage + 1 : totalPages})}" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
+                      <span aria-hidden="true" style="color: black;">&raquo;</span>
                     </a>
                   </li>
                 </ul>
               </nav>
+
 
             </th:block>
           </div>

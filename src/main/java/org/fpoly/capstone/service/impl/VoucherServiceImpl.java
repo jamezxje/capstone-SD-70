@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -122,9 +123,33 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Page<Voucher> search(Pageable pageable, String name, VoucherStatus status) {
-        Page<Voucher> search = voucherRepository.search(pageable, name, status);
+    public Page<Voucher> search(Pageable pageable, String name, VoucherStatus status, LocalDate startOfDay, LocalDate endOfDay) {
+        LocalDateTime startDate = startOfDay.atStartOfDay();
+        LocalDateTime endDate = endOfDay.atTime(23, 59, 59);
+        Page<Voucher> search = voucherRepository.search(pageable, name, status , startDate, endDate);
         return search;
+    }
+
+    @Override
+    public Page<Voucher> searchNameOrStatus(Pageable pageable, String name, VoucherStatus status) {
+        return voucherRepository.searchNameOrStatus(pageable, name, status);
+    }
+
+    @Override
+    public Page<Voucher> searchByDate(Pageable pageable, LocalDate startOfDay, LocalDate endOfDay) {
+        LocalDateTime startDate = startOfDay.atStartOfDay();
+        LocalDateTime endDate = endOfDay.atTime(23, 59, 59);
+        return voucherRepository.findByDateRange(pageable, startDate, endDate);
+    }
+
+    @Override
+    public Page<Voucher> findByCreateDate(Pageable pageable, LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+        Date startDate = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
+        return voucherRepository.findByCreateDate(startDate, endDate, pageable);
     }
 
     @Override

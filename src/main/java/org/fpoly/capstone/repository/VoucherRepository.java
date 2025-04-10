@@ -1,6 +1,7 @@
 package org.fpoly.capstone.repository;
 
 import org.fpoly.capstone.dto.voucher.VoucherRequest;
+import org.fpoly.capstone.entity.BillDetail;
 import org.fpoly.capstone.entity.Voucher;
 import org.fpoly.capstone.entity.enum_status.VoucherStatus;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -51,8 +54,33 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     @Query("select v from Voucher v order by v.id desc")
     Page<Voucher> findAll(Pageable pageable);
 
+
     @Query("SELECT v FROM Voucher v WHERE v.name = :name or v.status = :status")
-    Page<Voucher> search(Pageable pageable, @Param("name") String name ,@Param("status") VoucherStatus status);
+    Page<Voucher> searchNameOrStatus(Pageable pageable, @Param("name") String name ,@Param("status") VoucherStatus status);
+
+    @Query("SELECT v FROM Voucher v " +
+            "WHERE (:name IS NULL OR v.name = :name) " +
+            "AND (:status IS NULL OR v.status = :status) " +
+            "AND (:startDate IS NULL OR v.startDate >= :startDate) " +
+            "AND (:endDate IS NULL OR v.endDate <= :endDate)")
+    Page<Voucher> search(Pageable pageable,
+                         @Param("name") String name,
+                         @Param("status") VoucherStatus status,
+                         @Param("startDate") LocalDateTime startDate,
+                         @Param("endDate") LocalDateTime endDate);
+
+
+    @Query("SELECT v FROM Voucher v WHERE " +
+            "(:startDate IS NULL OR v.startDate >= :startDate) AND " +
+            "(:endDate IS NULL OR v.endDate <= :endDate)")
+    Page<Voucher> findByDateRange(Pageable pageable,
+                                  @Param("startDate") LocalDateTime startDate,
+                                  @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT v FROM Voucher v WHERE v.createDate BETWEEN :startOfDay AND :endOfDay")
+    Page<Voucher> findByCreateDate(@Param("startOfDay") Date startOfDay,
+                                   @Param("endOfDay") Date endOfDay,
+                                   Pageable pageable);
 
     @Query("select v.id from Voucher v")
     List<Long> findByAllIds();

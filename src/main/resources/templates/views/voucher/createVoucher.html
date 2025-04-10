@@ -1,293 +1,393 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org"
-      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+  <!DOCTYPE html>
+  <html lang="en" xmlns:th="https://www.thymeleaf.org"
+        th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
 
-<head>
-  <meta charset="utf-8">
-  <th:block id="th-css">
-    <style>
-      /* Global Styles */
-      body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f7f9fc;
-      }
+  <head>
+    <meta charset="utf-8">
+    <th:block id="th-css">
+      <style>
+        /* Reset cho tất cả các phần tử */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
 
-      .container-fluid {
-        padding: 30px;
-      }
+        body {
+          font-family: 'Poppins', sans-serif;
+          background-color: #f4f7fc; /* Soft background color */
+          color: #333;
+        }
 
-      .card {
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
-        padding: 20px;
-      }
-
-      .card-body {
-        padding: 30px;
-      }
-
-      .page-titles h4 {
-        font-size: 28px;
-        font-weight: 600;
-        color: #333;
-      }
-
-      .welcome-text p {
-        font-size: 18px;
-        color: #555;
-      }
-
-      /* Form Styles */
-      form {
-        margin-top: 20px;
-      }
-
-      .mb-3 label {
-        font-size: 16px;
-        font-weight: 500;
-        color: #495057;
-      }
-
-      /* Full background for input fields */
-      .form-control {
-        border-radius: 8px;
-        padding: 12px 15px;
-        font-size: 16px;
-        border: 1px solid #ddd;
-        background-color: #f1f3f5; /* Light background color */
-        width: 100%; /* Make inputs full width */
-        transition: border-color 0.3s, background-color 0.3s;
-      }
-
-      .form-control:focus {
-        border-color: #007bff;
-        background-color: #e9f5ff; /* Light blue background on focus */
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
-      }
-
-      .invalid-feedback {
-        color: #e74a3b;
-        font-size: 14px;
-        margin-top: 5px;
-      }
-
-      .is-invalid {
-        border-color: #e74a3b !important;
-      }
-
-      .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        border-radius: 8px;
-        padding: 12px 20px;
-        font-size: 18px;
-        font-weight: 600;
-        width: 100%; /* Full width for button */
-      }
-
-      .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #004085;
-      }
-
-      /* Responsive Design */
-      @media (max-width: 768px) {
         .container-fluid {
-          padding: 15px;
+          padding: 50px 20px;
+        }
+
+        /* Card container */
+        .card {
+          border-radius: 15px; /* Rounded corners for a sleek look */
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
+          background-color: #fff;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+          transform: translateY(-6px); /* Lift effect on hover */
+          box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
         }
 
         .card-body {
-          padding: 20px;
+          padding: 35px;
         }
 
-        .page-titles h4 {
-          font-size: 24px;
-        }
+   h4.mb-3 {
+    font-size: 14px; /* Giảm kích thước chữ */
+    font-weight: 600; /* Đậm chữ */
+    color: white; /* Màu chữ trắng */
+    text-align: center; /* Căn giữa chữ */
+    margin-bottom: 20px; /* Khoảng cách dưới */
+    padding: 12px; /* Padding trong */
+    background: #FF8C00; /* Màu nền cam */
+    border-radius: 8px; /* Bo góc */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng đổ nhẹ */
+    transition: all 0.3s ease; /* Hiệu ứng chuyển động mượt mà */
+    width: 110px; /* Đặt chiều rộng */
+    white-space: nowrap; /* Ngăn văn bản xuống dòng */
+    overflow: hidden; /* Ẩn phần văn bản vượt quá */
+    text-overflow: ellipsis; /* Hiển thị ba chấm nếu văn bản dài */
+}
 
+h4.mb-3:hover {
+    transform: scale(0.95); /* Hiệu ứng co lại khi hover */
+    background: #FF7F50; /* Đổi màu nền khi hover */
+}
+
+
+
+        /* Style for input elements */
         .form-control {
-          padding: 10px;
+          font-size: 16px;
+          padding: 18px 20px;
+          border-radius: 12px; /* Soft rounded borders */
+          border: 1px solid #d1d9e6; /* Subtle border color */
+          background-color: #fafafa;
+          color: #333;
+          width: 100%;
+          transition: all 0.3s ease;
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+          margin-bottom: 18px; /* Add bottom margin between inputs */
         }
-      }
-    </style>
-  </th:block>
-</head>
 
-<body>
-<th:block id="th-body">
-  <div class="container">
-  <div class="content-body">
-    <div class="container-fluid">
+        /* Focused state for inputs */
+        .form-control:focus {
+          border-color: #6c8eeb; /* Soft blue border on focus */
+          background-color: #f1f7fe; /* Slightly lighter background */
+          box-shadow: 0 4px 12px rgba(108, 142, 235, 0.2); /* Subtle focus shadow */
+          outline: none;
+        }
 
-      <div class="row page-titles mx-0">
-        <div class="col-sm-6 p-md-0">
-          <div class="welcome-text">
-            <p class="mb-0">Tạo voucher</p>
-          </div>
-        </div>
-      </div>
+        /* Invalid state for inputs */
+        .form-control.is-invalid {
+          border-color: #e74c3c;
+          background-color: #fff5f5;
+        }
 
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-lg-12"> <!-- Change to col-12 to make it full-width -->
-                  <h4 class="mb-3">Tạo voucher</h4>
+        /* Label style */
+        label {
+          font-size: 16px;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 8px;
+          display: block;
+          position: relative;
+          padding-left: 10px;
+          transition: all 0.3s ease;
+        }
 
-                  <form id="voucherForm" class="needs-validation" novalidate
-                        th:action="@{/dashboard/product-management/voucher/create}"
-                        th:object="${voucher}" method="post">
+        .form-control:focus + label,
+        .form-control:valid + label {
+          font-size: 14px;
+          color: #6c8eeb;
+          transform: translateY(-12px); /* Shrink and lift the label */
+        }
 
-                    <!-- Tên Voucher -->
-                    <div class="mb-3">
-                      <label for="name">Tên Voucher</label>
-                      <input type="text" class="form-control" id="name" th:field="*{name}" required oninput="validateName()">
-                      <div class="invalid-feedback">
-                        Tên không không hợp lệ.
+        /* Feedback for invalid input */
+        .invalid-feedback {
+          color: #e74c3c;
+          font-size: 14px;
+          margin-top: 5px;
+          font-weight: 500;
+        }
+
+        /* Submit and Back button styles */
+        .btn-primary {
+          background-color: #f39c12; /* Bright, energetic yellow */
+          border: none;
+          border-radius: 30px;
+          padding: 12px 30px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #fff;
+          transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+          cursor: pointer;
+          display: inline-block;
+          text-align: center;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+          background-color: #e67e22; /* Darker shade when hovering */
+          transform: translateY(-2px); /* Slight lift effect */
+        }
+
+        .btn-primary:active {
+          background-color: #d35400;
+          transform: translateY(0);
+        }
+
+        /* Back button style */
+        .btn-back {
+          background-color: #3498db;
+          border: none;
+          border-radius: 30px;
+          padding: 12px 30px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #fff;
+          transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+          cursor: pointer;
+          display: inline-block;
+          text-align: center;
+          margin-right: 15px;
+        }
+
+        .btn-back:hover {
+          background-color: #2980b9;
+          transform: translateY(-2px);
+        }
+
+        .btn-back:active {
+          background-color: #1c5a8a;
+          transform: translateY(0);
+        }
+
+        /* Flex container for buttons */
+        .btn-container {
+          display: flex;
+          justify-content: flex-end; /* Align buttons to the right */
+          margin-top: 25px;
+        }
+
+        /* Make buttons look disabled */
+        .btn-primary:disabled, .btn-back:disabled {
+          background-color: #bdc3c7;
+          cursor: not-allowed;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          .card-body {
+            padding: 30px 20px;
+          }
+
+          .page-titles h4 {
+            font-size: 26px;
+          }
+
+          .form-control {
+            padding: 16px 18px;
+          }
+
+          .btn-primary {
+            padding: 14px 20px;
+            font-size: 15px;
+          }
+
+          .btn-back {
+            padding: 14px 20px;
+            font-size: 15px;
+          }
+        }
+      </style>
+
+
+
+    </th:block>
+  </head>
+
+  <body>
+  <th:block id="th-body">
+    <div class="container">
+    <div class="content-body">
+      <div class="container-fluid">
+
+
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-12"> <!-- Change to col-12 to make it full-width -->
+                    <h4 class="mb-3">Tạo voucher</h4>
+
+                    <form id="voucherForm" class="needs-validation" novalidate
+                          th:action="@{/dashboard/product-management/voucher/create}"
+                          th:object="${voucher}" method="post">
+
+                      <!-- Tên Voucher -->
+                      <div class="mb-3">
+                        <label for="name">Tên Voucher</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Nhập tên..." required oninput="validateName()">
+                        <div class="invalid-feedback">
+                          Tên không không hợp lệ.
+                        </div>
                       </div>
-                    </div>
 
-                    <!-- Số tiền -->
-                    <div class="mb-3">
-                      <label for="value">Số tiền (VND)</label>
-                      <input type="text" class="form-control" id="value" name="value" th:field="*{value}" required
-                             oninput="formatCurrency(event)">
-                      <div class="invalid-feedback">Số tiền không hợp lệ.</div>
-                    </div>
+                      <!-- Số tiền -->
+                      <div class="mb-3">
+                        <label for="value">Số tiền (VND)</label>
+                        <input type="text" class="form-control" id="value" name="value" placeholder="Nhập số tiền..." th:field="*{value}" required
+                               oninput="formatCurrency(event)">
+                        <div class="invalid-feedback">Số tiền không hợp lệ.</div>
+                      </div>
 
-                    <!-- Số lượng -->
-                    <div class="mb-3">
-                      <label for="quantity">Số lượng</label>
-                      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required min="1" max="10000">
-                      <div class="invalid-feedback">Số lượng phải lớn hơn 0 và nhỏ hơn 100.000.</div>
-                    </div>
+                      <!-- Số lượng -->
+                      <div class="mb-3">
+                        <label for="quantity">Số lượng</label>
+                        <input type="number" class="form-control" id="quantity" th:field="*{quantity}" placeholder="Nhập số lượng..." required min="1" max="10000">
+                        <div class="invalid-feedback">Số lượng phải lớn hơn 0 và nhỏ hơn 100.000.</div>
+                      </div>
 
-                    <!-- Ngày bắt đầu -->
-                    <div class="mb-3">
-                      <label for="startDate">Ngày bắt đầu</label>
-                      <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}" required>
-                      <div class="invalid-feedback">Ngày bắt đầu phải trước ngày kết thúc.</div>
-                    </div>
+                      <!-- Ngày bắt đầu -->
+                      <div class="mb-3">
+                        <label for="startDate">Ngày bắt đầu</label>
+                        <input type="datetime-local" class="form-control" id="startDate" placeholder="Chọn ngày bắt đầu..." th:field="*{startDate}" required>
+                        <div class="invalid-feedback">Ngày bắt đầu phải trước ngày kết thúc.</div>
+                      </div>
 
-                    <!-- Ngày kết thúc -->
-                    <div class="mb-3">
-                      <label for="endDate">Ngày kết thúc</label>
-                      <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}" required>
-                      <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
-                    </div>
+                      <!-- Ngày kết thúc -->
+                      <div class="mb-3">
+                        <label for="endDate">Ngày kết thúc</label>
+                        <input type="datetime-local" class="form-control" id="endDate" placeholder="Chọn ngày kết thúc..." th:field="*{endDate}" required>
+                        <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
+                      </div>
 
-                    <div class="mb-3">
-                      <label for="minimumBill">Hóa đơn tối thiểu</label>
-                      <input type="number" class="form-control" id="minimumBill" th:field="*{minimumBill}" required min="1" max="10000">
-                      <div class="invalid-feedback">Hóa đơn tối thiểu không hợp lệ.</div>
-                    </div>
+                      <div class="mb-3">
+                        <label for="minimumBill">Hóa đơn tối thiểu</label>
+                        <input type="number" class="form-control" id="minimumBill" th:field="*{minimumBill}" placeholder="Nhập hóa đơn tối thiểu..." required min="1000" max="10000000">
+                        <div class="invalid-feedback">Hóa đơn tối thiểu không hợp lệ.</div>
+                      </div>
 
-                    <hr class="mb-4">
-                    <button class="btn btn-primary btn-lg btn-block" type="submit">Gửi</button>
-                  </form>
+                      <div class="btn-container">
+                        <!-- Nút quay lại -->
+                        <button class="btn btn-back" type="button" onclick="window.history.back();">Quay lại</button>
 
+                        <!-- Nút gửi -->
+                        <button class="btn btn-primary" type="submit">Gửi</button>
+                      </div>
+                    </form>
+
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
+    </div>
+
+
+    <script>
+      // Định dạng tiền tệ khi nhập số tiền
+      function formatCurrency(event) {
+        let input = event.target;
+        let value = input.value.replace(/\D/g, ''); // Xóa tất cả ký tự không phải số
+        let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
+        input.value = formattedValue;
+      }
+
+      // Kiểm tra dữ liệu nhập vào form
+      document.getElementById("voucherForm").addEventListener("submit", function(event) {
+        let form = this;
+        let isValid = true;
+
+        // Kiểm tra Tên Voucher
+    let nameInput = document.getElementById("name");
+        let specialCharRegex = /[^\p{L}0-9\s]/u;
+        if (nameInput == null || nameInput.value.trim() === "" || nameInput.value.length > 255 || specialCharRegex.test(nameInput.value)) {
+          nameInput.classList.add("is-invalid");
+          isValid = false;
+        } else {
+          nameInput.classList.remove("is-invalid");
+        }
+
+
+        // Kiểm tra số tiền hợp lệ
+        let valueInput = document.getElementById("value");
+         let numericValue = valueInput.value.replace(/\D/g, ''); // Loại bỏ tất cả ký tự không phải số
+
+  // Kiểm tra nếu giá trị không phải là một số hợp lệ
+        if (!numericValue || isNaN(numericValue) || parseInt(numericValue) <= 10000 || parseInt(numericValue) > 100000000) {
+           valueInput.classList.add("is-invalid");
+           isValid = false;
+        } else {
+         valueInput.classList.remove("is-invalid");
+        }
+
+
+
+        // Kiểm tra số lượng hợp lệ
+        let quantityInput = document.getElementById("quantity");
+        if (parseInt(quantityInput.value) < 1 || parseInt(quantityInput.value) > 100000 || isNaN(quantityInput.value)) {
+          quantityInput.classList.add("is-invalid");
+          isValid = false;
+        } else {
+          quantityInput.classList.remove("is-invalid");
+        }
+
+
+
+        // Kiểm tra ngày bắt đầu và ngày kết thúc
+        let startDate = new Date(document.getElementById("startDate").value);
+        let endDate = new Date(document.getElementById("endDate").value);
+        if (isNaN(startDate.getTime()) || startDate >= endDate) {
+          document.getElementById("startDate").classList.add("is-invalid");
+          isValid = false;
+        } else {
+          document.getElementById("startDate").classList.remove("is-invalid");
+        }
+
+        if (isNaN(endDate.getTime()) || endDate <= startDate) {
+          document.getElementById("endDate").classList.add("is-invalid");
+          isValid = false;
+        } else {
+          document.getElementById("endDate").classList.remove("is-invalid");
+        }
+
+          let minimumBillInput = document.getElementById("minimumBill");
+        if (minimumBillInput.value.trim() === "" || /[a-zA-Z]/.test(minimumBillInput.value) || isNaN(minimumBillInput.value) ||parseInt(minimumBillInput.value) < 1000 || parseInt(minimumBillInput.value) > 10000000) {
+          minimumBillInput.classList.add("is-invalid");
+          isValid = false;
+        } else {
+          minimumBillInput.classList.remove("is-invalid");
+        }
+
+
+        // Ngăn chặn gửi form nếu không hợp lệ
+        if (!isValid) {
+          event.preventDefault();
+          event.stopPropagation();
+        } else {
+          // Chuyển số tiền về dạng số trước khi gửi form (loại bỏ dấu phẩy)
+          valueInput.value = numericValue;
+        }
+
+        form.classList.add("was-validated");
+      });
+    </script>
 
     </div>
-  </div>
-
-
-  <script>
-    // Định dạng tiền tệ khi nhập số tiền
-    function formatCurrency(event) {
-      let input = event.target;
-      let value = input.value.replace(/\D/g, ''); // Xóa tất cả ký tự không phải số
-      let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
-      input.value = formattedValue;
-    }
-
-    // Kiểm tra dữ liệu nhập vào form
-    document.getElementById("voucherForm").addEventListener("submit", function(event) {
-      let form = this;
-      let isValid = true;
-
-      // Kiểm tra Tên Voucher
-  let nameInput = document.getElementById("name");
-      let specialCharRegex = /[^\p{L}0-9\s]/u;
-      if (nameInput == null || nameInput.value.trim() === "" || nameInput.value.length > 255 || specialCharRegex.test(nameInput.value)) {
-        nameInput.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        nameInput.classList.remove("is-invalid");
-      }
-
-
-      // Kiểm tra số tiền hợp lệ
-      let valueInput = document.getElementById("value");
-       let numericValue = valueInput.value.replace(/\D/g, ''); // Loại bỏ tất cả ký tự không phải số
-
-// Kiểm tra nếu giá trị không phải là một số hợp lệ
-      if (!numericValue || isNaN(numericValue) || parseInt(numericValue) <= 10000 || parseInt(numericValue) > 100000000) {
-         valueInput.classList.add("is-invalid");
-         isValid = false;
-      } else {
-       valueInput.classList.remove("is-invalid");
-      }
-
-
-
-      // Kiểm tra số lượng hợp lệ
-      let quantityInput = document.getElementById("quantity");
-      if (parseInt(quantityInput.value) < 1 || parseInt(quantityInput.value) > 100000 || isNaN(quantityInput.value)) {
-        quantityInput.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        quantityInput.classList.remove("is-invalid");
-      }
-
-
-
-      // Kiểm tra ngày bắt đầu và ngày kết thúc
-      let startDate = new Date(document.getElementById("startDate").value);
-      let endDate = new Date(document.getElementById("endDate").value);
-      if (isNaN(startDate.getTime()) || startDate >= endDate) {
-        document.getElementById("startDate").classList.add("is-invalid");
-        isValid = false;
-      } else {
-        document.getElementById("startDate").classList.remove("is-invalid");
-      }
-
-      if (isNaN(endDate.getTime()) || endDate <= startDate) {
-        document.getElementById("endDate").classList.add("is-invalid");
-        isValid = false;
-      } else {
-        document.getElementById("endDate").classList.remove("is-invalid");
-      }
-
-      let minimumBillInput = document.getElementById("minimumBill");
-      if (parseInt(minimumBillInput.value) < 1000 || parseInt(minimumBillInput.value) > 1000000 || isNaN(minimumBillInput.value)) {
-        minimumBillInput.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        minimumBillInput.classList.remove("is-invalid");
-      }
-
-
-      // Ngăn chặn gửi form nếu không hợp lệ
-      if (!isValid) {
-        event.preventDefault();
-        event.stopPropagation();
-      } else {
-        // Chuyển số tiền về dạng số trước khi gửi form (loại bỏ dấu phẩy)
-        valueInput.value = numericValue;
-      }
-
-      form.classList.add("was-validated");
-    });
-  </script>
-
-  </div>
-</th:block>
-</body>
-</html>
+  </th:block>
+  </body>
+  </html>
