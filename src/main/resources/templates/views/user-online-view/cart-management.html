@@ -15,7 +15,7 @@
     <!--Page Title-->
     <div class="page section-header mt-5 text-center">
       <div class="page-title">
-        <div class="wrapper"><h1 class="page-width">Shopping Cart</h1></div>
+        <div class="wrapper"><h1 class="page-width">Giỏ hàng</h1></div>
       </div>
     </div>
     <!--End Page Title-->
@@ -27,10 +27,10 @@
             <table>
               <thead class="cart__row cart__header">
               <tr>
-                <th colspan="2" class="text-center">Product</th>
-                <th class="text-center">Price</th>
-                <th class="text-center">Quantity</th>
-                <th class="text-right">Total</th>
+                <th colspan="2" class="text-center">Sản phẩm</th>
+                <th class="text-center">Giá tiền</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-right">Tổng</th>
                 <th class="action">&nbsp;</th>
               </tr>
               </thead>
@@ -90,7 +90,7 @@
                 <tfoot>
                 <tr>
                   <td colspan="3" class="text-left">
-                    <a th:href="@{/shop}" class="btn btn-secondary btn--small cart-continue">Continue shopping</a>
+                    <a th:href="@{/shop}" class="btn btn-secondary btn--small cart-continue">Tiếp tục mua hàng</a>
                   </td>
                   <!--                  <td colspan="3" class="text-right">-->
                   <!--                    <button type="submit" name="clear" class="btn btn-secondary btn&#45;&#45;small  small&#45;&#45;hide">Clear Cart-->
@@ -108,7 +108,7 @@
         <div class="container mt-4">
           <div class="row">
             <div class="col-12 col-sm-12 col-md-4 col-lg-6 mb-4">
-              <h5>Estimate Shipping and Tax</h5>
+              <h5>Tính phí ship</h5>
               <form action="#" method="post">
                 <div class="form-group">
                   <label>Tỉnh / Thành Phố</label>
@@ -128,7 +128,7 @@
                   </select>
                 </div>
                 <div class="actionRow">
-                  <div><input type="button" class="btn btn-secondary btn--small" value="Calculate shipping"
+                  <div><input type="button" class="btn btn-secondary btn--small" value="Tính phí ship"
                               onclick="calculateShipping()"></div>
                 </div>
               </form>
@@ -136,34 +136,34 @@
             
             <div class="col-12 col-sm-12 col-md-4 col-lg-6 cart__footer">
               <div class="solid-border">
-                <div class="row border-bottom pb-2">
-                  <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
-                  <span class="col-12 col-sm-6 text-right"><span class="money">$735.00</span></span>
-                </div>
+                <!--                <div class="row border-bottom pb-2">-->
+                <!--                  <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>-->
+                <!--                  <span class="col-12 col-sm-6 text-right"><span class="money">$735.00</span></span>-->
+                <!--                </div>-->
                 <div class="row border-bottom pb-2 pt-2">
                   <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
                   <span class="col-12 col-sm-6 text-right" id="shipping-cost">Free shipping</span>
                 </div>
                 <div class="row border-bottom pb-2 pt-2">
-                  <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
+                  <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Tổng tiền</strong></span>
                   <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right">
         <span class="money"
               th:text="${shoppingCart != null && shoppingCart.totalPrice != null ? #numbers.formatDecimal(shoppingCart.totalPrice, 0, 'POINT', 0, 'POINT') : 0} + ' VND'"></span>
     </span>
                 </div>
-                <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
+                <div class="cart__shipping">Phí ship sẽ được cộng khi thanh toán</div>
                 <p class="cart_tearm">
                   <label>
                     <input type="checkbox" name="tearm" class="checkbox" value="tearm" required="">
-                    I agree with the terms and conditions
+                    Tôi đồng ý với các điều khoản và điều kiện
                   </label>
                 </p>
                 <a th:href="@{/bill/checkout}" type="submit" name="checkout" id="cartCheckout"
                    class="btn btn--small-wide checkout"
-                   value="Proceed To Checkout" disabled="disabled">Proceed To Checkout
+                   value="Proceed To Checkout" disabled="disabled">Thanh toán
                 </a>
                 <div class="paymnet-img"><img src="assets/user-online/images/payment-img.jpg" alt="Payment"></div>
-                <p><a href="#;">Checkout with Multiple Addresses</a></p>
+                <!--                <p><a href="#;">Checkout with Multiple Addresses</a></p>-->
               </div>
             
             </div>

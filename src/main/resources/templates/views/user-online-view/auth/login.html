@@ -15,12 +15,12 @@
     <!--Page Title-->
     <div class="page section-header text-center mt-5">
       <div class="page-title">
-        <div class="wrapper"><h1 class="page-width">Login</h1></div>
+        <div class="wrapper"><h1 class="page-width">Đăng nhập</h1></div>
         <div th:if="${param.error}">
-          <div class="alert alert-danger">Invalid email or password</div>
+          <div class="alert alert-danger">Sai email hoặc mật khẩu</div>
         </div>
         <div th:if="${param.logout}">
-          <div class="alert alert-success">You have been logged out</div>
+          <div class="alert alert-success">Bạn đã được đăng xuất</div>
         </div>
       </div>
     </div>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                   <div class="form-group">
-                    <label for="CustomerPassword">Password</label>
+                    <label for="CustomerPassword">Mật khẩu</label>
                     <input type="password" value="" name="password" placeholder="" id="CustomerPassword"
                            class="">
                   </div>
@@ -50,10 +50,10 @@
               </div>
               <div class="row">
                 <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
-                  <input type="submit" class="btn mb-3" value="Sign In">
+                  <input type="submit" class="btn mb-3" value="Đăng nhập">
                   <p class="mb-4">
-                    <a href="#" id="RecoverPassword">Forgot your password?</a> &nbsp; | &nbsp;
-                    <a href="register.html" id="customer_register_link">Create account</a>
+                    <a href="#" id="RecoverPassword">Quên mật khẩu?</a> &nbsp; | &nbsp;
+                    <a href="register.html" id="customer_register_link">Tạo tài khoản</a>
                   </p>
                 </div>
               </div>
