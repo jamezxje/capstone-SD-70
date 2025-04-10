@@ -41,11 +41,11 @@ closeBtnhistory.onclick = function() {
 cancelButton.onclick = function () {
     const reason = cancelReason.value.trim();
     if (reason.length >= 20) {
+        location.reload();
         cancelModal.style.display = 'none'
         actionDescription = reason;
         cancelReason.value = '';
         cancelBill();
-        location.reload();
     }else{
         alert("Vui lòng nhập 20 ký tự")
     }
@@ -56,11 +56,11 @@ confirmButton.onclick = function() {
     console.log('Entered reason:', reason);
 
     if (reason.length >= 5) {
+        location.reload();
         modal.style.display = "none";
         actionDescription = reason;
         confirmationReason.value = ""
         changeStatus();
-        location.reload();
     } else {
         alert("Vui lòng nhập tối thiểu 5 ký tự.");
     }
@@ -263,9 +263,9 @@ function getInforBill(billId) {
             document.getElementById("customerName").textContent = data.userName || 'Không có dữ liệu';
             document.getElementById("phoneNumber").textContent = data.phoneNumber || 'Không có dữ liệu';
             document.getElementById("shipDate").textContent = data.shipDate ? formatDate1(data.shipDate) : 'Không có dữ liệu';
- nameCustomer = data.userName;
- numberPhone = data.phoneNumber;
- address = data.address;
+             nameCustomer = data.userName;
+             numberPhone = data.phoneNumber;
+             address = data.address;
             console.log("data name" , nameCustomer)
         })
         .catch(error => {

@@ -50,13 +50,12 @@ public class BillController {
     private BillDetailService billDetaiService;
 
     @Autowired
-    private BillHistotyRepository billHistotyRepository;
-
-    @Autowired
     private VoucherDetailService voucherDetailService;
 
     @Autowired
     private BillHistoryService billHistoryService;
+    @Autowired
+    private BillHistoryRepository billHistoryRepository;
 
     @GetMapping("/listBill")
     public String listBills(Model model,
@@ -106,7 +105,7 @@ public class BillController {
 
         Bill bill = billOptional.get();
         List<BillDetailDTO> billDetails = billDetaiService.getBillDetails(id); // ✅ Lấy dữ liệu từ service
-        List<BillHistory> billHistorys = billHistotyRepository.findByBillId(id);
+        List<BillHistory> billHistorys = billHistoryRepository.findByBillId(id);
         // Lấy dữ liệu VoucherDetail từ Service (trả về DTO)
         Optional<VoucherDetailDTO> voucherDetail = voucherDetailService.getVoucherDetailsByBillId(id);
 

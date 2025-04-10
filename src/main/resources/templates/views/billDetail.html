@@ -215,9 +215,15 @@
                    </tr>
                    </thead>
                    <tbody>
-                   <tr th:each="detailsp, index : ${billDetailsp}">
+                   <tr th:each="detailsp, index : ${billDetails}">
                        <td th:text="${index.index + 1}"></td>
-                       <td th:text="${detailsp.productName}"></td>
+                       <td>
+                        <div>
+                            <img th:src="${detailsp.images}" class="img-fluid mr-2" alt="">
+                            <h6 th:text="${detailsp.productName != null ? detailsp.productName : ''}"></h6>
+                        </div>
+
+                       </td>
                        <td th:text="${detailsp.size}"></td>
                        <td th:text="${detailsp.color}"></td>
                        <td th:text="${detailsp.quantity}"></td>

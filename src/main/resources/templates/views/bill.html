@@ -31,7 +31,7 @@
         <div class="container-fluid">
                 <!-- Form Tìm Kiếm -->
                 <div class="table-container">
-                    <form method="GET" action="/bill">
+                    <form method="GET" action="/bill/listBill">
                         <div class="row md-12">
                             <!-- Tìm kiếm -->
                             <div class="col-md-6">
@@ -130,7 +130,7 @@
                                         <span th:case="*">Không xác định</span>
                                     </span>
                                 </td>
-                                <td  type="datetime-local" th:text="${bill.createDate}"></td>
+                                <td th:text="${#temporals.format(bill.createDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
                                 <td>
                                     <a th:href="@{/bill/detail/{id}(id=${bill.id})}" class="btn btn-info">Xem</a>
                                 </td>
@@ -141,12 +141,12 @@
                     <ul class="pagination justify-content-end">
                         <!-- Nút Trước -->
                         <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/bill(page=${currentPage - 1})}">Trước</a>
+                            <a class="page-link" th:href="@{/bill/listBill(page=${currentPage - 1})}">Trước</a>
                         </li>
                     
                         <!-- Trang đầu -->
                         <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
-                            <a class="page-link" th:href="@{/bill(page=1)}">1</a>
+                            <a class="page-link" th:href="@{/bill/listBill(page=1)}">1</a>
                         </li>
                     
                         <!-- Hiển thị dấu ... nếu cần -->
@@ -157,7 +157,7 @@
                         <!-- Hiển thị trang gần vị trí hiện tại -->
                         <li class="page-item" th:each="i : ${#numbers.sequence(currentPage-1, currentPage+1)}"
                             th:if="${i > 1 and i < totalPages}" th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/bill(page=${i})}" th:text="${i}"></a>
+                            <a class="page-link" th:href="@{/bill/listBill(page=${i})}" th:text="${i}"></a>
                         </li>
                     
                         <!-- Hiển thị dấu ... nếu cần -->
@@ -167,12 +167,12 @@
                     
                         <!-- Trang cuối -->
                         <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
-                            <a class="page-link" th:href="@{/bill(page=${totalPages})}" th:text="${totalPages}"></a>
+                            <a class="page-link" th:href="@{/bill/listBill(page=${totalPages})}" th:text="${totalPages}"></a>
                         </li>
                     
                         <!-- Nút Tiếp -->
                         <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                            <a class="page-link" th:href="@{/bill(page=${currentPage + 1})}">Tiếp</a>
+                            <a class="page-link" th:href="@{/bill/listBill(page=${currentPage + 1})}">Tiếp</a>
                         </li>
                     </ul>
                 </div>
