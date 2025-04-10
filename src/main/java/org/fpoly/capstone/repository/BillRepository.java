@@ -1,6 +1,8 @@
 package org.fpoly.capstone.repository;
 
 import org.fpoly.capstone.entity.Bill;
+import org.fpoly.capstone.entity.enum_status.BillStatus;
+import org.fpoly.capstone.entity.enum_status.BillType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,5 +49,16 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     @Query("SELECT b FROM Bill b WHERE b.createDate BETWEEN :startOfDay AND :endOfDay")
     List<Bill> findByCreateDateBetween(@Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
 
-
+    @Query("SELECT b FROM Bill b " +
+            "WHERE (:keyword IS NULL OR b.code LIKE %:keyword%) " +
+            "AND (:orderType IS NULL OR b.type = :orderType) " +
+            "AND (:status IS NULL OR b.status = :status) " +
+            "AND (:startDate IS NULL OR b.createDate >= :startDate) " +
+            "AND (:endDate IS NULL OR b.createDate <= :endDate)")
+    Page<Bill> searchBills(@Param("keyword") String keyword,
+                           @Param("orderType") BillType orderType,
+                           @Param("status") BillStatus status,
+                           @Param("startDate") LocalDateTime startDate,
+                           @Param("endDate") LocalDateTime endDate,
+                           Pageable pageable);
 }

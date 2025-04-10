@@ -692,27 +692,9 @@ public class BillServiceImpl implements BillService {
 
 
     @Override
-    public Page<Bill> searchBills(String keyword, String orderType, LocalDate startDate, LocalDate endDate, Pageable pageable) {
-        Bill bill = new Bill();
-
-        if (keyword != null && !keyword.isEmpty()) {
-            bill.setCode(keyword);
-        }
-        if (orderType != null && !orderType.isEmpty()) {
-            try {
-                bill.setType(BillType.valueOf(orderType.toUpperCase())); // Chuyển đổi Enum
-            } catch (IllegalArgumentException e) {
-                // Nếu nhập sai loại, bỏ qua điều kiện này
-            }
-        }
-
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnoreNullValues()
-                .withMatcher("code", ExampleMatcher.GenericPropertyMatchers.contains());
-
-        Example<Bill> example = Example.of(bill, matcher);
-
-        return this.billRepository.findAll(example, pageable);
+    public Page<Bill> searchBills(String keyword, BillType orderType, BillStatus status,
+                                  LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        return billRepository.searchBills(keyword, orderType, status, startDate, endDate, pageable);
     }
 
     @Override

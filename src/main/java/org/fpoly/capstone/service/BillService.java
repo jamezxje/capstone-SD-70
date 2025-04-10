@@ -15,12 +15,15 @@ import org.fpoly.capstone.entity.Color;
 import org.fpoly.capstone.entity.Material;
 import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.entity.Voucher;
+import org.fpoly.capstone.entity.enum_status.BillStatus;
+import org.fpoly.capstone.entity.enum_status.BillType;
 import org.fpoly.capstone.service.payload.bill.BuyNowBillRequest;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BillService {
@@ -87,7 +90,8 @@ public interface BillService {
 
     List<Bill> findBillsByCustomerId(Long customerId);
 
-    Page<Bill> searchBills(String keyword, String orderType, LocalDate startDate, LocalDate endDate, Pageable pageable);
+    Page<Bill> searchBills(String keyword, BillType orderType, BillStatus status,
+                           LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
     List<Bill> findLastestBillByCustomerId();
 
