@@ -62,6 +62,7 @@ function showFileName(event) {
 }
 
 $("#productMediaGallery").fileinput({
+    language: "vi",
     uploadAsync: false,
     showUpload: false,
     previewFileType: 'image',
