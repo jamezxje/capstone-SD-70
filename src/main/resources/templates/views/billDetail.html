@@ -8,7 +8,6 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
         <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>
     </th:block>
 </head>
@@ -202,6 +201,7 @@
 
 
            <div class="table-container">
+               <h5>Sản phẩm đã mua</h5>
                <table>
                    <thead>
                    <tr>
@@ -225,8 +225,18 @@
                        <td th:text="${#numbers.formatDecimal(detailsp.price * detailsp.quantity, 0, 'COMMA', 0, 'POINT')} +' VND'"></td>
                    </tr>
                    </tbody>
-               </table>
-            </div>
+               </table><br><br>
+               <div  class="d-flex justify-content-end">
+                   <div th:if="${voucherDetail != null}">
+                       <h5>Tổng tiền hàng :<span th:text="${#numbers.formatDecimal(voucherDetail.beforePrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
+                       <h5>Phí vận chuyển :<span th:text="${#numbers.formatDecimal(voucherDetail.moneyShip, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
+                       <h5>Voucher giảm giá :<span th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
+                       <h5>Tổng tiền giảm :<span th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
+                       <hr>
+                       <h4>Tổng tiền thanh toán:<span th:text="${#numbers.formatDecimal(voucherDetail.afterPrice + voucherDetail.moneyShip, 0, 'COMMA', 0, 'POINT')}"></span> VND</h4>
+                   </div>
+               </div>
+           </div>
             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -251,18 +261,7 @@
                         </form>
                     </div>
                 </div>
-            </div><br>
-
-            <div class="table-container">
-                <div th:if="${voucherDetail != null}">
-                    <h5>Tổng tiền hàng :<span th:text="${#numbers.formatDecimal(voucherDetail.beforePrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
-                    <h5>Phí vận chuyển :<span th:text="${#numbers.formatDecimal(voucherDetail.moneyShip, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
-                    <h5>Voucher giảm giá :<span th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
-                    <h5>Tổng tiền giảm :<span th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
-                    <hr>
-                    <h4>Tổng tiền thanh toán:<span th:text="${#numbers.formatDecimal(voucherDetail.afterPrice + voucherDetail.moneyShip, 0, 'COMMA', 0, 'POINT')}"></span> VND</h4>
-                </div>
-            </div>    
+            </div>
         </div>
     </div>
 

@@ -6,7 +6,7 @@ import org.fpoly.capstone.entity.Voucher;
 import org.fpoly.capstone.entity.enum_status.BillType;
 import org.fpoly.capstone.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +32,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -68,9 +66,10 @@ public class BillController {
                             @RequestParam(required = false) String orderType,
                             @RequestParam(required = false) String status,
                             @RequestParam(required = false) String startDate,
-                            @RequestParam(required = false) String endDate) {
+                            @RequestParam(required = false) String endDate,
+                            @RequestParam(defaultValue = "createDateDesc") String sort) {
 
-        Pageable pageable = PageRequest.of(Math.max(page - 1, 0), size);
+        Pageable pageable = PageRequest.of(page - 1, 10, getSortOrder(sort));
 
         // Chuyển đổi ngày từ String → LocalDateTime
         LocalDateTime startDateTime = null;
@@ -112,7 +111,8 @@ public class BillController {
 
         // Gọi service với LocalDateTime
         Page<Bill> billPage = billService.searchBills(keyword, billType, billStatus, startDateTime, endDateTime, pageable);
-
+        boolean showPaging = billPage.getTotalElements() >= size;
+        model.addAttribute("isPaging", showPaging);
         model.addAttribute("bills", billPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", billPage.getTotalPages());
@@ -125,6 +125,13 @@ public class BillController {
         return "views/bill";
     }
 
+    private Sort getSortOrder(String sort) {
+        if ("createDateAsc".equals(sort)) {
+            return Sort.by("createDate").ascending();
+        }
+        return Sort.by("createDate").descending();
+    }
+
     @GetMapping("/detail/{id}")
     public String billDetail(@PathVariable("id") Long id, Model model) {
         Optional<Bill> billOptional = billRepository.findById(id);
@@ -133,13 +140,13 @@ public class BillController {
         }
 
         Bill bill = billOptional.get();
-        List<BillDetailDTO> billDetails = billDetaiService.getBillDetails(id); // ✅ Lấy dữ liệu từ service
+        List<BillDetailDTO> billDetails = billDetaiService.getBillDetails(id);
         List<BillHistory> billHistorys = billHistoryRepository.findByBillId(id);
         // Lấy dữ liệu VoucherDetail từ Service (trả về DTO)
         Optional<VoucherDetailDTO> voucherDetail = voucherDetailService.getVoucherDetailsByBillId(id);
 
         model.addAttribute("bill", bill);
-        model.addAttribute("billDetails", billDetails);
+        model.addAttribute("billDetailsp", billDetails);
         model.addAttribute("billHistorys", billHistorys);
         model.addAttribute("allStatuses", BillStatus.values());
 
