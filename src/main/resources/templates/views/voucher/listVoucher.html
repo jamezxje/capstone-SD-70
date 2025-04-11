@@ -43,7 +43,6 @@ form {
 
 /* Thiết kế cho các input và select trong form */
 .form-control {
-
   border-radius: 8px;
   border: 1px solid #ccc;
   width: 100%;
@@ -424,13 +423,13 @@ td.limit-text {
 
         <form th:action="@{/dashboard/product-management/voucher/search}" method="get" class="">
           <div class="row d-flex">
-          <div class="col-6 form-group">
+          <div class="col-4 form-group">
             <label for="name">Tên:</label>
             <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên tìm kiếm">
           </div>
 
 
-          <div class="col-6 form-group">
+          <div class="col-4 form-group">
             <label for="status">Trạng thái:</label>
             <select class="form-control" id="status" name="status">
               <option value="">Chọn trạng thái</option>
@@ -443,10 +442,10 @@ td.limit-text {
 
           </div>
 
-<!--            <div class="col-4 form-group">-->
-<!--              <label for="createAt">Ngày tạo</label>-->
-<!--              <input type="date" class="form-control" id="createAt" name="createAt" placeholder="Nhập ngày tìm kiếm">-->
-<!--            </div>-->
+            <div class="col-4 form-group">
+              <label for="createAt">Ngày tạo</label>
+              <input type="date" class="form-control" id="createAt" name="createAt" placeholder="Nhập ngày tìm kiếm">
+            </div>
 
           <div class="col-4 form-group">
             <label for="startDate">Ngày bắt đầu</label>

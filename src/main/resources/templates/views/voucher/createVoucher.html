@@ -274,7 +274,7 @@ h4.mb-3:hover {
 
                       <div class="mb-3">
                         <label for="minimumBill">Hóa đơn tối thiểu</label>
-                        <input type="number" class="form-control" id="minimumBill" th:field="*{minimumBill}" placeholder="Nhập hóa đơn tối thiểu..." required min="1000" max="10000000">
+                        <input type="text" class="form-control" id="minimumBill" th:field="*{minimumBill}" placeholder="Nhập hóa đơn tối thiểu..." required oninput="formatCurrency(event)">
                         <div class="invalid-feedback">Hóa đơn tối thiểu không hợp lệ.</div>
                       </div>
 
@@ -365,13 +365,14 @@ h4.mb-3:hover {
           document.getElementById("endDate").classList.remove("is-invalid");
         }
 
-          let minimumBillInput = document.getElementById("minimumBill");
-        if (minimumBillInput.value.trim() === "" || /[a-zA-Z]/.test(minimumBillInput.value) || isNaN(minimumBillInput.value) ||parseInt(minimumBillInput.value) < 1000 || parseInt(minimumBillInput.value) > 10000000) {
-          minimumBillInput.classList.add("is-invalid");
-          isValid = false;
-        } else {
-          minimumBillInput.classList.remove("is-invalid");
-        }
+        let minimumBillInput = document.getElementById("minimumBill");
+      let minimumBillValue = minimumBillInput.value.replace(/\D/g, '');
+      if (!minimumBillValue || isNaN(minimumBillValue) || parseInt(minimumBillValue) < 1000 || parseInt(minimumBillValue) > 10000000) {
+         minimumBillInput.classList.add("is-invalid");
+         isValid = false;
+      } else {
+       minimumBillInput.classList.remove("is-invalid");
+      }
 
 
         // Ngăn chặn gửi form nếu không hợp lệ
@@ -381,6 +382,7 @@ h4.mb-3:hover {
         } else {
           // Chuyển số tiền về dạng số trước khi gửi form (loại bỏ dấu phẩy)
           valueInput.value = numericValue;
+          minimumBillInput.value = minimumBillValue;
         }
 
         form.classList.add("was-validated");

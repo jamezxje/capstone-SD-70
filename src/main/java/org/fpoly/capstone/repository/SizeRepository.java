@@ -1,8 +1,6 @@
 package org.fpoly.capstone.repository;
 
 import org.fpoly.capstone.entity.Size;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import org.fpoly.capstone.service.payload.size.SizeResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +22,7 @@ public interface SizeRepository extends JpaRepository<Size, Long> {
     @Query("SELECT pd.size FROM ProductDetail pd where pd.product.id = :productId")
     List<Size> findSizesByProductId(@Param("productId") Long productId);
 
-    @Query("SELECT pd.size FROM ProductDetail pd where pd.product.id = :productId AND pd.color.id = :colorId AND pd.quantity > 0")
+    @Query("SELECT pd.size FROM ProductDetail pd where pd.product.id = :productId AND pd.color.id = :colorId AND pd.quantity > 0 AND pd.status = org.fpoly.capstone.entity.enum_status.ProductVariantStatus.DANG_SU_DUNG")
     List<Size> findSizesByProductIdAndColorId(@Param("productId") Long productId, @Param("colorId") Long colorId);
 
 }

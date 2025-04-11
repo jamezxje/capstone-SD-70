@@ -115,6 +115,24 @@
 
 <body>
 <th:block id="th-body">
+<th:block>
+  <script>
+
+    function formatCurrencyVND() {
+      const elements = document.querySelectorAll('.format-vnd');
+      elements.forEach(el => {
+        const value = parseInt(el.innerText.replace(/\D/g, '')); // loại bỏ ký tự không phải số
+        if (!isNaN(value)) {
+          el.innerText = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", formatCurrencyVND);
+
+  </script>
+</th:block>
+
   <div class="container">
     <div class="content-body">
       <div class="container-fluid">
@@ -154,7 +172,7 @@
                   </div>
                   <div class="row">
                     <div class="col-4">Hóa đơn tối thiểu:</div>
-                    <div class="col-8" th:text="${voucher.minimumBill}">500,000 VND</div>
+                    <div class="col-8 format-vnd" th:text="${voucher.minimumBill}">500,000 VND</div>
                   </div>
                   <div class="row">
                     <div class="col-4">Trạng thái:</div>

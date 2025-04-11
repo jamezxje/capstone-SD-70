@@ -63,24 +63,23 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
             "AND (:status IS NULL OR v.status = :status) " +
             "AND (:startDate IS NULL OR v.startDate >= :startDate) " +
             "AND (:endDate IS NULL OR v.endDate <= :endDate)")
-    Page<Voucher> search(Pageable pageable,
+    Page<Voucher> searchByStartDateAndEndDate(Pageable pageable,
                          @Param("name") String name,
                          @Param("status") VoucherStatus status,
                          @Param("startDate") LocalDateTime startDate,
                          @Param("endDate") LocalDateTime endDate);
 
+    @Query("SELECT v FROM Voucher v " +
+            "WHERE (:name IS NULL OR v.name = :name) " +
+            "AND (:status IS NULL OR v.status = :status) " +
+            "AND (:startOfDay IS NULL OR :endOfDay IS NULL OR v.createDate BETWEEN :startOfDay AND :endOfDay)")
+    Page<Voucher> searchByCreateAt(Pageable pageable,
+                                   @Param("name") String name,
+                                   @Param("status") VoucherStatus status,
+                                   @Param("startOfDay") Date startOfDay,
+                                   @Param("endOfDay") Date endOfDay);
 
-    @Query("SELECT v FROM Voucher v WHERE " +
-            "(:startDate IS NULL OR v.startDate >= :startDate) AND " +
-            "(:endDate IS NULL OR v.endDate <= :endDate)")
-    Page<Voucher> findByDateRange(Pageable pageable,
-                                  @Param("startDate") LocalDateTime startDate,
-                                  @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT v FROM Voucher v WHERE v.createDate BETWEEN :startOfDay AND :endOfDay")
-    Page<Voucher> findByCreateDate(@Param("startOfDay") Date startOfDay,
-                                   @Param("endOfDay") Date endOfDay,
-                                   Pageable pageable);
 
     @Query("select v.id from Voucher v")
     List<Long> findByAllIds();
