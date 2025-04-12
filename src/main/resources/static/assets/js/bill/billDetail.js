@@ -266,6 +266,11 @@ function getInforBill(billId) {
  nameCustomer = data.userName;
  numberPhone = data.phoneNumber;
  address = data.address;
+            if (data.status === "VAN_CHUYEN") {
+                document.getElementById('cancelBill').style.display = 'none';
+            } else {
+                document.getElementById('cancelBill').style.display = 'block';
+            }
             console.log("data name" , nameCustomer)
         })
         .catch(error => {

@@ -716,7 +716,10 @@ function applyVoucher(totalPrice, voucherId, voucherValue, voucherMinium, shippi
     console.log("Check voucher", voucherValue)
 
     console.log("voucher", voucherValue)
-    if (totalPrice >= voucherMinium) {
+    if (voucherValue > totalPrice){
+        totalCustomerPayment = 0;
+    }
+    else if  (totalPrice >= voucherMinium) {
         discount = (totalPrice - voucherValue) + shipping;
     } else if (totalPrice < voucherMinium) {
         alert("Không áp dụng")
