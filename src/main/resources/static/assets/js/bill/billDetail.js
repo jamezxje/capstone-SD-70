@@ -263,9 +263,9 @@ function getInforBill(billId) {
             document.getElementById("customerName").textContent = data.userName || 'Không có dữ liệu';
             document.getElementById("phoneNumber").textContent = data.phoneNumber || 'Không có dữ liệu';
             document.getElementById("shipDate").textContent = data.shipDate ? formatDate1(data.shipDate) : 'Không có dữ liệu';
- nameCustomer = data.userName;
- numberPhone = data.phoneNumber;
- address = data.address;
+             nameCustomer = data.user.name;
+             numberPhone = data.phoneNumber;
+             address = data.address;
             if (data.status === "VAN_CHUYEN") {
                 document.getElementById('cancelBill').style.display = 'none';
             }else if (data.status === "DA_THANH_TOAN"){
@@ -274,8 +274,7 @@ function getInforBill(billId) {
             }else  if (data.status === "THANH_CONG"){
                 document.getElementById('cancelBill').style.display = 'none';
 
-            }
-            else {
+            }else {
                 document.getElementById('cancelBill').style.display = 'block';
             }
 
