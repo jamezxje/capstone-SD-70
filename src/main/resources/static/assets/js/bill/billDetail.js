@@ -268,9 +268,17 @@ function getInforBill(billId) {
  address = data.address;
             if (data.status === "VAN_CHUYEN") {
                 document.getElementById('cancelBill').style.display = 'none';
-            } else {
+            }else if (data.status === "DA_THANH_TOAN"){
+                document.getElementById('cancelBill').style.display = 'none';
+
+            }else  if (data.status === "THANH_CONG"){
+                document.getElementById('cancelBill').style.display = 'none';
+
+            }
+            else {
                 document.getElementById('cancelBill').style.display = 'block';
             }
+
             console.log("data name" , nameCustomer)
         })
         .catch(error => {
