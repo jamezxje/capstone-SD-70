@@ -785,11 +785,16 @@ btnPaymentSuccess.addEventListener('click', async () => {
 
         const customerPay = document.getElementById('customer-payment').innerText.trim();
         console.log("Giá trị thanh toán:", customerPay);
-        if (customerPay === "0đ") {
+        const isConfirmPay = localStorage.getItem('isComfirmPay');
+        if (isConfirmPay !== 'true') {
             toastr.options.positionClass = 'toast-top-right';
             toastr.error('Vui lòng chọn phương thức thanh toán');
             return;
         }
+        console.log("Before removing:", localStorage.getItem('isComfirmPay'));
+        localStorage.removeItem('isComfirmPay');
+        console.log("After removing:", localStorage.getItem('isComfirmPay'));
+        localStorage.removeItem(isConfirmPay)
         Swal.fire({
             title: 'Xác nhận',
             text: 'Bạn có xác nhận thanh toán không?',
@@ -803,6 +808,7 @@ btnPaymentSuccess.addEventListener('click', async () => {
                 toastr.options.positionClass = 'toast-top-right';
                 toastr.options.timeOut = 2000;
                 toastr.success('Thanh toán hóa đơn thành công');
+
                 // setTimeout(() => {
                 //     location.reload();
                 // }, 2200);
@@ -845,6 +851,8 @@ btnPayment.addEventListener("click", async () => {
             if (result.isConfirmed) {
                 const btnBank = document.getElementById('btn-bank');
                 let totalPayment = document.getElementById('input-payment').value;
+
+localStorage.setItem('isComfirmPay' , 'true');
                 let missing = 0;
                 totalPayment = totalPayment.replace(/,/g, '');
                 totalPayment = parseFloat(totalPayment);
@@ -1518,6 +1526,7 @@ function printBill(billData) {
         // Thêm dòng mới vào bảng
         printTableBody.appendChild(newRow);
     }
+    localStorage.removeItem('isConfirmPay');
 
     printJS({
         printable: 'printable-content',
