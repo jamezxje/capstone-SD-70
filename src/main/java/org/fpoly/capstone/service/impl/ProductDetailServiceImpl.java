@@ -3,6 +3,7 @@ package org.fpoly.capstone.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.fpoly.capstone.entity.Brand;
 import org.fpoly.capstone.entity.Color;
 import org.fpoly.capstone.entity.Material;
@@ -39,6 +40,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ProductDetailServiceImpl implements ProductDetailService {
 
     private final ModelMapper modelMapper;
@@ -230,6 +232,21 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         ProductDetail existingProductDetail = this.productDetailRepository.findProductDetailByIdAndSizeAndColor(productId, sizeId, colorId);
         return existingProductDetail;
     }
+
+    @Override
+    public BigDecimal findProductDetailPriceByIdAndSizeAndColor(Long productId, Long sizeId, Long colorId) {
+        log.info("Finding price for ProductId: {}, SizeId: {}, ColorId: {}", productId, sizeId, colorId);
+        BigDecimal productDetailPrice = this.productDetailRepository.findProductDetailPriceByIdAndSizeAndColor(productId, sizeId, colorId);
+
+        if (productDetailPrice == null) {
+            log.warn("Price not found for ProductId: {}, SizeId: {}, ColorId: {}", productId, sizeId, colorId);
+        } else {
+            log.info("Price found: {}", productDetailPrice);
+        }
+
+        return productDetailPrice;
+    }
+
 
     private List<ProductDetailResponse> mapProductDetailsToResponse(List<ProductDetailResponse> productDetailResponseList) {
         Map<Long, ProductDetailResponse> groupedProducts = new HashMap<>();

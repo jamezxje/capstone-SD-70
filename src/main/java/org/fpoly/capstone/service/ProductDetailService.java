@@ -7,6 +7,7 @@ import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductDetailService {
@@ -31,4 +32,6 @@ public interface ProductDetailService {
     List<ProductDetailResponse> findRelatedProductDetail(Long productDetailId, Long brandId);
 
     ProductDetail findProductDetailByIdAndSizeAndColor(Long productId, Long sizeId, Long colorId);
+
+    BigDecimal findProductDetailPriceByIdAndSizeAndColor(Long productId, Long sizeId, Long colorId);
 }
