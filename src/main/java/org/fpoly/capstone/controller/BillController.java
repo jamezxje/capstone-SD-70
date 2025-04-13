@@ -67,11 +67,11 @@ public class BillController {
                             @RequestParam(required = false) String status,
                             @RequestParam(required = false) String startDate,
                             @RequestParam(required = false) String endDate,
-                            @RequestParam(defaultValue = "createDateDesc") String sort) {
+                            @RequestParam(defaultValue = "createDate") String sortField,
+                            @RequestParam(defaultValue = "desc") String sortDirection) {
 
-        Pageable pageable = PageRequest.of(page - 1, 10, getSortOrder(sort));
+        Pageable pageable = PageRequest.of(page - 1, size, getSortOrder(sortField, sortDirection));
 
-        // Chuyển đổi ngày từ String → LocalDateTime
         LocalDateTime startDateTime = null;
         LocalDateTime endDateTime = null;
 
@@ -87,7 +87,6 @@ public class BillController {
             return "views/bill";
         }
 
-        // Chuyển String → Enum (BillType)
         BillType billType = null;
         try {
             if (orderType != null && !orderType.isEmpty()) {
@@ -98,7 +97,6 @@ public class BillController {
             return "views/bill";
         }
 
-        // Chuyển String → Enum (BillStatus)
         BillStatus billStatus = null;
         try {
             if (status != null && !status.isEmpty()) {
@@ -109,9 +107,9 @@ public class BillController {
             return "views/bill";
         }
 
-        // Gọi service với LocalDateTime
         Page<Bill> billPage = billService.searchBills(keyword, billType, billStatus, startDateTime, endDateTime, pageable);
         boolean showPaging = billPage.getTotalElements() >= size;
+
         model.addAttribute("isPaging", showPaging);
         model.addAttribute("bills", billPage.getContent());
         model.addAttribute("currentPage", page);
@@ -121,15 +119,18 @@ public class BillController {
         model.addAttribute("status", status);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDirection);
 
         return "views/bill";
     }
 
-    private Sort getSortOrder(String sort) {
-        if ("createDateAsc".equals(sort)) {
-            return Sort.by("createDate").ascending();
+    private Sort getSortOrder(String sortField, String sortDirection) {
+        if (sortDirection.equalsIgnoreCase("asc")) {
+            return Sort.by(Sort.Direction.ASC, sortField);
+        } else {
+            return Sort.by(Sort.Direction.DESC, sortField);
         }
-        return Sort.by("createDate").descending();
     }
 
     @GetMapping("/detail/{id}")

@@ -148,7 +148,17 @@
                                 <th>Địa chỉ</th>
                                 <th>Loại</th>
                                 <th>Trạng Thái</th>
-                                <th>Ngày tạo</th>
+                                <th>
+                                    <a th:href="@{/bill/listBill(
+                                        page=1, size=10,
+                                        status=${status}, keyword=${keyword}, orderType=${orderType},
+                                        startDate=${startDate}, endDate=${endDate},
+                                        sortField='createDate',
+                                        sortDirection=${sortDirection == 'asc' ? 'desc' : 'asc'})}">
+                                        Ngày tạo
+                                        <span th:text="${sortField == 'createDate' ? (sortDirection == 'asc' ? '🔼' : '🔽') : ''}"></span>
+                                    </a>
+                                </th>
                                 <th>Thao tác</th>
                             </tr>
                             </thead>
@@ -188,7 +198,10 @@
                             <!-- Nút Trước -->
                             <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                                 <a class="page-link"
-                                   th:href="@{/bill/listBill(page=${currentPage - 1}, status=${status}, keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
+                                   th:href="@{/bill/listBill(page=${currentPage - 1}, size=10,
+                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                   startDate=${startDate}, endDate=${endDate},
+                   sortField=${sortField}, sortDirection=${sortDirection})}">
                                     Trước
                                 </a>
                             </li>
@@ -196,7 +209,10 @@
                             <!-- Trang đầu -->
                             <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
                                 <a class="page-link"
-                                   th:href="@{/bill/listBill(page=1, status=${status}, keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
+                                   th:href="@{/bill/listBill(page=1, size=10,
+                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                   startDate=${startDate}, endDate=${endDate},
+                   sortField=${sortField}, sortDirection=${sortDirection})}">
                                     1
                                 </a>
                             </li>
@@ -206,11 +222,16 @@
                                 <span class="page-link">...</span>
                             </li>
 
-                            <!-- Các trang gần trang hiện tại -->
-                            <li class="page-item" th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 1)}"
-                                th:if="${i > 1 and i < totalPages}" th:classappend="${i == currentPage} ? 'active'">
+                            <!-- Các trang gần hiện tại -->
+                            <li class="page-item"
+                                th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 1)}"
+                                th:if="${i > 1 and i < totalPages}"
+                                th:classappend="${i == currentPage} ? 'active'">
                                 <a class="page-link"
-                                   th:href="@{/bill/listBill(page=${i}, status=${status}, keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}"
+                                   th:href="@{/bill/listBill(page=${i}, size=10,
+                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                   startDate=${startDate}, endDate=${endDate},
+                   sortField=${sortField}, sortDirection=${sortDirection})}"
                                    th:text="${i}"></a>
                             </li>
 
@@ -222,19 +243,26 @@
                             <!-- Trang cuối -->
                             <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
                                 <a class="page-link"
-                                   th:href="@{/bill/listBill(page=${totalPages}, status=${status}, keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}"
+                                   th:href="@{/bill/listBill(page=${totalPages}, size=10,
+                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                   startDate=${startDate}, endDate=${endDate},
+                   sortField=${sortField}, sortDirection=${sortDirection})}"
                                    th:text="${totalPages}"></a>
                             </li>
 
                             <!-- Nút Tiếp -->
                             <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                                 <a class="page-link"
-                                   th:href="@{/bill/listBill(page=${currentPage + 1}, status=${status}, keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
+                                   th:href="@{/bill/listBill(page=${currentPage + 1}, size=10,
+                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                   startDate=${startDate}, endDate=${endDate},
+                   sortField=${sortField}, sortDirection=${sortDirection})}">
                                     Tiếp
                                 </a>
                             </li>
                         </ul>
                     </div>
+
                 </div>
             </div>
         </div>
