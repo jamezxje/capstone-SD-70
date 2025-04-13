@@ -37,6 +37,7 @@ public class OnlineAddressServiceImpl implements OnlineAddressService {
                 .ward(request.getWard())
                 .wardCode(String.valueOf(request.getWardCode()))
                 .detailAddress(request.getDetailAddress())
+                .line(request.getDetailAddress())
                 .user(loggedUser)
                 .build();
 
@@ -73,6 +74,7 @@ public class OnlineAddressServiceImpl implements OnlineAddressService {
         existingAddress.setWard(request.getWard());
         existingAddress.setWardCode(String.valueOf(request.getWardCode()));
         existingAddress.setDetailAddress(request.getDetailAddress());
+        existingAddress.setLine(request.getDetailAddress());
 
         // Save the updated address
         this.onlineAddressRepository.save(existingAddress);

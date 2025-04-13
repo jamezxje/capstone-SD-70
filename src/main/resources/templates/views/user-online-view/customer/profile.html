@@ -11,47 +11,71 @@
 <body>
 
 <th:block id="th-body">
-  
-  <!--Body Content-->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
   <div id="page-content">
-    <!--Page Title-->
+    <!-- Page Title -->
     <div class="page section-header text-center mt-5">
       <div class="page-title">
-        <div class="wrapper"><h1 class="page-width">Thông tin cá nhân</h1></div>
+        <div class="wrapper">
+          <h1 class="page-width">Thông tin cá nhân</h1>
+        </div>
       </div>
     </div>
-    <!--End Page Title-->
-    <div class="container">
+    <!-- End Page Title -->
+    <div class="container mt-4">
       <div class="row billing-fields">
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 sm-margin-30px-bottom">
+        <!-- Sidebar Tabs -->
+        <div class="col-md-2 mb-4 wrapper">
+          <div class="create-ac-content bg-light-gray padding-20px-all d-flex flex-column gap-2">
+            <div class="p-4 text-center border-b">
+              <img th:src="${loggedUser.avatar}" class="rounded-full mx-auto mb-2" style="width: 80px; height: 80px; object-fit: cover;" />
+              <p class="font-bold" th:text="${loggedUser.fullName}"></p>
+            </div>
+            <button onclick="showTab('profile', this)" class="tab-btn w-100 text-start">
+              <i ></i> Thông tin hồ sơ của tôi
+            </button>
+            <button onclick="showTab('password', this)" class="tab-btn w-100 text-start">
+              <i></i> Đổi mật khẩu
+            </button>
+            <button onclick="showTab('orders', this)" class="tab-btn w-100 text-start">
+              <i></i> Lịch sử đơn hàng
+            </button>
+            <button>
+              <i></i><a th:href="@{/auth/logout}">Đăng xuất</a>
+            </button>
+          </div>
+        </div>
+
+        <!-- Form Content -->
+        <div class="col-md-10">
           <div class="create-ac-content bg-light-gray padding-20px-all">
             <form>
-              <fieldset>
+              <!-- Hồ sơ -->
+              <fieldset id="profile" class="tab">
                 <h2 class="login-title mb-3">Thông tin của bạn</h2>
                 <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-lastname">Họ và tên <span class="required-f">*</span></label>
+                    <label for="input-lastname">Họ và tên <span class="required-f"></span></label>
                     <input name="lastname" th:value="${loggedUser.fullName}" id="input-lastname" type="text">
                   </div>
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-email">E-Mail <span class="required-f">*</span></label>
+                    <label for="input-email">Email <span class="required-f"></span></label>
                     <input name="email" th:value="${loggedUser.email}" id="input-email" type="email">
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-telephone">SĐT <span class="required-f">*</span></label>
+                    <label for="input-telephone">SĐT <span class="required-f"></span></label>
                     <input name="telephone" th:value="${loggedUser.phoneNumber}" id="input-telephone" type="tel">
                   </div>
                 </div>
-              </fieldset>
-              <fieldset>
+
                 <div class="row">
                   <!-- Address label and input field -->
                   <div class="form-group col-md-10 col-lg-10 col-xl-10">
-                    <label>Địa chỉ<span class="required-f">*</span></label>
+                    <h2>Danh sách địa chỉ<span class="required-f"></span></h2>
                   </div>
-                  
+
                   <!-- Add Address Button aligned with the label -->
                   <div class="form-group col-md-2 col-lg-2 col-xl-2 d-flex align-items-end">
                     <button type="button" class="btn btn-primary w-100" data-toggle="modal"
@@ -62,10 +86,13 @@
                 <div class="row">
                   <div class="form-group col-md-12 col-lg-12 col-xl-12">
                     <div class="request-wrapper">
-                      <div th:each="address : ${listAddress}" class="py-2 px-3 bg-white shadow-sm my-3 rounded">
+                      <div th:each="address,index : ${listAddress}" class="py-2 px-3 bg-white shadow-sm my-3 rounded">
                         <div class="row d-flex justify-content-between align-items-center">
                           <div class="col-12 col-md-6 d-flex align-items-center justify-content-start">
                             <div>
+                              <div class="mb-1">
+                                <span class="text-muted fw-semibold">Địa chỉ <span th:text="${index.count}"></span></span>
+                              </div>
                               <div class="my-2">
                                 <span class="font-weight-bold"
                                       th:text="${address.fullName} + ', ' + ${address.phoneNumber}"></span>
@@ -74,14 +101,13 @@
                                 <span class="font-weight-bold"
                                       th:text="${address.detailAddress} + ', ' + ${address.province} + ', ' + ${address.district} + ', ' + ${address.ward} "></span>
                               </div>
-                              
                               <span
                                   th:if="${address.status == T(org.fpoly.capstone.entity.enum_status.AddressStatus).DANG_SU_DUNG}"
-                                  class="badge light badge-success" th:text="${address.status}"></span>
+                                  class="badge light badge-success">MẶC ĐỊNH</span>
                             </div>
-                          
+
                           </div>
-                          
+
                           <div class="col-12 col-md-6 text-right">
                             <div class="my-2">
                               <button type="button"
@@ -92,7 +118,6 @@
                                       th:data-addressId="${address.id}">
                                 Chọn làm mặc định
                               </button>
-                              
                               <button type="button" class="btn btn-sm btn-outline-primary mx-2"
                                       data-toggle="modal"
                                       data-target="#editAddressModal"
@@ -120,20 +145,31 @@
                   </div>
                 </div>
               </fieldset>
+
+              <!-- Đổi mật khẩu -->
+              <fieldset id="password" class="tab hidden">
+                <h2 class="text-2xl font-semibold mb-4">Đổi mật khẩu</h2>
+                <form class="space-y-4 max-w-md">
+                  <input type="password" placeholder="Mật khẩu cũ" class="w-full border rounded p-2">
+                  <input type="password" placeholder="Mật khẩu mới" class="w-full border rounded p-2">
+                  <input type="password" placeholder="Nhập lại mật khẩu mới" class="w-full border rounded p-2">
+                  <button class="bg-blue-600 text-white px-4 py-2 rounded">Cập nhật</button>
+                </form>
+              </fieldset>
+
+              <!-- Đơn mua -->
+              <fieldset id="orders" class="tab hidden">
+                <h2 class="text-2xl font-semibold mb-4">Đơn mua</h2>
+                <p>Chưa có đơn hàng nào.</p>
+              </fieldset>
             </form>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!--End Body Content-->
-  </div>
-  <!--End Body Content-->
-  <!--Create address modal start-->
-  <div class="modal fade bd-example-modal-xl" id="createAddressModal" tabindex="-1" role="dialog"
-       aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-fullscreen" role="document"
-         style="max-width: 50% !important;">
+  <div class="modal fade" id="createAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Thêm địa chỉ</h5>
@@ -142,138 +178,295 @@
           </button>
         </div>
         <div class="modal-body">
-          <div>
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="form-validation">
-                      <form action="#" id="createAddressForm">
-                        <div class="row">
-                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">
-                            <label>Họ và Tên</label>
-                            <div>
-                              <input type="text" placeholder="Nhập họ và tên..." class="form-control"
-                                     id="create_address_fullname">
-                            </div>
-                          </div>
-                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required mr-md-4">
-                            <label>Số điện thoại</label>
-                            <div>
-                              <input type="text" placeholder="Nhập số điện thoại..." class="form-control"
-                                     id="create_address_phone">
-                            </div>
-                          </div>
-                          <br>
-                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">
-                            <label>Tỉnh / Thành Phố</label>
-                            <select id="create_address_province" class="address-select" data-default="">
-                            </select>
-                          </div>
-                          
-                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">
-                            <label>Quận / Huyện</label>
-                            <select id="create_address_district" class="address-select" data-default="">
-                            </select>
-                          </div>
-                          
-                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">
-                            <label>Phường / Xã</label>
-                            <select id="create_address_ward" class="address-select" data-default="">
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="form-group col-md-12 col-lg-12 col-xl-12 required">
-                            <label>Địa chỉ cụ thể <span class="required-f">*</span></label>
-                            <textarea class="form-control resize-both" rows="3"
-                                      id="create_address_detail"></textarea>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-danger light"
-                                  data-dismiss="modal">Close
-                          </button>
-                          <button type="submit" class="btn btn-primary">Save
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
+          <form action="#" id="createAddressForm">
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Họ và Tên</label>
+              <div class="col-lg-8">
+                <input type="text" placeholder="Nhập họ và tên..." class="form-control" id="create_address_fullname">
+                <span id="fullName-error" class="error-message text-danger"></span>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--Create address modal end-->
-  <!-- Edit Address Modal -->
-  <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Edit Address</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span>&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="editAddressForm">
-            <div class="row">
-              <div class="form-group col-md-4">
-                <label>Họ và Tên</label>
-                <div>
-                  <input type="text" placeholder="Nhập họ và tên..." class="form-control" id="edit_address_fullname">
-                </div>
-              </div>
-              <div class="form-group col-md-4 mr-md-4">
-                <label>Số điện thoại</label>
-                <div>
-                  <input type="text" placeholder="Nhập số điện thoại..." class="form-control" id="edit_address_phone">
-                </div>
-              </div>
-              <div class="form-group col-md-4">
-                <label>Province</label>
-                <select id="edit_address_province" class="address-select">
-                  <!-- Dynamically populated provinces -->
-                </select>
-              </div>
-              <div class="form-group col-md-4">
-                <label for="edit_address_district">District</label>
-                <select id="edit_address_district" class="address-select">
-                  <!-- Dynamically populated districts -->
-                </select>
-              </div>
-              <div class="form-group col-md-4">
-                <label for="edit_address_ward">Ward</label>
-                <select id="edit_address_ward" class="address-select">
-                  <!-- Dynamically populated wards -->
-                </select>
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Số điện thoại</label>
+              <div class="col-lg-8">
+                <input type="text" placeholder="Nhập số điện thoại..." class="form-control" id="create_address_phone">
+                <span id="phoneNumber-error" class="error-message text-danger"></span>
               </div>
             </div>
-            <div class="row">
-              <div class="form-group col-md-12">
-                <label for="edit_address_detail">Detail Address</label>
-                <textarea id="edit_address_detail" name="detailAddress" class="form-control"></textarea>
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Tỉnh / Thành Phố</label>
+              <div class="col-lg-8">
+                <select class="form-control" id="create_address_province">
+                  <option value="">Chọn Tỉnh / Thành Phố</option>
+                </select>
+                <span id="province-error" class="error-message text-danger"></span>
               </div>
             </div>
-            <input type="hidden" id="edit_address_id" name="id"> <!-- Hidden field for address ID -->
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Quận / Huyện</label>
+              <div class="col-lg-8">
+                <select class="form-control" id="create_address_district">
+                  <option value="">Chọn Quận / Huyện</option>
+                </select>
+                <span id="district-error" class="error-message text-danger"></span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Phường / Xã</label>
+              <div class="col-lg-8">
+                <select class="form-control" id="create_address_ward">
+                  <option value="">Chọn Phường / Xã</option>
+                </select>
+                <span id="ward-error" class="error-message text-danger"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Số nhà / Ngõ / Đường</label>
+              <div class="col-lg-8">
+                <textarea placeholder="Nhập địa chỉ cụ thể..." class="form-control" rows="3" id="create_address_detail"></textarea>
+                <span id="line-error" class="error-message text-danger"></span>
+              </div>
+            </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Thêm địa chỉ</button>
             </div>
           </form>
         </div>
       </div>
     </div>
   </div>
-  <!-- Edit Address Modal -->
-  
-  <!-- Delete Address Modal -->
-  <div class="modal fade" id="deleteAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+  <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Chỉnh sửa địa chỉ</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="editAddressForm">
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Họ và Tên</label>
+              <div class="col-lg-8">
+                <input type="text" placeholder="Nhập họ và tên..." id="edit_address_fullname" class="form-control" name="fullName">
+                <span id="edit-fullName-error" class="error-message text-danger"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Số điện thoại</label>
+              <div class="col-lg-8">
+                <input type="text" placeholder="Nhập số điện thoại..." id="edit_address_phone" class="form-control" name="phoneNumber">
+                <span id="edit-phoneNumber-error" class="error-message text-danger"></span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Tỉnh / Thành Phố</label>
+              <div class="col-lg-8">
+                <select id="edit_address_province" class="form-control address-select">
+                  <option value="">Chọn Tỉnh / Thành Phố</option>
+                </select>
+                <span id="edit-province-error" class="error-message text-danger"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Quận / Huyện</label>
+              <div class="col-lg-8">
+                <select id="edit_address_district" class="form-control address-select">
+                  <option value="">Chọn Quận / Huyện</option>
+                </select>
+                <span id="edit-district-error" class="error-message text-danger"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Phường / Xã</label>
+              <div class="col-lg-8">
+                <select id="edit_address_ward" class="form-control address-select">
+                  <option value="">Chọn Phường / Xã</option>
+                </select>
+                <span id="edit-ward-error" class="error-message text-danger"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-lg-4 col-form-label">Số nhà / Ngõ / Đường</label>
+              <div class="col-lg-8">
+                <textarea id="edit_address_detail" placeholder="Nhập địa chỉ cụ thể..." name="detailAddress" class="form-control"></textarea>
+                <span id="edit-line-error" class="error-message text-danger"></span>
+              </div>
+            </div>
+
+            <input type="hidden" id="edit_address_id" name="id">
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--  <div class="modal fade bd-example-modal-xl" id="createAddressModal" tabindex="-1" role="dialog"-->
+<!--       aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-xl modal-dialog-centered modal-fullscreen" role="document"-->
+<!--         style="max-width: 50% !important;">-->
+<!--      <div class="modal-content">-->
+<!--        <div class="modal-header">-->
+<!--          <h5 class="modal-title">Thêm địa chỉ</h5>-->
+<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--            <span>&times;</span>-->
+<!--          </button>-->
+<!--        </div>-->
+<!--        <div class="modal-body">-->
+<!--          <div>-->
+<!--            <div class="row">-->
+<!--              <div class="col-lg-12">-->
+<!--                <div class="card">-->
+<!--                  <div class="card-body">-->
+<!--                    <div class="form-validation">-->
+<!--                      <form action="#" id="createAddressForm">-->
+<!--                        <div class="row">-->
+<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">-->
+<!--                            <label>Họ và Tên</label>-->
+<!--                            <div>-->
+<!--                              <input type="text" placeholder="Nhập họ và tên..." class="form-control"-->
+<!--                                     id="create_address_fullname">-->
+<!--                              <span id="fullName-error" class="error-message text-danger"></span>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required mr-md-4">-->
+<!--                            <label>Số điện thoại</label>-->
+<!--                            <div>-->
+<!--                              <input type="text" placeholder="Nhập số điện thoại..." class="form-control"-->
+<!--                                     id="create_address_phone">-->
+<!--                              <span id="phoneNumber-error" class="error-message text-danger"></span>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                          <br>-->
+<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">-->
+<!--                            <label>Tỉnh / Thành Phố</label>-->
+<!--                            <select id="create_address_province" class="address-select" data-default="">-->
+<!--                            </select>-->
+<!--                            <span id="province-error" class="error-message text-danger"></span>-->
+<!--                          </div>-->
+
+<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">-->
+<!--                            <label>Quận / Huyện</label>-->
+<!--                            <select id="create_address_district" class="address-select" data-default="">-->
+<!--                            </select>-->
+<!--                            <span id="district-error" class="error-message text-danger"></span>-->
+<!--                          </div>-->
+
+<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">-->
+<!--                            <label>Phường / Xã</label>-->
+<!--                            <select id="create_address_ward" class="address-select" data-default="">-->
+<!--                            </select>-->
+<!--                            <span id="ward-error" class="error-message text-danger"></span>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                          <div class="form-group col-md-12 col-lg-12 col-xl-12 required">-->
+<!--                            <label>Địa chỉ cụ thể <span class="required-f">*</span></label>-->
+<!--                            <textarea class="form-control resize-both" rows="3"-->
+<!--                                      id="create_address_detail"></textarea>-->
+<!--                            <span id="line-error" class="error-message text-danger"></span>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                        <div class="modal-footer">-->
+<!--                          <button type="button" class="btn btn-danger light"-->
+<!--                                  data-dismiss="modal">Close-->
+<!--                          </button>-->
+<!--                          <button type="submit" class="btn btn-primary">Save-->
+<!--                          </button>-->
+<!--                        </div>-->
+<!--                      </form>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">-->
+<!--      <div class="modal-content">-->
+<!--        <div class="modal-header">-->
+<!--          <h5 class="modal-title">Edit Address</h5>-->
+<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--            <span>&times;</span>-->
+<!--          </button>-->
+<!--        </div>-->
+<!--        <div class="modal-body">-->
+<!--          <form id="editAddressForm">-->
+<!--            <div class="row">-->
+<!--              <div class="form-group col-md-4">-->
+<!--                <label>Họ và Tên</label>-->
+<!--                <div>-->
+<!--                  <input type="text" placeholder="Nhập họ và tên..." class="form-control" id="edit_address_fullname">-->
+<!--                  <span id="edit-fullName-error" class="error-message text-danger"></span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="form-group col-md-4 mr-md-4">-->
+<!--                <label>Số điện thoại</label>-->
+<!--                <div>-->
+<!--                  <input type="text" placeholder="Nhập số điện thoại..." class="form-control" id="edit_address_phone">-->
+<!--                  <span id="edit-phoneNumber-error" class="error-message text-danger"></span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="form-group col-md-4">-->
+<!--                <label>Province</label>-->
+<!--                <select id="edit_address_province" class="address-select">-->
+<!--                  &lt;!&ndash; Dynamically populated provinces &ndash;&gt;-->
+<!--                </select>-->
+<!--                <span id="edit-province-error" class="error-message text-danger"></span>-->
+<!--              </div>-->
+<!--              <div class="form-group col-md-4">-->
+<!--                <label for="edit_address_district">District</label>-->
+<!--                <select id="edit_address_district" class="address-select">-->
+<!--                  &lt;!&ndash; Dynamically populated districts &ndash;&gt;-->
+<!--                </select>-->
+<!--                <span id="edit-district-error" class="error-message text-danger"></span>-->
+<!--              </div>-->
+<!--              <div class="form-group col-md-4">-->
+<!--                <label for="edit_address_ward">Ward</label>-->
+<!--                <select id="edit_address_ward" class="address-select">-->
+<!--                  &lt;!&ndash; Dynamically populated wards &ndash;&gt;-->
+<!--                </select>-->
+<!--                <span id="edit-ward-error" class="error-message text-danger"></span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--              <div class="form-group col-md-12">-->
+<!--                <label for="edit_address_detail">Detail Address</label>-->
+<!--                <textarea id="edit_address_detail" name="detailAddress" class="form-control"></textarea>-->
+<!--                <span id="edit-line-error" class="error-message text-danger"></span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <input type="hidden" id="edit_address_id" name="id"> &lt;!&ndash; Hidden field for address ID &ndash;&gt;-->
+<!--            <div class="modal-footer">-->
+<!--              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+<!--              <button type="submit" class="btn btn-primary">Save changes</button>-->
+<!--            </div>-->
+<!--          </form>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <div class="modal fade" id="deleteAddressModal" tabindex="-1" role="dialog" aria-hidden="true" >
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 500px;">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Delete Address</h5>
@@ -293,11 +486,9 @@
       </div>
     </div>
   </div>
-  <!-- Delete Address Modal -->
-  
-  <!-- Delete Address Modal -->
+
   <div class="modal fade" id="setDefaultAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 500px;">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Delete Address</h5>
@@ -317,14 +508,35 @@
       </div>
     </div>
   </div>
-  <!-- Delete Address Modal -->
-  
-  <!--Scoll Top-->
+
   <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-  <!--End Scoll Top-->
+
+<!--  chuyển giao diện-->
+  <script>
+    function showTab(tabId, el) {
+      // Ẩn tất cả tab
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.add('hidden');
+      });
+
+      // Hiện tab đang chọn
+      document.getElementById(tabId).classList.remove('hidden');
+
+      // Cập nhật style của các tab button
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('text-blue-600', 'font-bold');
+      });
+      el.classList.add('text-blue-600', 'font-bold');
+    }
+
+    // Hiển thị mặc định tab Hồ sơ khi trang tải
+    window.onload = () => {
+      showTab('profile', document.querySelector('.tab-btn'));
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
 </th:block>
-
 </body>
 <th:block id="th-js">
   <script th:src="@{/assets/user-online/js/vendor/jquery-3.3.1.min.js}"></script>
@@ -339,15 +551,15 @@
         success: function (data) {
           const provinces = data.data;
           const provinceSelects = ["#create_address_province", "#edit_address_province"];
-          
+
           provinceSelects.forEach(function (selectId) {
             const provinceSelect = $(selectId)[0];
             provinceSelect.innerHTML = "";  // Clear existing options
-            
+
             const defaultOption = document.createElement("option");
-            defaultOption.text = "Select Province";
+            defaultOption.text = "Chọn Tỉnh / Thành Phố";
             provinceSelect.appendChild(defaultOption);
-            
+
             provinces.forEach(function (province) {
               const option = document.createElement("option");
               option.value = province.ProvinceID;
@@ -361,7 +573,7 @@
         }
       });
     }
-    
+
     function fetchDistricts(provinceId, modalPrefix, callback) {
       $.ajax({
         url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/district",
@@ -373,19 +585,19 @@
         success: function (data) {
           const districts = data.data;
           const districtSelect = $(`#${modalPrefix}_address_district`)[0];
-          
+
           districtSelect.innerHTML = "";  // Clear existing options
           const defaultOption = document.createElement("option");
-          defaultOption.text = "Select District";
+          defaultOption.text = "Chọn Quận / Huyện";
           districtSelect.appendChild(defaultOption);
-          
+
           districts.forEach(function (district) {
             const option = document.createElement("option");
             option.value = district.DistrictID;
             option.text = district.DistrictName;
             districtSelect.appendChild(option);
           });
-          
+
           // Callback after district options are populated
           if (callback) callback();
         },
@@ -394,7 +606,7 @@
         }
       });
     }
-    
+
     function fetchWards(districtId, modalPrefix, callback) {
       $.ajax({
         url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/ward",
@@ -406,19 +618,19 @@
         success: function (data) {
           const wards = data.data;
           const wardSelect = $(`#${modalPrefix}_address_ward`)[0];
-          
+
           wardSelect.innerHTML = "";  // Clear existing options
           const defaultOption = document.createElement("option");
-          defaultOption.text = "Select Ward";
+          defaultOption.text = "Chọn Phường / Xã";
           wardSelect.appendChild(defaultOption);
-          
+
           wards.forEach(function (ward) {
             const option = document.createElement("option");
             option.value = ward.WardCode;
             option.text = ward.WardName;
             wardSelect.appendChild(option);
           });
-          
+
           // Callback after ward options are populated
           if (callback) callback();
         },
@@ -427,11 +639,14 @@
         }
       });
     }
-    
-    
+
+
     $(document).on('click', '[data-target="#editAddressModal"]', function () {
       const button = $(this);
-      
+
+      $('#editAddressForm')[0].reset();
+      $(".error-message").text("");
+
       // Fetch values from data attributes
       const addressId = button.data('addressid');
       const fullName = button.data('fullname');
@@ -440,7 +655,7 @@
       const districtId = button.data('districtid');
       const wardCode = button.data('wardcode');
       const addressDetail = button.data('addressdetail');
-      
+
       console.log('addressId:', addressId);
       console.log('fullName:', fullName);
       console.log('phoneNumber:', phoneNumber);
@@ -448,10 +663,10 @@
       console.log('districtId:', districtId);
       console.log('wardCode:', wardCode);
       console.log('addressDetail:', addressDetail);
-      
+
       // Set the selected province in the modal
       $('#edit_address_province').val(provinceId);
-      
+
       // Fetch and set the districts based on the selected province
       fetchDistricts(provinceId, 'edit', function () {
         $('#edit_address_district').val(districtId);
@@ -459,80 +674,210 @@
           $('#edit_address_ward').val(wardCode);
         });
       });
-      
+
       // Set the other values
       $('#edit_address_detail').val(addressDetail);
       $('#edit_address_id').val(addressId);
       $('#edit_address_fullname').val(fullName); // ✅ Sửa ID
       $('#edit_address_phone').val(phoneNumber); // ✅ Sửa ID
     });
-    
+
     // Handle form submission for Create Address
     $('#createAddressForm').on('submit', function (event) {
       event.preventDefault();
-      
+
+      // Xóa thông báo lỗi cũ
+      $(".error-message").text("");
+
+      const fullName = $('#create_address_fullname').val().trim();
+      const phoneNumber = $('#create_address_phone').val().trim();
+      const province = $('#create_address_province').find(":selected").text().trim();
+      const provinceId = $('#create_address_province').val();
+      const district = $('#create_address_district').find(":selected").text().trim();
+      const districtId = $('#create_address_district').val();
+      const ward = $('#create_address_ward').find(":selected").text().trim();
+      const wardCode = $('#create_address_ward').val();
+      const detailAddress = $('#create_address_detail').val().trim();
+
+      let isValid = true;
+
+      // Validate họ và tên
+      if (fullName === "") {
+        $("#fullName-error").text("Họ và tên không được để trống!");
+        isValid = false;
+      } else if (!/^[A-Za-zÀ-ỹ\s]+$/.test(fullName)) {
+        $("#fullName-error").text("Họ và tên chỉ được chứa chữ cái!");
+        isValid = false;
+      }
+
+      // Validate số điện thoại
+      let phoneRegex = /^0\d{9}$/;
+      if (phoneNumber === "") {
+        $("#phoneNumber-error").text("Số điện thoại không được để trống!");
+        isValid = false;
+      } else if (!phoneRegex.test(phoneNumber)) {
+        $("#phoneNumber-error").text("Số điện thoại phải có 10 số và bắt đầu từ 0!");
+        isValid = false;
+      }
+
+      // Validate tỉnh/thành phố
+      if (!provinceId || provinceId === "" || province === "Chọn Tỉnh / Thành Phố") {
+        $("#province-error").text("Vui lòng chọn tỉnh/thành phố!");
+        isValid = false;
+      }
+
+      // Validate quận/huyện
+      if (!districtId || district === "Chọn Quận / Huyện") {
+        $("#district-error").text("Vui lòng chọn quận/huyện!");
+        isValid = false;
+      }
+
+      // Validate phường/xã
+      if (!wardCode || ward === "Chọn Phường / Xã") {
+        $("#ward-error").text("Vui lòng chọn phường/xã!");
+        isValid = false;
+      }
+
+      // Validate địa chỉ cụ thể
+      if (detailAddress === "") {
+        $("#line-error").text("Vui lòng nhập địa chỉ cụ thể!");
+        isValid = false;
+      }
+
+      // Nếu có lỗi thì không gửi
+      if (!isValid) return;
+
+      // Tạo request object
       const requestBody = {
-        fullName: $('#create_address_fullname').val(),  // ✅ Sửa lỗi cú pháp
-        phoneNumber: $('#create_address_phone').val(),
-        district: $('#create_address_district').find(":selected").text(),
-        districtId: $('#create_address_district').val(),
-        province: $('#create_address_province').find(":selected").text(),
-        provinceId: $('#create_address_province').val(),
-        ward: $('#create_address_ward').find(":selected").text(),
-        wardCode: $('#create_address_ward').val(),
-        detailAddress: $('#create_address_detail').val()
+        fullName: fullName,
+        phoneNumber: phoneNumber,
+        province: province,
+        provinceId: provinceId,
+        district: district,
+        districtId: districtId,
+        ward: ward,
+        wardCode: wardCode,
+        detailAddress: detailAddress
       };
-      
+
       $.ajax({
         url: "/online/customer/address",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(requestBody),
         success: function () {
-          window.location.reload();
+          showToast("Thêm địa chỉ thành công!", "success");
+          setTimeout(() => window.location.reload(), 1500);
         },
         error: function (xhr, status, error) {
           console.error("Error adding new address", status, error);
-          alert("Failed to add new address. Please try again later.");
+          showToast("Thêm địa chỉ thất bại. Vui lòng thử lại!", "error");
         }
       });
     });
-    
+
     // Handle form submission for Edit Address
     $('#editAddressForm').on('submit', function (event) {
       event.preventDefault();
-      
+
       const addressId = $('#edit_address_id').val();
-      console.log("Updated addressID: ", addressId);
-      
+      if (!addressId) {
+        showToast("Không tìm thấy ID địa chỉ!", "error");
+        return;
+      }
+
+      // Xóa thông báo lỗi cũ
+      $(".error-message").text("");
+
+      // Lấy dữ liệu từ form
+      const fullName = $('#edit_address_fullname').val().trim();
+      const phoneNumber = $('#edit_address_phone').val().trim();
+      const province = $('#edit_address_province').find(":selected").text().trim();
+      const provinceId = $('#edit_address_province').val();
+      const district = $('#edit_address_district').find(":selected").text().trim();
+      const districtId = $('#edit_address_district').val();
+      const ward = $('#edit_address_ward').find(":selected").text().trim();
+      const wardCode = $('#edit_address_ward').val();
+      const detailAddress = $('#edit_address_detail').val().trim();
+
+      let isValid = true;
+
+      // Validate họ và tên
+      if (!fullName) {
+        $("#edit-fullName-error").text("Vui lòng nhập họ và tên!");
+        isValid = false;
+      } else if (!/^[A-Za-zÀ-ỹ\s]+$/.test(fullName)) {
+        $("#edit-fullName-error").text("Họ và tên chỉ được chứa chữ cái!");
+        isValid = false;
+      }
+
+      // Validate số điện thoại
+      const phoneRegex = /^0\d{9}$/;
+      if (!phoneNumber) {
+        $("#edit-phoneNumber-error").text("Vui lòng nhập số điện thoại!");
+        isValid = false;
+      } else if (!phoneRegex.test(phoneNumber)) {
+        $("#edit-phoneNumber-error").text("Số điện thoại không hợp lệ! (10 chữ số, bắt đầu bằng 0)");
+        isValid = false;
+      }
+
+      // Validate tỉnh/thành phố
+      if (!provinceId || province === "Chọn Tỉnh / Thành Phố") {
+        $("#edit-province-error").text("Vui lòng chọn tỉnh/thành phố!");
+        isValid = false;
+      }
+
+      // Validate quận/huyện
+      if (!districtId || district === "Chọn Quận / Huyện") {
+        $("#edit-district-error").text("Vui lòng chọn quận/huyện!");
+        isValid = false;
+      }
+
+      // Validate phường/xã
+      if (!wardCode || ward === "Chọn Phường / Xã") {
+        $("#edit-ward-error").text("Vui lòng chọn phường/xã!");
+        isValid = false;
+      }
+
+      // Validate địa chỉ cụ thể
+      if (!detailAddress) {
+        $("#edit-line-error").text("Vui lòng nhập địa chỉ cụ thể!");
+        isValid = false;
+      }
+
+      // Nếu có lỗi thì không gửi
+      if (!isValid) return;
+
+      // Tạo object dữ liệu để gửi
       const updatedAddress = {
-        fullName: $('#edit_address_fullname').val(),  // ✅ Thêm vào request update
-        phoneNumber: $('#edit_address_phone').val(),  // ✅ Thêm vào request update
-        district: $('#edit_address_district').find(":selected").text(),
-        districtId: $('#edit_address_district').val(),
-        province: $('#edit_address_province').find(":selected").text(),
-        provinceId: $('#edit_address_province').val(),
-        ward: $('#edit_address_ward').find(":selected").text(),
-        wardCode: $('#edit_address_ward').val(),
-        detailAddress: $('#edit_address_detail').val()
+        fullName: fullName,
+        phoneNumber: phoneNumber,
+        province: province,
+        provinceId: provinceId,
+        district: district,
+        districtId: districtId,
+        ward: ward,
+        wardCode: wardCode,
+        detailAddress: detailAddress
       };
-      
+
+      // Gửi request PUT
       $.ajax({
         url: `/online/customer/address/${addressId}`,
         type: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify(updatedAddress),
         success: function () {
-          window.location.reload();
+          showToast("Cập nhật địa chỉ thành công!", "success");
+          setTimeout(() => window.location.reload(), 1500);
         },
         error: function (xhr, status, error) {
-          console.error('Error updating address:', error);
-          alert('Failed to update address. Please try again later.');
+          console.error('Lỗi cập nhật địa chỉ:', error);
+          showToast("Cập nhật địa chỉ thất bại. Vui lòng thử lại!", "error");
         }
       });
     });
-    
-    
+
     // Event listeners for province, district, and ward selection for both modals
     $('#create_address_province, #edit_address_province').on('change', function () {
       const selectedProvinceId = $(this).val();
@@ -540,32 +885,123 @@
         fetchDistricts(selectedProvinceId, $(this).attr('id').includes('create') ? 'create' : 'edit');
       }
     });
-    
+
     $('#create_address_district, #edit_address_district').on('change', function () {
       const selectedDistrictId = $(this).val();
       if (selectedDistrictId) {
         fetchWards(selectedDistrictId, $(this).attr('id').includes('create') ? 'create' : 'edit');
       }
     });
-    
+
     // Initialize provinces when the page loads
     $(document).ready(function () {
       fetchProvinces();
     });
-    
+
     $(document).on('click', '[data-target="#deleteAddressModal"]', function () {
       const addressId = $(this).data('addressid');
       const formAction = `/online/customer/address/delete/${addressId}`;
       $('#deleteTransactionForm').attr('action', formAction);
     });
-    
+
     $(document).on('click', '[data-target="#setDefaultAddressModal"]', function () {
       const addressId = $(this).data('addressid');
       const formAction = `/online/customer/address/set-default/${addressId}`;
       $('#setDefaultTransactionForm').attr('action', formAction);
     });
-  
-  </script>
 
+    //thông báo
+    function showToast(message, type = "success") {
+      const toastContainer = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+
+      let bgColor = type === "success" ? "#d4edda" : "#f8d7da";
+      let textColor = type === "success" ? "#155724" : "#721c24";
+      let borderColor = type === "success" ? "#28a745" : "#dc3545";
+
+      toast.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i> ${message}`;
+      toast.style.cssText = `
+            background-color: ${bgColor};
+            color: ${textColor};
+            border-left: 5px solid ${borderColor};
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.5s, transform 0.5s ease-in-out;
+            margin-bottom: 10px;
+            position: relative;
+            min-width: 280px;
+        `;
+
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = "1";
+        toast.style.transform = "translateX(0)";
+      }, 100);
+
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(100%)";
+        setTimeout(() => toast.remove(), 500);
+      }, 2000);
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script>
+    function showToast(message) {
+      const toastContainer = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+
+      toast.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i> ${message}`;
+      toast.style.cssText = `
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.5s, transform 0.5s ease-in-out;
+            margin-bottom: 10px;
+            position: relative;
+            min-width: 280px;
+        `;
+
+      toastContainer.appendChild(toast);
+
+      // Hiện thông báo (trượt từ phải vào)
+      setTimeout(() => {
+        toast.style.opacity = "1";
+        toast.style.transform = "translateX(0)";
+      }, 100);
+
+      // Ẩn sau 3 giây (trượt ra phải)
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(100%)";
+        setTimeout(() => toast.remove(), 500);
+      }, 3000);
+    }
+
+    // Hiển thị thông báo nếu có từ server
+    document.addEventListener("DOMContentLoaded", function () {
+      let successMessage = "[[${successMessage}]]";
+      if (successMessage && successMessage.trim() !== "") {
+        showToast(successMessage);
+      }
+    });
+  </script>
 </th:block>
 </html>
+
+

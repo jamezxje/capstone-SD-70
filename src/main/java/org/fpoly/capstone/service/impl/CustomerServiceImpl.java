@@ -121,10 +121,11 @@ public class CustomerServiceImpl implements CustomerService {
             newAddress.setDistrict(address.getDistrict());
             newAddress.setWard(address.getWard());
             newAddress.setLine(address.getLine());
+            newAddress.setDetailAddress(address.getLine());
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
-            newUser.setCreateDate(new Date());
-            newUser.setLastModifiedDate(new Date());
+            newAddress.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+            newAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
             newUser.setCreatedBy(userServiceName);
             newUser.setUpdatedBy(userServiceName);
             newAddress.setUser(savedUser); // Không cần tìm lại user nữa
@@ -174,6 +175,7 @@ public class CustomerServiceImpl implements CustomerService {
             existingAddress.setDistrict(address.getDistrict());
             existingAddress.setWard(address.getWard());
             existingAddress.setLine(address.getLine());
+            existingAddress.setDetailAddress(address.getLine());
             existingAddress.setFullName(user.getFullName());
             existingAddress.setPhoneNumber(user.getPhoneNumber());
             existingAddress.setUpdatedBy(userServiceName);
@@ -190,6 +192,7 @@ public class CustomerServiceImpl implements CustomerService {
             newAddress.setDistrict(address.getDistrict());
             newAddress.setWard(address.getWard());
             newAddress.setLine(address.getLine());
+            newAddress.setDetailAddress(address.getLine());
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
             newAddress.setUpdatedBy(userServiceName);

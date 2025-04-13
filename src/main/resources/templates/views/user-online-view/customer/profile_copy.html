@@ -11,27 +11,26 @@
 <body>
 
 <th:block id="th-body">
-  
+
   <!--Body Content-->
   <div id="page-content">
     <!--Page Title-->
     <div class="page section-header text-center mt-5">
       <div class="page-title">
-        <div class="wrapper"><h1 class="page-width">Profile</h1></div>
+        <div class="wrapper"><h1 class="page-width">Thông tin cá nhân</h1></div>
       </div>
     </div>
     <!--End Page Title-->
-    
     <div class="container">
       <div class="row billing-fields">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 sm-margin-30px-bottom">
           <div class="create-ac-content bg-light-gray padding-20px-all">
             <form>
               <fieldset>
-                <h2 class="login-title mb-3">Your infomation</h2>
+                <h2 class="login-title mb-3">Thông tin của bạn</h2>
                 <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-lastname">Full Name <span class="required-f">*</span></label>
+                    <label for="input-lastname">Họ và tên <span class="required-f">*</span></label>
                     <input name="lastname" th:value="${loggedUser.fullName}" id="input-lastname" type="text">
                   </div>
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
@@ -41,19 +40,18 @@
                 </div>
                 <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                    <label for="input-telephone">Telephone <span class="required-f">*</span></label>
+                    <label for="input-telephone">SĐT <span class="required-f">*</span></label>
                     <input name="telephone" th:value="${loggedUser.phoneNumber}" id="input-telephone" type="tel">
                   </div>
                 </div>
               </fieldset>
-              
               <fieldset>
                 <div class="row">
                   <!-- Address label and input field -->
                   <div class="form-group col-md-10 col-lg-10 col-xl-10">
                     <label>Địa chỉ<span class="required-f">*</span></label>
                   </div>
-                  
+
                   <!-- Add Address Button aligned with the label -->
                   <div class="form-group col-md-2 col-lg-2 col-xl-2 d-flex align-items-end">
                     <button type="button" class="btn btn-primary w-100" data-toggle="modal"
@@ -68,39 +66,51 @@
                         <div class="row d-flex justify-content-between align-items-center">
                           <div class="col-12 col-md-6 d-flex align-items-center justify-content-start">
                             <div>
-                              
-                              <div class="my-2">
-                                <span class="font-italic font-bold" th:text="${address.detailAddress}"></span>
-                              </div>
-                              
                               <div class="my-2">
                                 <span class="font-weight-bold"
-                                      th:text="${address.province} + ', ' + ${address.district} + ', ' + ${address.ward} "></span>
+                                      th:text="${address.fullName} + ', ' + ${address.phoneNumber}"></span>
                               </div>
+                              <div class="my-2">
+                                <span class="font-weight-bold"
+                                      th:text="${address.detailAddress} + ', ' + ${address.province} + ', ' + ${address.district} + ', ' + ${address.ward} "></span>
+                              </div>
+
+                              <span
+                                      th:if="${address.status == T(org.fpoly.capstone.entity.enum_status.AddressStatus).DANG_SU_DUNG}"
+                                      class="badge light badge-success" th:text="${address.status}"></span>
                             </div>
-                          
+
                           </div>
-                          
+
                           <div class="col-12 col-md-6 text-right">
                             <div class="my-2">
+                              <button type="button"
+                                      data-toggle="modal"
+                                      data-target="#setDefaultAddressModal"
+                                      class="btn btn-sm btn-outline-warning mx-2"
+                                      th:if="${address.status != T(org.fpoly.capstone.entity.enum_status.AddressStatus).DANG_SU_DUNG}"
+                                      th:data-addressId="${address.id}">
+                                Chọn làm mặc định
+                              </button>
+
                               <button type="button" class="btn btn-sm btn-outline-primary mx-2"
                                       data-toggle="modal"
                                       data-target="#editAddressModal"
+                                      th:data-fullName="${address.fullName}"
+                                      th:data-phoneNumber="${address.phoneNumber}"
                                       th:data-provinceId="${address.provinceId}"
                                       th:data-districtId="${address.toDistrictId}"
                                       th:data-wardCode="${address.wardCode}"
                                       th:data-addressDetail="${address.detailAddress}"
                                       th:data-addressId="${address.id}">
-                                <!--                                <i class="fa-solid fa-pencil"></i>-->
-                                Edit
+                                Sửa
                               </button>
-                              
                               <button type="button"
                                       data-toggle="modal"
                                       data-target="#deleteAddressModal"
                                       class="btn btn-sm btn-outline-warning mx-2"
                                       th:data-addressId="${address.id}">
-                                Delete
+                                Xóa
                               </button>
                             </div>
                           </div>
@@ -115,10 +125,10 @@
         </div>
       </div>
     </div>
-  
   </div>
   <!--End Body Content-->
-  
+  </div>
+  <!--End Body Content-->
   <!--Create address modal start-->
   <div class="modal fade bd-example-modal-xl" id="createAddressModal" tabindex="-1" role="dialog"
        aria-hidden="true">
@@ -141,17 +151,32 @@
                       <form action="#" id="createAddressForm">
                         <div class="row">
                           <div class="form-group col-md-4 col-lg-4 col-xl-4 required">
+                            <label>Họ và Tên</label>
+                            <div>
+                              <input type="text" placeholder="Nhập họ và tên..." class="form-control"
+                                     id="create_address_fullname">
+                            </div>
+                          </div>
+                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required mr-md-4">
+                            <label>Số điện thoại</label>
+                            <div>
+                              <input type="text" placeholder="Nhập số điện thoại..." class="form-control"
+                                     id="create_address_phone">
+                            </div>
+                          </div>
+                          <br>
+                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">
                             <label>Tỉnh / Thành Phố</label>
                             <select id="create_address_province" class="address-select" data-default="">
                             </select>
                           </div>
-                          
+
                           <div class="form-group col-md-4 col-lg-4 col-xl-4 required">
                             <label>Quận / Huyện</label>
                             <select id="create_address_district" class="address-select" data-default="">
                             </select>
                           </div>
-                          
+
                           <div class="form-group col-md-4 col-lg-4 col-xl-4 required">
                             <label>Phường / Xã</label>
                             <select id="create_address_ward" class="address-select" data-default="">
@@ -184,7 +209,6 @@
     </div>
   </div>
   <!--Create address modal end-->
-  
   <!-- Edit Address Modal -->
   <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -198,6 +222,18 @@
         <div class="modal-body">
           <form id="editAddressForm">
             <div class="row">
+              <div class="form-group col-md-4">
+                <label>Họ và Tên</label>
+                <div>
+                  <input type="text" placeholder="Nhập họ và tên..." class="form-control" id="edit_address_fullname">
+                </div>
+              </div>
+              <div class="form-group col-md-4 mr-md-4">
+                <label>Số điện thoại</label>
+                <div>
+                  <input type="text" placeholder="Nhập số điện thoại..." class="form-control" id="edit_address_phone">
+                </div>
+              </div>
               <div class="form-group col-md-4">
                 <label>Province</label>
                 <select id="edit_address_province" class="address-select">
@@ -234,7 +270,7 @@
     </div>
   </div>
   <!-- Edit Address Modal -->
-  
+
   <!-- Delete Address Modal -->
   <div class="modal fade" id="deleteAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -258,8 +294,31 @@
     </div>
   </div>
   <!-- Delete Address Modal -->
-  
-  
+
+  <!-- Delete Address Modal -->
+  <div class="modal fade" id="setDefaultAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Address</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Bạn chắc là chọn địa chỉ này làm mặc định chứ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <form id="setDefaultTransactionForm" method="post" action="">
+            <button type="submit" class="btn btn-danger">Save change</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Delete Address Modal -->
+
   <!--Scoll Top-->
   <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
   <!--End Scoll Top-->
@@ -280,15 +339,15 @@
         success: function (data) {
           const provinces = data.data;
           const provinceSelects = ["#create_address_province", "#edit_address_province"];
-          
+
           provinceSelects.forEach(function (selectId) {
             const provinceSelect = $(selectId)[0];
             provinceSelect.innerHTML = "";  // Clear existing options
-            
+
             const defaultOption = document.createElement("option");
             defaultOption.text = "Select Province";
             provinceSelect.appendChild(defaultOption);
-            
+
             provinces.forEach(function (province) {
               const option = document.createElement("option");
               option.value = province.ProvinceID;
@@ -302,7 +361,7 @@
         }
       });
     }
-    
+
     function fetchDistricts(provinceId, modalPrefix, callback) {
       $.ajax({
         url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/district",
@@ -314,19 +373,19 @@
         success: function (data) {
           const districts = data.data;
           const districtSelect = $(`#${modalPrefix}_address_district`)[0];
-          
+
           districtSelect.innerHTML = "";  // Clear existing options
           const defaultOption = document.createElement("option");
           defaultOption.text = "Select District";
           districtSelect.appendChild(defaultOption);
-          
+
           districts.forEach(function (district) {
             const option = document.createElement("option");
             option.value = district.DistrictID;
             option.text = district.DistrictName;
             districtSelect.appendChild(option);
           });
-          
+
           // Callback after district options are populated
           if (callback) callback();
         },
@@ -335,7 +394,7 @@
         }
       });
     }
-    
+
     function fetchWards(districtId, modalPrefix, callback) {
       $.ajax({
         url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/ward",
@@ -347,19 +406,19 @@
         success: function (data) {
           const wards = data.data;
           const wardSelect = $(`#${modalPrefix}_address_ward`)[0];
-          
+
           wardSelect.innerHTML = "";  // Clear existing options
           const defaultOption = document.createElement("option");
           defaultOption.text = "Select Ward";
           wardSelect.appendChild(defaultOption);
-          
+
           wards.forEach(function (ward) {
             const option = document.createElement("option");
             option.value = ward.WardCode;
             option.text = ward.WardName;
             wardSelect.appendChild(option);
           });
-          
+
           // Callback after ward options are populated
           if (callback) callback();
         },
@@ -368,50 +427,53 @@
         }
       });
     }
-    
-    
+
+
     $(document).on('click', '[data-target="#editAddressModal"]', function () {
       const button = $(this);
-      
+
       // Fetch values from data attributes
       const addressId = button.data('addressid');
+      const fullName = button.data('fullname');
+      const phoneNumber = button.data('phonenumber');
       const provinceId = button.data('provinceid');
       const districtId = button.data('districtid');
       const wardCode = button.data('wardcode');
       const addressDetail = button.data('addressdetail');
-      
+
       console.log('addressId:', addressId);
+      console.log('fullName:', fullName);
+      console.log('phoneNumber:', phoneNumber);
       console.log('provinceId:', provinceId);
       console.log('districtId:', districtId);
       console.log('wardCode:', wardCode);
       console.log('addressDetail:', addressDetail);
-      
+
       // Set the selected province in the modal
       $('#edit_address_province').val(provinceId);
-      
+
       // Fetch and set the districts based on the selected province
       fetchDistricts(provinceId, 'edit', function () {
-        // Set the selected district after the districts are populated
         $('#edit_address_district').val(districtId);
-        
-        // Fetch and set the wards based on the selected district
         fetchWards(districtId, 'edit', function () {
-          // Set the selected ward after the wards are populated
           $('#edit_address_ward').val(wardCode);
         });
       });
-      
+
       // Set the other values
       $('#edit_address_detail').val(addressDetail);
       $('#edit_address_id').val(addressId);
-      
+      $('#edit_address_fullname').val(fullName); // ✅ Sửa ID
+      $('#edit_address_phone').val(phoneNumber); // ✅ Sửa ID
     });
-    
+
     // Handle form submission for Create Address
     $('#createAddressForm').on('submit', function (event) {
       event.preventDefault();
-      
+
       const requestBody = {
+        fullName: $('#create_address_fullname').val(),  // ✅ Sửa lỗi cú pháp
+        phoneNumber: $('#create_address_phone').val(),
         district: $('#create_address_district').find(":selected").text(),
         districtId: $('#create_address_district').val(),
         province: $('#create_address_province').find(":selected").text(),
@@ -420,7 +482,7 @@
         wardCode: $('#create_address_ward').val(),
         detailAddress: $('#create_address_detail').val()
       };
-      
+
       $.ajax({
         url: "/online/customer/address",
         type: "POST",
@@ -435,14 +497,17 @@
         }
       });
     });
-    
+
     // Handle form submission for Edit Address
     $('#editAddressForm').on('submit', function (event) {
       event.preventDefault();
-      
+
       const addressId = $('#edit_address_id').val();
       console.log("Updated addressID: ", addressId);
+
       const updatedAddress = {
+        fullName: $('#edit_address_fullname').val(),  // ✅ Thêm vào request update
+        phoneNumber: $('#edit_address_phone').val(),  // ✅ Thêm vào request update
         district: $('#edit_address_district').find(":selected").text(),
         districtId: $('#edit_address_district').val(),
         province: $('#edit_address_province').find(":selected").text(),
@@ -451,7 +516,7 @@
         wardCode: $('#edit_address_ward').val(),
         detailAddress: $('#edit_address_detail').val()
       };
-      
+
       $.ajax({
         url: `/online/customer/address/${addressId}`,
         type: 'PUT',
@@ -466,7 +531,8 @@
         }
       });
     });
-    
+
+
     // Event listeners for province, district, and ward selection for both modals
     $('#create_address_province, #edit_address_province').on('change', function () {
       const selectedProvinceId = $(this).val();
@@ -474,25 +540,31 @@
         fetchDistricts(selectedProvinceId, $(this).attr('id').includes('create') ? 'create' : 'edit');
       }
     });
-    
+
     $('#create_address_district, #edit_address_district').on('change', function () {
       const selectedDistrictId = $(this).val();
       if (selectedDistrictId) {
         fetchWards(selectedDistrictId, $(this).attr('id').includes('create') ? 'create' : 'edit');
       }
     });
-    
+
     // Initialize provinces when the page loads
     $(document).ready(function () {
       fetchProvinces();
     });
-    
+
     $(document).on('click', '[data-target="#deleteAddressModal"]', function () {
       const addressId = $(this).data('addressid');
       const formAction = `/online/customer/address/delete/${addressId}`;
       $('#deleteTransactionForm').attr('action', formAction);
     });
-  
+
+    $(document).on('click', '[data-target="#setDefaultAddressModal"]', function () {
+      const addressId = $(this).data('addressid');
+      const formAction = `/online/customer/address/set-default/${addressId}`;
+      $('#setDefaultTransactionForm').attr('action', formAction);
+    });
+
   </script>
 
 </th:block>

@@ -53,6 +53,7 @@ public class AddressServiceImpl implements AddressService {
                 .ward(request.getWard())
                 .wardCode(String.valueOf(request.getWardCode()))
                 .line(request.getLine())
+                .detailAddress(request.getLine())
                 .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                 .lastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                 .user(customer)
@@ -85,6 +86,7 @@ public class AddressServiceImpl implements AddressService {
         existingAddress.setWard(request.getWard());
         existingAddress.setWardCode(String.valueOf(request.getWardCode()));
         existingAddress.setLine(request.getLine());
+        existingAddress.setDetailAddress(request.getLine());
         existingAddress.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         // Save the updated address
         this.addressRepository.save(existingAddress);

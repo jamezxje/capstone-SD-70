@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -38,27 +39,27 @@ public class OnlineCustomerController {
     }
 
     @PostMapping(path = "address/delete/{id}")
-    public String deleteAddress(@PathVariable Integer id) {
+    public String deleteAddress(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
 
         try {
             this.onlineAddressService.deleteAddress(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        redirectAttributes.addFlashAttribute("successMessage", "Xóa thành công!");
         return "redirect:/online/customer/profile";
 
     }
 
     @PostMapping(path = "address/set-default/{id}")
-    public String setDefaultAddress(@PathVariable Integer id) {
+    public String setDefaultAddress(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
 
         try {
             this.onlineAddressService.setDefaultAddress(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        redirectAttributes.addFlashAttribute("successMessage", "Đặt địa chỉ mặc định thành công!");
         return "redirect:/online/customer/profile";
 
     }

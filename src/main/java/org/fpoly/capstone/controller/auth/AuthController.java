@@ -1,5 +1,6 @@
 package org.fpoly.capstone.controller.auth;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.entity.User;
 import org.fpoly.capstone.service.UserService;
@@ -28,6 +29,37 @@ public class AuthController {
         return "/views/user-online-view/auth/login";
     }
 
+
+    @GetMapping(path = "register/online")
+    public String registerUserOnline(Model model) {
+        User userRegister = new User();
+        Map<String, String> errors = new HashMap<>();
+        model.addAttribute("errors", errors);
+        model.addAttribute("userRegister", userRegister);
+        return "/views/user-online-view/auth/sign-up";
+    }
+
+    @PostMapping("/register/online/save")
+    public String registerUserOnlineSave(@ModelAttribute("userRegister") User userRegister, Model model, RedirectAttributes redirectAttributes) {
+        Set<String> userFieldsToValidate = Set.of("fullName", "phoneNumber", "email", "password");
+        Map<String, String> errors = UserValidator.validate(userRegister, userFieldsToValidate);
+        if (userService.existsByEmail(userRegister.getEmail())) {
+            errors.put("email", "Email đã tồn tại!");
+        }
+        if (userService.existsByPhoneNumber(userRegister.getPhoneNumber())) {
+            errors.put("phoneNumber", "Số điện thoại đã tồn tại!");
+        }
+        if (!errors.isEmpty()) {
+            model.addAttribute("errors", errors);
+            model.addAttribute("userRegister", userRegister);
+            return "/views/user-online-view/auth/sign-up";
+        }
+        System.out.println("RegisterDTO: " + userRegister);
+        userService.createUserRegister(userRegister);
+        redirectAttributes.addFlashAttribute("successMessage", "Đăng ký thành công!");
+        return "redirect:/auth/login/online";
+    }
+    //--------------------------------------------------------------------
     @GetMapping(path = "/register")
     public String showSignupPage(Model model) {
         User userRegister = new User();

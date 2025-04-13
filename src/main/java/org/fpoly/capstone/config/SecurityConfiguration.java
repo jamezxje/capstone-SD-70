@@ -83,6 +83,7 @@ public class SecurityConfiguration {
             "/shop/**",
             "/cart/**",
             "/auth/login/**",
+            "/auth/register/**",
     };
 
     @Bean

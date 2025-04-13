@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
       th:replace="~{views/user-online-view/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
@@ -10,6 +11,12 @@
 <body>
 
 <th:block id="th-body">
+  <div id="toast-container" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;">
+  </div>
   <!--Body Content-->
   <div id="page-content">
     <!--Page Title-->
@@ -25,7 +32,7 @@
       </div>
     </div>
     <!--End Page Title-->
-    
+
     <div class="container">
       <div class="row">
         <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">
@@ -36,15 +43,30 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                   <div class="form-group">
                     <label for="CustomerEmail">Email</label>
-                    <input type="email" name="username" placeholder="hello@example.com" id="CustomerEmail" class=""
+                    <input type="email" name="username" placeholder="Nhập email..." id="CustomerEmail" class=""
                            autocorrect="off" autocapitalize="off" autofocus="">
                   </div>
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                  <!--                  <div class="form-group">-->
+                  <!--                    <label for="CustomerPassword">Mật khẩu</label>-->
+                  <!--                    <input type="password" value="" name="password" placeholder="" id="CustomerPassword"-->
+                  <!--                           class="">-->
+                  <!--                  </div>-->
                   <div class="form-group">
-                    <label for="CustomerPassword">Mật khẩu</label>
-                    <input type="password" value="" name="password" placeholder="" id="CustomerPassword"
-                           class="">
+                    <label class="text-label" for="CustomerPassword">Mật khẩu</label>
+                    <div class="input-group transparent-append">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text text-black"> <i class="fa fa-lock"></i> </span>
+                      </div>
+                      <input type="password" name="password" id="CustomerPassword" class="form-control" placeholder="Nhập mật khẩu..." value="">
+                      <div class="input-group-append show-pass ">
+                          <span class="input-group-text text-black">
+                              <i class="fa fa-eye-slash"></i>
+                              <i class="fa fa-eye"></i>
+                          </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -53,7 +75,7 @@
                   <input type="submit" class="btn mb-3" value="Đăng nhập">
                   <p class="mb-4">
                     <a href="#" id="RecoverPassword">Quên mật khẩu?</a> &nbsp; | &nbsp;
-                    <a href="register.html" id="customer_register_link">Tạo tài khoản</a>
+                    <a href="/auth/register/online" id="customer_register_link">Tạo tài khoản</a>
                   </p>
                 </div>
               </div>
@@ -62,8 +84,73 @@
         </div>
       </div>
     </div>
-  
   </div>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script>
+    document.querySelector('.show-pass').addEventListener('click', function () {
+      const passwordInput = document.querySelector('input[name="password"]');
+      const eyeIcon = this.querySelector('.fa-eye');
+      const eyeSlashIcon = this.querySelector('.fa-eye-slash');
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.style.display = 'inline';
+        eyeSlashIcon.style.display = 'none';
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.style.display = 'none';
+        eyeSlashIcon.style.display = 'inline';
+      }
+    });
+  </script>
+  <script>
+    function showToast(message) {
+      const toastContainer = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+
+      toast.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i> ${message}`;
+      toast.style.cssText = `
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.5s, transform 0.5s ease-in-out;
+            margin-bottom: 10px;
+            position: relative;
+            min-width: 250px;
+        `;
+
+      toastContainer.appendChild(toast);
+
+      // Hiện thông báo (trượt từ phải vào)
+      setTimeout(() => {
+        toast.style.opacity = "1";
+        toast.style.transform = "translateX(0)";
+      }, 100);
+
+      // Ẩn sau 3 giây (trượt ra phải)
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(100%)";
+        setTimeout(() => toast.remove(), 500);
+      }, 3000);
+    }
+
+    // Hiển thị thông báo nếu có từ server
+    document.addEventListener("DOMContentLoaded", function () {
+      let successMessage = "[[${successMessage}]]";
+      if (successMessage && successMessage.trim() !== "") {
+        showToast(successMessage);
+      }
+    });
+  </script>
   <!--End Body Content-->
 </th:block>
 
@@ -71,3 +158,76 @@
 <th:block id="th-js">
 </th:block>
 </html>
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="https://www.thymeleaf.org"-->
+<!--      th:replace="~{views/user-online-view/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>Index user</title>-->
+<!--  <th:block id="th-css">-->
+<!--  </th:block>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<th:block id="th-body">-->
+<!--  &lt;!&ndash;Body Content&ndash;&gt;-->
+<!--  <div id="page-content">-->
+<!--    &lt;!&ndash;Page Title&ndash;&gt;-->
+<!--    <div class="page section-header text-center mt-5">-->
+<!--      <div class="page-title">-->
+<!--        <div class="wrapper"><h1 class="page-width">Đăng nhập</h1></div>-->
+<!--        <div th:if="${param.error}">-->
+<!--          <div class="alert alert-danger">Sai email hoặc mật khẩu</div>-->
+<!--        </div>-->
+<!--        <div th:if="${param.logout}">-->
+<!--          <div class="alert alert-success">Bạn đã được đăng xuất</div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash;End Page Title&ndash;&gt;-->
+<!--    -->
+<!--    <div class="container">-->
+<!--      <div class="row">-->
+<!--        <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3">-->
+<!--          <div class="mb-4">-->
+<!--            <form method="post" th:action="@{/auth/login}" id="CustomerLoginForm" accept-charset="UTF-8"-->
+<!--                  class="contact-form">-->
+<!--              <div class="row">-->
+<!--                <div class="col-12 col-sm-12 col-md-12 col-lg-12">-->
+<!--                  <div class="form-group">-->
+<!--                    <label for="CustomerEmail">Email</label>-->
+<!--                    <input type="email" name="username" placeholder="hello@example.com" id="CustomerEmail" class=""-->
+<!--                           autocorrect="off" autocapitalize="off" autofocus="">-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="col-12 col-sm-12 col-md-12 col-lg-12">-->
+<!--                  <div class="form-group">-->
+<!--                    <label for="CustomerPassword">Mật khẩu</label>-->
+<!--                    <input type="password" value="" name="password" placeholder="" id="CustomerPassword"-->
+<!--                           class="">-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row">-->
+<!--                <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">-->
+<!--                  <input type="submit" class="btn mb-3" value="Đăng nhập">-->
+<!--                  <p class="mb-4">-->
+<!--                    <a href="#" id="RecoverPassword">Quên mật khẩu?</a> &nbsp; | &nbsp;-->
+<!--                    <a href="register.html" id="customer_register_link">Tạo tài khoản</a>-->
+<!--                  </p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </form>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  -->
+<!--  </div>-->
+<!--  &lt;!&ndash;End Body Content&ndash;&gt;-->
+<!--</th:block>-->
+
+<!--</body>-->
+<!--<th:block id="th-js">-->
+<!--</th:block>-->
+<!--</html>-->

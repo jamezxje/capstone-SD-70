@@ -117,6 +117,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
             newAddress.setDistrict(address.getDistrict());
             newAddress.setWard(address.getWard());
             newAddress.setLine(address.getLine());
+            newAddress.setDetailAddress(address.getLine());
             newAddress.setFullName(user.getFullName());
             newAddress.setPhoneNumber(user.getPhoneNumber());
             newAddress.setCreateDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
@@ -172,6 +173,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
             existingAddress.setDistrict(address.getDistrict());
             existingAddress.setWard(address.getWard());
             existingAddress.setLine(address.getLine());
+            existingAddress.setDetailAddress(address.getLine());
             existingAddress.setFullName(user.getFullName());
             existingAddress.setPhoneNumber(user.getPhoneNumber());
             existingAddress.setUpdatedBy(userServiceName);
@@ -188,6 +190,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
                 newAddress.setDistrict(address.getDistrict());
                 newAddress.setWard(address.getWard());
                 newAddress.setLine(address.getLine());
+                newAddress.setDetailAddress(address.getLine());
                 newAddress.setFullName(user.getFullName());
                 newAddress.setPhoneNumber(user.getPhoneNumber());
                 newAddress.setUpdatedBy(userServiceName);

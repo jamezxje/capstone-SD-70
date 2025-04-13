@@ -36,13 +36,33 @@
           <div class="text-center"><p class="top-header_middle-text"></p></div>
         </div>
         <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
+          <span class="user-menu d-block d-lg-none">
+            <i class="anm anm-user-al" aria-hidden="true"></i>
+          </span>
+          <ul class="customer-links list-inline mb-0 d-flex justify-content-end align-items-center">
+            <li class="d-flex align-items-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                   xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
+                <path d="M12 14C8.686 14 6 16.686 6 20H18C18 16.686 15.314 14 12 14Z"
+                      stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 12C14.209 12 16 10.209 16 8C16 5.791 14.209 4 12 4C9.791 4 8 5.791 8 8C8 10.209 9.791 12 12 12Z"
+                      stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <a th:href="@{/online/customer/profile}" class="text-white text-decoration-none">
+                Tài khoản của tôi
+              </a>
+            </li>
+          </ul>
+        </div>        
+        <!-- <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
           <span class="user-menu d-block d-lg-none"><i class="anm anm-user-al" aria-hidden="true"></i></span>
           <ul class="customer-links list-inline">
             <li><a th:href="@{/auth/login/online}">Đăng nhập</a></li>
-            <li><a href="register.html">Đăng kí tài khoản</a></li>
-            <li><a th:href="@{/online/customer/profile}">Trang cá nhân</a></li>
+            <li><a href="/auth/register/online">Đăng kí tài khoản</a></li>
+            <li><a th:href="@{/auth/logout}">Đăng xuất</a></li>
+            <li><a th:href="@{/online/customer/profile}">Tài khoản của bạn</a></li>
           </ul>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
