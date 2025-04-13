@@ -27,7 +27,7 @@ public class RevenueServiceImpl implements RevenueService {
     public BigDecimal totalRevenue() {
         List<Bill> totalBill = billService.findAll();
         return totalBill.stream()
-//                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
+                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
                     BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
@@ -78,7 +78,7 @@ public class RevenueServiceImpl implements RevenueService {
     public BigDecimal totalRevenueToday() {
         List<Bill> totalBill = billService.findByCreateDate(LocalDate.now());
         return totalBill.stream()
-//                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
+                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
                     BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
@@ -110,7 +110,7 @@ public class RevenueServiceImpl implements RevenueService {
     public BigDecimal totalRevenueDate(LocalDate date) {
         List<Bill> totalBill = billService.findByCreateDate(date);
         return totalBill.stream()
-//                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
+                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
                     BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
@@ -154,7 +154,7 @@ public class RevenueServiceImpl implements RevenueService {
 
         List<Bill> bills = billService.findByCreateDateBetween(startDate, endDate);
         return bills.stream()
-//                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
+                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
                     BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
@@ -207,7 +207,7 @@ public class RevenueServiceImpl implements RevenueService {
 
         List<Bill> bills = billService.findByCreateDateBetween(startDate, endDate);
         return bills.stream()
-//                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
+                .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
                     BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;

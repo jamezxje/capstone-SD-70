@@ -1,0 +1,425 @@
+      /* General Body Styles */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fc;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .container-fluid {
+        margin-top: 30px;
+      }
+      .icon-eye {
+      color: #3498db; /* Màu xanh dương */
+      }
+
+
+
+form {
+
+  padding: 0;
+  width: 80%;
+  padding-left: 120px;
+
+}
+
+/* Cải thiện các nhóm form */
+.form-group {
+  width: 100%;
+  display: flex;
+
+
+}
+
+/* Cải tiến label của các trường input */
+.form-group label {
+  font-weight: 500;
+  color: #333;
+  width: 200px;
+  text-align: right;
+  margin-top: 10px;
+margin-right: 5px;
+
+}
+
+/* Thiết kế cho các input và select trong form */
+.form-control {
+  border: 1px solid #ccc;
+  width: 100%;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+/* Cải thiện nút tìm kiếm */
+.btn-search {
+  background-color: green;
+  color: white;
+  padding: 10px 30px; /* Giảm padding để nút nhỏ hơn */
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 1.0rem; /* Giảm kích thước chữ */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 130px;
+}
+
+
+.btn-search:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.btn-search:active {
+  background-color: #004085;
+  transform: scale(0.98);
+}
+
+/* Hiệu ứng cho biểu tượng tìm kiếm */
+.btn-search svg {
+  margin-right: 6px; /* Giảm khoảng cách giữa biểu tượng và văn bản */
+  fill: white;
+  width: 16px; /* Giảm kích thước biểu tượng */
+  height: 16px; /* Giảm kích thước biểu tượng */
+}
+/* Cải thiện sự linh hoạt của các cột trong form */
+.form-group.col-6 {
+  flex: 1 1 48%;
+}
+
+@media (max-width: 768px) {
+  .form-group.col-6 {
+    flex: 1 1 100%;
+  }
+}
+
+/* Responsive design cho các trường input */
+input[type="text"], select, input[type="date"] {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+   align-items: center;
+    justify-content: center;
+}
+
+/* Responsive design cho form */
+@media (max-width: 576px) {
+  .form-group {
+    width: 100%;
+  }
+
+  .btn-search {
+    width: 100%; /* Chiếm toàn bộ chiều rộng trên thiết bị nhỏ */
+    margin-left: 0;
+  }
+}
+
+.card-header {
+  color: black; /* Màu chữ trắng */
+  padding: 15px 20px; /* Khoảng cách trong của card */
+  display: flex; /* Sử dụng flexbox để căn chỉnh các phần tử */
+  justify-content: space-between; /* Căn giữa các phần tử theo chiều ngang */
+  align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+/* Tiêu đề của card */
+.card-title {
+  font-size: 1.2rem; /* Tăng kích thước font cho tiêu đề */
+  margin-bottom: 0; /* Loại bỏ khoảng cách dưới của h4 */
+  font-weight: 400; /* Làm chữ đậm */
+  width: 500px;
+}
+
+/* Định dạng cho nút Thêm voucher */
+.btn-orange {
+  background-color: #ff6f00; /* Nền cam */
+  color: #fff; /* Màu chữ trắng */
+  border: 2px solid #ff6f00; /* Đường viền cam */
+  padding: 8px 20px; /* Khoảng cách bên trong nút */
+  border-radius: 4px; /* Bo góc cho nút */
+  font-weight: 600; /* Chữ đậm cho nút */
+  transition: all 0.3s ease; /* Hiệu ứng chuyển màu khi hover */
+}
+
+
+.form-group-search select{
+  width: 100%;
+}
+
+.btn-orange:hover {
+  background-color: #e65100; /* Màu nền khi hover sẽ là cam đậm hơn */
+  color: #fff; /* Màu chữ trắng khi hover */
+  border-color: #e65100; /* Đổi màu viền khi hover */
+}
+
+/* Responsive design cho màn hình nhỏ */
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column; /* Đặt các phần tử theo chiều dọc khi màn hình nhỏ */
+    align-items: flex-start; /* Căn chỉnh các phần tử về phía trái */
+  }
+
+  .card-title {
+    margin-bottom: 10px; /* Khoảng cách giữa tiêu đề và nút */
+  }
+
+  .btn-orange {
+    width: 100%; /* Đặt nút chiếm toàn bộ chiều rộng của card header khi màn hình nhỏ */
+    text-align: center; /* Căn giữa chữ trong nút */
+  }
+}
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .form-search {
+          flex-direction: column;
+        }
+
+        .form-search .form-group {
+          margin-right: 0;
+          margin-bottom: 10px;
+        }
+
+        .form-search input,
+        .form-search select,
+        .btn-search {
+          width: 100%;
+        }
+      }
+      /* General Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      table-layout: fixed;
+      border-radius: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      font-size: 14px;
+      color: #333;
+
+    }
+
+    th {
+      background-color: #E86D0C;
+      color: white;
+      font-weight: bold;
+    }
+
+   th:first-child, td:first-child {
+  width: 50px; /* Hoặc giá trị tùy chỉnh để làm nhỏ ô STT */
+  text-align: center; /* Căn giữa văn bản */
+}
+th:nth-last-child(2), td:nth-last-child(2) {
+  width: 120px; /* Giới hạn chiều rộng của cột */
+  /* Căn giữa văn bản */
+  overflow: hidden; /* Ẩn phần văn bản thừa */
+  white-space: nowrap; /* Ngừng xuống dòng */
+  text-overflow: ellipsis; /* Hiển thị dấu ba chấm nếu văn bản quá dài */
+}
+<!--th:nth-child(5), td:nth-child(5) {-->
+<!--  /* Các thuộc tính CSS bạn muốn áp dụng */-->
+<!--  width:50px;-->
+<!--  overflow: hidden;-->
+<!--   white-space: nowrap; /* Ngừng xuống dòng */-->
+<!--  text-overflow: ellipsis;-->
+<!--}-->
+/* Cài đặt cho các ô <td> có nội dung dài */
+td {
+  max-width: 150px; /* Giới hạn chiều rộng của ô */
+  overflow: hidden; /* Ẩn phần văn bản vượt quá chiều rộng của ô */
+  text-overflow: ellipsis; /* Hiển thị dấu ba chấm khi văn bản quá dài */
+  white-space: normal;
+}
+/* Cài đặt cho các ô <td> có nội dung dài */
+td.limit-text {
+  max-width: 150px; /* Giới hạn chiều rộng của ô */
+  overflow: hidden; /* Ẩn phần văn bản vượt quá chiều rộng của ô */
+  text-overflow: ellipsis; /* Hiển thị dấu ba chấm khi văn bản quá dài */
+ white-space: normal;
+}
+
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .badge {
+      padding: 5px 10px;
+      border-radius: 50px;
+      font-size: 12px;
+      color: white;
+    }
+
+    .badge-success {
+      background-color: #28a745;
+    }
+
+    .badge-warning {
+      background-color: #ffc107;
+    }
+
+    .badge-danger {
+      background-color: #dc3545;
+    }
+.btn-warning.waring {
+  background-color: orange; /* Hoặc dùng mã màu: #FFA500 */
+  border: none;
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+    color: white;
+
+}
+
+.icon-eye path,
+.icon-eye circle {
+  stroke: white !important;
+}
+
+    /* Action Buttons */
+    .btn-action {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 5px;
+      background-color: #17a2b8;
+      color: white;
+      text-decoration: none;
+      margin: 5px;
+    }
+
+    .btn-action:hover {
+      background-color: #138496;
+    }
+
+    .btn-action svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
+    }
+
+    /* Table Scroll for Small Screens */
+
+
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    /* Responsive Styling */
+    @media (max-width: 768px) {
+      th, td {
+        font-size: 12px;
+        padding: 8px;
+      }
+
+      .btn-action {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      th, td {
+        font-size: 10px;
+        padding: 6px;
+      }
+
+      .btn-action {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+    }
+
+/* Căn chỉnh nút pagination đẹp và có hiệu ứng hover */
+.pagination {
+  display: flex;
+  justify-content: center; /* Canh giữa */
+  margin: 20px 0;
+  padding: 0;
+}
+
+.page-item {
+  margin: 0 4px;
+  border-radius: 5px; /* Góc bo tròn */
+
+
+}
+
+.page-link {
+  padding: 68x 15px; /* Tăng kích thước cho nút */
+  font-size: 12px;
+  color: #007bff; /* Màu chữ của nút */
+  background-color: #fff; /* Màu nền của nút */
+  border: 1px solid #ddd; /* Đường viền mờ cho các nút */
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển màu mượt mà */
+}
+
+.page-link:hover {
+  background-color: #007bff; /* Màu nền khi hover */
+  color: #fff; /* Màu chữ khi hover */
+}
+
+.page-item.disabled .page-link {
+  background-color: #f8f9fa; /* Màu nền cho nút disabled */
+  color: #6c757d; /* Màu chữ khi disabled */
+  pointer-events: none; /* Vô hiệu hóa nút khi disabled */
+}
+
+.page-item.active .page-link {
+  background-color: #007bff; /* Màu nền cho trang hiện tại */
+  color: #fff; /* Màu chữ cho trang hiện tại */
+  pointer-events: none; /* Vô hiệu hóa click vào trang hiện tại */
+}
+
+/* Responsive - Giảm kích thước nút trên thiết bị nhỏ */
+@media (max-width: 576px) {
+  .page-link {
+    padding: 6px 12px; /* Giảm padding trên các thiết bị nhỏ */
+    font-size: 14px; /* Giảm kích thước chữ */
+  }
+}
+
+/* Thêm hiệu ứng khi hover và active trên các nút */
+.page-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Thêm hiệu ứng khi focus vào nút */
+}
+
+      .btn-white {
+    background-color: white;
+    color: #FF5722; /* Màu cam cho chữ (hoặc màu bạn muốn) */
+    border: 2px solid #FF5722; /* Màu cam cho viền */
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .btn-white:hover {
+    background-color: #FF5722; /* Màu cam khi hover */
+    color: white; /* Chữ trắng khi hover */
+  }
+

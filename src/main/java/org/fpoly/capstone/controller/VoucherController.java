@@ -91,13 +91,26 @@ public class VoucherController {
     @GetMapping("/detail/{id}")
     public String detailById(@PathVariable("id") Long id, Model model) throws NotException {
         Voucher voucher = voucherService.findById(id);
+
         DecimalFormat formatter = new DecimalFormat("###,###.##");
         String formattedValue = formatter.format(voucher.getValue());
+
+        Integer minimumBill = voucher.getMinimumBill();
+        String formatted = "";
+
+        if (minimumBill != null) {
+            NumberFormat formatterMiniBill = NumberFormat.getInstance(new Locale("vi", "VN"));
+            formatted = formatterMiniBill.format(minimumBill) + " VND";
+        } else {
+            formatted = "0 VND"; // hoặc "Không có"
+        }
+
         model.addAttribute("status", VoucherStatus.values());
         model.addAttribute("voucher", voucher);
         model.addAttribute("startDate", voucher.getStartDate());
         model.addAttribute("endDate", voucher.getEndDate());
         model.addAttribute("formattedValue", formattedValue);
+        model.addAttribute("miniBill", formatted);
 
 
         return "views/voucher/detailVoucher";
@@ -116,6 +129,7 @@ public class VoucherController {
         log.info("(update): " + startDate + endDate);
         BigDecimal bigDecimal = new BigDecimal(value);
         Integer miniBills = Integer.parseInt(miniBill);
+        LocalDateTime now = LocalDateTime.now();
         voucherService.updateVoucher(voucher, voucherStatus, startDate, endDate, bigDecimal, miniBills);
         return "redirect:/dashboard/product-management/voucher/list";
     }
@@ -140,8 +154,6 @@ public class VoucherController {
             voucherPage = voucherService.searchNameOrStatus(pageable, name, status);
         } else if (startDate != null && endDate != null) {
             voucherPage = voucherService.searchByStartDateAndEndDate(pageable, null, null, startDate, endDate);
-        }else if (createAt != null) {
-            voucherPage = voucherService.searchByCreateAt(pageable, null, null, createAt);
         }
         if(voucherPage.isEmpty()){
             voucherPage = voucherService.findAll(pageable);

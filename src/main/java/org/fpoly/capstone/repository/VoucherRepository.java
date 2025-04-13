@@ -69,17 +69,6 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
                          @Param("startDate") LocalDateTime startDate,
                          @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT v FROM Voucher v " +
-            "WHERE (:name IS NULL OR v.name = :name) " +
-            "AND (:status IS NULL OR v.status = :status) " +
-            "AND (:startOfDay IS NULL OR :endOfDay IS NULL OR v.createDate BETWEEN :startOfDay AND :endOfDay)")
-    Page<Voucher> searchByCreateAt(Pageable pageable,
-                                   @Param("name") String name,
-                                   @Param("status") VoucherStatus status,
-                                   @Param("startOfDay") Date startOfDay,
-                                   @Param("endOfDay") Date endOfDay);
-
-
 
     @Query("select v.id from Voucher v")
     List<Long> findByAllIds();

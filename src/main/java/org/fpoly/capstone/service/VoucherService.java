@@ -34,8 +34,6 @@ public interface VoucherService {
 
     Page<Voucher> searchNameOrStatus(Pageable pageable, String name, VoucherStatus status);
 
-    Page<Voucher> searchByCreateAt(Pageable pageable, String name, VoucherStatus status, LocalDate date);
-
 
 
 }
