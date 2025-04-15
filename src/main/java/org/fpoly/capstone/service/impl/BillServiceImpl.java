@@ -62,8 +62,6 @@ import org.fpoly.capstone.service.payload.bill.BuyNowBillRequest;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
 import org.fpoly.capstone.utils.general.GeneralStringCode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -493,6 +491,7 @@ public class BillServiceImpl implements BillService {
         bill.setUser(customer);
         bill.setType(BillType.ONLINE);
         bill.setStatus(BillStatus.CHO_XAC_NHAN);
+        bill.setCode(GeneralStringCode.generateCodeAdmin());
 
         double totalPrice = cart.getCartDetails().stream()
                 .mapToDouble(detail -> detail.getPrice().doubleValue() * detail.getQuantity())
@@ -694,7 +693,7 @@ public class BillServiceImpl implements BillService {
     @Override
     public Page<Bill> searchBills(String keyword, BillType orderType, BillStatus status,
                                   LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
-        return billRepository.searchBills(keyword, orderType, status, startDate, endDate, pageable);
+        return this.billRepository.searchBills(keyword, orderType, status, startDate, endDate, pageable);
     }
 
     @Override
@@ -772,6 +771,7 @@ public class BillServiceImpl implements BillService {
         lastestBill.setAddress(address);
         lastestBill.setNote(note);
         lastestBill.setMethod(paymentMethod);
+        lastestBill.setCode(GeneralStringCode.generateCodeAdmin());
 
         // Lưu hóa đơn đã cập nhật
         this.billRepository.save(lastestBill); // Không tạo một bill mới, chỉ cập nhật hóa đơn hiện tại
