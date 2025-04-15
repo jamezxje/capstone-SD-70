@@ -1053,7 +1053,7 @@
               const formattedPrice = new Intl.NumberFormat('vi-VN').format(price);
               
               // Cập nhật giá tiền vào phần HTML tương ứng
-              $('#ProductPrice-product-template').text(formattedPrice + ' VND');
+              $('#ProductPrice-product-template .money').text(formattedPrice + ' VND');
             },
             error: function (xhr, status, error) {
               console.error("Error fetching product price:", error);

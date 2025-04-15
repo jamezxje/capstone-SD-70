@@ -25,8 +25,6 @@ public class ApiOnlineProductController {
 
         ProductDetailResponse productDetailResponse = this.productDetailService.getProductDetailById(productDetailId);
 
-        BigDecimal productDetailPrice = this.productDetailService.findProductDetailPriceByIdAndSizeAndColor(productDetailResponse.getProductId(), colorId, sizeId);
-
-        return productDetailPrice;
+        return this.productDetailService.findProductDetailPriceByIdAndSizeAndColor(productDetailResponse.getProductId(), sizeId, colorId);
     }
 }
