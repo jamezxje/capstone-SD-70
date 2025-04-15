@@ -97,10 +97,33 @@ public class CartDetailServiceImpl implements CartDetailService {
 
     @Override
     public void deleteCartDetail(Long cartDetailId) {
-        CartDetail cartDetail = this.cartDetailRepository
+
+        User loggedUser = this.userService.getUserFromContext();
+
+        if (loggedUser == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+
+        Set<CartDetail> cartDetailList = cart.getCartDetails();
+
+        CartDetail deleteCartDetail = this.cartDetailRepository
                 .findById(cartDetailId)
                 .orElseThrow(() -> new EntityNotFoundException("Cart detail not found with id:" + cartDetailId));
 
-        this.cartDetailRepository.delete(cartDetail);
+        cartDetailList.remove(deleteCartDetail);
+
+        this.cartDetailRepository.delete(deleteCartDetail);
+
+        double totalPrice = cartDetailList.stream()
+                .mapToDouble(detail -> detail.getPrice().doubleValue() * detail.getQuantity())
+                .sum();
+
+        // Set total price to cart
+        cart.setTotalPrice(BigDecimal.valueOf(totalPrice));
+
+        cartRepository.save(cart);
+
     }
 }
