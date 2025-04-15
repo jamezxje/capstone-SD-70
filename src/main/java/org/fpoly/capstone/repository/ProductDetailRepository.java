@@ -1,18 +1,21 @@
 package org.fpoly.capstone.repository;
 
 import org.fpoly.capstone.entity.ProductDetail;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
 @Repository
 public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long>, JpaSpecificationExecutor<ProductDetail> {
+    @Override
     List<ProductDetail> findAll();
 
     @Query("SELECT new org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse(" +
@@ -99,4 +102,8 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     List<ProductDetail> findByProductId(@Param("productId") Long productId);
 
     Optional<ProductDetail> findById(long id);
+
+    @Query("SELECT pd.price FROM ProductDetail pd WHERE pd.product.id = :productId AND pd.size.id = :sizeId AND pd.color.id = :colorId")
+    BigDecimal findProductDetailPriceByIdAndSizeAndColor(@Param("productId") Long productId, @Param("sizeId") Long sizeId,
+                                                         @Param("colorId") Long colorId);
 }

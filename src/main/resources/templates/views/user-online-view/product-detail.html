@@ -1026,6 +1026,47 @@
   </script>
   
   <script>
+    $(document).ready(function () {
+      // Lắng nghe sự kiện thay đổi của các input màu và size
+      $('input[type="radio"][name="colorId"], input[type="radio"][name="sizeId"]').on('change', function () {
+        // Lấy giá trị của colorId và sizeId khi người dùng chọn
+        const colorId = $('input[type="radio"][name="colorId"]:checked').val();
+        const sizeId = $('input[type="radio"][name="sizeId"]:checked').val();
+        
+        // Log giá trị của colorId và sizeId
+        console.log("Selected colorId for price: ", colorId);
+        console.log("Selected sizeId for price: ", sizeId);
+        
+        // Kiểm tra xem cả 2 lựa chọn đã được chọn chưa
+        if (colorId && sizeId) {
+          
+          // Gọi AJAX để lấy giá tiền mới từ API
+          $.ajax({
+            url: "/shop/" + productDetailIdReceived + "/price?colorId=" + colorId + "&sizeId=" + sizeId,
+            method: 'GET',
+            success: function (response) {
+              // Giả sử API trả về giá trị là số, ví dụ 500.00
+              const price = response;  // Hoặc có thể là `response.price` nếu API trả về object
+              
+              console.log("Price for product detail: ", price)
+              
+              const formattedPrice = new Intl.NumberFormat('vi-VN').format(price);
+              
+              // Cập nhật giá tiền vào phần HTML tương ứng
+              $('#ProductPrice-product-template .money').text(formattedPrice + ' VND');
+            },
+            error: function (xhr, status, error) {
+              console.error("Error fetching product price:", error);
+            }
+          });
+        }
+      });
+    });
+  
+  
+  </script>
+  
+  <script>
     $('.shopify-payment-button__button--unbranded').on('click', function (e) {
       
       e.preventDefault();
