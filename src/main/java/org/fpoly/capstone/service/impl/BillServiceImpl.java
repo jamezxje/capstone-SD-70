@@ -492,6 +492,7 @@ public class BillServiceImpl implements BillService {
         bill.setType(BillType.ONLINE);
         bill.setStatus(BillStatus.CHO_XAC_NHAN);
         bill.setCode(GeneralStringCode.generateCodeAdmin());
+        bill.setEmail(customer.getEmail());
 
         double totalPrice = cart.getCartDetails().stream()
                 .mapToDouble(detail -> detail.getPrice().doubleValue() * detail.getQuantity())
@@ -526,6 +527,16 @@ public class BillServiceImpl implements BillService {
         bill.setBillDetailList(billDetailList);
         this.cartRepository.deleteById(cart.getId());
         this.billRepository.save(bill);
+
+        try {
+            if (bill.getEmail() != null) {
+                this.emailService.sendEmail(bill.getEmail(), "Thông tin mua hàng online", this.emailService.generateHtmlContentBillForOnlineUser(bill));
+            } else {
+                System.out.println("Email null no send");
+            }
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -725,6 +736,7 @@ public class BillServiceImpl implements BillService {
         bill.setUser(loggedUser);
         bill.setType(BillType.ONLINE);
         bill.setStatus(BillStatus.CHO_XAC_NHAN);
+        bill.setEmail(loggedUser.getEmail());
 
         double totalPrice = request.getQuantity() * productDetailRequest.getPrice().doubleValue();
         bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
@@ -775,6 +787,17 @@ public class BillServiceImpl implements BillService {
 
         // Lưu hóa đơn đã cập nhật
         this.billRepository.save(lastestBill); // Không tạo một bill mới, chỉ cập nhật hóa đơn hiện tại
+
+        try {
+            if (lastestBill.getEmail() != null) {
+                this.emailService.sendEmail(lastestBill.getEmail(), "Thông tin mua hàng online", this.emailService.generateHtmlContentBillForOnlineUser(lastestBill));
+            } else {
+                System.out.println("Email null no send");
+            }
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
