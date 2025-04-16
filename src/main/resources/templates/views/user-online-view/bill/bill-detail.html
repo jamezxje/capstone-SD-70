@@ -39,9 +39,9 @@
                 <tr th:if="${#lists.isEmpty(billDetailResponseList)}">
                   <td colspan="10" class="text-center pt-5"><h3>KHÔNG TÌM THẤY DỮ LIỆU</h3></td>
                 </tr>
-                <tr class="bill__row border-bottom line1 bill-flex border-top"
+                <tr class="cart__row border-bottom line1 bill-flex border-top"
                     th:each="bill: ${billDetailResponseList}">
-                  <td class="bill__image-wrapper bill-flex-item">
+                  <td class="cart__image-wrapper cart-flex-item">
                     <input type="text" hidden th:value="${bill.productDetailId}" class="productDetailId">
                     <input type="text" hidden th:value="${bill.id}" class="billDetailId">
                     <a th:href="@{/shop/{id}(id= ${bill.productDetailId})}">
@@ -49,21 +49,21 @@
                            alt="Elastic Waist Dress - Navy / Small">
                     </a>
                   </td>
-                  <td class="bill__meta small--text-left bill-flex-item">
+                  <td class="cart__meta small--text-left bill-flex-item">
                     <div class="list-view-item__title">
                       <a th:href="@{/shop/{id}(id= ${bill.productDetailId})}" th:text="${bill.productName}">Elastic
                         Waist Dress</a>
                     </div>
-                    <div class="bill__meta-text">
+                    <div class="cart__meta-text">
                       Color: [[${bill.colorName}]]<br>Size: [[${bill.sizeName}]]<br>
                     </div>
                   </td>
-                  <td class="bill__price-wrapper bill-flex-item">
+                  <td class="cart__price-wrapper cart-flex-item">
                     <span class="money"
                           th:text="${#numbers.formatDecimal(bill.price, 0, 'POINT', 0, 'POINT')} + ' VND'">$735.00</span>
                   </td>
-                  <td class="bill__update-wrapper bill-flex-item text-right">
-                    <div class="bill__qty text-center">
+                  <td class="cart__update-wrapper cart-flex-item text-right">
+                    <div class="cart__qty text-center">
                       
                         <span th:text="${bill.quantity}">
                         </span>
@@ -81,7 +81,7 @@
                 <tfoot>
                 <tr>
                   <td colspan="3" class="text-left">
-                    <a th:href="@{/shop}" class="btn btn-secondary btn--small bill-continue">Tiếp tục mua hàng</a>
+                    <a th:href="@{/shop}" class="btn btn-secondary btn--small cart-continue">Tiếp tục mua hàng</a>
                   </td>
                 </tr>
                 </tfoot>
