@@ -16,6 +16,9 @@
   <!-- Main Style CSS -->
   <link rel="stylesheet" th:href="@{/assets/user-online/css/style.css}">
   <link rel="stylesheet" th:href="@{/assets/user-online/css/responsive.css}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.min.css"
+        crossorigin="anonymous">
   <th:block th:replace="${cssResources} ?: ~{}"></th:block>
 </head>
 <body class="template-index belle template-index-belle">
@@ -60,6 +63,10 @@
   <script th:src="@{/assets/user-online/js/popper.min.js}"></script>
   <script th:src="@{/assets/user-online/js/lazysizes.js}"></script>
   <script th:src="@{/assets/user-online/js/main.js}"></script>
+  <script th:inline="javascript" th:src="@{/assets/admin-dashboard/js/global.js}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+          crossorigin="anonymous"></script>
   <th:block th:replace="${jsResources} ?: ~{}"></th:block>
 
 </div>

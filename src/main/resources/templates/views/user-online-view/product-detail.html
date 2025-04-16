@@ -955,7 +955,58 @@
     $(document).ready(function () {
       // Xử lý sự kiện submit cho form
       $('#product_form_10508262282').on('submit', function (event) {
-        validateAndShowPopup(event);  // Gọi hàm validate và hiển thị popup
+        event.preventDefault(); // Ngăn chặn hành động submit form mặc định
+        
+        // Kiểm tra nếu người dùng chưa đăng nhập
+        if (loggedUserEmail == null) {
+          alert("Vui lòng đăng nhập để tiếp tục");
+          return;
+        }
+        
+        // Validate các giá trị trước khi gửi
+        let selectedSize = $('input[name="sizeId"]:checked').val();
+        let selectedColor = $('input[name="colorId"]:checked').val();
+        let quantity = $('#Quantity').val();
+        
+        // Kiểm tra tính hợp lệ của các giá trị đã chọn
+        if (selectedColor === undefined) {
+          alert("Vui lòng chọn màu sắc");
+          return;
+        }
+        if (selectedSize === undefined) {
+          alert("Vui lòng chọn size");
+          return;
+        }
+        
+        // Dữ liệu cần gửi
+        let formData = {
+          productId: $('input[name="productId"]').val(),
+          sizeId: selectedSize,
+          colorId: selectedColor,
+          quantity: quantity
+        };
+        
+        console.log("form data add to cart: ", formData);
+        
+        // Gửi dữ liệu đến API
+        $.ajax({
+          url: '/cart/api/add',  // Đường dẫn đến API
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(formData),  // Chuyển đổi dữ liệu thành JSON
+          success: function (response) {
+            toastr.success("Sản phẩm đã được thêm vào giỏ hàng!", "Thành công");
+            // Bỏ chọn tất cả các size và color
+            $('input[name="sizeId"]:checked').prop('checked', false);
+            $('input[name="colorId"]:checked').prop('checked', false);
+            
+            // Đặt lại quantity về 1
+            $('#Quantity').val(1);
+          },
+          error: function (xhr, status, error) {
+            toastr.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng: " + error, "Lỗi");
+          }
+        });
       });
     });
   </script>
@@ -1078,10 +1129,10 @@
       let selectedColor = $('input[name="colorId"]:checked').val();
 // Log the email of the logged-in user
       // Check if any size is selected or any color is selected
-      if (selectedSize === undefined) {
-        popupMessage = "Vui lòng chọn size";
-      } else if (selectedColor === undefined) {
+      if (selectedColor === undefined) {
         popupMessage = "Vui lòng chọn màu sắc";
+      } else if (selectedSize === undefined) {
+        popupMessage = "Vui lòng chọn size";
       }
       
       // Check if the user is logged in
@@ -1107,22 +1158,25 @@
         
         // If user is not logged in, add login and register buttons
         if (loggedUserEmail == null) {
-          var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Đăng nhập</a>');
-          var registerButton = $('<button id="registerButton" class="btn">Đăng kí</button>');
-          
-          // Append the buttons to the popup
-          $('#popup-container').append(loginButton);
-          $('#popup-container').append(registerButton);
-          
-          // Set the action for the login button (redirect to login page)
-          loginButton.on('click', function () {
-            window.location.href = "/login";  // Replace with your login page URL
-          });
-          
-          // Set the action for the register button (redirect to register page)
-          registerButton.on('click', function () {
-            window.location.href = "/register";  // Replace with your register page URL
-          });
+          // Only add login and register buttons if they are not already in the popup
+          if ($('#popup-container #loginButton').length === 0 && $('#popup-container #registerButton').length === 0) {
+            var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Đăng nhập</a>');
+            var registerButton = $('<button id="registerButton" class="btn">Đăng kí</button>');
+            
+            // Append the buttons to the popup
+            $('#popup-container').append(loginButton);
+            $('#popup-container').append(registerButton);
+            
+            // Set the action for the login button (redirect to login page)
+            loginButton.on('click', function () {
+              window.location.href = "/login";  // Replace with your login page URL
+            });
+            
+            // Set the action for the register button (redirect to register page)
+            registerButton.on('click', function () {
+              window.location.href = "/register";  // Replace with your register page URL
+            });
+          }
         }
         
         // Close popup when clicking on close button
