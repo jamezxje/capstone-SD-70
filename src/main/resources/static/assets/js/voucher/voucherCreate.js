@@ -27,7 +27,7 @@
          let numericValue = valueInput.value.replace(/\D/g, ''); // Loại bỏ tất cả ký tự không phải số
 
   // Kiểm tra nếu giá trị không phải là một số hợp lệ
-        if (!numericValue || isNaN(numericValue) || parseInt(numericValue) <= 10000 || parseInt(numericValue) > 100000000) {
+        if (!numericValue || isNaN(numericValue) || parseInt(numericValue) <= 10000 || parseInt(numericValue) > 10000000) {
            valueInput.classList.add("is-invalid");
            isValid = false;
         } else {
@@ -72,6 +72,15 @@
       } else {
        minimumBillInput.classList.remove("is-invalid");
       }
+
+            if(parseInt(numericValue) > parseInt(minimumBillValue)){
+//             minimumBillInput.classList.add("is-invalid");
+               valueInput.classList.add("is-invalid");
+                isValid = false;
+             } else {
+//              minimumBillInput.classList.remove("is-invalid");
+                valueInput.classList.remove("is-invalid");
+             }
 
 
         // Ngăn chặn gửi form nếu không hợp lệ

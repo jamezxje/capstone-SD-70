@@ -16,18 +16,16 @@
 
 
 form {
-
   padding: 0;
-  width: 80%;
-  padding-left: 120px;
+  width: 90%;
+  margin-left: 60px;
+  margin-top: 10px;
 
 }
 
 /* Cải thiện các nhóm form */
 .form-group {
   width: 100%;
-  display: flex;
-
 
 }
 
@@ -36,12 +34,13 @@ form {
   font-weight: 500;
   color: #333;
   width: 200px;
-  text-align: right;
   margin-top: 10px;
-margin-right: 5px;
+
 
 }
-
+.justify-content-end{
+  justify-content: end;
+}
 /* Thiết kế cho các input và select trong form */
 .form-control {
   border: 1px solid #ccc;
@@ -59,16 +58,14 @@ margin-right: 5px;
 .btn-search {
   background-color: green;
   color: white;
-  padding: 10px 30px; /* Giảm padding để nút nhỏ hơn */
+  padding: 10px 25px; /* Giảm padding để nút nhỏ hơn */
   border-radius: 5px;
   border: none;
   cursor: pointer;
   font-size: 1.0rem; /* Giảm kích thước chữ */
   transition: background-color 0.3s ease, transform 0.2s ease;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 130px;
+
 }
 
 

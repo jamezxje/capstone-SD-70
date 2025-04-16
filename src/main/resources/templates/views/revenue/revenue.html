@@ -63,21 +63,21 @@
               <div class="col-md-3">
                 <div class="card text-white bg-success shadow-sm text-center p-3">
                   <span class="fs-4 fw-bold" th:text="${totalProduct}"></span>
-                  <p class="mb-0">Tổng sản phẩm (Tổng tất cả các đơn)</p>
+                  <p class="mb-0">Tổng sản phẩm đã bán (Cửa hàng)</p>
                 </div>
               </div>
 
               <div class="col-md-3">
                 <div class="card text-white bg-warning shadow-sm text-center p-3">
                   <p class="fs-4 fw-bold" th:text="${totalProductRefund}"></p>
-                  <p class="mb-0">Trả hàng (Tổng tất cả các đơn)</p>
+                  <p class="mb-0">Tổng các đơn trả hàng (Cửa hàng)</p>
                 </div>
               </div>
 
               <div class="col-md-3">
                 <div class="card text-white bg-danger shadow-sm text-center p-3">
                   <p class="fs-4 fw-bold" th:text="${totalProductCandel}"></p>
-                  <p class="mb-0">Hủy hàng (Tổng tất cả các đơn)</p>
+                  <p class="mb-0">Tổng các đơn hủy hàng (Cửa hàng)</p>
                 </div>
               </div>
             </div>
@@ -189,53 +189,105 @@
   </div>
 </th:block>
 <th:block id="th-js">
-  <script>
-    const totalProductToday = [[${totalProductToday}]];
-    const totalRevenueToday = [[${totalRevenueToday}]];
 
-    const xValues = ["Sản phẩm", "Doanh thu"];
-    const yValues = [totalProductToday, totalRevenueToday];
-    const barColors = ["red", "blue"];
+<!--    const totalProductToday = [[${totalProductToday}]];-->
+<!--    const totalRevenueToday = [[${totalRevenueToday}]];-->
+
+<!--    const xValues = ["Sản phẩm", "Doanh thu"];-->
+<!--    const yValues = [totalProductToday, totalRevenueToday];-->
+<!--    const barColors = ["red", "blue"];-->
+
+<!--    new Chart("myChart", {-->
+<!--  type: "bar",-->
+<!--  data: {-->
+<!--    labels: ["Sản phẩm", "Doanh thu"],-->
+<!--    datasets: [{-->
+<!--      label: "Sản phẩm bán",-->
+<!--      backgroundColor: "red",-->
+<!--      data: [totalProductToday, 0], // Chỉ cho sản phẩm hiển thị trên trục Y1-->
+<!--      yAxisID: "y-axis-1"-->
+<!--    },-->
+<!--    {-->
+<!--      label: "Doanh thu",-->
+<!--      backgroundColor: "blue",-->
+<!--      data: [0, totalRevenueToday], // Chỉ cho doanh thu hiển thị trên trục Y2-->
+<!--      yAxisID: "y-axis-2"-->
+<!--    }]-->
+<!--  },-->
+<!--  options: {-->
+<!--    scales: {-->
+<!--      yAxes: [{-->
+<!--        id: "y-axis-1",-->
+<!--        type: "linear",-->
+<!--        position: "left",-->
+<!--        ticks: {-->
+<!--          beginAtZero: true-->
+<!--        }-->
+<!--      },-->
+<!--      {-->
+<!--        id: "y-axis-2",-->
+<!--        type: "linear",-->
+<!--        position: "right",-->
+<!--        ticks: {-->
+<!--          beginAtZero: true-->
+<!--        }-->
+<!--      }]-->
+<!--    }-->
+<!--  }-->
+<!--});-->
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    const labels = [
+        /*[# th:each="entry, stat : ${bestSellingProductsToday}"]*/
+            '[[${entry.key.product.name}]]'/*[(${stat.last} ? '' : ',')]*/
+        /*[/]*/
+    ];
+
+    const data = [
+        /*[# th:each="entry, stat : ${bestSellingProductsToday}"]*/
+            [[${entry.value}]]/*[(${stat.last} ? '' : ',')]*/
+        /*[/]*/
+    ];
 
     new Chart("myChart", {
-  type: "bar",
-  data: {
-    labels: ["Sản phẩm", "Doanh thu"],
-    datasets: [{
-      label: "Sản phẩm bán",
-      backgroundColor: "red",
-      data: [totalProductToday, 0], // Chỉ cho sản phẩm hiển thị trên trục Y1
-      yAxisID: "y-axis-1"
-    },
-    {
-      label: "Doanh thu",
-      backgroundColor: "blue",
-      data: [0, totalRevenueToday], // Chỉ cho doanh thu hiển thị trên trục Y2
-      yAxisID: "y-axis-2"
-    }]
-  },
-  options: {
-    scales: {
-      yAxes: [{
-        id: "y-axis-1",
-        type: "linear",
-        position: "left",
-        ticks: {
-          beginAtZero: true
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Top sản phẩm bán chạy",
+                backgroundColor: ["red", "blue", "green", "yellow", "orange"],
+                borderColor: "#ccc",
+                borderWidth: 1,
+                data: data
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + ' sản phẩm';
+                        }
+                    }
+                }
+            }
         }
-      },
-      {
-        id: "y-axis-2",
-        type: "linear",
-        position: "right",
-        ticks: {
-          beginAtZero: true
-        }
-      }]
-    }
-  }
-});
-
+    });
+/*]]>*/
   </script>
 
 </th:block>

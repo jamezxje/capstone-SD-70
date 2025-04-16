@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/dashboard/product-management/revenue")
@@ -33,6 +34,7 @@ public class RevenueController {
         model.addAttribute("bestSellingProducts", revenueService.getBestSellingProduct());
         model.addAttribute("totalProductCandel", revenueService.totalProductCanel());
         model.addAttribute("totalProductCandelToday", revenueService.totalProductCanelToday());
+        model.addAttribute("bestSellingProductsToday", revenueService.getBestSellingProductToday());
         String timePeriod = "Ngày hôm nay";
         model.addAttribute("timePeriod", timePeriod);
 
@@ -51,6 +53,7 @@ public class RevenueController {
         Integer totalProducts = 0;
         Integer refundProduct = 0;
         Integer totalProductCanel = 0;
+        List<Map.Entry<ProductDetail, Integer>> bestSaleProduct = null;
         String timePeriod = "";
 
         log.info("(searchRevenue)"+ year);
@@ -60,6 +63,7 @@ public class RevenueController {
             totalProducts = revenueService.totalProductDate(date);
             refundProduct = revenueService.totalProductRefundDate(date);
             totalProductCanel = revenueService.totalProductCanelDate(date);
+            bestSaleProduct = revenueService.getBestSellingProductDate(date);
             timePeriod = "Ngày " + date;
 
 
@@ -69,6 +73,7 @@ public class RevenueController {
             revenue = revenueService.totalRevenueMonthAndYear(month, yearM);
             totalProducts = revenueService.totalProductMonthAndYear(month, yearM);
             refundProduct = revenueService.totalProductRefundMonthAndYear(month, yearM);
+            bestSaleProduct = revenueService.getBestSellingProductMonthAndYear(month, yearM);
             timePeriod = "Tháng " + month +"-"+ yearM;
 
 
@@ -77,6 +82,7 @@ public class RevenueController {
             totalProducts = revenueService.totalProductYear(year);
             refundProduct = revenueService.totalProductRefundYear(year);
             totalProductCanel = revenueService.totalProductCanelYear(year);
+            bestSaleProduct = revenueService.getBestSellingProductYears(year);
             timePeriod = "Năm " + year;
         }
 
@@ -88,6 +94,7 @@ public class RevenueController {
         model.addAttribute("totalProductToday", totalProducts);
         model.addAttribute("totalProductRefundToday", refundProduct);
         model.addAttribute("totalProductCandelToday", totalProductCanel);
+        model.addAttribute("bestSellingProductsToday", bestSaleProduct);
         model.addAttribute("totalProductRefund", revenueService.totalProductRefund());
         model.addAttribute("totalRevenue", revenueService.totalRevenue());
         model.addAttribute("totalProduct", revenueService.totalProduct());
