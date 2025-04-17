@@ -16,13 +16,11 @@
     <!-- Page Title -->
     <div class="page section-header text-center mt-5">
       <div class="page-title">
-        <div class="wrapper">
-          <h1 class="page-width">Thông tin cá nhân</h1>
-        </div>
+        <div class="wrapper"><h1 class="page-width">Thông tin cá nhân</h1></div>
       </div>
     </div>
     <!-- End Page Title -->
-    <div class="container mt-4">
+    <div class="container">
       <div class="row billing-fields">
         <!-- Sidebar Tabs -->
         <div class="col-md-2 mb-4 wrapper">
@@ -31,14 +29,14 @@
               <img th:src="${loggedUser.avatar}" class="rounded-full mx-auto mb-2" style="width: 80px; height: 80px; object-fit: cover;" />
               <p class="font-bold" th:text="${loggedUser.fullName}"></p>
             </div>
-            <button onclick="showTab('profile', this)" class="tab-btn w-100 text-start">
-              <i ></i> Thông tin hồ sơ của tôi
+            <button class="tab-btn w-100 text-start">
+              <i ></i><a th:href="@{/online/customer/profile}">Hồ sơ của tôi</a>
             </button>
-            <button onclick="showTab('password', this)" class="tab-btn w-100 text-start">
+            <button class="tab-btn w-100 text-start">
               <i></i> Đổi mật khẩu
             </button>
-            <button onclick="showTab('orders', this)" class="tab-btn w-100 text-start">
-              <i></i> Lịch sử đơn hàng
+            <button class="tab-btn w-100 text-start">
+              <i></i><a th:href="@{/bill}">Lịch sử đơn hàng</a>
             </button>
             <button>
               <i></i><a th:href="@{/auth/logout}">Đăng xuất</a>
@@ -51,7 +49,7 @@
           <div class="create-ac-content bg-light-gray padding-20px-all">
             <form>
               <!-- Hồ sơ -->
-              <fieldset id="profile" class="tab">
+              <fieldset>
                 <h2 class="login-title mb-3">Thông tin của bạn</h2>
                 <div class="row">
                   <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
@@ -72,12 +70,12 @@
 
                 <div class="row">
                   <!-- Address label and input field -->
-                  <div class="form-group col-md-10 col-lg-10 col-xl-10">
+                  <div class="form-group col-md-9 col-lg-9 col-xl-9">
                     <h2>Danh sách địa chỉ<span class="required-f"></span></h2>
                   </div>
 
                   <!-- Add Address Button aligned with the label -->
-                  <div class="form-group col-md-2 col-lg-2 col-xl-2 d-flex align-items-end">
+                  <div class="form-group col-md-3 col-lg-3 col-xl-3 d-flex align-items-end">
                     <button type="button" class="btn btn-primary w-100" data-toggle="modal"
                             data-target="#createAddressModal">Thêm địa chỉ mới
                     </button>
@@ -145,29 +143,13 @@
                   </div>
                 </div>
               </fieldset>
-
-              <!-- Đổi mật khẩu -->
-              <fieldset id="password" class="tab hidden">
-                <h2 class="text-2xl font-semibold mb-4">Đổi mật khẩu</h2>
-                <form class="space-y-4 max-w-md">
-                  <input type="password" placeholder="Mật khẩu cũ" class="w-full border rounded p-2">
-                  <input type="password" placeholder="Mật khẩu mới" class="w-full border rounded p-2">
-                  <input type="password" placeholder="Nhập lại mật khẩu mới" class="w-full border rounded p-2">
-                  <button class="bg-blue-600 text-white px-4 py-2 rounded">Cập nhật</button>
-                </form>
-              </fieldset>
-
-              <!-- Đơn mua -->
-              <fieldset id="orders" class="tab hidden">
-                <h2 class="text-2xl font-semibold mb-4">Đơn mua</h2>
-                <p>Chưa có đơn hàng nào.</p>
-              </fieldset>
             </form>
           </div>
         </div>
       </div>
     </div>
   </div>
+
   <div class="modal fade" id="createAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px;">
       <div class="modal-content">
@@ -314,157 +296,6 @@
     </div>
   </div>
 
-<!--  <div class="modal fade bd-example-modal-xl" id="createAddressModal" tabindex="-1" role="dialog"-->
-<!--       aria-hidden="true">-->
-<!--    <div class="modal-dialog modal-xl modal-dialog-centered modal-fullscreen" role="document"-->
-<!--         style="max-width: 50% !important;">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title">Thêm địa chỉ</h5>-->
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--            <span>&times;</span>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <div>-->
-<!--            <div class="row">-->
-<!--              <div class="col-lg-12">-->
-<!--                <div class="card">-->
-<!--                  <div class="card-body">-->
-<!--                    <div class="form-validation">-->
-<!--                      <form action="#" id="createAddressForm">-->
-<!--                        <div class="row">-->
-<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">-->
-<!--                            <label>Họ và Tên</label>-->
-<!--                            <div>-->
-<!--                              <input type="text" placeholder="Nhập họ và tên..." class="form-control"-->
-<!--                                     id="create_address_fullname">-->
-<!--                              <span id="fullName-error" class="error-message text-danger"></span>-->
-<!--                            </div>-->
-<!--                          </div>-->
-<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required mr-md-4">-->
-<!--                            <label>Số điện thoại</label>-->
-<!--                            <div>-->
-<!--                              <input type="text" placeholder="Nhập số điện thoại..." class="form-control"-->
-<!--                                     id="create_address_phone">-->
-<!--                              <span id="phoneNumber-error" class="error-message text-danger"></span>-->
-<!--                            </div>-->
-<!--                          </div>-->
-<!--                          <br>-->
-<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">-->
-<!--                            <label>Tỉnh / Thành Phố</label>-->
-<!--                            <select id="create_address_province" class="address-select" data-default="">-->
-<!--                            </select>-->
-<!--                            <span id="province-error" class="error-message text-danger"></span>-->
-<!--                          </div>-->
-
-<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">-->
-<!--                            <label>Quận / Huyện</label>-->
-<!--                            <select id="create_address_district" class="address-select" data-default="">-->
-<!--                            </select>-->
-<!--                            <span id="district-error" class="error-message text-danger"></span>-->
-<!--                          </div>-->
-
-<!--                          <div class="form-group col-md-4 col-lg-4 col-xl-4 required">-->
-<!--                            <label>Phường / Xã</label>-->
-<!--                            <select id="create_address_ward" class="address-select" data-default="">-->
-<!--                            </select>-->
-<!--                            <span id="ward-error" class="error-message text-danger"></span>-->
-<!--                          </div>-->
-<!--                        </div>-->
-<!--                        <div class="row">-->
-<!--                          <div class="form-group col-md-12 col-lg-12 col-xl-12 required">-->
-<!--                            <label>Địa chỉ cụ thể <span class="required-f">*</span></label>-->
-<!--                            <textarea class="form-control resize-both" rows="3"-->
-<!--                                      id="create_address_detail"></textarea>-->
-<!--                            <span id="line-error" class="error-message text-danger"></span>-->
-<!--                          </div>-->
-<!--                        </div>-->
-<!--                        <div class="modal-footer">-->
-<!--                          <button type="button" class="btn btn-danger light"-->
-<!--                                  data-dismiss="modal">Close-->
-<!--                          </button>-->
-<!--                          <button type="submit" class="btn btn-primary">Save-->
-<!--                          </button>-->
-<!--                        </div>-->
-<!--                      </form>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--  <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-hidden="true">-->
-<!--    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title">Edit Address</h5>-->
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--            <span>&times;</span>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <form id="editAddressForm">-->
-<!--            <div class="row">-->
-<!--              <div class="form-group col-md-4">-->
-<!--                <label>Họ và Tên</label>-->
-<!--                <div>-->
-<!--                  <input type="text" placeholder="Nhập họ và tên..." class="form-control" id="edit_address_fullname">-->
-<!--                  <span id="edit-fullName-error" class="error-message text-danger"></span>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="form-group col-md-4 mr-md-4">-->
-<!--                <label>Số điện thoại</label>-->
-<!--                <div>-->
-<!--                  <input type="text" placeholder="Nhập số điện thoại..." class="form-control" id="edit_address_phone">-->
-<!--                  <span id="edit-phoneNumber-error" class="error-message text-danger"></span>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="form-group col-md-4">-->
-<!--                <label>Province</label>-->
-<!--                <select id="edit_address_province" class="address-select">-->
-<!--                  &lt;!&ndash; Dynamically populated provinces &ndash;&gt;-->
-<!--                </select>-->
-<!--                <span id="edit-province-error" class="error-message text-danger"></span>-->
-<!--              </div>-->
-<!--              <div class="form-group col-md-4">-->
-<!--                <label for="edit_address_district">District</label>-->
-<!--                <select id="edit_address_district" class="address-select">-->
-<!--                  &lt;!&ndash; Dynamically populated districts &ndash;&gt;-->
-<!--                </select>-->
-<!--                <span id="edit-district-error" class="error-message text-danger"></span>-->
-<!--              </div>-->
-<!--              <div class="form-group col-md-4">-->
-<!--                <label for="edit_address_ward">Ward</label>-->
-<!--                <select id="edit_address_ward" class="address-select">-->
-<!--                  &lt;!&ndash; Dynamically populated wards &ndash;&gt;-->
-<!--                </select>-->
-<!--                <span id="edit-ward-error" class="error-message text-danger"></span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="row">-->
-<!--              <div class="form-group col-md-12">-->
-<!--                <label for="edit_address_detail">Detail Address</label>-->
-<!--                <textarea id="edit_address_detail" name="detailAddress" class="form-control"></textarea>-->
-<!--                <span id="edit-line-error" class="error-message text-danger"></span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <input type="hidden" id="edit_address_id" name="id"> &lt;!&ndash; Hidden field for address ID &ndash;&gt;-->
-<!--            <div class="modal-footer">-->
-<!--              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-<!--              <button type="submit" class="btn btn-primary">Save changes</button>-->
-<!--            </div>-->
-<!--          </form>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
   <div class="modal fade" id="deleteAddressModal" tabindex="-1" role="dialog" aria-hidden="true" >
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 500px;">
       <div class="modal-content">
@@ -510,31 +341,6 @@
   </div>
 
   <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-
-<!--  chuyển giao diện-->
-  <script>
-    function showTab(tabId, el) {
-      // Ẩn tất cả tab
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.add('hidden');
-      });
-
-      // Hiện tab đang chọn
-      document.getElementById(tabId).classList.remove('hidden');
-
-      // Cập nhật style của các tab button
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('text-blue-600', 'font-bold');
-      });
-      el.classList.add('text-blue-600', 'font-bold');
-    }
-
-    // Hiển thị mặc định tab Hồ sơ khi trang tải
-    window.onload = () => {
-      showTab('profile', document.querySelector('.tab-btn'));
-    }
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
 
 </th:block>
 </body>

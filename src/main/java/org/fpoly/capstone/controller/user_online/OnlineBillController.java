@@ -113,6 +113,9 @@ public class OnlineBillController {
     @GetMapping(path = "")
     public String onOpenBillView(Model model) {
         User loggedUser = this.userService.getUserFromContext();
+        if (loggedUser == null) {
+            return "views/auth/login";
+        }
         List<Bill> billList = this.billService.findBillsByCustomerId(loggedUser.getId());
         model.addAttribute("billList", billList);
         return "/views/user-online-view/bill/bill-management";
