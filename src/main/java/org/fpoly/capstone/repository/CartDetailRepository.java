@@ -22,6 +22,6 @@ public interface CartDetailRepository extends JpaRepository<CartDetail, Long> {
             "cd.productDetail.price, " +
             "cd.quantity) " +
             "FROM CartDetail cd " +
-            "WHERE cd.cart.user.id = :userId")
+            "WHERE cd.cart.user.id = :userId ORDER BY cd.createDate DESC")
     List<CartDetailResponse> findCartDetailByUserId(@Param("userId") Long userId);
 }

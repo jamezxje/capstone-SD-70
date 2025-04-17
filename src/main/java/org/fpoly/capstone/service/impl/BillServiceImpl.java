@@ -42,6 +42,7 @@ import org.fpoly.capstone.repository.BillDetailRepository;
 import org.fpoly.capstone.repository.BillHistoryRepository;
 import org.fpoly.capstone.repository.BillRepository;
 import org.fpoly.capstone.repository.BrandRepository;
+import org.fpoly.capstone.repository.CartDetailRepository;
 import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.repository.CategoryRepository;
 import org.fpoly.capstone.repository.ColorRepository;
@@ -59,6 +60,7 @@ import org.fpoly.capstone.service.ProductDetailService;
 import org.fpoly.capstone.service.UserService;
 import org.fpoly.capstone.service.VoucherService;
 import org.fpoly.capstone.service.payload.bill.BuyNowBillRequest;
+import org.fpoly.capstone.service.payload.bill.CreateBillDetailFromCartRequest;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
 import org.fpoly.capstone.utils.general.GeneralStringCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +130,7 @@ public class BillServiceImpl implements BillService {
     private final CartRepository cartRepository;
     private final UserService userService;
     private final ProductDetailService productDetailService;
+    private final CartDetailRepository cartDetailRepository;
 
     @Override
     public CreateBillRequest create(CreateBillRequest createBillDTO) {
@@ -538,6 +541,61 @@ public class BillServiceImpl implements BillService {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public void saveToBillForOnlineUserSelectFromCart(List<CreateBillDetailFromCartRequest> createBillDetailFromCartRequests, CreateBillRequest request) {
+        User loggedUser = this.userService.getUserFromContext();
+        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+
+        Bill bill = new Bill();
+
+        User customer = cart.getUser();
+        bill.setUser(customer);
+        bill.setType(BillType.ONLINE);
+        bill.setStatus(BillStatus.CHO_XAC_NHAN);
+        bill.setCode(GeneralStringCode.generateCodeAdmin());
+        bill.setEmail(customer.getEmail());
+
+        List<BillDetail> billDetailList = new ArrayList<>();
+        for (CreateBillDetailFromCartRequest createBillDetailFromCartRequest : createBillDetailFromCartRequests) {
+            BillDetail billDetail = new BillDetail();
+            billDetail.setBill(bill);
+            CartDetail cartDetail = this.cartDetailRepository.findById(createBillDetailFromCartRequest.getCartDetailId()).orElseThrow(() -> new EntityNotFoundException("Can not found cart detail with id: "));
+            billDetail.setProductDetail(cartDetail.getProductDetail());
+            billDetail.setQuantity(cartDetail.getQuantity());
+            billDetail.setPrice(cartDetail.getPrice());
+            this.billDetailRepository.save(billDetail);
+            billDetailList.add(billDetail);
+        }
+
+        BigDecimal moneyShip = request.getMoneyShip();
+        Date recieveDate = request.getReceiveDate();
+        BigDecimal grandTotal = request.getGrandTotal();
+        String address = request.getAddress();
+        String note = request.getNote();
+        PaymentMethod paymentMethod = request.getPaymentMethod();
+
+        bill.setTotalMoney(grandTotal);
+        bill.setMoneyShip(moneyShip);
+        bill.setReceiveDate(recieveDate);
+        bill.setAddress(address);
+        bill.setNote(note);
+        bill.setMethod(paymentMethod);
+
+        bill.setBillDetailList(billDetailList);
+        this.cartRepository.deleteById(cart.getId());
+        this.billRepository.save(bill);
+
+        try {
+            if (bill.getEmail() != null) {
+                this.emailService.sendEmail(bill.getEmail(), "Thông tin mua hàng online", this.emailService.generateHtmlContentBillForOnlineUser(bill));
+            } else {
+                System.out.println("Email null no send");
+            }
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

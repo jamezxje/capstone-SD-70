@@ -18,6 +18,7 @@ import org.fpoly.capstone.entity.Voucher;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.BillType;
 import org.fpoly.capstone.service.payload.bill.BuyNowBillRequest;
+import org.fpoly.capstone.service.payload.bill.CreateBillDetailFromCartRequest;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -83,6 +84,8 @@ public interface BillService {
     Bill findById(Long id);
 
     void saveToBillForOnlineUser(CreateBillRequest request);
+
+    void saveToBillForOnlineUserSelectFromCart(List<CreateBillDetailFromCartRequest> createBillDetailFromCartRequests, CreateBillRequest request);
 
     void buyNowForOnlineUser(BuyNowBillRequest request);
 
