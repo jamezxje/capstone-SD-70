@@ -167,17 +167,12 @@
                 </div>
                 <div class="cart__shipping">Phí ship sẽ được cộng khi thanh toán</div>
                 <p class="cart_tearm">
-                  <!--                  <label>-->
-                  <!--                    <input type="checkbox" name="tearm" class="checkbox" value="tearm" required="">-->
-                  <!--                    Tôi đồng ý với các điều khoản và điều kiện-->
-                  <!--                  </label>-->
                 </p>
                 <a th:href="@{/bill/checkout}" type="submit" name="checkout" id="cartCheckout"
                    class="btn btn--small-wide checkout"
                    value="Proceed To Checkout" disabled="disabled">Thanh toán
                 </a>
                 <div class="paymnet-img"><img src="assets/user-online/images/payment-img.jpg" alt="Payment"></div>
-                <!--                <p><a href="#;">Checkout with Multiple Addresses</a></p>-->
               </div>
             
             </div>
@@ -194,7 +189,6 @@
 </body>
 <th:block id="th-js">
   <script th:src="@{/assets/user-online/js/vendor/jquery-3.3.1.min.js}"></script>
-  
   <script>
     $(document).ready(function () {
       // Khi checkbox "Chọn tất cả" được thay đổi
@@ -212,6 +206,55 @@
         
         // Cập nhật trạng thái của checkbox "Chọn tất cả" dựa trên trạng thái của các checkbox trong tbody
         $('#checkAll').prop('checked', allChecked);
+      });
+    });
+  </script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Lắng nghe sự kiện click vào nút thanh toán
+      document.getElementById('cartCheckout').addEventListener('click', function (event) {
+        // Ngừng hành động mặc định của nút thanh toán (chỉ để kiểm tra trước khi thanh toán)
+        event.preventDefault();
+        
+        // Tạo một mảng để lưu các cart detail đã chọn
+        var selectedItems = [];
+        
+        // Duyệt qua tất cả các checkbox trong tbody
+        var checkboxes = document.querySelectorAll('.cart-body .custom-control-input:checked');
+        checkboxes.forEach(function (checkbox) {
+          // Lấy thông tin của cartDetail được chọn
+          var cartDetailId = checkbox.id.split('_')[1]; // Lấy id của cartDetail
+          var productName = checkbox.closest('tr').querySelector('.cart__meta .list-view-item__title a').textContent.trim();
+          var quantity = checkbox.closest('tr').querySelector('.cart__qty-input').value;
+          var price = checkbox.closest('tr').querySelector('.cart__price-wrapper .money').textContent.trim();
+          
+          // Lưu thông tin vào mảng selectedItems
+          selectedItems.push({
+            cartDetailId: cartDetailId,
+            productName: productName,
+            quantity: quantity,
+            price: price
+          });
+        });
+        
+        console.log("Ds san pham: ", selectedItems);
+        
+        // Log ra thông tin của các cartDetail đã chọn
+        if (selectedItems.length > 0) {
+          console.log("Các sản phẩm đã chọn để thanh toán:");
+          selectedItems.forEach(function (item) {
+            console.log("ID: " + item.cartDetailId);
+            console.log("Tên sản phẩm: " + item.productName);
+            console.log("Số lượng: " + item.quantity);
+            console.log("Giá tiền: " + item.price);
+          });
+          
+          // Tiến hành thanh toán ở đây (ví dụ chuyển hướng đến trang thanh toán)
+          // window.location.href = '/bill/checkout';
+        } else {
+          console.log("Chưa có sản phẩm nào được chọn để thanh toán.");
+        }
       });
     });
   
