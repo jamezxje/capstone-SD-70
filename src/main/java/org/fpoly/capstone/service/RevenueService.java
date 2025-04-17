@@ -27,6 +27,8 @@ public interface RevenueService {
 
     Integer totalProductCanelToday();
 
+    List<Map.Entry<ProductDetail, Integer>> getBestSellingProductToday();
+
     BigDecimal totalRevenueDate(LocalDate date);
 
     Integer totalProductDate(LocalDate date);
@@ -34,6 +36,8 @@ public interface RevenueService {
     Integer totalProductRefundDate(LocalDate date);
 
     Integer totalProductCanelDate(LocalDate date);
+
+    List<Map.Entry<ProductDetail, Integer>> getBestSellingProductDate(LocalDate date);
 
     BigDecimal totalRevenueYear(Integer year);
 
@@ -43,11 +47,15 @@ public interface RevenueService {
 
     Integer totalProductCanelYear(Integer year);
 
+    List<Map.Entry<ProductDetail, Integer>> getBestSellingProductYears(Integer year);
+
     BigDecimal totalRevenueMonthAndYear(int month, int year);
 
     Integer totalProductMonthAndYear(int month, int year);
 
     Integer totalProductRefundMonthAndYear(int month, int year);
+
+    List<Map.Entry<ProductDetail, Integer>> getBestSellingProductMonthAndYear(int month, int year);
 
     List<ProductDetail> getBestSellingProducts();
 

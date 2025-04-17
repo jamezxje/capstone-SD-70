@@ -48,19 +48,21 @@ public class BillDetailServiceImpl implements BillDetailService {
 
     private static final Logger LOGGER = Logger.getLogger(BillDetailServiceImpl.class.getName());
 
-    @Override
     public List<BillDetailDTO> getBillDetails(Long billId) {
-        List<Object[]> results = billDetailRepository.getProductByBillId(billId);
-        if (results == null || results.isEmpty()) {
-            LOGGER.warning("Không tìm thấy dữ liệu trong cơ sở dữ liệu cho billId: " + billId);
-            return new ArrayList<>();
-        }
-
+        List<Object[]> results = this.billDetailRepository.getProductByIDBill(billId);
         List<BillDetailDTO> billDetails = new ArrayList<>();
-        for (Object[] row : results) {
-            billDetails.add(new BillDetailDTO(row));
+        for (Object[] result : results) {
+            Long id = (Long) result[0];
+            String name = (String) result[1];
+            BigDecimal price = (BigDecimal) result[2];
+            Integer quantity = (Integer) result[3];
+            String size = (String) result[4];
+            String color = (String) result[5];
+            Long idProductDetail = (Long) result[6];
+            String image = (String) result[7];
+            BillDetailDTO BillDetailDTO = new BillDetailDTO(id, name, price, quantity, size, color, idProductDetail, image);
+            billDetails.add(BillDetailDTO);
         }
-
         return billDetails;
     }
 

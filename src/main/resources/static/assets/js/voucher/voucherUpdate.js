@@ -87,11 +87,20 @@
         statusSelect.classList.add("is-invalid");
     }
 } else {
-    if (statusSelect.value !== "EXPIRED") {
+    if (statusSelect.value !== "EXPIRED" || parseInt(quantityInput.value) <= 0) {
      isValid = false;
         statusSelect.classList.add("is-invalid");
     }
 }
+
+   if(parseInt(numericValue) > parseInt(minimumBillValue)){
+//             minimumBillInput.classList.add("is-invalid");
+               valueInput.classList.add("is-invalid");
+                isValid = false;
+             } else {
+//              minimumBillInput.classList.remove("is-invalid");
+                valueInput.classList.remove("is-invalid");
+             }
 
 
       // Ngăn chặn gửi form nếu không hợp lệ

@@ -107,6 +107,22 @@ public class RevenueServiceImpl implements RevenueService {
     }
 
     @Override
+    public List<Map.Entry<ProductDetail, Integer>> getBestSellingProductToday() {
+        List<BillDetail> billDetails = billDetailService.findByCreateDate(LocalDate.now());
+
+        return billDetails.stream()
+                .filter(detail -> detail.getStatusBill() == BillStatus.THANH_CONG) // Lọc đơn thành công
+                .collect(Collectors.groupingBy(
+                        BillDetail::getProductDetail,
+                        Collectors.summingInt(BillDetail::getQuantity)
+                ))
+                .entrySet().stream()
+                .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
+                .limit(5)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public BigDecimal totalRevenueDate(LocalDate date) {
         List<Bill> totalBill = billService.findByCreateDate(date);
         return totalBill.stream()
@@ -145,6 +161,22 @@ public class RevenueServiceImpl implements RevenueService {
                 .filter(bd -> bd.getStatusBill() == BillStatus.DA_HUY)
                 .mapToInt(BillDetail::getQuantity)
                 .sum();
+    }
+
+    @Override
+    public List<Map.Entry<ProductDetail, Integer>> getBestSellingProductDate(LocalDate date) {
+        List<BillDetail> billDetails = billDetailService.findByCreateDate(date);
+
+        return billDetails.stream()
+                .filter(detail -> detail.getStatusBill() == BillStatus.THANH_CONG) // Lọc đơn thành công
+                .collect(Collectors.groupingBy(
+                        BillDetail::getProductDetail,
+                        Collectors.summingInt(BillDetail::getQuantity)
+                ))
+                .entrySet().stream()
+                .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
+                .limit(5)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -200,6 +232,24 @@ public class RevenueServiceImpl implements RevenueService {
     }
 
     @Override
+    public List<Map.Entry<ProductDetail, Integer>> getBestSellingProductYears(Integer year) {
+        LocalDate startDate = LocalDate.of(year, 1, 1);
+        LocalDate endDate = Year.of(year).atMonth(12).atEndOfMonth();
+        List<BillDetail> billDetails = billDetailService.findByCreateDateBetween(startDate, endDate);
+
+        return billDetails.stream()
+                .filter(detail -> detail.getStatusBill() == BillStatus.THANH_CONG) // Lọc đơn thành công
+                .collect(Collectors.groupingBy(
+                        BillDetail::getProductDetail,
+                        Collectors.summingInt(BillDetail::getQuantity)
+                ))
+                .entrySet().stream()
+                .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
+                .limit(5)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public BigDecimal totalRevenueMonthAndYear(int month, int year) {
         LocalDate startDate = YearMonth.of(year, month).atDay(1);
         LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
@@ -243,6 +293,24 @@ public class RevenueServiceImpl implements RevenueService {
                 .sum();
     }
 
+    @Override
+    public List<Map.Entry<ProductDetail, Integer>> getBestSellingProductMonthAndYear(int month, int year) {
+        LocalDate startDate = YearMonth.of(year, month).atDay(1);
+        LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
+        List<BillDetail> billDetails = billDetailService.findByCreateDateBetween(startDate, endDate);
+
+        return billDetails.stream()
+                .filter(detail -> detail.getStatusBill() == BillStatus.THANH_CONG) // Lọc đơn thành công
+                .collect(Collectors.groupingBy(
+                        BillDetail::getProductDetail,
+                        Collectors.summingInt(BillDetail::getQuantity)
+                ))
+                .entrySet().stream()
+                .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
+                .limit(5)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public List<ProductDetail> getBestSellingProducts() {
@@ -257,7 +325,7 @@ public class RevenueServiceImpl implements RevenueService {
                 .entrySet().stream()
                 .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
                 .map(Map.Entry::getKey)
-                .limit(3)
+                .limit(5)
                 .collect(Collectors.toList());
     }
 

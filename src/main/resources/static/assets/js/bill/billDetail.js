@@ -40,30 +40,52 @@ closeBtnhistory.onclick = function() {
 
 cancelButton.onclick = function () {
     const reason = cancelReason.value.trim();
-    if (reason.length >= 20) {
-        cancelModal.style.display = 'none'
+
+    // Regex: chỉ cho phép chữ cái và khoảng trắng (có dấu cũng được)
+    const isValidChars = /^[\p{L}\s]+$/u.test(reason);
+
+    if (reason.length >= 20 && isValidChars) {
+        cancelModal.style.display = 'none';
         actionDescription = reason;
         cancelReason.value = '';
         cancelBill();
         location.reload();
-    }else{
-        alert("Vui lòng nhập 20 ký tự")
+    } else if (!isValidChars) {
+        showToast("Lý do không được chứa số hoặc ký tự đặc biệt.");
+    } else {
+        showToast("Vui lòng nhập ít nhất 20 ký tự.");
     }
-}
+};
 
-confirmButton.onclick = function() {
+confirmButton.onclick = function () {
     const reason = confirmationReason.value.trim();
-    console.log('Entered reason:', reason);
+    const isValidChars = /^[\p{L}\s]+$/u.test(reason);
 
-    if (reason.length >= 5) {
+    if (reason.length >= 5 && isValidChars) {
         modal.style.display = "none";
         actionDescription = reason;
-        confirmationReason.value = ""
+        confirmationReason.value = "";
         changeStatus();
         location.reload();
+    } else if (!isValidChars) {
+        showToast("Lý do không được chứa số hoặc ký tự đặc biệt.");
     } else {
-        alert("Vui lòng nhập tối thiểu 5 ký tự.");
+        showToast("Vui lòng nhập tối thiểu 5 ký tự.");
     }
+};
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.style.display = "block";
+    toast.style.opacity = "1";
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 500); // chờ hiệu ứng mờ xong mới ẩn
+    }, 3000); // hiện trong 3s
 }
 
 document.getElementById('btn-changeInfor').addEventListener('click' , function () {

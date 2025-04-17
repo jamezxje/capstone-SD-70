@@ -47,23 +47,6 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
     List<BillDetailRequest> findBillDetailByBill(Bill bill);
 
     Long id(Long id);
-    @Query(value = """
-                   SELECT
-            bd.id AS id,
-                    p.name AS name,
-            bd.price AS price,
-             bd.quantity AS quantity,
-             s.name AS size,\s
-             c.name AS color ,
-                                 bd.id_product_detail AS id_product
-              FROM bill_detail bd
-              JOIN product_detail pd ON bd.id_product_detail = pd.id
-              JOIN product p ON pd.id_product = p.id
-            JOIN size s ON pd.id_size = s.id 
-            JOIN color c ON pd.id_color = c.id
-                WHERE bd.id_bill = :id 
-            """, nativeQuery = true)
-    List<Object[]> getProductByBillId(@Param("id") Long billId);
 
     @Query("SELECT bd FROM BillDetail bd WHERE bd.createDate BETWEEN :startOfDay AND :endOfDay")
     List<BillDetail> findByCreateDateBetween(@Param("startOfDay") Date startOfDay, @Param("endOfDay") Date endOfDay);

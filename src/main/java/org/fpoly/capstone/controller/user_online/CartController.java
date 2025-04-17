@@ -39,7 +39,7 @@ public class CartController {
         User loggedUser = this.userService.getUserFromContext();
 
         if (loggedUser == null) {
-            return "/views/user-online-view/auth/login";
+            return "views/auth/login";
         }
 
         List<CartDetailResponse> cartDetailResponseList = this.cartDetailService.findCartDetailByUserId();
@@ -60,7 +60,7 @@ public class CartController {
         User loggedUser = this.userService.getUserFromContext();
 
         if (loggedUser == null) {
-            return "/views/user-online-view/auth/login";
+            return "views/auth/login";
         }
 
         try {

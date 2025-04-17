@@ -41,7 +41,7 @@
                       <label for="value">Số tiền (VND)</label>
                       <input type="text" class="form-control" id="value" name="value" th:value="${formattedValue}" placeholder="Nhập số tiền..." required
                              oninput="formatCurrency(event)">
-                      <div class="invalid-feedback">Số tiền phải lớn hơn 10,000 VNĐ và nhỏ hơn 100,000,000 VNĐ.</div>
+                      <div class="invalid-feedback">Số tiền phải lớn hơn 10,000 VNĐ và nhỏ hơn 10,000,000 VNĐ và số tiền không được lớn hơn hóa đơn tối thiểu.</div>
                     </div>
 
                     <!-- Số lượng -->

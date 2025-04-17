@@ -146,9 +146,11 @@ public class VoucherServiceImpl implements VoucherService {
     private void updateVoucherStatus(Voucher voucher){
         LocalDate currentDate = LocalDate.now();
 
-        if(voucher.getEndDate().toLocalDate().isBefore(currentDate)){
+        if (voucher.getQuantity() == 0) {
             voucher.setStatus(VoucherStatus.EXPIRED);
-        }else if (voucher.getStartDate().toLocalDate().isAfter(currentDate)) {
+        } else if (voucher.getEndDate().toLocalDate().isBefore(currentDate)) {
+            voucher.setStatus(VoucherStatus.EXPIRED);
+        } else if (voucher.getStartDate().toLocalDate().isAfter(currentDate)) {
             voucher.setStatus(VoucherStatus.INACTIVE);
         } else {
             voucher.setStatus(VoucherStatus.ACTIVE);
