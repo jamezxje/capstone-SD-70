@@ -118,6 +118,7 @@ public class OnlineBillController {
         }
         List<Bill> billList = this.billService.findBillsByCustomerId(loggedUser.getId());
         model.addAttribute("billList", billList);
+        model.addAttribute("loggedUser", loggedUser);
         return "/views/user-online-view/bill/bill-management";
     }
 
