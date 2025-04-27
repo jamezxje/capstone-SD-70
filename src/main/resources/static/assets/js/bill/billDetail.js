@@ -3,7 +3,7 @@ const id = url.split('/').pop();
 
 localStorage.setItem('billId', id);
 
-let billId  = localStorage.getItem('billId')
+let billId = localStorage.getItem('billId')
 const modal = document.getElementById("confirmModalStatus");
 const cancelModal = document.getElementById('cancelModalStatus');
 const historyModal = document.getElementById('historyModalStatus');
@@ -19,22 +19,22 @@ const cancelReason = document.getElementById("cancelmationReason");
 const cancelButton = document.getElementById("cancelButton");
 let actionDescription = null;
 
-btn.onclick = function() {
+btn.onclick = function () {
     modal.style.display = "block";
 }
-closeBtn.onclick = function() {
+closeBtn.onclick = function () {
     modal.style.display = "none";
 }
 btnCancel.onclick = function () {
     cancelModal.style.display = 'block';
 }
-closeBtnhuy.onclick = function() {
+closeBtnhuy.onclick = function () {
     cancelModal.style.display = "none";
 }
 btnhistory.onclick = function () {
     historyModal.style.display = 'block';
 }
-closeBtnhistory.onclick = function() {
+closeBtnhistory.onclick = function () {
     historyModal.style.display = "none";
 }
 
@@ -66,12 +66,14 @@ confirmButton.onclick = function () {
         actionDescription = reason;
         confirmationReason.value = "";
         changeStatus();
-        location.reload();
+        // location.reload();
+
     } else if (!isValidChars) {
         showToast("Lý do không được chứa số hoặc ký tự đặc biệt.");
     } else {
         showToast("Vui lòng nhập tối thiểu 5 ký tự.");
     }
+
 };
 
 function showToast(message) {
@@ -88,20 +90,23 @@ function showToast(message) {
     }, 3000); // hiện trong 3s
 }
 
-document.getElementById('btn-changeInfor').addEventListener('click' , function () {
+document.getElementById('btn-changeInfor').addEventListener('click', function () {
     updateInforBill(billId);
     location.reload();
     const modal = document.getElementById("changeAddressModal");
     modal.style.display = "none";
 })
 
-function changeStatus () {
+function changeStatus() {
     const employeeId = 1;
     axios.put(`http://localhost:8080/change-status/${billId}?idEmployee=${employeeId}`, {
         actionDescription: actionDescription
     })
         .then(response => {
             const newStatus = response.data.status;
+              if (newStatus === "XAC_NHAN") {
+                  printBill();
+              }
             console.log("New Status: ", newStatus);
             updateTimelineStatus(newStatus);
             getInforBill(billId)
@@ -111,7 +116,7 @@ function changeStatus () {
         });
 }
 
-function cancelBill () {
+function cancelBill() {
     const employeeId = 1;
     axios.put(`http://localhost:8080/cancel-bill/${billId}?idEmployee=${employeeId}`, {
         actionDescription: actionDescription
@@ -128,7 +133,7 @@ function cancelBill () {
 }
 
 function updateTimelineStatus(status) {
-    switch(status) {
+    switch (status) {
         case "CHO_XAC_NHAN":
             if (document.getElementById("waiting-confirmation").style.display === "none") {
                 document.getElementById("waiting-confirmation").style.display = "block";
@@ -139,6 +144,7 @@ function updateTimelineStatus(status) {
                 document.getElementById("confirmed").style.display = "block";
                 document.getElementById('changeInfor').style.display = 'none';
             }
+            printBill();
             break;
         case "CHO_VAN_CHUYEN":
             if (document.getElementById("waiting-shipping").style.display === "none") {
@@ -271,12 +277,32 @@ function getStatusId(status) {
             return null;
     }
 }
-let nameCustomer = null , numberPhone = null , address = null;
+
+function formatRawDateToVN(rawDate) {
+    const dateObj = new Date(
+        rawDate[0],
+        rawDate[1],
+        rawDate[2],
+        rawDate[3],
+        rawDate[4],
+        rawDate[5],
+        Math.floor(rawDate[6] / 1000000)
+    );
+
+    const day = dateObj.getDate().toString().padStart(2, '0');
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const year = dateObj.getFullYear();
+
+    return `${day}/${month}/${year}`; // dạng dd/MM/yyyy
+}
+
+let nameCustomer = null, numberPhone = null, address = null, codeBill = null, createDate = null;
+
 function getInforBill(billId) {
     axios.get(`http://localhost:8080/getInforBill/${billId}`)
         .then(response => {
             const data = response.data;
-            console.log("Check data" , data)
+            console.log("Check data", data)
             document.getElementById("billId").textContent = data.code || 'Không có dữ liệu';
             document.getElementById("status").textContent = getStatusText(data.status) || 'Không có dữ liệu';
             document.getElementById("type").textContent = data.type || 'Không có dữ liệu';
@@ -285,38 +311,53 @@ function getInforBill(billId) {
             document.getElementById("customerName").textContent = data.userName || 'Không có dữ liệu';
             document.getElementById("phoneNumber").textContent = data.phoneNumber || 'Không có dữ liệu';
             document.getElementById("shipDate").textContent = data.shipDate ? formatDate1(data.shipDate) : 'Không có dữ liệu';
-             nameCustomer = data.user.name;
-             numberPhone = data.phoneNumber;
-             address = data.address;
+            console.log("CHeck ngay tao ", formatRawDateToVN(data.createDate))
+            createDate = data.createDate;
+            nameCustomer = data.userName;
+            numberPhone = data.phoneNumber;
+            address = data.address;
+            codeBill = data.code;
+            // printBill();
+            getTotalPayMentCustomer(codeBill)
             if (data.status === "VAN_CHUYEN") {
                 document.getElementById('cancelBill').style.display = 'none';
-            }else if (data.status === "DA_THANH_TOAN"){
+            } else if (data.status === "DA_THANH_TOAN") {
                 document.getElementById('cancelBill').style.display = 'none';
 
-            }else  if (data.status === "THANH_CONG"){
+            } else if (data.status === "THANH_CONG") {
                 document.getElementById('cancelBill').style.display = 'none';
 
-            }else {
+            } else {
                 document.getElementById('cancelBill').style.display = 'block';
             }
 
-            console.log("data name" , nameCustomer)
+            console.log("data name", nameCustomer)
         })
         .catch(error => {
             console.log("Error fetching bill info", error);
         });
 }
+
 function getStatusText(status) {
-    switch(status) {
-        case 'CHO_XAC_NHAN': return 'Chờ xác nhận';
-        case 'CHO_VAN_CHUYEN': return 'Chờ vận chuyển';
-        case 'VAN_CHUYEN': return 'Đang vận chuyển';
-        case 'XAC_NHAN': return 'Đã xác nhận';
-        case 'DA_THANH_TOAN': return 'Đã thanh toán';
-        case 'THANH_CONG': return 'Hoàn thành';
-        case 'TRA_HANG': return 'Trả hàng';
-        case 'DA_HUY': return 'Hủy';
-        default: return 'Không xác định';
+    switch (status) {
+        case 'CHO_XAC_NHAN':
+            return 'Chờ xác nhận';
+        case 'CHO_VAN_CHUYEN':
+            return 'Chờ vận chuyển';
+        case 'VAN_CHUYEN':
+            return 'Đang vận chuyển';
+        case 'XAC_NHAN':
+            return 'Đã xác nhận';
+        case 'DA_THANH_TOAN':
+            return 'Đã thanh toán';
+        case 'THANH_CONG':
+            return 'Hoàn thành';
+        case 'TRA_HANG':
+            return 'Trả hàng';
+        case 'DA_HUY':
+            return 'Hủy';
+        default:
+            return 'Không xác định';
     }
 }
 
@@ -328,7 +369,7 @@ function formatDate1(dateString) {
 getInforBill(billId)
 getTimeStatus(billId)
 
-document.querySelector(".btn-update").addEventListener("click", function() {
+document.querySelector(".btn-update").addEventListener("click", function () {
     const modal = document.getElementById("changeAddressModal");
     modal.style.display = "block";
     document.getElementById("customerNameModal").value = nameCustomer;
@@ -349,6 +390,7 @@ document.querySelector(".btn-update").addEventListener("click", function() {
     setSelectValue(document.getElementById("districtSelectModal"), district);
     setSelectValue(document.getElementById("wardSelectModal"), ward);
 });
+
 function setSelectValue(selectElement, value) {
     let exists = false;
     for (let option of selectElement.options) {
@@ -367,7 +409,8 @@ function setSelectValue(selectElement, value) {
 
     selectElement.value = value;
 }
-document.querySelector(".close-btn").addEventListener("click", function() {
+
+document.querySelector(".close-btn").addEventListener("click", function () {
     const modal = document.getElementById("changeAddressModal");
     modal.style.display = "none";
 });
@@ -384,6 +427,7 @@ let provinceName = null;
 let districtName = null;
 let wardName = null;
 fetchAllProvince();
+
 function fetchAllProvince() {
     axios.get(urlProvince, {
         headers: {
@@ -442,6 +486,7 @@ function fetchProvinceDistricts(idProvince) {
         })
 
 }
+
 function fetchProvinceWard(idDistrict) {
     axios.get(urlWard, {
         params: {
@@ -598,6 +643,7 @@ function fetchDayShip(to_id_distrcit, to_code_ward) {
             console.log("erorr day ship", error);
         })
 }
+
 function formatVND(value) {
     const parts = value.toString().split(".");
     const formattedWhole = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -606,6 +652,7 @@ function formatVND(value) {
     }
     return parts.length > 1 ? formattedWhole + "." + parts[1] : formattedWhole;
 }
+
 function fetchAllAddress() {
     const addressValue = document.getElementById('detailAddressModal').value;
     console.log("Check pro", provinceName)
@@ -620,6 +667,7 @@ function fetchAllAddress() {
         console.log("error adress")
     }
 }
+
 document.getElementById('detailAddressModal').addEventListener('input', () => {
     const addressValue = document.getElementById('detailAddressModal').value;
     console.log("Check pro", provinceName)
@@ -636,26 +684,234 @@ document.getElementById('detailAddressModal').addEventListener('input', () => {
 })
 
 function updateInforBill(billId) {
-    const nameCustomer =  document.getElementById('customerNameModal').value;
+    const nameCustomer = document.getElementById('customerNameModal').value;
     const phoneCustomer = document.getElementById('phoneNumberModal').value;
     const shipDate = document.getElementById('confirm-day').value;
     const moneyShip = document.getElementById('totalShip').value;
     let moneyShipFormatted = moneyShip.replace("đ", "").replace(",", "");
     const request = {
-        customerName : nameCustomer ,
-        numberPhone : phoneCustomer ,
-        customerAddress :fullAddress ,
-        shipDate : shipDate ,
-        moneyShip : moneyShipFormatted
+        customerName: nameCustomer,
+        numberPhone: phoneCustomer,
+        customerAddress: fullAddress,
+        shipDate: shipDate,
+        moneyShip: moneyShipFormatted
     }
-    console.log("requst" , request)
-    axios.post(`/updateCustomer-bill/${billId}` , request)
+    console.log("requst", request)
+    axios.post(`/updateCustomer-bill/${billId}`, request)
         .then(response => {
-            console.log("update thanh cong" , response.data);
+            console.log("update thanh cong", response.data);
 
             getInforBill(billId)
         })
         .catch(error => {
-            console.log("lỗi update" , error);
+            console.log("lỗi update", error);
         })
 }
+
+getProductForBill(billId)
+
+function getProductForBill(billId) {
+    axios.get(`/products/${billId}`)
+        .then(response => {
+            console.log("get product thành công", response.data);
+
+            const products = response.data;
+            const productListElement = document.getElementById('productList');
+            productListElement.innerHTML = '';
+
+            if (products.length === 0) {
+                productListElement.innerHTML = '<li>Không có sản phẩm nào.</li>';
+                return;
+            }
+
+            products.forEach((product, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${index + 1}. ${product.name} - SL: ${product.quantity}`;
+                productListElement.appendChild(li);
+            });
+        })
+        .catch(error => {
+            console.log("Lỗi lấy sản phẩm", error);
+        });
+}
+
+let customerPaymentBill = null;
+
+function getTotalPayMentCustomer(billCode) {
+    axios.get(`/getTotalBill/${billCode}`)
+        .then(response => {
+            console.log("Lấy dữ liệu thành công", response.data);
+
+            const data = response.data;
+
+            if (Array.isArray(data) && data.length > 0) {
+                const billInfo = data[0];
+                console.log("Discount:", billInfo.discountPrice);
+                console.log("Ship:", billInfo.moneyShip);
+                console.log("Tổng thanh toán:", billInfo.afterPrice);
+                const afterPrice = billInfo.afterPrice;
+                const moneyShip = billInfo.moneyShip;
+                const totalCustomerPayMent = afterPrice + moneyShip;
+                customerPaymentBill = totalCustomerPayMent;
+                console.log('Check customerPayMentBill', customerPaymentBill)
+                // Gán vào HTML nếu muốn
+                document.getElementById('printTotalPayment').innerText = totalCustomerPayMent.toLocaleString('vi-VN') + 'đ';
+
+            } else {
+                console.log("Không có dữ liệu tổng hóa đơn.");
+            }
+        })
+        .catch(error => {
+            console.log("Lỗi khi lấy tổng tiền hóa đơn:", error);
+        });
+}
+
+document.getElementById('checkprint').addEventListener('click', function () {
+    printBill();
+})
+
+function printBill() {
+    console.log("Chechk chạy vòa")
+    document.getElementById('printCode').innerText = codeBill || 'Chưa có mã';
+    document.getElementById('printCreateDate').innerText = formatRawDateToVN(createDate);
+    // document.getElementById('printStaff').innerText = billData.idUser || 'Nhân viên chưa có';
+    document.getElementById('printNameCustomer').innerText = nameCustomer || 'Khách lẻ';
+    document.getElementById('printNumberPhoneCustomer').innerText = numberPhone || '';
+    document.getElementById('printAddress').innerText = address || '';
+    console.log('Check total ', customerPaymentBill)
+
+
+    printJS({
+        printable: 'invoice-container',
+        type: 'html', // Loại in là HTML
+        // header: 'Hóa Đơn Thanh Toán',
+        style: `
+            /* Đảm bảo tất cả CSS in ấn được áp dụng */
+            @media print {
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                }
+                #invoice-container {
+                    display: block !important;
+                    padding: 20px;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+           
+
+.section {
+    padding: 15px 0;
+    border-bottom: 1px dashed #aaa;
+}
+
+.invoice-header {
+    text-align: center;
+}
+
+.invoice-header h2 {
+    margin: 0;
+}
+
+.invoice-info-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-info-box {
+    width: 48%;
+}
+
+.invoice-info-box h4 {
+    margin-bottom: 10px;
+}
+
+.invoice-info-box p {
+    margin: 5px 0;
+}
+
+.order-content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.order-content-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    border-left: 1px dashed #aaa;
+    transform: translateX(-50%);
+}
+
+.product-list {
+    list-style-type: decimal;
+    padding-left: 20px;
+}
+
+.product-list li {
+    margin: 5px 0;
+}
+
+.invoice-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-info-section,
+.invoice-footer {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.invoice-info-section::before,
+.invoice-footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    border-left: 1px dashed #aaa;
+    transform: translateX(-50%);
+}
+
+.invoice-payment {
+    width: 48%;
+    font-weight: bold;
+}
+
+.invoice-signature {
+    width: 48%;
+    text-align: right;
+}
+
+.signature-line {
+    margin-top: 60px;
+    border-top: 1px dashed #000;
+    width: 100%;
+    padding-top: 5px;
+    font-style: italic;
+}
+
+
+            }
+        `
+    });
+
+    document.getElementById("invoice-container").style.display = 'none';
+    setTimeout(() => {
+        if (!document.hidden) {
+            location.reload();
+        }
+    }, 1000);
+}
+

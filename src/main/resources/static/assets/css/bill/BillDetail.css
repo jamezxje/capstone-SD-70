@@ -264,7 +264,7 @@ button:active {
 }
 button {
     padding: 10px 20px;
-    background-color: #4CAF50;
+    /*background-color: #4CAF50;*/
     color: white;
     border: none;
     cursor: pointer;
@@ -337,3 +337,109 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: #45a049;
 }
+.invoice-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.section {
+    padding: 15px 0;
+    border-bottom: 1px dashed #aaa;
+}
+
+.invoice-header {
+    text-align: center;
+}
+
+.invoice-header h2 {
+    margin: 0;
+}
+
+.invoice-info-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-info-box {
+    width: 48%;
+}
+
+.invoice-info-box h4 {
+    margin-bottom: 10px;
+}
+
+.invoice-info-box p {
+    margin: 5px 0;
+}
+
+.order-content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.order-content-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    border-left: 1px dashed #aaa;
+    transform: translateX(-50%);
+}
+
+.product-list {
+    list-style-type: decimal;
+    padding-left: 20px;
+}
+
+.product-list li {
+    margin: 5px 0;
+}
+
+.invoice-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-info-section,
+.invoice-footer {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.invoice-info-section::before,
+.invoice-footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    border-left: 1px dashed #aaa;
+    transform: translateX(-50%);
+}
+
+.invoice-payment {
+    width: 48%;
+    font-weight: bold;
+}
+
+.invoice-signature {
+    width: 48%;
+    text-align: right;
+}
+
+.signature-line {
+    margin-top: 60px;
+    border-top: 1px dashed #000;
+    width: 100%;
+    padding-top: 5px;
+    font-style: italic;
+}
+

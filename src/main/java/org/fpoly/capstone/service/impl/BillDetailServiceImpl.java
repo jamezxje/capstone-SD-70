@@ -1,6 +1,7 @@
 package org.fpoly.capstone.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.fpoly.capstone.dto.voucherdetail.VoucherPriceDTO;
 import org.fpoly.capstone.service.BillDetailService;
 import org.fpoly.capstone.service.payload.bill_detail.BillDetailResponse;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,8 @@ public class BillDetailServiceImpl implements BillDetailService {
     private UserRepository userRepository;
     @Autowired
     private ProductDetailRepository productDetailRepository;
+    @Autowired
+    private VoucherDetailRepository voucherDetailRepository;
 
     @Override
     public List<BillDetailResponse> findBillDetailByBillId(Long billId) {
@@ -166,8 +169,29 @@ public class BillDetailServiceImpl implements BillDetailService {
     }
 
     @Override
+    public List<StatusBillDetailRequest> getStatusBillHistoryCustomer(String code) {
+        List<Object[]> results = billHistoryRepository.findAllStatusSearchCustomer(code);
+        List<StatusBillDetailRequest> requests = new ArrayList<>();
+        for (Object[] result : results) {
+            Long id_bill = (Long) result[0];
+            BillStatus status = (BillStatus) result[1];
+            Date createDate = (Date) result[2];
+            StatusBillDetailRequest request = new StatusBillDetailRequest(id_bill, status, createDate);
+            requests.add(request);
+
+        }
+        return requests;
+    }
+
+
+    @Override
     public Bill getInforBillId(Long id) {
         return billRepository.findById(id).get();
+    }
+
+    @Override
+    public Bill getInForBillCustomer(String code) {
+        return billRepository.findByCode(code).get();
     }
 
     @Override
@@ -239,6 +263,56 @@ public class BillDetailServiceImpl implements BillDetailService {
         billRepository.save(bill.get());
         return bill.get();
     }
+
+    @Override
+    public Bill cancelBillCustomer(String code, Long idCusomter, ChangeStatusBillRequest request) {
+        Optional<Bill> bill = billRepository.findByCode(code);
+        Optional<User> user = userRepository.findById(idCusomter);
+        if (!bill.isPresent()) {
+            throw new RuntimeException("Bill not found for ID: " + code);
+        }
+        if (!user.isPresent()) {
+            throw new RuntimeException("User not found for ID: " + idCusomter);
+        }
+        if (user.get().getRoles() != UserRole.ROLE_ADMIN && !bill.get().getEmployee().getId().equals(idCusomter)) {
+            throw new RuntimeException("User admin and employee is not admin");
+        }
+        if (bill.get().getStatus() == BillStatus.VAN_CHUYEN && user.get().getRoles() != UserRole.ROLE_ADMIN) {
+            throw new RuntimeException("User is not admin and Van chuyen No cacel");
+        }
+        if (bill.get().getStatus() == BillStatus.XAC_NHAN) {
+            System.out.println("Chay vao day");
+            Long idBill = bill.get().getId();
+            List<BillDetail> billDetailOnlineList = billDetailRepository.findByBillId(idBill);
+            if (!billDetailOnlineList.isEmpty()) {
+                for (BillDetail billDetail : billDetailOnlineList) {
+                    Long productDetailId = billDetail.getProductDetail().getId();
+                    Optional<ProductDetail> productDetail = productDetailRepository.findById(productDetailId);
+                    if (productDetail.isPresent()) {
+                        ProductDetail product = productDetail.get();
+                        product.setQuantity(product.getQuantity() + billDetail.getQuantity());
+
+                        if (product.getStatus() == ProductVariantStatus.HET_SAN_PHAM) {
+                            product.setStatus(ProductVariantStatus.DANG_SU_DUNG);
+                        }
+                        productDetailRepository.save(product);
+                    }
+                }
+            }
+        }
+        bill.get().setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        bill.get().setStatus(BillStatus.DA_HUY);
+        bill.get().setEmployee(user.get());
+        BillHistory billHistory = new BillHistory();
+        billHistory.setBill(bill.get());
+        billHistory.setStatus(bill.get().getStatus());
+        billHistory.setActionDescription(request.getActionDescription());
+        billHistory.setUser(user.get());
+        billHistoryRepository.save(billHistory);
+        billRepository.save(bill.get());
+        return bill.get();
+    }
+
     private Date getCurrentTimestampInVietnam () {
         Instant instant = Instant.now();
         ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
@@ -265,6 +339,27 @@ public class BillDetailServiceImpl implements BillDetailService {
         Date startDate = Date.from(start.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(end.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
         return billDetailRepository.findByCreateDateBetween(startDate, endDate);
+    }
+
+    @Override
+    public List<VoucherPriceDTO> getVoucherDetail(String code) {
+        // Lấy kết quả từ repository (các giá trị trả về là Object[])
+        List<Object[]> results = voucherDetailRepository.findPriceForBillCodeCustomer(code);
+
+        // Chuyển đổi sang VoucherPriceDTO
+        List<VoucherPriceDTO> voucherPrices = new ArrayList<>();
+
+        for (Object[] result : results) {
+            VoucherPriceDTO dto = new VoucherPriceDTO(
+                    (BigDecimal) result[0],  // before_price
+                    (BigDecimal) result[1],  // after_price
+                    (BigDecimal) result[2],  // discount_price
+                    (BigDecimal) result[3]   // money_ship
+            );
+            voucherPrices.add(dto);
+        }
+
+        return voucherPrices;
     }
 }
 

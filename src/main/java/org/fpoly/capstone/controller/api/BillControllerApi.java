@@ -63,6 +63,10 @@ public class BillControllerApi {
         return billService.getBillDetail(billId);
 
     }
+    @GetMapping("/search-product-customer/{code}")
+    public List<BillProductDTO> getProductsCustomer(@PathVariable String code) {
+        return billService.getBillDetailCustomer(code);
+    }
 
     @PostMapping("/save-product-bill/{id}")
     public Bill saveProductBill(@PathVariable Long id, @RequestBody CreateBillOfflineDTO request) {
@@ -173,6 +177,16 @@ public class BillControllerApi {
     @GetMapping("/getAllColor")
     public List<Color> getAllColor() {
         return billService.findAllColor();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchBill(@RequestParam("code") String code) {
+        Optional<Bill> billOpt = billService.searchCode(code);
+        if (billOpt.isPresent()) {
+            return ResponseEntity.ok(billOpt.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mã hóa đơn không tồn tại.");
+        }
     }
 
 }

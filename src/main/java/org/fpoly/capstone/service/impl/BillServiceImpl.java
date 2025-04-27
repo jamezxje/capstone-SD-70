@@ -704,6 +704,25 @@ public class BillServiceImpl implements BillService {
         return billDetails;
     }
 
+    @Override
+    public List<BillProductDTO> getBillDetailCustomer(String code) {
+        List<Object[]> results = this.billDetailRepository.getProductByBillCode(code);
+        List<BillProductDTO> billDetails = new ArrayList<>();
+        for (Object[] result : results) {
+            Long id = (Long) result[0];
+            String name = (String) result[1];
+            BigDecimal price = (BigDecimal) result[2];
+            Integer quantity = (Integer) result[3];
+            String size = (String) result[4];
+            String color = (String) result[5];
+            Long idProductDetail = (Long) result[6];
+            String image = (String) result[7];
+            BillProductDTO billProductDTO = new BillProductDTO(id, name, price, quantity, size, color, idProductDetail, image);
+            billDetails.add(billProductDTO);
+        }
+        return billDetails;
+    }
+
 
     private Date getCurrmentTimeStampInVN() {
         Instant instant = Instant.now();
@@ -867,6 +886,11 @@ public class BillServiceImpl implements BillService {
         }
 
         return this.billRepository.getLastestBill(loggedUser.getId(), PageRequest.ofSize(1));
+    }
+
+    @Override
+    public Optional<Bill> searchCode(String code) {
+        return billRepository.findByCode(code);
     }
 
 }

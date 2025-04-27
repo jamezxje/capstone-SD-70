@@ -40,6 +40,28 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
             """, nativeQuery = true)
     List<Object[]> getProductByIDBill(@Param("billId") Long billId);
 
+    @Query(value = """
+    SELECT
+        pd.id AS id,
+        p.name AS name,
+        bd.price AS price,
+        bd.quantity AS quantity,
+        s.name AS size,
+        c.name AS color,
+        bd.id_product_detail AS id_product,
+        pd.feature_image AS image
+    FROM bill_detail bd
+    JOIN product_detail pd ON bd.id_product_detail = pd.id
+    JOIN product p ON pd.id_product = p.id
+    JOIN size s ON pd.id_size = s.id
+    JOIN color c ON pd.id_color = c.id
+    JOIN bill b ON bd.id_bill = b.id
+    WHERE b.code = :code
+    """, nativeQuery = true)
+    List<Object[]> getProductByBillCode(@Param("code") String code);
+
+
+
     @Query("SELECT bd FROM BillDetail bd WHERE bd.bill.id = :billId")
     List<BillDetail> findByBillId(Long billId);
 
