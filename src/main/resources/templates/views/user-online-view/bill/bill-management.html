@@ -30,11 +30,11 @@
               <img th:src="${loggedUser.avatar}" class="rounded-full mx-auto mb-2" style="width: 80px; height: 80px; object-fit: cover;" />
               <p class="font-bold" th:text="${loggedUser.fullName}"></p>
             </div>
-            <button onclick="showTab('profile', this)" class="tab-btn w-100 text-start">
+            <button class="tab-btn w-100 text-start">
               <i ></i><a th:href="@{/online/customer/profile}">Hồ sơ của tôi</a>
             </button>
-            <button onclick="showTab('password', this)" class="tab-btn w-100 text-start">
-              <i></i> Đổi mật khẩu
+            <button class="tab-btn w-100 text-start">
+              <i ></i><a th:href="@{/auth/change/online}">Đổi mật khẩu</a>
             </button>
             <button class="tab-btn w-100 text-start">
               <i></i><a th:href="@{/bill}">Lịch sử đơn hàng</a>
