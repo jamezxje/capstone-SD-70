@@ -100,7 +100,7 @@ public class AuthController {
         return "views/auth/forgot-password";
     }
 
-    @PostMapping(path = "/forgot-password/save")
+    @PostMapping(path = "/forgot-password")
     public String handleForgotPassword(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
         String responseMessage = userService.processForgotPassword(email);
 
@@ -124,7 +124,7 @@ public class AuthController {
         return "/views/user-online-view/auth/sign-up";
     }
 
-    @PostMapping("/register/online/save")
+    @PostMapping("/register/online")
     public String registerUserOnlineSave(@ModelAttribute("userRegister") User userRegister, Model model, RedirectAttributes redirectAttributes) {
         Set<String> userFieldsToValidate = Set.of("fullName", "phoneNumber", "email", "password");
         Map<String, String> errors = UserValidator.validate(userRegister, userFieldsToValidate);

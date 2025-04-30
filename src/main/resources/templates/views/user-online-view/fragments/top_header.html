@@ -7,6 +7,42 @@
 <body>
 
 <th:block th:fragment="topHeaderFragment">
+  <style>
+    .user-dropdown {
+        position: relative;
+    }
+
+    .dropdown-content {
+        position: absolute;
+        top: 100%;
+        right: -10px;
+        background-color: #dee2e6;
+        /* border: 1px solid #e0e0e0;
+        border-radius: 6px; */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        z-index: 9999;
+        display: none;
+        width: auto;
+        white-space: nowrap;
+    }
+
+    .dropdown-content a {
+        display: block;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #000;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #444; 
+        color: #fff;
+        text-decoration: none;
+    }
+</style>
+
+
   <div class="top-header">
     <div class="container-fluid">
       <div class="row">
@@ -35,25 +71,34 @@
         <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">
           <div class="text-center"><p class="top-header_middle-text"></p></div>
         </div>
-        <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
-          <span class="user-menu d-block d-lg-none">
-            <i class="anm anm-user-al" aria-hidden="true"></i>
-          </span>
-          <ul class="customer-links list-inline mb-0 d-flex justify-content-end align-items-center">
-            <li class="d-flex align-items-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                   xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
-                <path d="M12 14C8.686 14 6 16.686 6 20H18C18 16.686 15.314 14 12 14Z"
-                      stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 12C14.209 12 16 10.209 16 8C16 5.791 14.209 4 12 4C9.791 4 8 5.791 8 8C8 10.209 9.791 12 12 12Z"
-                      stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <a th:href="@{/online/customer/profile}" class="text-white text-decoration-none">
-                Tài khoản của tôi
-              </a>
-            </li>
-          </ul>
-        </div>        
+        <div class="col-2 col-sm-4 col-md-3 col-lg-4 d-flex justify-content-end align-items-center">
+          <div class="user-dropdown position-relative" id="userDropdown">
+            <div class="user-info text-white d-flex align-items-center" id="userToggle" style="cursor: pointer;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                     xmlns="http://www.w3.org/2000/svg" class="me-2">
+                    <path d="M12 14C8.686 14 6 16.686 6 20H18C18 16.686 15.314 14 12 14Z"
+                          stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 12C14.209 12 16 10.209 16 8C16 5.791 14.209 4 12 4C9.791 4 8 5.791 8 8C8 10.209 9.791 12 12 12Z"
+                          stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span th:if="${loggedUser != null}" th:text="${loggedUser.fullName}"></span>
+                <span th:if="${loggedUser == null}">
+                  <a th:href="@{/auth/login}" style="color: #fff; text-decoration: none;">Đăng nhập</a>
+                  <span style="color: #fff;">|</span>
+                  <a th:href="@{/auth/register}" style="color: #fff; text-decoration: none;">Đăng ký</a>
+                </span>
+            </div>
+  
+            <!-- Dropdown -->
+            <div class="dropdown-content" id="dropdownMenu" style="display: none;">
+                <div th:if="${loggedUser != null}">
+                    <a th:href="@{/online/customer/profile}">Tài khoản của tôi</a>
+                    <a th:href="@{/bill}">Đơn mua</a>
+                    <a th:href="@{/auth/logout}">Đăng xuất</a>
+                </div>
+            </div>
+          </div>
+        </div>
         <!-- <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
           <span class="user-menu d-block d-lg-none"><i class="anm anm-user-al" aria-hidden="true"></i></span>
           <ul class="customer-links list-inline">
@@ -66,6 +111,19 @@
       </div>
     </div>
   </div>
+  <script>
+    const userDropdown = document.getElementById('userDropdown');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    userDropdown.addEventListener('mouseenter', () => {
+        dropdownMenu.style.display = 'block';
+    });
+
+    userDropdown.addEventListener('mouseleave', () => {
+        dropdownMenu.style.display = 'none';
+    });
+</script>
+
 </th:block>
 
 </body>
