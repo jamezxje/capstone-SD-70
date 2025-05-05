@@ -845,7 +845,7 @@ public class BillServiceImpl implements BillService {
         Bill lastestBill = lastestBillList.get(0); // Lấy hóa đơn mới nhất
 
         log.info("Lastest bill id: ", lastestBill.getId());
-
+        BigDecimal itemDiscount = request.getItemDiscount();
         BigDecimal moneyShip = request.getMoneyShip();
         Date receiveDate = request.getReceiveDate();
         BigDecimal grandTotal = request.getGrandTotal();
@@ -854,6 +854,7 @@ public class BillServiceImpl implements BillService {
         PaymentMethod paymentMethod = request.getPaymentMethod();
 
         // Cập nhật các giá trị của bill
+        lastestBill.setItemDiscount(itemDiscount);
         lastestBill.setTotalMoney(grandTotal);
         lastestBill.setMoneyShip(moneyShip);
         lastestBill.setReceiveDate(receiveDate);

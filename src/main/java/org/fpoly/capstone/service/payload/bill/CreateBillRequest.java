@@ -16,6 +16,7 @@ import java.util.Date;
 public class CreateBillRequest {
 
     private Date receiveDate;
+    private BigDecimal itemDiscount;
     private BigDecimal moneyShip;
     private String address;
     private String note;

@@ -34,6 +34,6 @@ public interface VoucherService {
 
     Page<Voucher> searchNameOrStatus(Pageable pageable, String name, VoucherStatus status);
 
-
+    List<Voucher> getAllVouchers();
 
 }

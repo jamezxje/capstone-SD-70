@@ -5,27 +5,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.fpoly.capstone.controller.payload.bill_detail.BillDetailViewModel;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
-import org.fpoly.capstone.entity.Address;
-import org.fpoly.capstone.entity.Bill;
-import org.fpoly.capstone.entity.BillDetail;
-import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.entity.*;
 import org.fpoly.capstone.entity.enum_status.PaymentMethod;
 import org.fpoly.capstone.repository.CartRepository;
-import org.fpoly.capstone.service.BillDetailService;
-import org.fpoly.capstone.service.BillService;
-import org.fpoly.capstone.service.CartDetailService;
-import org.fpoly.capstone.service.OnlineAddressService;
-import org.fpoly.capstone.service.UserService;
-import org.fpoly.capstone.service.VnPayService;
+import org.fpoly.capstone.service.*;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
 import org.fpoly.capstone.service.payload.bill_detail.BillDetailResponse;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.net.URLDecoder;
@@ -49,6 +40,7 @@ public class OnlineBillController {
     private final UserService userService;
     private final OnlineAddressService onlineAddressService;
     private final VnPayService vnPayService;
+    private final VoucherService voucherService;
 
     @GetMapping(path = "checkout")
     public String onOpenCheckoutView(Model model) {
@@ -64,7 +56,7 @@ public class OnlineBillController {
                 .toList();
 
         List<Address> addressList = this.onlineAddressService.getListAddressByLoggedUser();
-
+        List<Voucher> listVoucher = voucherService.getAllVouchers();
         model.addAttribute("cartDetailList", viewModels);
         model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("shoppingCart", this.cartRepository.findCartByUserId(loggedUser.getId()));
@@ -72,8 +64,7 @@ public class OnlineBillController {
         model.addAttribute("defaultAddress", defaultAddress);
         model.addAttribute("cartTotalMoney", this.cartRepository.findCartByUserId(loggedUser.getId()).getTotalPrice());
         model.addAttribute("createBillRequest", new CreateBillRequest());
-
-
+        model.addAttribute("listVoucher", listVoucher);
         return "/views/user-online-view/checkout-form";
     }
 
@@ -92,13 +83,13 @@ public class OnlineBillController {
 
         BillDetail billDetail = billDetailList.get(0);
 
-
+        List<Voucher> listVoucher = voucherService.getAllVouchers();
         model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("addressList", addressList);
         model.addAttribute("defaultAddress", defaultAddress);
         model.addAttribute("billDetailList", billDetailList);
         model.addAttribute("totalMoney", billDetail.getPrice().doubleValue() * billDetail.getQuantity());
-
+        model.addAttribute("listVoucher", listVoucher);
         return "/views/user-online-view/checkout-form-buy-now";
     }
 
@@ -125,7 +116,7 @@ public class OnlineBillController {
     @GetMapping(path = "{billId}")
     public String onOpenBillDetail(@PathVariable("billId") Long billId,
                                    Model model) {
-
+        User loggedUser = this.userService.getUserFromContext();
         List<BillDetailResponse> billDetailResponseList =
                 this.billDetailService.findBillDetailByBillId(billId);
 
@@ -134,7 +125,7 @@ public class OnlineBillController {
                 .toList();
 
         model.addAttribute("billDetailResponseList", viewModels);
-
+        model.addAttribute("loggedUser", loggedUser);
         return "/views/user-online-view/bill/bill-detail";
     }
 
@@ -250,6 +241,4 @@ public class OnlineBillController {
             return null; // Trả về null nếu không thể chuyển đổi ngày
         }
     }
-
-
 }

@@ -1768,6 +1768,13 @@
         showToast(successMessage);
       }
     });
+    $(document).ready(function () {
+      const message = localStorage.getItem("successMessage");
+      if (message) {
+        showToast(message);
+        localStorage.removeItem("successMessage");
+      }
+    });
   </script>
 </th:block>
 </html>

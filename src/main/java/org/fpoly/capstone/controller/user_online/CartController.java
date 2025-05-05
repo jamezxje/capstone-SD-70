@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.cart.AddProductToCartModel;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
 import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.entity.Voucher;
 import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.service.CartDetailService;
 import org.fpoly.capstone.service.CartService;
 import org.fpoly.capstone.service.UserService;
+import org.fpoly.capstone.service.VoucherService;
 import org.fpoly.capstone.service.payload.cart.AddProductToCartRequest;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
 import org.modelmapper.ModelMapper;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(path = "cart")
@@ -32,6 +35,7 @@ public class CartController {
     private final CartDetailService cartDetailService;
     private final ModelMapper modelMapper;
     private final UserService userService;
+    private final VoucherService voucherService;
 
     @GetMapping(path = "")
     public String onOpenCartView(Model model) {
@@ -47,10 +51,11 @@ public class CartController {
         List<CartDetailViewModel> viewModels = cartDetailResponseList.stream()
                 .map(response -> this.modelMapper.map(response, CartDetailViewModel.class))
                 .toList();
-
+        List<Voucher> listVoucher = voucherService.getAllVouchers();
         model.addAttribute("cartDetailList", viewModels);
         model.addAttribute("shoppingCart", this.cartRepository.findCartByUserId(loggedUser.getId()));
-
+        model.addAttribute("listVoucher", listVoucher);
+        model.addAttribute("loggedUser", loggedUser);
         return "/views/user-online-view/cart-management";
     }
 
