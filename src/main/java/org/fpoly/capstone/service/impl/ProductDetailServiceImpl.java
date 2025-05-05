@@ -108,7 +108,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetail.setMaterial(material);
         productDetail.setSize(size);
         productDetail.setGender(request.getGender());
-        productDetail.setPrice(price.multiply(multiplier));
+        productDetail.setPrice(price);
         productDetail.setDescription(request.getDescription());
     }
 
