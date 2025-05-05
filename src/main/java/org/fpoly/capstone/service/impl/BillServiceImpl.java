@@ -513,6 +513,7 @@ public class BillServiceImpl implements BillService {
             billDetailList.add(billDetail);
         }
 
+        BigDecimal itemDiscount = request.getItemDiscount();
         BigDecimal moneyShip = request.getMoneyShip();
         Date recieveDate = request.getReceiveDate();
         BigDecimal grandTotal = request.getGrandTotal();
@@ -520,6 +521,7 @@ public class BillServiceImpl implements BillService {
         String note = request.getNote();
         PaymentMethod paymentMethod = request.getPaymentMethod();
 
+        bill.setItemDiscount(itemDiscount);
         bill.setTotalMoney(grandTotal);
         bill.setMoneyShip(moneyShip);
         bill.setReceiveDate(recieveDate);

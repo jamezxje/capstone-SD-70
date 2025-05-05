@@ -676,29 +676,11 @@
         $('#confirmOrderModal').modal('hide');
         return;  // Ngừng việc gửi form
       }
-      const itemDiscount = parseCurrency($('#voucherDiscount').text());
-      const receiveDate = formatDate($('#confirm-day').text());
-      const moneyShip = $('#shipFee').val();
-
-      const grandTotal = parseCurrency($('#totalPriceWithShipping').text());
-      console.log("grand total: ", grandTotal)
-      console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
-
-      const address = $('#customer-address').find(":selected").val();
-
-      const requestBody = {
-        receiveDate: receiveDate,
-        itemDiscount: itemDiscount,
-        moneyShip: $('#shipFee').val(),
-        address: $('#customer-address').find(":selected").text(),
-        note: $('#orderNote').val(),
-        grandTotal: grandTotal,
-        paymentMethod: paymentMethod
-      };
+      // const itemDiscount = parseCurrency($('#voucherDiscount').text());
       // const receiveDate = formatDate($('#confirm-day').text());
       // const moneyShip = $('#shipFee').val();
-      // const itemDiscount = parseCurrency($('#voucherDiscount').text());
-      // const grandTotal = $('#totalPriceWithShipping').text();
+      //
+      // const grandTotal = parseCurrency($('#totalPriceWithShipping').text());
       // console.log("grand total: ", grandTotal)
       // console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
       //
@@ -710,9 +692,27 @@
       //   moneyShip: $('#shipFee').val(),
       //   address: $('#customer-address').find(":selected").text(),
       //   note: $('#orderNote').val(),
-      //   grandTotal: formatCurrency(grandTotal),
+      //   grandTotal: grandTotal,
       //   paymentMethod: paymentMethod
       // };
+      const receiveDate = formatDate($('#confirm-day').text());
+      const moneyShip = $('#shipFee').val();
+      const itemDiscount = parseCurrency($('#voucherDiscount').text());
+      const grandTotal = $('#totalPriceWithShipping').text();
+      console.log("grand total: ", grandTotal)
+      console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
+
+      const address = $('#customer-address').find(":selected").val();
+
+      const requestBody = {
+        receiveDate: receiveDate,
+        itemDiscount: itemDiscount,
+        moneyShip: $('#shipFee').val(),
+        address: $('#customer-address').find(":selected").text(),
+        note: $('#orderNote').val(),
+        grandTotal: formatCurrency(grandTotal),
+        paymentMethod: paymentMethod
+      };
 
       console.log("Create bill online request body: ", JSON.stringify(requestBody))
 
