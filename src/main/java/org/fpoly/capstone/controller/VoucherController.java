@@ -137,8 +137,7 @@ public class VoucherController {
     @GetMapping("/search")
     public String search(@RequestParam(defaultValue = "1") Integer numPage,
                          @RequestParam(name = "name", required = false) String name,
-                         @RequestParam(name = "status", required = false) VoucherStatus status,
-                         @RequestParam(name = "createAt", required = false) LocalDate createAt,
+                         @RequestParam(name = "statusSelect", required = false) VoucherStatus statusSelect,
                          @RequestParam(name = "startDate", required = false) LocalDate startDate,
                          @RequestParam(name = "endDate", required = false) LocalDate endDate,
                          Model model) throws NotException {
@@ -150,8 +149,8 @@ public class VoucherController {
             name = null;
         }
 
-        if(name != null || status != null){
-            voucherPage = voucherService.searchNameOrStatus(pageable, name, status);
+        if(name != null || statusSelect != null){
+            voucherPage = voucherService.searchNameOrStatus(pageable, name, statusSelect);
         } else if (startDate != null && endDate != null) {
             voucherPage = voucherService.searchByStartDateAndEndDate(pageable, null, null, startDate, endDate);
         }
@@ -163,11 +162,15 @@ public class VoucherController {
         log.info("(startDate) " + startDate);
         log.info("(endDate) " + endDate);
         log.info("(name) " + name);
-        log.info("(status) " + status);
+        log.info("(status) " + statusSelect);
         log.info("(search)" + voucherPage);
         model.addAttribute("currentPage", (numPage == null || numPage <= 0) ? 1 : numPage);
         model.addAttribute("totalPages", voucherPage.getTotalPages() > 0 ? voucherPage.getTotalPages() : 1);
+        model.addAttribute("statusSelect", statusSelect);
         model.addAttribute("status", VoucherStatus.values());
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("name", name);
         model.addAttribute("voucherPage", voucherPage);
         return "views/voucher/listVoucher";
     }

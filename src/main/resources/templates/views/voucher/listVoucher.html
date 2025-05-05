@@ -29,12 +29,12 @@
           <form th:action="@{/dashboard/product-management/voucher/search}" id="voucherSearchForm" method="get">
           <div class="d-flex justify-content-end align-items-center gap-2">
             <div class="form-group-search d-flex align-items-center gap-2 me-2">
-              <select class="form-control" id="status" name="status">
+              <select class="form-control" id="status" name="statusSelect">
                 <option value="">Lọc trạng thái</option>
-                <option th:each="status : ${status}"
-                        th:value="${status}"
-                        th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
-                (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}">
+                <option th:each="s : ${status}"
+                        th:value="${s}"
+                        th:text="${s == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
+                (s == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}">
                 </option>
               </select>
             </div>
@@ -68,7 +68,7 @@
 
             <div class="form-group d-flex justify-content-end">
               <div class="justify-content-end">
-               <button type="submit" class="btn btn-primary">
+               <button type="submit" class="btn btn-found">
                  Tìm kiếm
                </button>
               </div>
@@ -88,7 +88,7 @@
           <div class="table-responsive">
             <script th:src="@{/assets/js/voucher/listVoucher.js}"></script>
 
-            <table class="table table-bordered table-hover" id="ListDatatableView" border="1">
+            <table class="table" id="ListDatatableView">
               <thead>
               <tr>
                 <th>STT</th>
@@ -138,7 +138,7 @@
 
                     <!-- Modal for Voucher Details -->
 
-                    <a th:href="@{/dashboard/product-management/voucher/{id}(id=${voucher.id})}" class="btn btn-info btn-xs light px-2 ml-3">
+                    <a th:href="@{/dashboard/product-management/voucher/{id}(id=${voucher.id})}" class="btn btn-info btn-xs light px-2 ml-3" title="Sửa Voucher">
                       <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                       </svg>
@@ -152,25 +152,84 @@
 
             <th:block th:if="${!voucherPage.isEmpty()}">
               <nav aria-label="Pagination" class="d-flex justify-content-end">
+
                 <ul class="pagination">
+                  <th:block th:if="${#strings.isEmpty(name)} and ${statusSelected} == null and ${startDate} == null and ${endDate} == null">
+
                   <!-- Nút Previous -->
                   <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage != null && currentPage > 1 ? currentPage - 1 : 1})}" aria-label="Previous">
-                      <span aria-hidden="true" style="color: black;">&laquo;</span>
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage - 1})}"
+                       th:if="${currentPage > 1}"
+                       aria-label="Previous">
+                      &laquo;
                     </a>
                   </li>
 
                   <li th:each="i : ${#numbers.sequence(currentPage > 1 ? currentPage - 1 : 1, currentPage + 1 <= totalPages ? currentPage + 1 : totalPages)}"
                       th:classappend="${i == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${i})}" th:text="${i}"></a>
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/voucher/list(numPage=${i})}"
+                       th:classappend="${i == currentPage} ? 'active' : ''"
+                       th:text="${i}"></a>
                   </li>
 
                   <!-- Nút Next -->
                   <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage != null && currentPage < totalPages ? currentPage + 1 : totalPages})}" aria-label="Next">
-                      <span aria-hidden="true" style="color: black;">&raquo;</span>
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/voucher/list(numPage=${currentPage + 1})}"
+                       th:if="${currentPage < totalPages}"
+                       aria-label="Next">
+                      &raquo;
                     </a>
                   </li>
+
+                  </th:block>
+                  <th:block th:if="!(${#strings.isEmpty(name)} and ${statusSelected} == null and ${startDate} == null and ${endDate} == null)">
+                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                      <a class="page-link"
+                         th:href="@{/dashboard/product-management/voucher/search(
+                  numPage=${currentPage - 1},
+                  name=${name},
+                  status=${statusSelected},
+                  startDate=${startDate},
+                  endDate=${endDate})}"
+                         th:if="${currentPage > 1}"
+                         aria-label="Previous">
+                        &laquo;
+                      </a>
+                    </li>
+
+                    <li th:each="i : ${#numbers.sequence(currentPage > 1 ? currentPage - 1 : 1, currentPage + 1 <= totalPages ? currentPage + 1 : totalPages)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                      <a class="page-link"
+                         th:href="@{/dashboard/product-management/voucher/search(
+                    numPage=${i},
+                    name=${name},
+                    status=${statusSelected},
+                    startDate=${startDate},
+                    endDate=${endDate})}"
+                         th:classappend="${i == currentPage} ? 'active' : ''"
+                         th:text="${i}"></a>
+                    </li>
+
+                    <!-- Nút Next -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                      <a class="page-link"
+                         th:href="@{/dashboard/product-management/voucher/search(
+                  numPage=${currentPage + 1},
+                  name=${name},
+                  status=${statusSelected},
+                  startDate=${startDate},
+                  endDate=${endDate})}"
+                         th:if="${currentPage < totalPages}"
+                         aria-label="Next">
+                        &raquo;
+                      </a>
+                    </li>
+
+                  </th:block>
+
                 </ul>
               </nav>
 

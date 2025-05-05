@@ -22,14 +22,22 @@
               <div class="card-body">
                 <div class="row">
                   <div class="col-lg-12"> <!-- Change to col-12 to make it full-width -->
-                    <h4 class="mb-3">Tạo voucher</h4>
+                    <div class="row">
+                      <div class="col-12">
+                        <h4 class="mb-3 mx-auto d-block">Thêm Khuyến Mại</h4>
+                      </div>
 
+                    </div>
+
+                    <hr>
                     <form id="voucherForm" class="needs-validation" novalidate
                           th:action="@{/dashboard/product-management/voucher/create}"
                           th:object="${voucher}" method="post">
 
                       <!-- Tên Voucher -->
-                      <div class="mb-3">
+                      <div class="row g-3">
+
+                      <div class="col-12 col-md-6">
                         <label for="name">Tên Voucher</label>
                         <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Nhập tên..." required oninput="validateName()">
                         <div class="invalid-feedback">
@@ -38,7 +46,7 @@
                       </div>
 
                       <!-- Số tiền -->
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="value">Số tiền (VND)</label>
                         <input type="text" class="form-control" id="value" name="value" placeholder="Nhập số tiền..." th:field="*{value}" required
                                oninput="formatCurrency(event)">
@@ -46,32 +54,34 @@
                       </div>
 
                       <!-- Số lượng -->
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="quantity">Số lượng</label>
                         <input type="number" class="form-control" id="quantity" th:field="*{quantity}" placeholder="Nhập số lượng..." required min="1" max="10000">
                         <div class="invalid-feedback">Số lượng phải lớn hơn 0 và nhỏ hơn 100.000.</div>
                       </div>
 
                       <!-- Ngày bắt đầu -->
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="startDate">Ngày bắt đầu</label>
                         <input type="datetime-local" class="form-control" id="startDate" placeholder="Chọn ngày bắt đầu..." th:field="*{startDate}" required>
                         <div class="invalid-feedback">Ngày bắt đầu phải trước ngày kết thúc.</div>
                       </div>
 
                       <!-- Ngày kết thúc -->
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="endDate">Ngày kết thúc</label>
                         <input type="datetime-local" class="form-control" id="endDate" placeholder="Chọn ngày kết thúc..." th:field="*{endDate}" required>
                         <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
                       </div>
 
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="minimumBill">Hóa đơn tối thiểu</label>
                         <input type="text" class="form-control" id="minimumBill" th:field="*{minimumBill}" placeholder="Nhập hóa đơn tối thiểu..." required oninput="formatCurrency(event)">
                         <div class="invalid-feedback">Hóa đơn tối thiểu phải lớn hơn 1,000 VNĐ và nhỏ hơn 10,000,000 VNĐ</div>
                       </div>
 
+                      </div>
+                      <hr>
                       <div class="btn-container">
                         <!-- Nút quay lại -->
                         <button class="btn btn-back" type="button" onclick="window.history.back();">Quay lại</button>

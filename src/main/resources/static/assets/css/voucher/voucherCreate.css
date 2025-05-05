@@ -32,28 +32,62 @@
           padding: 35px;
         }
 
+/*
    h4.mb-3 {
-    font-size: 14px; /* Giảm kích thước chữ */
-    font-weight: 600; /* Đậm chữ */
-    color: white; /* Màu chữ trắng */
-    text-align: center; /* Căn giữa chữ */
-    margin-bottom: 20px; /* Khoảng cách dưới */
-    padding: 12px; /* Padding trong */
-    background: #FF8C00; /* Màu nền cam */
-    border-radius: 8px; /* Bo góc */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng đổ nhẹ */
-    transition: all 0.3s ease; /* Hiệu ứng chuyển động mượt mà */
-    width: 110px; /* Đặt chiều rộng */
-    white-space: nowrap; /* Ngăn văn bản xuống dòng */
-    overflow: hidden; /* Ẩn phần văn bản vượt quá */
-    text-overflow: ellipsis; /* Hiển thị ba chấm nếu văn bản dài */
+    font-size: 14px; */
+/* Giảm kích thước chữ *//*
+
+    font-weight: 600; */
+/* Đậm chữ *//*
+
+    color: white; */
+/* Màu chữ trắng *//*
+
+    text-align: center; */
+/* Căn giữa chữ *//*
+
+    margin-bottom: 20px; */
+/* Khoảng cách dưới *//*
+
+    padding: 12px; */
+/* Padding trong *//*
+
+    background: #FF8C00; */
+/* Màu nền cam *//*
+
+    border-radius: 8px; */
+/* Bo góc *//*
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+/* Hiệu ứng bóng đổ nhẹ *//*
+
+    transition: all 0.3s ease; */
+/* Hiệu ứng chuyển động mượt mà *//*
+
+    width: 150px; */
+/* Đặt chiều rộng *//*
+
+    white-space: nowrap; */
+/* Ngăn văn bản xuống dòng *//*
+
+    overflow: hidden; */
+/* Ẩn phần văn bản vượt quá *//*
+
+    text-overflow: ellipsis; */
+/* Hiển thị ba chấm nếu văn bản dài *//*
+
 }
 
 h4.mb-3:hover {
-    transform: scale(0.95); /* Hiệu ứng co lại khi hover */
-    background: #FF7F50; /* Đổi màu nền khi hover */
+    transform: scale(0.95); */
+/* Hiệu ứng co lại khi hover *//*
+
+    background: #FF7F50; */
+/* Đổi màu nền khi hover *//*
+
 }
 
+*/
 
 
         /* Style for input elements */

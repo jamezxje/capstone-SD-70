@@ -23,80 +23,97 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-lg-12">
-                <h4 class="mb-3">Sửa voucher</h4>
 
-                  <form id="voucherForm" class="needs-validation" novalidate th:action="@{/dashboard/product-management/voucher/update}" th:object="${voucher}" method="post">
-                    <input type="hidden" class="form-control" id="id" th:field="*{id}" th:value="${voucher.id}" placeholder="" value="" required="">
-                    <div class="mb-3">
-                      <label for="name">Tên Voucher</label>
-                      <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Nhập tên..." required
-                              oninput="validateName()">
-                      <div class="invalid-feedback">
-                        Tên không không được trống và không được chứa ký tự đặc biệt.
+                  <div class="row">
+                    <div class="col-12">
+                      <h4 class="mb-3 mx-auto d-block">Sửa Khuyến Mại</h4>
+                    </div>
+                  </div>
+                  <hr>
+
+                  <form id="voucherForm" class="needs-validation" novalidate
+                        th:action="@{/dashboard/product-management/voucher/update}"
+                        th:object="${voucher}" method="post">
+
+                    <input type="hidden" class="form-control" id="id" th:field="*{id}" th:value="${voucher.id}">
+
+                      <div class="row g-3">
+
+                        <!-- Tên voucher -->
+                        <div class="col-12 col-md-6">
+                          <label for="name" class="form-label">Tên Voucher</label>
+                          <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Nhập tên..." required oninput="validateName()">
+                          <div class="invalid-feedback">
+                            Tên không được trống và không được chứa ký tự đặc biệt.
+                          </div>
+                        </div>
+
+                        <!-- Giá trị -->
+                        <div class="col-12 col-md-6">
+                          <label for="value" class="form-label">Số tiền (VND)</label>
+                          <input type="text" class="form-control" id="value" name="value" th:value="${formattedValue}" placeholder="Nhập số tiền..." required oninput="formatCurrency(event)">
+                          <div class="invalid-feedback">Số tiền phải từ 10.000 VNĐ đến 10.000.000 VNĐ và không được lớn hơn hóa đơn tối thiểu.</div>
+                        </div>
+
+                        <!-- Số lượng -->
+                        <div class="col-12 col-md-6">
+                          <label for="quantity" class="form-label">Số lượng</label>
+                          <input type="number" class="form-control" id="quantity" th:field="*{quantity}" placeholder="Nhập số lượng..." required min="1" max="10000">
+                          <div class="invalid-feedback">Số lượng phải lớn hơn 0 và nhỏ hơn 100.000.</div>
+                        </div>
+
+                        <!-- Ngày bắt đầu -->
+                        <div class="col-12 col-md-6">
+                          <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                          <input type="datetime-local" class="form-control" id="startDate" name="startDate"
+                                 th:value="${#temporals.format(startDate, 'yyyy-MM-dd''T''HH:mm')}" required>
+                          <div class="invalid-feedback">Ngày bắt đầu phải trước ngày kết thúc.</div>
+                        </div>
+
+                        <!-- Ngày kết thúc -->
+                        <div class="col-12 col-md-6">
+                          <label for="endDate" class="form-label">Ngày kết thúc</label>
+                          <input type="datetime-local" class="form-control" id="endDate" name="endDate"
+                                 th:value="${#temporals.format(endDate, 'yyyy-MM-dd''T''HH:mm')}" required>
+                          <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
+                        </div>
+
+                        <!-- Hóa đơn tối thiểu -->
+                        <div class="col-12 col-md-6">
+                          <label for="minimumBill" class="form-label">Hóa đơn tối thiểu</label>
+                          <input type="text" class="form-control" id="minimumBill" oninput="formatCurrency(event)"
+                                 th:value="${miniBill}" name="miniBill" placeholder="Nhập hóa đơn tối thiểu..." required>
+                          <div class="invalid-feedback">Hóa đơn tối thiểu phải từ 1.000 VNĐ đến 10.000.000 VNĐ.</div>
+                        </div>
+
+                        <!-- Trạng thái -->
+                        <div class="col-12 col-md-6">
+                          <label for="status" class="form-label">Trạng thái</label>
+                          <select class="form-control" id="status" name="status">
+                            <option value="">Chọn trạng thái</option>
+                            <option th:each="status : ${status}"
+                                    th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
+                            (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}"
+                                    th:value="${status}"
+                                    th:selected="*{status} == ${status}"></option>
+                          </select>
+                          <div class="invalid-feedback">
+                            Trạng thái không được trống. Nếu trạng thái là "Đang hoạt động" nhưng ngày kết thúc đã qua thì trạng thái phải là "Hết hạn".
+                          </div>
+                        </div>
+
                       </div>
-                    </div>
+                    <hr>
+                      <!-- Nút hành động -->
+                      <div class="btn-container">
+                        <!-- Nút quay lại -->
+                        <button class="btn btn-back" type="button" onclick="window.history.back();">Quay lại</button>
 
-                    <!-- Số tiền -->
-                    <div class="mb-3">
-                      <label for="value">Số tiền (VND)</label>
-                      <input type="text" class="form-control" id="value" name="value" th:value="${formattedValue}" placeholder="Nhập số tiền..." required
-                             oninput="formatCurrency(event)">
-                      <div class="invalid-feedback">Số tiền phải lớn hơn 10,000 VNĐ và nhỏ hơn 10,000,000 VNĐ và số tiền không được lớn hơn hóa đơn tối thiểu.</div>
-                    </div>
-
-                    <!-- Số lượng -->
-                    <div class="mb-3">
-                      <label for="quantity">Số lượng</label>
-                      <input type="number" class="form-control" id="quantity" th:field="*{quantity}" placeholder="Nhập số lượng..." required min="1" max="10000">
-                      <div class="invalid-feedback">Số lượng phải lớn hơn 0 và nhỏ hơn 100.000.</div>
-                    </div>
-
-                    <!-- Ngày bắt đầu -->
-                    <div class="mb-3">
-                      <label for="startDate">Ngày bắt đầu</label>
-                      <input type="datetime-local" class="form-control" id="startDate" name="startDate"
-                             th:value="${#temporals.format(startDate, 'yyyy-MM-dd''T''HH:mm')}" required>
-                      <div class="invalid-feedback">Ngày bắt đầu phải trước ngày kết thúc.</div>
-                    </div>
-
-                    <!-- Ngày kết thúc -->
-                    <div class="mb-3">
-                      <label for="endDate">Ngày kết thúc</label>
-                      <input type="datetime-local" class="form-control" id="endDate" name="endDate"
-                             th:value="${#temporals.format(endDate, 'yyyy-MM-dd''T''HH:mm')}" required>
-                      <div class="invalid-feedback">Ngày kết thúc phải sau ngày bắt đầu.</div>
-                    </div>
-
-                    <div class="mb-3">
-                      <label for="minimumBill">Hóa đơn tối thiểu</label>
-                      <input type="text" class="form-control" id="minimumBill" oninput="formatCurrency(event)" th:value="${miniBill}" name="miniBill" placeholder="Nhập hóa đơn tối thiểu..." required>
-                      <div class="invalid-feedback">Hóa đơn tối thiểu phải lớn hơn 1,000 VNĐ và nhỏ hơn 10,000,000 VNĐ</div>
-                    </div>
-
-                    <div class="mb-3 select-container">
-                      <label for="status">Trạng thái</label>
-                      <select class="form-control" id="status" name="status">
-                        <option value="">Chọn trạng thái</option>
-                        <option th:each="status : ${status}"
-                                th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
-                (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}"
-                                th:value="${status}"
-                                th:selected="*{status} == ${status}"></option>
-                      </select>
-                      <div class="invalid-feedback">
-                        Trạng thái không được trống và nếu trạng thái đang hoạt động
-                        mà ngày kết thúc sau hôm nay thì trạng thái phải là hết hạn
-                        hoặc trạng thái ngày kết thúc trước ngày ngày hôm nay thì là chưa hoạt động.
+                        <!-- Nút gửi -->
+                        <button class="btn btn-primary" type="submit" >Gửi</button>
                       </div>
-                    </div>
 
-                    <div class="btn-container">
-                      <!-- Nút quay lại -->
-                      <button class="btn btn-back" type="button" onclick="window.history.back();">Quay lại</button>
 
-                      <!-- Nút gửi -->
-                      <button class="btn btn-primary" type="submit">Sửa</button>
-                    </div>
                   </form>
                 </div>
               </div>

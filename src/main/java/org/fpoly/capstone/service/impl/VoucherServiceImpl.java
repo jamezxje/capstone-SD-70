@@ -143,7 +143,7 @@ public class VoucherServiceImpl implements VoucherService {
         return deleteVoucher;
     }
 
-    private void updateVoucherStatus(Voucher voucher){
+    public void updateVoucherStatus(Voucher voucher){
         LocalDate currentDate = LocalDate.now();
 
         if (voucher.getQuantity() == 0) {
@@ -158,15 +158,16 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
 
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void updateVoucherStatuses() {
-        List<Voucher> vouchers = voucherRepository.findAll();
-
-        for (Voucher voucher : vouchers) {
-            updateVoucherStatus(voucher);
-            voucherRepository.save(voucher);
-        }
-    }
+//    @Scheduled(fixedRate = 86400000)
+//    @Scheduled(cron = "0 0 * * * *")
+//    public void updateVoucherStatuses() {
+//        List<Voucher> vouchers = voucherRepository.findAll();
+//
+//        for (Voucher voucher : vouchers) {
+//            updateVoucherStatus(voucher);
+//            voucherRepository.save(voucher);
+//        }
+//    }
 
     @Override
     public List<Voucher> getAllVouchers() {

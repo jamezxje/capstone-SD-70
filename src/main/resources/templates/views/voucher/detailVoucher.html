@@ -40,7 +40,7 @@
         padding: 35px;
       }
 
- h4.mb-3 {
+ h4.col-12 col-md-6 {
   font-size: 14px; /* Giảm kích thước chữ */
   font-weight: 600; /* Đậm chữ */
   color: white; /* Màu chữ trắng */
@@ -57,7 +57,7 @@
   text-overflow: ellipsis; /* Hiển thị ba chấm nếu văn bản dài */
 }
 
-h4.mb-3:hover {
+h4.col-12 col-md-6:hover {
   transform: scale(0.95); /* Hiệu ứng co lại khi hover */
   background: #FF7F50; /* Đổi màu nền khi hover */
 }
@@ -298,54 +298,59 @@ label {
               <div class="card-body">
                 <div class="row">
                   <div class="col-lg-12">
-                    <h4 class="mb-3">Thông tin voucher</h4>
 
+                    <div class="row">
+                      <div class="col-12">
+                        <h4 class="mb-3 mx-auto d-block">Thông Tin Khuyến Mại</h4>
+                      </div>
+                    </div>
+                    <hr>
                     <form id="voucherForm" class="needs-validation" novalidate th:object="${voucher}" method="post">
-
-                      <div class="mb-3">
+                      <div class="row g-3">
+                      <div class="col-12 col-md-6">
                         <label for="id">Tên Voucher</label>
                         <input type="text" class="form-control" id="id" th:value="${voucher.id}" required disabled="disabled">
                       </div>
 
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="name">Tên Voucher</label>
                         <input type="text" class="form-control" id="name" th:value="${voucher.name}" required disabled="disabled">
                       </div>
 
                       <!-- Số tiền -->
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="value">Số tiền (VND)</label>
                         <input type="text" class="form-control" id="value" name="value" th:value="${formattedValue}" disabled="disabled"
                                oninput="formatCurrency(event)">
                       </div>
 
                       <!-- Số lượng -->
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="quantity">Số lượng</label>
                         <input type="number" class="form-control" id="quantity" th:th:value="${voucher.quantity}" placeholder="Nhập số lượng..." disabled="disabled">
                       </div>
 
                       <!-- Ngày bắt đầu -->
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="startDate">Ngày bắt đầu</label>
                         <input type="datetime-local" class="form-control" id="startDate" name="startDate"
                                th:value="${#temporals.format(startDate, 'yyyy-MM-dd''T''HH:mm')}" disabled="disabled">
                       </div>
 
                       <!-- Ngày kết thúc -->
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="endDate">Ngày kết thúc</label>
                         <input type="datetime-local" class="form-control" id="endDate" name="endDate"
                                th:value="${#temporals.format(endDate, 'yyyy-MM-dd''T''HH:mm')}" disabled="disabled">
                       </div>
 
 
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="minimumBill">Hóa đơn tối thiểu</label>
                         <input type="text" class="form-control" id="minimumBill" oninput="formatCurrency(event)" th:value="${miniBill}" name="miniBill" placeholder="Nhập hóa đơn tối thiểu..." disabled="disabled">
                       </div>
 
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="createAt" class="form-label">Ngày tạo:</label>
                         <input
                                 type="text"
@@ -356,7 +361,7 @@ label {
                                 disabled>
                       </div>
 
-                      <div class="mb-3">
+                      <div class="col-12 col-md-6">
                         <label for="lastModifiedDate" class="form-label">Ngày sửa cuối:</label>
                         <input
                                 type="text"
@@ -371,7 +376,7 @@ label {
 
 
 
-                      <div class="mb-3 select-container">
+                      <div class="col-12 col-md-6 select-container">
                         <label for="status">Trạng thái</label>
                         <select class="form-control" id="status" name="status" disabled="disabled">
                           <option th:each="status : ${status}"
@@ -381,13 +386,15 @@ label {
                                   th:selected="*{status} == ${status}" disabled="disabled"></option>
                         </select>
                       </div>
-
+                      </div>
+                      <hr>
                       <div class="btn-container">
                         <!-- Nút quay lại -->
                         <button class="btn btn-back" type="button" onclick="window.history.back();">Quay lại</button>
 
                         <!-- Nút gửi -->
                       </div>
+
                     </form>
                   </div>
                 </div>
