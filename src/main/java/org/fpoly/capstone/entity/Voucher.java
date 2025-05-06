@@ -27,28 +27,22 @@ public class Voucher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "code")
     private String code;
 
-    @NotEmpty(message = "Tên không được trống")
     @Column(name = "name")
     private String name;
 
-    @NotNull(message = "Số tiền không được trống")
     @Column(name = "value")
     private BigDecimal value;
 
-    @NotNull(message = "Số lượng không được trống")
     @Column(name = "quantity")
     private Integer quantity;
 
-    @NotNull(message = "Ngày bắt đầu không được trống")
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime startDate;
 
-    @NotNull(message = "Ngày kết thúc không được trống")
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime endDate;
