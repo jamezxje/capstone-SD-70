@@ -73,9 +73,9 @@
                </button>
               </div>
               <div class="justify-content-end ml-4">
-                <button type="submit" class="btn-search">
+                <a type="submit" class="btn-search" th:href="@{/dashboard/product-management/voucher/list}">
                   Làm mới
-                </button>
+                </a>
               </div>
 
             </div>
@@ -154,7 +154,7 @@
               <nav aria-label="Pagination" class="d-flex justify-content-end">
 
                 <ul class="pagination">
-                  <th:block th:if="${#strings.isEmpty(name)} and ${statusSelected} == null and ${startDate} == null and ${endDate} == null">
+                  <th:block th:if="${#strings.isEmpty(name)} and ${statusSelect} == null and ${startDate} == null and ${endDate} == null">
 
                   <!-- Nút Previous -->
                   <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
@@ -185,13 +185,13 @@
                   </li>
 
                   </th:block>
-                  <th:block th:if="!(${#strings.isEmpty(name)} and ${statusSelected} == null and ${startDate} == null and ${endDate} == null)">
+                  <th:block th:if="!(${#strings.isEmpty(name)} and ${statusSelect} == null and ${startDate} == null and ${endDate} == null)">
                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                       <a class="page-link"
                          th:href="@{/dashboard/product-management/voucher/search(
                   numPage=${currentPage - 1},
                   name=${name},
-                  status=${statusSelected},
+                  statusSelect=${statusSelect},
                   startDate=${startDate},
                   endDate=${endDate})}"
                          th:if="${currentPage > 1}"
@@ -206,7 +206,7 @@
                          th:href="@{/dashboard/product-management/voucher/search(
                     numPage=${i},
                     name=${name},
-                    status=${statusSelected},
+                    statusSelect=${statusSelect},
                     startDate=${startDate},
                     endDate=${endDate})}"
                          th:classappend="${i == currentPage} ? 'active' : ''"
@@ -219,7 +219,7 @@
                          th:href="@{/dashboard/product-management/voucher/search(
                   numPage=${currentPage + 1},
                   name=${name},
-                  status=${statusSelected},
+                  statusSelect=${statusSelect},
                   startDate=${startDate},
                   endDate=${endDate})}"
                          th:if="${currentPage < totalPages}"
