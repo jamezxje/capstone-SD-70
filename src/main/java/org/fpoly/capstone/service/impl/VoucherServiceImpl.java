@@ -146,9 +146,7 @@ public class VoucherServiceImpl implements VoucherService {
     public void updateVoucherStatus(Voucher voucher){
         LocalDate currentDate = LocalDate.now();
 
-        if (voucher.getQuantity() == 0) {
-            voucher.setStatus(VoucherStatus.EXPIRED);
-        } else if (voucher.getEndDate().toLocalDate().isBefore(currentDate)) {
+        if (voucher.getEndDate().toLocalDate().isBefore(currentDate)) {
             voucher.setStatus(VoucherStatus.EXPIRED);
         } else if (voucher.getStartDate().toLocalDate().isAfter(currentDate)) {
             voucher.setStatus(VoucherStatus.INACTIVE);
@@ -158,16 +156,17 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
 
-//    @Scheduled(fixedRate = 86400000)
-//    @Scheduled(cron = "0 0 * * * *")
-//    public void updateVoucherStatuses() {
-//        List<Voucher> vouchers = voucherRepository.findAll();
-//
-//        for (Voucher voucher : vouchers) {
-//            updateVoucherStatus(voucher);
-//            voucherRepository.save(voucher);
-//        }
-//    }
+    @Scheduled(cron = "0 0 * * * *")
+    @Override
+    public void updateVoucherStatuses() {
+        List<Voucher> vouchers = voucherRepository.findAll();
+        for (Voucher voucher : vouchers) {
+           if(voucher.getQuantity() == 0) {
+               voucher.setStatus(VoucherStatus.EXPIRED);
+               voucherRepository.save(voucher);
+           }
+        }
+    }
 
     @Override
     public List<Voucher> getAllVouchers() {

@@ -36,4 +36,6 @@ public interface VoucherService {
 
     List<Voucher> getAllVouchers();
 
+    void updateVoucherStatuses();
+
 }
