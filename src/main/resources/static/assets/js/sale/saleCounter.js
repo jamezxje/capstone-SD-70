@@ -2228,6 +2228,17 @@ function fetchVouchers(page = 0) {
             console.error("Lỗi khi lấy danh sách voucher:", error);
         });
 }
+function formatDateFromArray(dateArray) {
+    if (!Array.isArray(dateArray) || dateArray.length < 3) return "Invalid Date";
+
+    const year = dateArray[0];
+    const month = String(dateArray[1]).padStart(2, '0');
+    const day = String(dateArray[2]).padStart(2, '0');
+    const hour = dateArray[3] !== undefined ? String(dateArray[3]).padStart(2, '0') : '00';
+    const minute = dateArray[4] !== undefined ? String(dateArray[4]).padStart(2, '0') : '00';
+
+    return `${day}/${month}/${year} ${hour}:${minute}`;
+}
 
 function updateVoucherTable(vouchers) {
     const tbody = document.querySelector('#voucherTable tbody');
@@ -2247,8 +2258,10 @@ function updateVoucherTable(vouchers) {
             <td>${formatINT(voucher.value)}</td>
             <td>${formatINT(voucher.minimumBill)}</td>
                 <td>${voucher.quantity}</td>
-            <td>${new Date(voucher.startDate).toLocaleDateString()}</td>
-            <td>${new Date(voucher.endDate).toLocaleDateString()}</td>
+<td>${formatDateFromArray(voucher.startDate)}</td>
+<td>${formatDateFromArray(voucher.endDate)}</td>
+
+
             <td>
                 <button class="select-voucher-btn"
                         data-id="${voucher.id}"
