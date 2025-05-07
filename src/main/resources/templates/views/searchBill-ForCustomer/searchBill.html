@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Tìm kiếm hóa đơn</title>
     <th:block id="th-css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-        <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>
+        <!--        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+        <!--        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">-->
+        <!--        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>-->
+        <!--        <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>-->
         <style>
             .modal {
                 display: none; /* Ẩn modal mặc định */
@@ -46,48 +46,402 @@
                 text-decoration: none;
                 cursor: pointer;
             }
+
+            .progress-step.active .icons {
+                background: blue;
+                color: white;
+            }
+            .icons {
+                width: 40px;
+                height: 40px;
+                line-height: 40px;
+                border-radius: 50%;
+                background: lightgray;
+                display: inline-block;
+            }
+            body {
+                background-color: #f5f5f5;
+            }
+            .table-container {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 10px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background: #ff7f00;
+                color: white;
+            }
+            .delete-btn {
+                background: red;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+
+            .order-container {
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 20px;
+                background: #fff;
+            }
+            .order-header h2 {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .order-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #f8f9fa;
+                padding: 10px;
+                border-radius: 5px;
+            }
+            .order-info, .customer-info {
+                width: 48%;
+            }
+            .order-content {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 0;
+            }
+            .status-label {
+                background: #007bff;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+
+
+            .order-buttons {
+                display: flex;
+                gap: 10px;
+            }
+            .btn {
+                padding: 8px 15px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .btn-update {
+                background-color: #007bff;
+                color: white;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .order-content {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 10px;
+            }
+            .modal {
+                margin: auto;
+            }
+
+            .timeline {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                margin: 50px 0;
+                padding: 20px 0;
+            }
+
+            .timeline::before {
+                content: '';
+                position: absolute;
+                top: 80%; /* Di chuyển thanh gạch ngang xuống dưới */
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background: #007bff;
+                transform: translateY(10px); /* Thêm một khoảng cách nhỏ giữa thanh và các item */
+            }
+
+            .timeline-item {
+                position: relative;
+                text-align: center;
+                padding-bottom: 20px; /* Tạo không gian cho vòng tròn không bị đè lên */
+            }
+
+            .timeline-item::before {
+                content: '';
+                position: absolute;
+                top: 105px; /* Đặt vòng tròn ở trên cùng */
+                left: 50%;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background: #007bff;
+                border: 2px solid #fff;
+                transform: translateX(-50%) translateY(-50%);
+                z-index: 1; /* Đảm bảo vòng tròn nằm dưới văn bản */
+            }
+
+            .timeline-item .text {
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .timeline-item .date {
+                font-size: 12px;
+                color: gray;
+            }
+            /* Tùy chỉnh cho cả hai nút */
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+                font-weight: bold;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            /* Nút Chuyển trạng thái */
+            .btn-primary {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+
+            /* Nút Hủy */
+            .btn-danger {
+                background-color: #dc3545;
+                color: white;
+            }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+            }
+
+            /* Khi hover vào cả hai nút */
+            button:active {
+                transform: scale(0.98);
+            }
+
+            /* Modal */
+            .modal {
+                display: none; /* Ẩn modal mặc định */
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                padding-top: 60px;
+            }
+
+            .modal-content {
+                background-color: white;
+                margin: 10% 0 0 40%;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+                max-width: 600px;
+            }
+
+            .close {
+                color: #aaa;
+                font-size: 28px;
+                font-weight: bold;
+                position: absolute;
+                top: 10px;
+                right: 25px;
+                font-family: Arial, sans-serif;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            .closehuy {
+                color: #aaa;
+                font-size: 28px;
+                font-weight: bold;
+                position: absolute;
+                top: 10px;
+                right: 25px;
+                font-family: Arial, sans-serif;
+            }
+
+            .closehuy:hover,
+            .closehuy:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            .closehistory {
+                color: #aaa;
+                font-size: 28px;
+                font-weight: bold;
+                position: absolute;
+                top: 10px;
+                right: 25px;
+                font-family: Arial, sans-serif;
+            }
+
+            .closehistory:hover,
+            .closehistory:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            button {
+                padding: 10px 20px;
+                /*background-color: #4CAF50;*/
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #45a049;
+            }
+            textarea {
+                padding: 10px;
+            }
+            /* Modal - Nền tối */
+            .modal {
+                display: none; /* Ẩn modal mặc định */
+                position: fixed;
+                z-index: 1; /* Đảm bảo modal luôn hiển thị trên cùng */
+                left: 0;
+                top: 0;
+                width: 100%; /* Toàn bộ chiều rộng của trang */
+                height: 100%; /* Toàn bộ chiều cao của trang */
+                overflow: auto; /* Nếu nội dung lớn hơn màn hình, có thể cuộn */
+                background-color: rgba(0, 0, 0, 0.4); /* Màu nền tối */
+                padding-top: 60px; /* Thêm khoảng cách từ trên xuống */
+            }
+
+            .modal-content {
+                background-color: #fff;
+                margin: 5% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%; /* Chỉnh sửa chiều rộng của modal */
+                max-width: 600px;
+            }
+
+            .close-btn {
+                color: #aaa;
+                float: right;
+                margin-left: 530px;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            /* Nút đóng modal khi hover */
+            .close-btn:hover,
+            .close-btn:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            /* Định dạng các input, select trong modal */
+            input[type="text"], select {
+                width: 100%;
+                padding: 8px;
+                margin: 10px 0;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            /* Nút "Lưu thay đổi" */
+            button[type="submit"] {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+
+            button[type="submit"]:hover {
+                background-color: #45a049;
+            }
+
+            .invoice-header h2 {
+                margin: 0;
+            }
+
+            .invoice-info-box h4 {
+                margin-bottom: 10px;
+            }
+
+            .invoice-info-box p {
+                margin: 5px 0;
+            }
+            .product-list li {
+                margin: 5px 0;
+            }
         </style>
     </th:block>
 </head>
 <body>
 <th:block id="th-body">
+    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
     <div class="content-body">
         <div class="container-fluid">
             <div class="order-container">
 
                 <div class="timeline">
                     <div class="timeline-item" id="waiting-confirmation">
-                        <div class="icon">📜</div>
+                        <div class="icons">📜</div>
                         <div class="text">Chờ xác nhận</div>
                         <div class="date">16:37:35 23-12-2023</div>
                     </div>
                     <div class="timeline-item" id="confirmed" style="display: none;">
-                        <div class="icon">✅</div>
+                        <div class="icons">✅</div>
                         <div class="text">Đã xác nhận</div>
                         <div class="date">16:39:28 23-12-2023</div>
                     </div>
                     <div class="timeline-item" id="waiting-shipping" style="display: none;">
-                        <div class="icon">🚚</div>
+                        <div class="icons">🚚</div>
                         <div class="text">Chờ vận chuyển</div>
                         <div class="date">16:39:47 23-12-2023</div>
                     </div>
                     <div class="timeline-item" id="shipping" style="display: none;">
-                        <div class="icon">🚛</div>
+                        <div class="icons">🚛</div>
                         <div class="text">Đang vận chuyển</div>
                         <div class="date">16:40:10 23-12-2023</div>
                     </div>
                     <div class="timeline-item" id="paid" style="display: none;">
-                        <div class="icon">💳</div>
+                        <div class="icons">💳</div>
                         <div class="text">Thanh toán</div>
                         <div class="date">16:40:15 23-12-2023</div>
                     </div>
                     <div class="timeline-item" id="completed" style="display: none;">
-                        <div class="icon">🎉</div>
+                        <div class="icons">🎉</div>
                         <div class="text">Hoàn thành</div>
                         <div class="date">16:40:15 23-12-2023</div>
                     </div>
                     <div class="timeline-item" id="cancel" style="display: none;">
-                        <div class="icon">❌</div>
+                        <div class="icons">❌</div>
                         <div class="text">Đã hủy</div>
                         <div class="date">16:40:15 23-12-2023</div>
                     </div>
@@ -185,7 +539,7 @@
 
             <div class="table-container">
                 <h5>Sản phẩm đã mua</h5>
-                <table border="1" cellspacing="0" cellpadding="8">
+                <table  style="border: 1px solid #dee2e6; border-collapse: collapse;">
                     <thead>
                     <tr>
                         <th>STT</th>
@@ -210,7 +564,7 @@
                         <h5>Voucher giảm giá: <span id="discountPrice"></span> VND</h5>
                         <h5>Tổng tiền giảm: <span id="discountPrice-1"></span> VND</h5>
                         <hr>
-                        <h4>Tổng tiền thanh toán: <span id="totalPrice"></span> VND</h4>
+                        <h2>Tổng tiền thanh toán: <span id="totalPrice"></span> VND</h2>
                     </div>
                 </div>
             </div>
@@ -221,5 +575,49 @@
 </body>>
 <th:block id="th-js">
     <script type="text/javascript" th:src="@{/assets/js/searchBillForCustomer/searchBill.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const message = localStorage.getItem("successMessage");
+            if (message && message.trim() !== "") {
+                showToast(message);
+                localStorage.removeItem("successMessage");
+            }
+        });
+
+        function showToast(message) {
+            const toastContainer = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i> ${message}`;
+            toast.style.cssText = `
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.5s, transform 0.5s ease-in-out;
+            margin-bottom: 10px;
+            position: relative;
+            min-width: 250px;
+        `;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = "1";
+                toast.style.transform = "translateX(0)";
+            }, 100);
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transform = "translateX(100%)";
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+    </script>
+
 </th:block>
 </html>

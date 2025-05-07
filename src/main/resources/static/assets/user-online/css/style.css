@@ -1046,7 +1046,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 
 .stickyNav .site-header__search {
-    display: none;
+    /*display: none;*/
 }
 
 .site-header__search {

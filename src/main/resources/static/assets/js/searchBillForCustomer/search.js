@@ -4,7 +4,8 @@ document.getElementById('btn-search').addEventListener('click', function () {
     console.log("Check mã hóa đơn:", codeCustomer);
 
     if (!codeCustomer) {
-        alert("Vui lòng nhập mã hóa đơn.");
+        showToast('Vui lòng nhập mã hóa đơn.', 'error');
+        // alert("Vui lòng nhập mã hóa đơn.");
         return;
     }
 
@@ -15,6 +16,7 @@ function searchCodeForCustomer(code) {
     axios.get(`http://localhost:8080/search?code=${code}`)  // dùng backtick để tạo template string
         .then(response => {
             localStorage.setItem('codeCustomer', code);
+            localStorage.setItem('successMessage', 'Tìm kiếm thành công!');
             window.location.href = 'http://localhost:8080/searchBillCode'; // nhớ thêm http://
         })
         .catch(error => {
@@ -24,7 +26,8 @@ function searchCodeForCustomer(code) {
                 return;
             } else {
                 console.error("Lỗi khác: ", error);
-                alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+                // ("Đã xảy ra lỗi. Vui lòng thử lại.");
+                showToast('Đã xảy ra lỗi. Vui lòng thử lại.', 'error');
             }
         });
 }
