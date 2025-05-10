@@ -1,0 +1,20 @@
+package org.fpoly.capstone.controller.dashboard;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+
+@Controller
+@RequestMapping(path = "dashboard")
+@RequiredArgsConstructor
+public class DashBoardController {
+    @GetMapping(path = "")
+    public String showDashBoard() {
+        return "views/admin-dashboard/dashboard";
+    }
+    
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/user-online-view/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Index user</title>
+  <th:block id="th-css">
+    <link rel="stylesheet" th:href="@{/assets/user-online/css/plugins.css}">
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  
+  <!--Body Content-->
+  <div id="page-content">
+    <!--Page Title-->
+    <div class="page section-header text-center mt-5">
+      <div class="page-title">
+        <div class="wrapper"><h1 class="page-width">Bill History</h1></div>
+      </div>
+    </div>
+    <!--End Page Title-->
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+          <div class="your-order-payment">
+            <div class="your-order">
+              <h2 class="order-title mb-4">Your Order</h2>
+              
+              <div class="table-responsive-sm order-table">
+                <table class="bg-white table table-bordered table-hover text-center">
+                  <thead>
+                  <tr>
+                    <th class="text-left">Order date</th>
+                    <th>Total price</th>
+                    <th>Expect recieve date</th>
+                    <th>Order status</th>
+                    <th>Payment method</th>
+                    <th>Detail</th>
+                    <th>Cancel</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="bill : ${billList}">
+                    <td class="text-left" th:text="${bill.createDate}">
+                      Spike Jacket
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'POINT', 0, 'POINT')} + ' VND'">
+                      Spike Jacket
+                    </td>
+                    <td th:text="${bill.receiveDate}"></td>
+                    <td th:text="${bill.status}">$99</td>
+                    <td th:text="${bill.method}">$99</td>
+                    <td>
+                      <a th:href="@{bill/{billId}(billId=${bill.id})}" title="Detail" class="site-header__cart">
+                        <i class="icon anm anm-eye-l"></i>
+                      </a>
+                    </td>
+                    <td><a href="#" title="Cancel" class="site-header__cart">
+                      <i class="icon anm anm-trash-alt"></i>
+                    </a></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--End Body Content-->
+  
+  <!--Scoll Top-->
+  <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+  <!--End Scoll Top-->
+
+</th:block>
+
+</body>
+<script>
+</script>
+<th:block id="th-js">
+</th:block>
+</html>

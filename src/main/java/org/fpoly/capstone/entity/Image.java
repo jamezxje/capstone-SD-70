@@ -34,6 +34,9 @@ public class Image {
     @Column(name = "name", length = 255)
     private String name;
 
+    @Column(name = "url", length = 255)
+    private String url;
+
     @Column(name = "status")
     private Boolean status;
 

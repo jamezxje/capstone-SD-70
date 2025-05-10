@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <th:block id="th-css">
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  <div class="content-body">
+    <div class="container-fluid">
+      <div class="card">
+        
+        <div class="card-header d-sm-flex d-block">
+          <div class="mr-auto mb-sm-0 mb-3">
+            <h4 class="card-title font-w600 mb-2">Quản lý size</h4>
+          </div>
+          <button type="button" data-toggle="modal" data-target="#createSizeModal"
+                  class="btn btn-secondary ml-auto">+
+            Thêm mới
+          </button>
+        </div>
+        
+        <!--Data table start-->
+        <div class="card-body">
+          <div class="table-responsive">
+            
+            <!--Table start-->
+            <table class="table style-1">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>Size</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:if="${#lists.isEmpty(sizes)}">
+                <td colspan="5" class="text-center pt-5"><h3>KHÔNG TÌM THẤY DỮ LIỆU</h3></td>
+              </tr>
+              <tr th:each="size, index : ${sizes}">
+                <td th:text="${index.index+1}"></td>
+                <td class="pr-0" th:text="${size.name}"></td>
+                <td>
+                  <div class="d-flex action-button">
+                    <button type="button" class="btn btn-info btn-xs light px-2"
+                            data-toggle="modal"
+                            data-target="#editSizeModal"
+                            th:data-id="${size.id}"
+                            th:data-name="${size.name}">
+                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.9176C21.7553 4.26077 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73923 21.6131 6.08239C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z"
+                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </button>
+                    <a href="#" class="ml-2 btn btn-xs px-2 light btn-danger"
+                       data-toggle="modal"
+                       data-target="#deleteSizeModal"
+                       th:data-id="${size.id}">
+                      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round"></path>
+                        <path
+                            d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
+                            stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <!--Table end-->
+            
+            <!--Navigation start-->
+            <div th:unless="${#lists.isEmpty(sizes)}" class="d-flex justify-content-end flex-wrap">
+              <nav>
+                <ul class="pagination pagination-gutter">
+                  <li class="page-item page-indicator"
+                      th:classappend="${sizePage.hasPrevious()} ? '' : 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/size(page=${sizePage.number}, size=${sizePage.size}, name=${searchName})}">
+                      <i class="la la-angle-left"></i></a>
+                  </li>
+                  <li class="page-item" th:each="i : ${#numbers.sequence(1, sizePage.totalPages)}"
+                      th:classappend="${sizePage.number + 1 == i} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/size(page=${i}, size=${sizePage.size}, name=${searchName})}"
+                       th:text="${i}">
+                    </a>
+                  </li>
+                  <li class="page-item page-indicator"
+                      th:classappend="${sizePage.hasNext()} ? '' : 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/dashboard/product-management/size(page=${sizePage.number + 2}, size=${sizePage.size}, name=${searchName})}">
+                      <i class="la la-angle-right"></i></a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!--Navigation end-->
+          
+          </div>
+        </div>
+        <!--Data table end-->
+        
+        <!--Create size modal start-->
+        <div class="modal fade bd-example-modal-lg" id="createSizeModal" tabindex="-1" role="dialog"
+             aria-hidden="true">
+          <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Thêm size</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div>
+                  <div>
+                    <div class="row page-titles mx-0">
+                      <div class="col-sm-6 p-md-0">
+                        <div class="welcome-text">
+                          <h4>Chào mừng quay lại!</h4>
+                          <p class="mb-0">Danh mục</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="card">
+                          <div class="card-body">
+                            <div class="form-validation">
+                              <form th:action="@{/dashboard/product-management/size}"
+                                    method="POST"
+                                    th:object="${sizeModel}">
+                                <div class="row">
+                                  <div class="col-xl-12">
+                                    <div class="form-group row">
+                                      <label class="col-lg-4 col-form-label"
+                                             for="sizeName">
+                                        Tên size
+                                      </label>
+                                      <div class="col-lg-8">
+                                        <input type="text" class="form-control"
+                                               id="sizeName" name="name"
+                                               placeholder="Nhập tên">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger light"
+                                          data-dismiss="modal">Close
+                                  </button>
+                                  <button type="submit" class="btn btn-primary">Save
+                                  </button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Create size modal end-->
+        
+        <!--Edit size modal start-->
+        <div class="modal fade bd-example-modal-lg" id="editSizeModal" tabindex="-1" role="dialog"
+             aria-hidden="true">
+          <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Sửa size</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div>
+                  <div>
+                    <div class="row page-titles mx-0">
+                      <div class="col-sm-6 p-md-0">
+                        <div class="welcome-text">
+                          <h4>Chào mừng quay lại!</h4>
+                          <p class="mb-0">Danh mục</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="card">
+                          <div class="card-body">
+                            <div class="form-validation">
+                              <form th:action="@{/dashboard/product-management/size/update}"
+                                    method="POST"
+                                    th:object="${editSizeModel}">
+                                <input type="hidden" id="sizeIdEdit" th:field="*{id}"/>
+                                <div class="row">
+                                  <div class="col-xl-12">
+                                    <div class="form-group row">
+                                      <label class="col-lg-4 col-form-label"
+                                             for="sizeNameEdit">
+                                        Tên size
+                                      </label>
+                                      <div class="col-lg-8">
+                                        <input type="text" class="form-control"
+                                               id="sizeNameEdit" name="name"
+                                               placeholder="Nhập tên">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger light"
+                                          data-dismiss="modal">Close
+                                  </button>
+                                  <button type="submit" class="btn btn-primary">Save changes
+                                  </button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Edit size modal end-->
+        
+        <!-- Delete size modal start -->
+        <div class="modal fade" id="deleteSizeModal" tabindex="-1" role="dialog"
+             aria-labelledby="confirmDeleteModalLabel"
+             aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Bạn chắc là muốn xóa size này chứ ?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form id="deleteTransactionForm" method="post" action="">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Delete size modal end -->
+      
+      </div>
+    </div>
+  </div>
+</th:block>
+
+<th:block id="th-js">
+  <script>
+    $(document).on('click', '[data-target="#editSizeModal"]', function () {
+      const button = $(this);
+      
+      // Fetch values from data attributes
+      const id = button.data('id');
+      const name = button.data('name');
+      
+      // Populate the modal form fields
+      $('#sizeIdEdit').val(id);
+      $('#sizeNameEdit').val(name);
+    });
+    
+    $('#editSizeModal').on('hidden.bs.modal', function () {
+      $(this).find('form')[0].reset();
+    });
+    
+    $(document).on('click', '[data-target="#deleteSizeModal"]', function () {
+      const sizeId = $(this).data('id');
+      const formAction = `/dashboard/product-management/size/delete/${sizeId}`;
+      $('#deleteTransactionForm').attr('action', formAction);
+    });
+  </script>
+</th:block>
+
+</body>
+</html>

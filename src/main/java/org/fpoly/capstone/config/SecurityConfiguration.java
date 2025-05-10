@@ -1,8 +1,10 @@
 package org.fpoly.capstone.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,9 +20,45 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
+    @Bean("messageSource")
+    public MessageSource getMessageSource(){
+        ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
+        ms.setDefaultEncoding("utf-8");
+        ms.setBasename("classpath:i18n/voucher");
+        return ms;
+    }
+
     protected static final String[] PUBLIC_UNAUTHENTICATION_URI = {
             "/",
+            "/sale-counter/**" ,
+            "/getAllBill/**" ,
+            "/deleteBill/**",
+            "/save-bill/**" ,
+            "/save-product-bill/**" ,
+            "/getAllProduct/**" ,
+            "/getAllVoucher/**" ,
+            "/getAllBrand/**" ,
+            "/getAllMaterial/**" ,
+            "/getAllCategory/**" ,
+            "/getAllSize/**" ,
+            "/getAllColor/**" ,
+            "/payment-vnpay/**" ,
+            "/searchProduct/**" ,
+            "/vnpay-success/**" ,
+            "/customerPage/**" ,
+            "/createCustomerBill/**" ,
+            "/searchCustomer/**" ,
+            "/payment-success/**" ,
+            "/sendInvoice/**",
+            "/address-user/**" ,
+            "/getMinimumBill/**" ,
+            "/paymnet-success/**",
+            "/delete-product-bill/**" ,
+            "/products/**",
+            "/getAllProductDetail" ,
             "/auth/register",
+            "/auth/register/save",
+            "/auth/forgot-password",
             "/home",
             "/login",
             "/register",
@@ -33,6 +71,9 @@ public class SecurityConfiguration {
             "/img/**",
             "/uploads/**",
             "/details/**",
+            "/shop/**",
+            "/cart/**",
+            "/auth/login/**",
     };
 
     @Bean
@@ -43,6 +84,7 @@ public class SecurityConfiguration {
                         requests -> requests
                                 .requestMatchers(PUBLIC_UNAUTHENTICATION_URI).permitAll()
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/assets/**")).permitAll()
+                                .requestMatchers("/shop/assets/**").permitAll()
                                 .requestMatchers("/dashboard/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
