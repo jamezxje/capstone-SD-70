@@ -51,7 +51,8 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     LIMIT 1
 """)
     List<Object[]> getVoucherMinimumBill(@Param("minimumBill") int minimumBill);
-    @Query("select v from Voucher v order by v.id desc")
+
+    @Query("select v from Voucher v order by v.lastModifiedDate desc")
     Page<Voucher> findAll(Pageable pageable);
 
 

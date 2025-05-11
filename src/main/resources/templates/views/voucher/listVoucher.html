@@ -92,11 +92,12 @@
               <thead>
               <tr>
                 <th>STT</th>
-                <th>Code</th>
+                <th>Mã</th>
                 <th>Tên phiếu giảm giá</th>
                 <th>Ngày tạo</th>
                 <th>Số lượng</th>
                 <th>Số tiền</th>
+                <th>Hóa đơn tối thiểu</th>
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
                 <th>Trạng thái</th>
@@ -111,6 +112,7 @@
                 <td><div th:text="${#dates.format(voucher.createDate, 'dd/MM/yyyy HH:mm')}"></div></td>
                 <td><div th:text="${voucher.quantity}"></div></td>
                 <td class="voucher-value limit-text" th:text="${voucher.value}"></td>
+                <td class="voucher-value limit-text" th:text="${voucher.minimumBill}"></td>
                 <td><div th:text="${#temporals.format(voucher.startDate, 'dd/MM/yyyy HH:mm')}"></div></td>
                 <td><div th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy HH:mm')}"></div></td>
                 <td class="limit-text">
