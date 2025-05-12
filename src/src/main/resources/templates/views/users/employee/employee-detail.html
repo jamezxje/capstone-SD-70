@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+	  th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+	<meta charset="UTF-8">
+	<title>Quản lý Nhân Viên</title>
+	<th:block id="th-css"></th:block>
+</head>
+<body>
+<th:block id="th-body">
+	<div class="content-body">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h4 class="card-title">Nhân Viên Chi Tiết</h4>
+							<div>
+								<a href="/staff-management" class="btn btn-primary mr-2">Quay lại</a>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="form-validation">
+								<form class="form-valide" method="post">
+									<div class="row">
+										<div class="col-xl-6">
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" for="val-username">ID khách hàng</label>
+												<div class="col-lg-6">
+													<input th:value="${employee.id}" type="text" readonly=""  class="form-control"placeholder="">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" for="val-username">Họ và tên</label>
+												<div class="col-lg-6">
+													<input th:value="${employee?.fullName ?: ''}" type="text" readonly=""  class="form-control" id="val-username" name="val-username" placeholder="">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" for="val-email">Email
+												</label>
+												<div class="col-lg-6">
+													<input th:value="${employee?.email ?: ''}" type="text" readonly="" class="form-control" id="val-email" name="val-email" placeholder="">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" for="val-sodienthoai">Số điện thoại
+												</label>
+												<div class="col-lg-6">
+													<input th:value="${employee?.phoneNumber ?: ''}" type="text" readonly="" class="form-control" id="val-sodienthoai" name="val-sodienthoai" placeholder="">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" for="val-sodienthoai">Ngày sinh
+												</label>
+												<div class="col-lg-6">
+													<input type="date" class="form-control" readonly  th:value="${employee?.dateOfBirth != null ? #dates.format(employee.dateOfBirth, 'yyyy-MM-dd') : ''}">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" for="citizenIdentity">Căn cước công dân</label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" id="citizenIdentity" th:value="${employee?.citizenIdentity ?: ''}" placeholder="">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" >Giới tính
+												</label>
+												<div class="col-lg-6">
+													<div class="mt-2">
+														<label class="radio-inline mr-3">
+															<input type="radio" name="gender"  value="true" th:checked="${employee.gender == true}" onclick="return false;"> Nam
+														</label>
+														<label class="radio-inline mr-3">
+															<input type="radio" name="gender" value="false" th:checked="${employee.gender == false}" onclick="return false;"> Nữ
+														</label>
+													</div>
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" for="val-status">Trạng thái</label>
+												<div class="col-lg-6">
+													<select class="form-control" id="val-status" name="status" th:field="*{employee.status}" >
+														<option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).ACTIVATED}" >Kích hoạt</option>
+														<option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).NOT_ACTIVATED}" >Ngừng kích hoạt</option>
+														<option th:value="${T(org.fpoly.capstone.entity.enum_status.UserStatus).DELETED}" >Đã nghỉ việc</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="col-xl-6">
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" >Tỉnh/Thành Phố
+												</label>
+												<div class="col-lg-6">
+													<input th:value="${address?.province ?: ''}" type="text" readonly="" class="form-control" placeholder="">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" >Quận/Huyện
+												</label>
+												<div class="col-lg-6">
+													<input th:value="${address?.district ?: ''}" type="text" readonly="" class="form-control" placeholder="">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label" >Xã/Phường
+												</label>
+												<div class="col-lg-6">
+												<input th:value="${address?.ward ?: ''}" type="text" readonly="" class="form-control" placeholder="">
+												</div>
+											</div>
+											<!-- Địa chỉ cụ thể-->
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label">Số nhà/Ngõ/Đường</label>
+												<div class="col-lg-6">
+													<input type="text" class="form-control" readonly="" name="line" th:value="${address?.line ?: ''}" placeholder="">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-4 col-form-label">Ảnh đại diện</label>
+												<div class="col-lg-6 d-flex flex-column align-items-center">
+													<!-- Ô chọn ảnh -->
+													<div class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm" style="max-width: 300px; width: 100%;">
+														<input id="upload" type="file" name="file" onchange="readURLAvatar(this);"
+															   class="form-control border-0" accept="image/*" hidden>
+														<label id="upload-label" for="upload" class="font-weight-light text-muted"></label>
+														<div class="input-group-append w-100">
+															<label for="upload"
+																   class="btn btn-light m-0 rounded-pill px-4 d-flex align-items-center justify-content-center w-100">
+																<i class="fa fa-cloud-upload mr-2 text-muted"></i>
+																<small class="text-uppercase font-weight-bold text-muted mb-0">Chọn ảnh</small>
+															</label>
+														</div>
+													</div>
+													<!-- Hiển thị ảnh -->
+													<div class="image-area mt-4">
+														<img id="avatarPreview"
+															 th:src="${employee.avatar != null ? employee.avatar : ''}"
+															 class="img-fluid rounded shadow-sm"
+															 style="width: 120px; height: 120px; object-fit: cover; display: block; margin: 0 auto;"
+															 onerror="this.style.display='none';" />
+													</div>
+													<!-- Hiển thị lỗi -->
+													<div th:if="${fileError}" class="text-danger mt-2">
+														<p th:text="${fileError}"></p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		// JS để preview ảnh mới
+		function readURLAvatar(input) {
+			if (input.files && input.files[0]) {
+				const reader = new FileReader();
+				reader.onload = function (e) {
+					const preview = document.getElementById('avatarPreview');
+					preview.src = e.target.result; // base64 tạm thời
+					preview.style.display = 'block';
+				};
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+	</script>
+</th:block>
+</body>
+</html>

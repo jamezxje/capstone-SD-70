@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/user-online-view/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Index user</title>
+  <th:block id="th-css">
+    <link rel="stylesheet" th:href="@{/assets/user-online/css/plugins.css}">
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  
+  <!--Body Content-->
+  <div id="page-content">
+    <!--Page Title-->
+    <div class="page section-header text-center mt-5">
+      <div class="page-title">
+        <div class="wrapper"><h1 class="page-width">Lịch sử mua hàng</h1></div>
+      </div>
+    </div>
+    <!--End Page Title-->
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+          <div class="your-order-payment">
+            <div class="your-order">
+              <h2 class="order-title mb-4">Đơn hàng của bạn</h2>
+              
+              <div class="table-responsive-sm order-table">
+                <table class="bg-white table table-bordered table-hover text-center">
+                  <thead>
+                  <tr>
+                    <th class="text-left">Ngày đặt hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Ngày nhận dự kiến</th>
+                    <th>Trạng thái đơn hàng</th>
+                    <th>Phương thức thanh toán</th>
+                    <th>Chi tiết</th>
+                    <th>Hủy</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="bill : ${billList}">
+                    <td class="text-left" th:text="${@globalControllerAdvice.formatDateTime(bill.createDate)}">
+                      Spike Jacket
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'POINT', 0, 'POINT')} + ' VND'">
+                      Spike Jacket
+                    </td>
+                    <td th:text="${#dates.format(bill.receiveDate, 'dd-MM-yyyy')}"></td>
+                    <td>
+                      <span
+                          th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).CHO_XAC_NHAN}">CHỜ XÁC NHẬN</span>
+                      <span
+                          th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).XAC_NHAN}">XÁC NHẬN</span>
+                      <span
+                          th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).CHO_VAN_CHUYEN}">CHỜ VẬN CHUYỂN</span>
+                      <span
+                          th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).VAN_CHUYEN}">VẬN CHUYỂN</span>
+                      <span
+                          th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).DA_THANH_TOAN}">ĐÃ THANH TOÁN</span>
+                      <span
+                          th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).THANH_CONG}">THÀNH CÔNG</span>
+                      <span
+                          th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).TRA_HANG}">TRẢ HÀNG</span>
+                      <span
+                          th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).DA_HUY}">ĐÃ HỦY</span>
+                    </td>
+                    <td>
+                      <span
+                          th:if="${bill.method == T(org.fpoly.capstone.entity.enum_status.PaymentMethod).CHUYEN_KHOAN}">CHUYỂN KHOẢN
+                      </span>
+                      <span
+                          th:if="${bill.method == T(org.fpoly.capstone.entity.enum_status.PaymentMethod).TIEN_MAT}">TIỀN MẶT
+                      </span>
+                    </td>
+                    <td>
+                      <a th:href="@{bill/{billId}(billId=${bill.id})}" title="Detail" class="site-header__cart">
+                        <i class="icon anm anm-eye-l"></i>
+                      </a>
+                    </td>
+                    <td><a href="#" title="Cancel" class="site-header__cart">
+                      <i class="icon anm anm-trash-alt"></i>
+                    </a></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--End Body Content-->
+  
+  <!--Scoll Top-->
+  <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+  <!--End Scoll Top-->
+
+</th:block>
+
+</body>
+<script>
+</script>
+<th:block id="th-js">
+</th:block>
+</html>

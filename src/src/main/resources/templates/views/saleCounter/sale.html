@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <th:block id="th-css">
+        <link rel="stylesheet" th:href="@{/assets/css/sale/saleCounter.css}"/>
+        <style>
+            .tab-container {
+                display: flex;
+                /*margin-bottom: 20px;*/
+            }
+
+            .tab {
+                padding: 10px 20px;
+                margin-right: 10px;
+                background-color: #0b66bc;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                text-align: center;
+            }
+
+            .tab:hover {
+                background-color: #084a80;
+            }
+
+            .tab-content {
+                display: none;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background-color: #f9f9f9;
+                margin-top: 10px;
+            }
+
+            .active-tab {
+                background-color: #084a80;
+            }
+
+            .active-content {
+                display: block;
+            }
+
+        </style>
+    </th:block>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Liên kết đến Bootstrap JS từ CDN (để sử dụng các thành phần như Modal, Tooltip...) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <!-- CSS Toastr -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+
+    <!-- JavaScript Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <!-- Thêm SweetAlert2 từ CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.4/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.4/dist/sweetalert2.min.css">
+    <!-- Thêm thư viện Print.js -->
+<!--    <script src="https://printjs-4de3.kxcdn.com/print.min.js"></script>-->
+    <!-- Link CDN cho Print.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
+
+
+</head>
+<body>
+<th:block id="th-body">
+    <div class="content-body">
+<div class="createbillf">
+        <div class="create">
+            <button id="createInvoiceBill" class="btn-create-bill">Tạo đơn hàng</button>
+            <button id="openModal"
+                    style="background-color: #0b66bc ; border-radius: 10px ; font-size: 16px ; color: white; padding: 8px ; margin: 20px 20px 20px 8px ; border: none">
+                Thêm sản phẩm
+            </button>
+        </div>
+        <div class="tab-container" id="tabContainer">
+            <!-- Các tab hóa đơn sẽ được tạo ra ở đây -->
+        </div>
+
+        <div class="tab-content-container" id="tabContentContainer">
+            <!--            &lt;!&ndash; Nội dung tab sẽ được tạo ở đây &ndash;&gt;-->
+
+        </div>
+</div>
+        <!--        Modal product-->
+        <div id="myModal"
+             style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+            <div style="background-color: white; margin: 12% 20% 20% 22%; padding: 20px; border-radius: 10px; width: 80%; max-width: 1200px">
+                <span id="closeModal"
+                      style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                    <p style="margin-bottom: 20px; font-size: 20px ;color: black ; padding: 10px">Danh sách sản phẩm</p>
+                    <div class="search-container">
+                        <p style="font-size: 15px; font-weight: bold; color: black">Tìm kiếm :
+                            <input type="text" placeholder="Nhập tên sản phẩm" id="nameInputProduct">
+                        </p>
+                    </div>
+
+                    <div class="filter-container">
+                        <p><label for="category">Danh mục:</label>
+                            <select id="category">
+                                <option>Chọn</option>
+                                <!-- Thêm các danh mục ở đây -->
+                            </select>
+                        </p>
+
+                        <p><label for="color">Màu sắc:</label>
+                            <select id="color">
+                                <option>Chọn</option>
+                                <!-- Thêm các màu sắc ở đây -->
+                            </select>
+                        </p>
+
+                        <p><label for="material">Chất liệu:</label>
+                            <select id="material">
+                                <option>Chọn</option>
+                                <!-- Thêm các chất liệu ở đây -->
+                            </select>
+                        </p>
+
+                        <p><label for="size">Kích cỡ:</label>
+                            <select id="size">
+                                <option>Chọn</option>
+                                <!-- Thêm các kích cỡ ở đây -->
+                            </select>
+                        </p>
+                        <p><label for="brand">Hãng:</label>
+                            <select id="brand">
+                                <option>Chọn</option>
+                                <!-- Thêm các kích cỡ ở đây -->
+                            </select>
+                        </p>
+                </div>
+                <table class="table table-striped" style="margin: 0" id="productTable">
+                    <thead>
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Ảnh</th>
+                        <th scope="col">Mã Sản Phẩm</th>
+                        <th scope="col">Tên</th>
+                        <th scope="col">Danh Mục</th>
+                        <th scope="col">Hãng</th>
+                        <th scope="col">Màu sắc</th>
+                        <th scope="col">Chất liệu</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Giới tính</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Giá</th>
+                        <th scope="col">Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+<!--                    <tr th:each="productDetail , index : ${listProductDetail}">-->
+<!--                        <td th:text="${index.index + 1}"></td>-->
+<!--                        <td th:text="${productDetail.product.code}"></td>-->
+<!--                        <td th:text="${productDetail.product.name}"></td>-->
+<!--                        <td th:text="${productDetail.product.category.name}"></td>-->
+<!--                        <td th:text="${productDetail.brand.name}"></td>-->
+<!--                        <td th:text="${productDetail.color.name}"></td>-->
+<!--                        <td th:text="${productDetail.material.name}"></td>-->
+<!--                        <td th:text="${productDetail.size.name}"></td>-->
+<!--                        <td th:text="${productDetail.gender}"></td>-->
+<!--                        <td th:text="${productDetail.quantity}"></td>-->
+<!--                        <td th:text="${productDetail.price}" id="text-price" class="text-price"></td>-->
+<!--                        <td th:text="${productDetail.status }" class="text-status"></td>-->
+
+
+<!--                        <td>-->
+<!--                            <button class="chose-product" id="choseProduct" style="margin-left: 20px;"-->
+<!--                                    th:attr="data-product-id=${productDetail.id}, data-product-name=${productDetail.product.name}, data-product-size=${productDetail.size.name}, data-product-color=${productDetail.color.name}, data-product-quantity=${productDetail.quantity}, data-product-price=${productDetail.price}">-->
+<!--                                <i class="bi bi-chevron-down"></i>-->
+
+<!--                            </button>-->
+
+<!--                        </td>-->
+<!--                        </td>-->
+
+<!--                    </tr>-->
+
+                    </tbody>
+                </table>
+                <div id="pagination1" class="pagination1" style="display: flex;justify-content: end; margin-top: 20px">
+                    sdf
+                </div>
+            </div>
+        </div>
+        <!--        Modal chose quanitut-->
+        <div id="myModalInput"
+             style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+            <div style="background-color: white; margin: 17% 20% 20% 45%; padding: 20px; border-radius: 10px; width: 80%; max-width: 350px; position: relative;">
+        <span id="closeModalInput"
+              style="color: black; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                <p style="font-size: 20px; color: black; padding: 5px">Mời chọn số lượng</p>
+
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px; margin-top: 12px">
+                    <button style="padding: 5px 20px; border-radius: 5px; border: 1px solid #0b66bc" id="btn-increase">
+                        +
+                    </button>
+                    <input type="number" value="1"
+                           style="width: 100px; text-align: center; margin: 0 10px; padding: 4px" id="input-quantity">
+                    <button style="padding: 5px 20px; border-radius: 5px; border: 1px solid #0b66bc" id="btn-reduce">-
+                    </button>
+                </div>
+
+
+                <div style="display: flex; justify-content: center; gap: 10px; margin: 30px 0 0 140px">
+                    <!-- Nút xác nhận -->
+                    <button style="padding: 10px 25px; background-color: red; color: white; border: none; border-radius: 5px; cursor: pointer;"
+                            id="btn-exit-product">
+                        Hủy
+                    </button>
+                    <button style="padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;"
+                            id="btn-confirm-product">
+                        Xác nhận
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <!--Modal list customer-->
+        <div id="modalCustomer"
+             style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+            <div style="background-color: white; margin: 17% 20% 20% 23%; padding: 20px; border-radius: 10px; width: 80%; max-width: 1200px">
+                <span id="closeModalCustomer"
+                      style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: black">&times;</span>
+                <p style="font-size: 20px; color: black; padding: 5px">Danh sách khách hàng</p>
+                <p style="text-align: center"><strong>Tìm kiếm: </strong> <input style="width: 50%; padding: 5px; margin-left: 5px" placeholder="Mời nhập thông tin cần tim" id="inputSearchCustomer"></p>
+                <table class="table table-striped " style="margin: 0" id="customerTableBody">
+                    <thead>
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Họ tên</th>
+                        <th scope="col">Số điện thoại</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Hành động</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="customerTable">
+<!--                    <tr th:each="customer ,index :${listUser}">-->
+<!--                        <td th:text="${index.index + 1}"></td>-->
+<!--                        <td th:text="${customer.fullName}"></td>-->
+<!--                        <td th:text="${customer.phoneNumber}"></td>-->
+<!--                        <td th:text="${customer.email}"></td>-->
+<!--                        <td>-->
+<!--                            <button class="btnChose_customer"-->
+<!--                                    th:attr=" data-id=${customer.id}, data-fullName=${customer.fullName}, data-phone=${customer.phoneNumber}, data-email=${customer.email}">-->
+<!--                                <i class="bi bi-chevron-down"></i>-->
+<!--                            </button>-->
+
+<!--                        </td>-->
+<!--                    </tr>-->
+
+                    </tbody>
+                </table>
+
+                <div id="pagination" class="pagination" style="display: flex;justify-content: end; margin-top: 20px">
+                </div>
+                <div style="display: flex;justify-content: end">
+                    <button class="btnAddForm" style="margin-top: 20px" id="btnAddForm">Thêm khách hàng</button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--Modal list voucher -->
+
+        <div id="modalVoucher"
+             style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+            <div style="background-color: white; margin: 15% auto; padding: 20px; border-radius: 10px; width: 80%; max-width: 1200px">
+                <span id="closeModalVoucher"
+                      style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: black">&times;</span>
+                <p style="font-size: 20px; color: black; padding: 5px">Danh sách mã giảm giá</p>
+                <table class="table table-striped" style="margin: 0" id="voucherTable">
+                    <thead>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Giá trị</th>
+                    <th scope="col">Đơn tối thiểu</th>
+                    <th scope="col">Số lượng</th>
+                    <th scope="col">Ngày bắt đầu</th>
+                    <th scope="col">Ngày kết thúc</th>
+                    <th scope="col">Hành động</th>
+                    </thead>
+                    <tbody>
+<!--                    <tr th:each="voucher , index : ${listVoucher}">-->
+<!--                        <td th:text="${index.index + 1}"></td>-->
+<!--                        <td th:text="${voucher.name}"></td>-->
+<!--                        <td th:text="${voucher.value}"></td>-->
+<!--                        <td th:text="${voucher.minimumBill}"></td>-->
+<!--                        <td th:text="${voucher.quantity}"></td>-->
+<!--                        <td th:text="${voucher.startDate}"></td>-->
+<!--                        <td th:text="${voucher.endDate}"></td>-->
+<!--                        <td>-->
+<!--                            <button id="select-voucher-btn" class="select-voucher-btn"-->
+<!--                                    th:attr=" data-id=${voucher.id} ,data-value=${voucher.value} ,data-mininumBill=${voucher.minimumBill} , data-name = ${voucher.name}"-->
+<!--                            ><i class="bi bi-chevron-down"></i></button>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+                    </tbody>
+                </table>
+                <div id="paginationVoucher" class="paginationVoucher" style="display: flex; justify-content: end; margin-top: 20px;">
+                </div>
+            </div>
+        </div>
+
+        <!--        Modal address-->
+        <div id="modalAddress"
+             style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+            <div style="background-color: white; margin: 15% auto; padding: 20px; border-radius: 10px; width: 80%; max-width: 620px ; height: 550px">
+                <span id="closeModalAddress"
+                      style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                <p style="font-size: 20px; color: black; padding: 5px">Danh sách địa chỉ</p>
+
+                <!-- Phần tử chứa các địa chỉ có thể cuộn -->
+                <div id="addressList" style=" overflow-y: auto; padding: 10px; height: 450px; border: 1px solid #ddd;">
+                    <!-- Các địa chỉ sẽ được thêm vào đây -->
+                </div>
+
+            </div>
+        </div>
+
+<!--        Modal add CustomerBill-->
+
+        <div id="myModalADDCustomer"
+             style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+            <div style="background-color: white; margin: 17% 20% 20% 45%; padding: 20px; border-radius: 10px; width: 80%; max-width: 500px; position: relative;">
+        <span id="closeModalADDCustomer"
+              style="color: black; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                <p style="font-size: 20px; color: black; padding: 5px">Thêm khách hàng</p>
+
+                <div class="form-container">
+                    <p style="color: black; font-size: 15px; margin: 5px 0;">Họ tên:</p>
+                    <input  class="inputAdd" id="inputAddNameCustomer">
+                    <p style="color: red ; margin-left: 5px; display: none" id="inputErrrorName"></p>
+                    <p style="color: black; font-size: 15px; margin: 5px 0;">Số điện thoại:</p>
+                    <input  class="inputAdd" id="inputAddPhoneCustomer">
+                    <p style="color: red ; margin-left: 5px; display: none" id="inputErrrorPhone"></p>
+                    <p style="color: black; font-size: 15px; margin: 5px 0;">Email:</p>
+                    <input  class="inputAdd" id="inputAddEmailCustomer">
+                    <p style="color: red ; margin-left: 5px; display: none" id="inputErrrorEmail"></p>
+
+                    <div class="button-container">
+                        <button class="btnAddCacel" id="btnAddCacel">Hủy</button>
+                        <button class="btnAdd" id="btnAdd">Thêm</button>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+        <!--Model payment-->
+        <div id="modalPayment"
+             style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+            <div style="background-color: white; margin: 15% auto; padding: 20px; border-radius: 10px; width: 80%; max-width: 600px">
+                <span id="closeModalPayment"
+                      style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: black">&times;</span>
+                <p style="font-size: 20px; color: black; padding: 5px">Phương thức thanh toán</p>
+                <div class="payment-summary" style="margin-top: 10px">
+                    <div class="total-price">
+                        <p style="font-size: 15px; color: black ; font-weight: bold; margin-top: 5px">Tổng tiền cần
+                            thanh toán</p>
+                        <p class="amount" id="amount">0đ</p>
+                    </div>
+                </div>
+                <div class="payment-details" style="margin-bottom: 10px">
+                    <p class="pay-1">Số tiền:</p>
+                    <input type="text" class="input-paymet" id="input-payment">
+                    <p id="moneyBackInputError" style="display: none ; color: red" ></p>
+                </div>
+                <div class="missing-money" style="margin-top: 10px">
+                    <p><strong style="color: black; font-size: 15px; margin-top: 10px" id="missing" class="missing">Tiền
+                        thiếu :</strong> <strong style="color: red ; font-size: 15px; margin-top: 10px"
+                                                 id="str-missing">0đ</strong></p>
+                </div>
+                <div class="div-payment" style="text-align: center">
+                    <button class="btn-payment" id="btn-payment" style="padding: 10px;  margin-right: 20px;">Tiền mặt
+                    </button>
+                    <button class="btn-bank" style="padding: 10px; " id="btn-bank">VN PAY</button>
+                </div>
+                <div style="text-align: right; margin: 35px 10px 10px 0">
+                    <button class="btn-close" id="btn-close" style="background-color: red;color: white; padding: 10px;">
+                        Hủy
+                    </button>
+                    <button class="btn-success" id="btn-success" style="background-color: #0b66bc; color: white">Xác
+                        nhận
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="customer">
+            <div class="first">
+                <p style="font-size: 18px; color: black ; margin: 10px">Thông tin khách hàng</p>
+                <button class="btn-chose" id="btnChoseCustomer">Chọn khách hàng</button>
+            </div>
+
+            <div class="infor-customer">
+                <p><strong>Tên khách hàng</strong>: <strong id="customerName">Khách lẻ</strong></p>
+                <p><strong>Email:</strong> <strong id="customerEmail"></strong></p>
+                <p><strong>Số điện thoại</strong>: <strong id="customerPhone"></strong></p>
+            </div>
+
+        </div>
+
+        <!-- Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="closeModalBtn">&times;</span>
+                <h2>Xác nhận hành động</h2>
+                <p>Bạn có chắc chắn muốn thực hiện hành động này?</p>
+                <div class="config">
+                    <button id="confirmBtn" class="btn-confirm">Xác nhận</button>
+                    <button id="cancelBtn" class="btn-cancel">Hủy</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="check">
+            <div class="payment-1">
+                <div class="div-pay">
+                    <p style="font-size: 18px; color: black ; margin: 10px">Thông tin thanh toán</p>
+                    <button class="btn-address" id="btn-address">Chọn địa chỉ</button>
+                </div>
+                <div class="last-left">
+                    <div class="voucher">
+                        <p style="line-height: 1.3; margin-top: 10px"><strong style="margin: 20px 7px 10px 15px">Mã giảm
+                            giá: </strong>
+                            <input value=" " class="ip-voucher" id="ip-voucher"
+                                   disabled>
+                            <button class="btn-voucher" id="btnChoseVoucher">Chọn mã</button>
+                        </p>
+                    </div>
+
+
+                    <div class="voucher-1" style="margin-top: 20px">
+                        <p><strong class="strong-a">Tiền hàng :</strong> <strong id="total-price">0đ</strong></p>
+                        <p><strong class="strong-a">Phí vận chuyển :</strong> <strong id="shipping">0đ</strong></p>
+                        <p><strong class="strong-a">Giảm giá :</strong> <strong id="discount">0đ</strong></p>
+                        <p><strong class="strong-a">Tổng tiền :</strong> <strong id="total-amount"> 0đ</strong></p>
+                        <p class="payment-method">
+                            <strong style="margin-right: 5px">Hình thức thanh toán: </strong>
+                            <button class="btn-pay" id="btnChosePayMent"><i class="bi bi-credit-card-fill"></i></button>
+                        </p>
+                        <p class="shipping-method">
+                            <strong style="margin-right: 5px">Giao Hàng: </strong>
+                            <label class="switch">
+                                <input type="checkbox" id="toggleButton">
+                                <span class="slider"></span>
+                            </label>
+                        </p>
+                        <p><strong class="strong-a">Khách thanh toán: </strong> <strong
+                                id="customer-payment">0đ</strong></p>
+                        <p><strong class="strong-a" id="str-remaining">Tiền thiếu : </strong> <strong
+                                id="remaining-amount">0đ</strong></p>
+                    </div>
+                    <button class="payment-btn-success" id="btn-payment-success">Xác nhận đơn hàng
+                    </button>
+                </div>
+            </div>
+            <div class="last-right" id="last-right">
+                <!-- Dòng 1: Họ và tên và Số điện thoại -->
+                <div class="field-half">
+                    <div class="field">
+                        <p style="color: black">Họ và tên</p>
+                        <input id="nameCustomer">
+                        <p id="nameCustomerError" style="color: red; display: none; margin-left: 3px"></p>
+                    </div>
+                    <div class="field">
+                        <p style="color: black">Số điện thoại</p>
+                        <input id="numberPhoneCustomer">
+                        <p id="numberPhoneCustomerError" style="color: red; display: none;margin-left: 3px"></p>
+                    </div>
+                </div>
+                <!-- Dòng 2: Tỉnh/Thành Phố và Quận/Huyện -->
+                <div class="field-half">
+                    <div class="field">
+                        <p style="color: black">Tỉnh/ Thành Phố</p>
+                        <select id="provinceSelect">
+                            <option value="">Chọn</option>
+                        </select>
+                        <p id="provinceSelectError" style="color: red; display: none;margin-left: 3px"></p>
+                    </div>
+                    <div class="field">
+                        <p style="color: black">Quận/Huyện</p>
+                        <select id="districtSelect">
+                            <option value="">Chọn</option>
+                        </select>
+                        <p id="districtSelectError" style="color: red; display: none;margin-left: 3px"></p>
+                    </div>
+                </div>
+
+                <!-- Dòng 3: Xã/Phường -->
+                <div class="field-half">
+                    <div class="field">
+                        <p style="color: black">Xã/Phường</p>
+                        <select id="wardSelect">
+                            <option value="">Chọn</option>
+                        </select>
+                        <p id="wardSelectError" style="color: red; display: none;margin-left: 3px"></p>
+                    </div>
+                </div>
+
+                <!-- Dòng cuối: Địa chỉ cụ thể -->
+                <div class="field full-width">
+                    <p style="margin-left: 15px ; color: black">Địa chỉ cụ thể</p>
+                    <input value="" style="margin-left: 15px" id="addressValue">
+                    <p id="addressValueError" style="color: red; display: none;margin-left: 3px"></p>
+                </div>
+                <div style="margin-top: 60px ; margin-left: 150px">
+                    <p><strong class="strong-a"><img
+                            src="data:image/png;base64,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"
+                            style="height: 60px"> </strong> <strong id="confirm-day" style="font-size: 18px"></strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="printable-content" style="display: none" >
+            <div>
+                <h2>CAPSTONE</h2>
+
+                <div class="invoice-info">
+                    <p>Mã hóa đơn: <strong id="printCode"></strong></p>
+                    <p>Ngày tạo: <strong id="printCreateDate"></strong></p>
+                </div>
+            </div>
+
+            <div class="address-info">
+                <div>
+                    <p><strong>Từ:</strong> CAPSTONE</p>
+                    <p>Đồ án tốt nghiệp sd-70</p>
+                    <p>Nhân viên bán hàng: <strong id="printStaff">Bảo</strong> </p>
+                </div>
+                <div style="text-align: right;" class="rightCustomer">
+                    <p style="font-size: 16px;" >Thông tin người mua hàng</p>
+
+                    <p>Họ và tên: <strong id="printNameCustomer"></strong></p>
+                    <p>Số điện thoại: <strong id="printNumberPhoneCustomer"></strong> </p>
+
+                    <p style="font-size: 16px; display: none" id="printInforShip" >Thông tin người nhận hàng</p>
+                    <p id="p-printNameShip">Họ tên: <strong id="printNameShip"></strong></p>
+                    <p id="p-printPhoneShip">Số điện thoại: <strong id="printPhoneShip"></strong></p>
+                    <p id="p-printAddress">Đia chỉ: <strong id="printAddress"></strong></p>
+                    <p id="p-printShipDay" style="display: none">Dự tính ngày nhận: <strong id="printShipDay"></strong></p>
+                </div>
+            </div>
+
+            <!-- Nội dung đơn hàng -->
+            <div>
+                <p style="font-weight: bold;">Nội dung đơn hàng:</p>
+                <table id="ttt">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Size</th>
+                        <th>Màu</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
+                        <th>Tổng tiền</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tổng tiền, Giảm giá, Phí ship -->
+            <div class="summary-info">
+                <div>
+                    <p id="tt">Tổng tiền hàng hóa:<strong id="printTotal">0đ</strong> </p>
+                </div>
+                <div>
+                    <p>Giảm giá: <strong id="printDiscount">0đ</strong> </p>
+                </div>
+            </div>
+            <div class="summary-info">
+                <div>
+                    <p>Phí giao hàng: <strong id="printShip">0đ</strong></p>
+                </div>
+                <div>
+                    <p>Tổng tiền hóa đơn:<strong id="printTotalPayment">0đ</strong></p>
+                </div>
+                <div>
+                    <p>Phương thức thanh toán:<strong id="printMethod">Tiền mặt</strong></p>
+                </div>
+            </div>
+
+            <!-- Số tiền thanh toán -->
+            <div class="payment-info">
+                <p>Số tiền khách thanh toán:<strong id="printCustomerPayment">0đ</strong> </p>
+                <p id="printMoneyBack">Số tiền trả lại:<strong id="printBack">0đ</strong></p>
+            </div>
+
+
+        </div>       <!-- div print bill -->
+
+    </div>
+
+    </div>
+
+</th:block>
+
+</body>
+<th:block id="th-js">
+    <script type="text/javascript" th:src="@{/assets/js/sale/saleCounter.js}"></script>
+</th:block>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/user-online-view/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Index user</title>
+  <th:block id="th-css">
+  </th:block>
+</head>
+<body>
+
+<th:block id="th-body">
+  <!--Body Content-->
+  <div id="page-content">
+    <!--Page Title-->
+    <div class="page section-header mt-5 text-center">
+      <div class="page-title">
+        <div class="wrapper"><h1 class="page-width">Giỏ hàng</h1></div>
+      </div>
+    </div>
+    <!--End Page Title-->
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
+          <form action="#" method="post" class="cart style2">
+            <table>
+              <thead class="cart__row cart__header">
+              <tr>
+                <th colspan="2" class="text-center">Sản phẩm</th>
+                <th class="text-center">Giá tiền</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-right">Tổng</th>
+                <th class="action">&nbsp;</th>
+              </tr>
+              </thead>
+              <form action="#" method="post" id="cartForm">
+                <tbody>
+                <tr th:if="${#lists.isEmpty(cartDetailList)}">
+                  <td colspan="10" class="text-center pt-5"><h3>KHÔNG TÌM THẤY DỮ LIỆU</h3></td>
+                </tr>
+                <tr class="cart__row border-bottom line1 cart-flex border-top" th:each="cart: ${cartDetailList}">
+                  <td class="cart__image-wrapper cart-flex-item">
+                    <input type="text" hidden th:value="${cart.productDetailId}" class="productDetailId">
+                    <input type="text" hidden th:value="${cart.id}" class="cartDetailId">
+                    <a th:href="@{/shop/{id}(id= ${cart.productDetailId})}">
+                      <img class="cart__image" th:src="${cart.productFeatureImageUrl}"
+                           alt="Elastic Waist Dress - Navy / Small">
+                    </a>
+                  </td>
+                  <td class="cart__meta small--text-left cart-flex-item">
+                    <div class="list-view-item__title">
+                      <a th:href="@{/shop/{id}(id= ${cart.productDetailId})}" th:text="${cart.productName}">Elastic
+                        Waist Dress</a>
+                    </div>
+                    <div class="cart__meta-text">
+                      Color: [[${cart.colorName}]]<br>Size: [[${cart.sizeName}]]<br>
+                    </div>
+                  </td>
+                  <td class="cart__price-wrapper cart-flex-item">
+                    <span class="money"
+                          th:text="${#numbers.formatDecimal(cart.price, 0, 'POINT', 0, 'POINT')} + ' VND'">$735.00</span>
+                  </td>
+                  <td class="cart__update-wrapper cart-flex-item text-right">
+                    <div class="cart__qty text-center">
+                      <div class="qtyField">
+                        <button class="qtyBtn minus">
+                          <i class="icon icon-minus"></i>
+                        </button>
+                        <input class="cart__qty-input qty" type="text" name="updates[]" th:value="${cart.quantity}"
+                               pattern="[0-9]*">
+                        <button class="qtyBtn plus">
+                          <i class="icon icon-plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-right small--hide cart-price">
+                    <div><span class="money"
+                               th:text="${#numbers.formatDecimal(cart.subtotal, 0, 'POINT', 0, 'POINT')} + ' VND'">$735.00</span>
+                    </div>
+                  </td>
+                  <td class="text-center small--hide">
+                    <a th:href="@{/cart/delete/{id}(id=${cart.id})}" class="btn btn--secondary cart__remove"
+                       title="Remove item"><i
+                        class="icon icon anm anm-times-l"></i></a>
+                  </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                  <td colspan="3" class="text-left">
+                    <a th:href="@{/shop}" class="btn btn-secondary btn--small cart-continue">Tiếp tục mua hàng</a>
+                  </td>
+                  <!--                  <td colspan="3" class="text-right">-->
+                  <!--                    <button type="submit" name="clear" class="btn btn-secondary btn&#45;&#45;small  small&#45;&#45;hide">Clear Cart-->
+                  <!--                    </button>-->
+                  <!--                  </td>-->
+                </tr>
+                </tfoot>
+              </form>
+            
+            </table>
+          </form>
+        </div>
+        
+        
+        <div class="container mt-4">
+          <div class="row">
+            <div class="col-12 col-sm-12 col-md-4 col-lg-6 mb-4">
+              <h5>Tính phí ship</h5>
+              <form action="#" method="post">
+                <div class="form-group">
+                  <label>Tỉnh / Thành Phố</label>
+                  <select id="address_province" name="address[province]" data-default="">
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label>Quận / Huyện</label>
+                  <select id="address_district" name="address[district]" data-default="">
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label>Phường / Xã</label>
+                  <select id="address_ward" name="address[ward]" data-default="">
+                  </select>
+                </div>
+                <div class="actionRow">
+                  <div><input type="button" class="btn btn-secondary btn--small" value="Tính phí ship"
+                              onclick="calculateShipping()"></div>
+                </div>
+              </form>
+            </div>
+            
+            <div class="col-12 col-sm-12 col-md-4 col-lg-6 cart__footer">
+              <div class="solid-border">
+                <!--                <div class="row border-bottom pb-2">-->
+                <!--                  <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>-->
+                <!--                  <span class="col-12 col-sm-6 text-right"><span class="money">$735.00</span></span>-->
+                <!--                </div>-->
+                <div class="row border-bottom pb-2 pt-2">
+                  <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
+                  <span class="col-12 col-sm-6 text-right" id="shipping-cost">Free shipping</span>
+                </div>
+                <div class="row border-bottom pb-2 pt-2">
+                  <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Tổng tiền</strong></span>
+                  <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right">
+        <span class="money"
+              th:text="${shoppingCart != null && shoppingCart.totalPrice != null ? #numbers.formatDecimal(shoppingCart.totalPrice, 0, 'POINT', 0, 'POINT') : 0} + ' VND'"></span>
+    </span>
+                </div>
+                <div class="cart__shipping">Phí ship sẽ được cộng khi thanh toán</div>
+                <p class="cart_tearm">
+                  <label>
+                    <input type="checkbox" name="tearm" class="checkbox" value="tearm" required="">
+                    Tôi đồng ý với các điều khoản và điều kiện
+                  </label>
+                </p>
+                <a th:href="@{/bill/checkout}" type="submit" name="checkout" id="cartCheckout"
+                   class="btn btn--small-wide checkout"
+                   value="Proceed To Checkout" disabled="disabled">Thanh toán
+                </a>
+                <div class="paymnet-img"><img src="assets/user-online/images/payment-img.jpg" alt="Payment"></div>
+                <!--                <p><a href="#;">Checkout with Multiple Addresses</a></p>-->
+              </div>
+            
+            </div>
+          </div>
+        </div>
+      
+      </div>
+    </div>
+  
+  </div>
+  <!--End Body Content-->
+</th:block>
+
+</body>
+<th:block id="th-js">
+  <script th:src="@{/assets/user-online/js/vendor/jquery-3.3.1.min.js}"></script>
+  <script>
+    // Function to fetch provinces from the API using AJAX with a custom header 'token'
+    function fetchProvinces() {
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/province",
+        method: "GET",  // HTTP method (GET)
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe"  // Custom header 'token' with value '123'
+        },
+        success: function (data) {
+          // Log the response data to the console
+          console.log(data);  // This will log the entire response data
+          
+          // Get the provinces from the response
+          const provinces = data.data;
+          
+          // Log just the provinces to the console
+          console.log(provinces);  // This will log only the province list
+          
+          // Get the province select element
+          const provinceSelect = document.getElementById("address_province");
+          
+          // Clear existing options (optional)
+          provinceSelect.innerHTML = "";
+          
+          // Add default "Select Province" option
+          const defaultOption = document.createElement("option");
+          defaultOption.text = "Select Province";
+          provinceSelect.appendChild(defaultOption);
+          
+          // Loop through the provinces and append them to the select element
+          provinces.forEach(province => {
+            const option = document.createElement("option");
+            option.value = province.ProvinceID;
+            option.text = province.ProvinceName;
+            provinceSelect.appendChild(option);
+          });
+        },
+        error: function (xhr, status, error) {
+          // Handle errors here
+          console.error("Error fetching provinces:", status, error);
+        }
+      });
+    }
+    
+    // Call the fetchProvinces function on page load
+    $(document).ready(function () {
+      fetchProvinces();
+    });
+  </script>
+  
+  <script>
+    // Function to fetch districts based on selected province_id
+    function fetchDistricts(provinceId) {
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/district",
+        method: "GET",  // POST method to send the province_id in the request body
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe"  // Custom header with 'token' as 123
+        },
+        contentType: "application/json",  // Ensure the request body is JSON
+        data: {
+          province_id: provinceId  // Send the province_id as a query parameter
+        },
+        success: function (data) {
+          // Log the response data to the console
+          console.log(data);  // This will log the entire response data
+          
+          // Get the districts from the response
+          const districts = data.data;
+          
+          // Log just the districts to the console
+          console.log(districts);  // This will log only the district list
+          
+          // Get the district select element
+          const districtSelect = document.getElementById("address_district");
+          
+          // Clear existing options (optional)
+          districtSelect.innerHTML = "";
+          
+          // Add default "Select District" option
+          const defaultOption = document.createElement("option");
+          defaultOption.text = "Select District";
+          districtSelect.appendChild(defaultOption);
+          
+          // Loop through the districts and append them to the select element
+          districts.forEach(district => {
+            const option = document.createElement("option");
+            option.value = district.DistrictID;
+            option.text = district.DistrictName;
+            districtSelect.appendChild(option);
+          });
+        },
+        error: function (xhr, status, error) {
+          // Handle errors here
+          console.error("Error fetching districts:", status, error);
+        }
+      });
+    }
+    
+    // Event listener to trigger fetching districts when a province is selected
+    $(document).ready(function () {
+      // Fetch districts when a province is selected
+      $('#address_province').on('change', function () {
+        const selectedProvinceId = $(this).val();  // Get the selected province ID
+        console.log("province id: " + selectedProvinceId);
+        if (selectedProvinceId) {
+          fetchDistricts(selectedProvinceId);  // Call fetchDistricts function with the selected province ID
+        }
+      });
+    });
+  </script>
+  
+  <script>
+    // Function to fetch wards based on selected district_id
+    function fetchWards(districtId) {
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/ward",  // Use the correct endpoint for wards
+        method: "GET",  // GET method to pass parameters in the URL
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe"  // Custom header with 'token' as 123
+        },
+        data: {
+          district_id: districtId  // Send the district_id as a query parameter
+        },
+        success: function (data) {
+          // Log the response data to the console
+          console.log(data);  // This will log the entire response data
+          
+          // Get the wards from the response
+          const wards = data.data;
+          
+          // Log just the wards to the console
+          console.log(wards);  // This will log only the ward list
+          
+          // Get the ward select element
+          const wardSelect = document.getElementById("address_ward");
+          
+          // Clear existing options (optional)
+          wardSelect.innerHTML = "";
+          
+          // Add default "Select Ward" option
+          const defaultOption = document.createElement("option");
+          defaultOption.text = "Select Ward";
+          wardSelect.appendChild(defaultOption);
+          
+          // Loop through the wards and append them to the select element
+          wards.forEach(ward => {
+            const option = document.createElement("option");
+            option.value = ward.WardCode;  // Assuming WardCode is the ID of the ward
+            option.text = ward.WardName;  // Assuming WardName is the name of the ward
+            wardSelect.appendChild(option);
+          });
+        },
+        error: function (xhr, status, error) {
+          // Handle errors here
+          console.error("Error fetching wards:", status, error);
+        }
+      });
+    }
+    
+    // Event listener to trigger fetching wards when a district is selected
+    $(document).ready(function () {
+      // Fetch wards when a district is selected
+      $('#address_district').on('change', function () {
+        const selectedDistrictId = $(this).val();  // Get the selected district ID
+        if (selectedDistrictId) {
+          fetchWards(selectedDistrictId);  // Call fetchWards function with the selected district ID
+        }
+      });
+    });
+  </script>
+  
+  <script>
+    // Function to calculate shipping
+    function calculateShipping() {
+      // Get selected district and ward values
+      const selectedDistrictId = document.getElementById("address_district").value;
+      const selectedWardCode = document.getElementById("address_ward").value;
+      
+      console.log(" selectedDistrictId : " + selectedDistrictId);
+      console.log(" selectedWardCode : " + selectedWardCode);
+      
+      // If no district or ward is selected, alert the user
+      if (!selectedDistrictId || !selectedWardCode) {
+        alert("Please select both district and ward.");
+        return;
+      }
+      
+      // Prepare the request body
+      const requestBody = {
+        "service_id": 53321,
+        "insurance_value": 500000,
+        "coupon": null,
+        "from_district_id": 3440, // You may need to replace this with actual "from" district ID
+        "to_district_id": selectedDistrictId,
+        "to_ward_code": selectedWardCode,
+        "height": 15,
+        "length": 15,
+        "weight": 1000,
+        "width": 15
+      };
+      
+      // Make the AJAX request
+      $.ajax({
+        url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee",  // API URL
+        method: "GET",  // POST method for body data
+        headers: {
+          "token": "36016710-fd7f-11ef-99a6-0684416c0dbe",  // Token in header
+          "shop_id": "5677097 "  // Shop ID in header
+        },
+        contentType: "application/json",  // Sending JSON in the body
+        data: requestBody,  // Convert request body to JSON string
+        success: function (response) {
+          // Check if the API returns a 'total' value
+          if (response && response.data && response.data.total) {
+            // Set the total shipping cost
+            const totalShippingCost = response.data.total;
+            
+            // Update the shipping cost display
+            document.getElementById("shipping-cost").textContent = totalShippingCost + " VND";  // Assuming the response is in VND
+          } else {
+            // Handle cases where there's no valid 'total' field in the response
+            alert("Error calculating shipping. Please try again later.");
+          }
+        },
+        error: function (xhr, status, error) {
+          // Handle error
+          console.error("Error fetching shipping fee:", status, error);
+          alert("Failed to calculate shipping. Please try again later.");
+        }
+      });
+    }
+  </script>
+</th:block>
+</html>

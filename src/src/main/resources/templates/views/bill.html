@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Hóa đơn</title>
+    <th:block id="th-css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>
+        <style>
+            .table-container {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+            thead {
+                background-color: #E87E4D !important;
+                color: white !important;
+            }
+            .table thead th {
+                background-color: #E87E4D !important;
+                color: white !important;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<th:block id="th-body">
+    <div class="content-body">
+        <div class="container-fluid">
+                <!-- Form Tìm Kiếm -->
+                <div class="table-container">
+                    <form method="GET" action="/bill">
+                        <div class="row md-12">
+                            <!-- Tìm kiếm -->
+                            <div class="col-md-6">
+                                <label class="form-label">Tìm kiếm</label>
+                                <input type="text" class="form-control w-250" name="keyword" placeholder="Tìm kiếm mã hóa đơn">
+                            </div>
+                            <!-- Loại đơn -->
+                            <div class="col-md-6">
+                                <label class="form-label">Loại đơn</label>
+                                <select name="orderType" class="form-select w-250">
+                                    <option value="">Tất cả loại hóa đơn</option>
+                                    <option value="ONLINE">Online</option>
+                                    <option value="OFFLINE">Offline</option>
+                                </select>
+                            </div>
+                        <!-- </div>
+                        <div class="row md-12"> -->
+                            <!-- Ngày bắt đầu -->
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày bắt đầu</label>
+                                <input type="date" class="form-control w-250" name="startDate">
+                            </div>
+                            <!-- Ngày kết thúc -->
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày kết thúc</label>
+                                <input type="date" class="form-control w-250" name="endDate">
+                            </div>
+                        </div><br>
+                
+                        <div class="row md-12">
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-success w-100 py-2 px-4 rounded">🔍 Tìm kiếm</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="reset" class="btn btn-danger w-100 py-2 px-4 rounded">🔄 Làm mới</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                                   
+            <br>
+            <div class="table-container">
+                <div class="row md-12">
+                    <h3><i class="fas fa-file-invoice"></i> Danh Sách Hóa đơn</h3>
+                    
+                    <!-- Tabs Trạng Thái -->
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a class="nav-link active filter-tab" data-status="">Tất cả</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Chờ xác nhận">Chờ xác nhận</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Đã xác nhận">Đã xác nhận</a></li>                    
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Chờ vận chuyển">Chờ vận chuyển</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Đang vận chuyển">Đang vận chuyển</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Đã thanh toán">Đã thanh toán</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Hoàn thành">Hoàn thành</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Trả hàng">Trả hàng</a></li>
+                        <li class="nav-item"><a class="nav-link filter-tab" data-status="Hủy">Hủy</a></li>
+                    </ul>
+
+                    <!-- Bảng danh sách hóa đơn -->
+                    <div class="row md-12">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã Hóa Đơn</th>
+                                    <th>Tên Khách Hàng</th>
+                                    <th>Nhân viên</th>
+                                    <th>SĐT</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Loại</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="bill, index : ${bills}">
+                                <td th:text="${index.index+1}"></td>
+                                <td th:text="${bill.code}"></td>
+                                <td th:text="${bill.userName}"></td>
+                                <td th:text="${bill.user != null ? bill.user.fullName : 'Không có dữ liệu'}"></td>
+                                <td th:text="${bill.phoneNumber}"></td>
+                                <td th:text="${bill.address}"></td>
+                                <td th:text="${bill.type}"></td>
+                                <td class="status-cell">
+                                    <span th:switch="${#strings.trim(bill.status)}">
+                                        <span th:case="'CHO_XAC_NHAN'">Chờ xác nhận</span>
+                                        <span th:case="'CHO_VAN_CHUYEN'">Chờ vận chuyển</span>
+                                        <span th:case="'VAN_CHUYEN'">Đang vận chuyển</span>
+                                        <span th:case="'XAC_NHAN'">Đã xác nhận</span>
+                                        <span th:case="'DA_THANH_TOAN'">Đã thanh toán</span>
+                                        <span th:case="'THANH_CONG'">Hoàn thành</span>
+                                        <span th:case="'TRA_HANG'">Trả hàng</span>
+                                        <span th:case="'DA_HUY'">Hủy</span>
+                                        <span th:case="*">Không xác định</span>
+                                    </span>
+                                </td>
+                                <td  type="datetime-local" th:text="${bill.createDate}"></td>
+                                <td>
+                                    <a th:href="@{/bill/detail/{id}(id=${bill.id})}" class="btn btn-info">Xem</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination justify-content-end">
+                        <!-- Nút Trước -->
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/bill(page=${currentPage - 1})}">Trước</a>
+                        </li>
+                    
+                        <!-- Trang đầu -->
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
+                            <a class="page-link" th:href="@{/bill(page=1)}">1</a>
+                        </li>
+                    
+                        <!-- Hiển thị dấu ... nếu cần -->
+                        <li th:if="${currentPage > 3}" class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    
+                        <!-- Hiển thị trang gần vị trí hiện tại -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(currentPage-1, currentPage+1)}"
+                            th:if="${i > 1 and i < totalPages}" th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/bill(page=${i})}" th:text="${i}"></a>
+                        </li>
+                    
+                        <!-- Hiển thị dấu ... nếu cần -->
+                        <li th:if="${currentPage < totalPages - 2}" class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    
+                        <!-- Trang cuối -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
+                            <a class="page-link" th:href="@{/bill(page=${totalPages})}" th:text="${totalPages}"></a>
+                        </li>
+                    
+                        <!-- Nút Tiếp -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/bill(page=${currentPage + 1})}">Tiếp</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>    
+        </div>
+    </div>
+</th:block>
+</body>
+
+<!-- JavaScript -->
+<th:block id="th-js">
+    <script>
+        document.querySelectorAll(".filter-tab").forEach(tab => {
+            tab.addEventListener("click", function (event) {
+                document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+                this.classList.add("active");
+
+                let status = this.getAttribute("data-status").trim();
+                document.querySelectorAll("tbody tr").forEach(row => {
+                    let rowStatus = row.querySelector(".status-cell").textContent.trim();
+                    row.style.display = (status === "" || rowStatus === status) ? "" : "none";
+                });
+
+                event.preventDefault();
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const orderTypeSelect = document.querySelector("select[name='orderType']");
+        const startDateInput = document.querySelector("input[name='startDate']");
+        const endDateInput = document.querySelector("input[name='endDate']");
+
+        function filterTable() {
+            let selectedType = orderTypeSelect.value.trim();
+            let startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+            let endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+            document.querySelectorAll("tbody tr").forEach(row => {
+                let rowType = row.querySelector("td:nth-child(7)").textContent.trim(); // Cột Loại
+                let rowDateText = row.querySelector("td:nth-child(9)").textContent.trim(); // Cột Ngày tạo
+                let rowDate = rowDateText ? new Date(rowDateText) : null;
+
+                let matchesType = (selectedType === "" || rowType === selectedType);
+                let matchesDate = (!rowDate || 
+                                  (!startDate || rowDate >= startDate) && 
+                                  (!endDate || rowDate <= endDate));
+
+                row.style.display = (matchesType && matchesDate) ? "" : "none";
+            });
+        }
+
+        // Lắng nghe sự kiện thay đổi
+        orderTypeSelect.addEventListener("change", filterTable);
+        startDateInput.addEventListener("change", filterTable);
+        endDateInput.addEventListener("change", filterTable);
+    });
+    </script>
+</th:block>
+</html>

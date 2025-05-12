@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{views/admin-dashboard/layout/app_layout::appLayoutFragment(~{::#th-css}, ~{::#th-js}, ~{::#th-body})}">
+
+<head>
+  <meta charset="utf-8">
+  <th:block id="th-css">
+    <style>
+      /* General Modal Styles */
+      .modal-content {
+        border-radius: 10px;
+        padding: 30px;
+        background-color: #fff;
+        max-width: 800px;
+        margin: 0 auto;
+        border: 1px solid #FF5722; /* Màu cam cơ */
+      }
+
+      .modal-header {
+        background-color: #FF5722; /* Màu cam cơ */
+        color: white;
+        border-bottom: 2px solid #E64A19; /* Cam đậm hơn */
+        text-align: center;
+        padding: 15px;
+      }
+
+      .modal-title {
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      .modal-body {
+        padding: 20px;
+        font-size: 16px;
+        color: #495057;
+        line-height: 1.6;
+        /* Bỏ overflow */
+      }
+
+      /* Card Styles */
+      .card {
+        border-radius: 12px;
+        border: 1px solid #FF5722; /* Màu cam cơ */
+        margin: 20px 0;
+        background: #ffffff;
+        /* Bỏ box-shadow */
+      }
+
+      /* Voucher Information Styles */
+      .voucher-info {
+        font-family: 'Roboto', sans-serif;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-gap: 15px;
+        padding-top: 15px;
+      }
+
+      /* Styling for each row with orange theme */
+      .voucher-info .row {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #ffffff; /* White background for each row */
+        border: 1px solid #FF7043; /* Cam nhạt hơn */
+        /* Bỏ box-shadow */
+      }
+
+      /* Hover effect for each row */
+      .voucher-info .row:hover {
+        background-color: #FFCCBC; /* Màu cam nhạt khi hover */
+      }
+
+      /* Styling for the label (column 1) */
+      .voucher-info .row .col-4 {
+        font-weight: bold;
+        color: #FF5722; /* Màu cam cơ */
+        text-align: right;
+        padding-right: 15px;
+        font-size: 16px;
+        width: 30%;
+      }
+.modal-title {
+    color: white; /* Màu trắng cho tiêu đề */
+    font-size: 28px; /* Tùy chỉnh kích thước chữ */
+    font-weight: bold; /* Làm đậm chữ */
+  }
+      /* Styling for the value (column 2) */
+      .voucher-info .row .col-8 {
+        color: #212529;
+        font-size: 16px;
+        padding-left: 15px;
+        width: 70%;
+      }
+
+      /* Button adjustments */
+      .btn-secondary {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        background-color: #FF5722; /* Màu cam cơ */
+        color: white;
+        border: none;
+      }
+
+      .btn-secondary:hover {
+        background-color: #FF7043; /* Cam nhạt hơn khi hover */
+      }
+
+    </style>
+  </th:block>
+</head>
+
+<body>
+<th:block id="th-body">
+<th:block>
+  <script>
+
+    function formatCurrencyVND() {
+      const elements = document.querySelectorAll('.format-vnd');
+      elements.forEach(el => {
+        const value = parseInt(el.innerText.replace(/\D/g, '')); // loại bỏ ký tự không phải số
+        if (!isNaN(value)) {
+          el.innerText = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", formatCurrencyVND);
+
+  </script>
+</th:block>
+
+  <div class="container">
+    <div class="content-body">
+      <div class="container-fluid">
+        <div class="card">
+
+          <div class="card-body">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Khuyến mại chi tiết</h5>
+              </div>
+              <div class="modal-body voucher-detail">
+                <div class="voucher-info">
+                  <!-- Voucher properties displayed here -->
+                  <div class="row">
+                    <div class="col-4">Mã:</div>
+                    <div class="col-8" th:text="${voucher.code}">ABC123</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Tên phiếu giảm giá:</div>
+                    <div class="col-8" th:text="${voucher.name}">Discount Voucher</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Số tiền:</div>
+                    <div class="col-8" th:text="${formattedValue}">100,000 VND</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Số lượng:</div>
+                    <div class="col-8" th:text="${voucher.quantity}">50</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Ngày bắt đầu:</div>
+                    <div class="col-8" th:text="${#temporals.format(voucher.startDate, 'dd/MM/yyyy HH:mm')}">2025-05-01</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Ngày kết thúc:</div>
+                    <div class="col-8" th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy HH:mm')}">2025-06-01</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Hóa đơn tối thiểu:</div>
+                    <div class="col-8 format-vnd" th:text="${voucher.minimumBill}">500,000 VND</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Trạng thái:</div>
+                    <div  th:if="${voucher.status == voucher.status.ACTIVE}">
+                    <div class="col-8">Hoạt động</div>
+                    </div>
+                    <div  th:if="${voucher.status == voucher.status.INACTIVE}">
+                      <div class="col-8">Chưa hoạt động</div>
+                    </div>
+                    <div  th:if="${voucher.status == voucher.status.EXPIRED}">
+                      <div class="col-8">Hết hạn</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Được tạo bởi:</div>
+                    <div class="col-8" th:text="${voucher.createdBy}">Admin</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Được cập nhật bởi:</div>
+                    <div class="col-8" th:text="${voucher.updatedBy}">Admin</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Ngày tạo:</div>
+                    <div class="col-8" th:text="${#dates.format(voucher.createDate, 'dd/MM/yyyy HH:mm')}">2025-04-01 10:00:00</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">Ngày sửa cuối:</div>
+                    <div class="col-8" th:text="${#temporals.format(voucher.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss')}">2025-04-05 14:30:00</div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <a th:href="@{/dashboard/product-management/voucher/list}" class="btn btn-secondary" data-dismiss="modal">Trở lại</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</th:block>
+
+</body>
+</html>
