@@ -37,6 +37,7 @@ import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.entity.enum_status.VoucherStatus;
+import org.fpoly.capstone.exceptions.NotException;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.BillDetailRepository;
 import org.fpoly.capstone.repository.BillHistoryRepository;
@@ -487,7 +488,7 @@ public class BillServiceImpl implements BillService {
 
         User loggedUser = this.userService.getUserFromContext();
         Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
-
+        String user = userService.getName();
         Bill bill = new Bill();
 
         User customer = cart.getUser();
@@ -524,14 +525,43 @@ public class BillServiceImpl implements BillService {
         bill.setItemDiscount(itemDiscount);
         bill.setTotalMoney(grandTotal);
         bill.setMoneyShip(moneyShip);
+
         bill.setReceiveDate(recieveDate);
+        bill.setShipDate(recieveDate);
         bill.setAddress(address);
+        bill.setUserName(address);
+        bill.setPhoneNumber(address);
+
         bill.setNote(note);
         bill.setMethod(paymentMethod);
 
         bill.setBillDetailList(billDetailList);
         this.cartRepository.deleteById(cart.getId());
         this.billRepository.save(bill);
+
+
+        VoucherDetail voucherDetail = new VoucherDetail();
+
+        Long voucherId = request.getVoucherId();
+        BigDecimal beforePrice = request.getBeforePrice();
+        BigDecimal grandTotals = request.getGrandTotal();
+        // Lấy đối tượng Voucher từ voucherId
+        if (voucherId != null) {
+            try {
+                Voucher voucher = voucherService.findById(voucherId);
+                voucherDetail.setVoucher(voucher); // ✅ Truyền đúng đối tượng
+            } catch (NotException e) {
+                throw new IllegalArgumentException("Voucher không tồn tại.");
+            }
+        }
+
+        voucherDetail.setBill(bill);
+        voucherDetail.setBeforePrice(beforePrice);
+        voucherDetail.setAfterPrice(grandTotals);
+        voucherDetail.setDiscountPrice(itemDiscount);
+        voucherDetail.setCreateDate(new Date());
+
+        voucherDetailReponsitory.save(voucherDetail);
 
         try {
             if (bill.getEmail() != null) {
@@ -860,13 +890,36 @@ public class BillServiceImpl implements BillService {
         lastestBill.setTotalMoney(grandTotal);
         lastestBill.setMoneyShip(moneyShip);
         lastestBill.setReceiveDate(receiveDate);
+        lastestBill.setShipDate(receiveDate);
         lastestBill.setAddress(address);
+        lastestBill.setUserName(address);
+        lastestBill.setPhoneNumber(address);
         lastestBill.setNote(note);
         lastestBill.setMethod(paymentMethod);
         lastestBill.setCode(GeneralStringCode.generateCodeAdmin());
 
         // Lưu hóa đơn đã cập nhật
         this.billRepository.save(lastestBill); // Không tạo một bill mới, chỉ cập nhật hóa đơn hiện tại
+
+        VoucherDetail voucherDetail = new VoucherDetail();
+        Long voucherId = request.getVoucherId();
+        BigDecimal beforePrice = request.getBeforePrice();
+//        BigDecimal grandTotals = request.getGrandTotal();
+        // Lấy đối tượng Voucher từ voucherId
+        if (voucherId != null) {
+            try {
+                Voucher voucher = voucherService.findById(voucherId);
+                voucherDetail.setVoucher(voucher); // ✅ Truyền đúng đối tượng
+            } catch (NotException e) {
+                throw new IllegalArgumentException("Voucher không tồn tại.");
+            }
+        }
+        voucherDetail.setBill(lastestBill);
+        voucherDetail.setBeforePrice(beforePrice);
+        voucherDetail.setAfterPrice(grandTotal);
+        voucherDetail.setDiscountPrice(itemDiscount);
+        voucherDetail.setCreateDate(new Date());
+        voucherDetailReponsitory.save(voucherDetail);
 
         try {
             if (lastestBill.getEmail() != null) {

@@ -23,4 +23,8 @@ public class CreateBillRequest {
     private BigDecimal grandTotal;
     private PaymentMethod paymentMethod;
 
+
+    private Long voucherId;
+    private BigDecimal beforePrice;
+
 }

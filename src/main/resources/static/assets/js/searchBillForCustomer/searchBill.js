@@ -207,6 +207,7 @@ function getInforBillPrice(code) {
 
 
                 document.getElementById("beforePrice").textContent = formatVND(beforePrice) || 'Không có dữ liệu';
+                document.getElementById("afterPrice").textContent = formatVND(afterPrice) || 'Không có dữ liệu';
                 document.getElementById("moneyShip").textContent = formatVND(moneyShip) || 'Không có dữ liệu';
                 document.getElementById("discountPrice").textContent = formatVND(discount) || 'Không có dữ liệu';
                 document.getElementById("discountPrice-1").textContent = formatVND(discount) || 'Không có dữ liệu';

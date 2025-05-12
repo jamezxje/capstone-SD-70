@@ -191,7 +191,7 @@
                       </td>
                       <td th:text="${billDetail.productDetail.size.name}">S</td>
                       <td th:text="${billDetail.quantity}">1</td>
-                      <td th:text="${#numbers.formatDecimal(totalMoney, 0, 'POINT', 0, 'POINT')}+ ' VND'">$99</td>
+                      <td class="beforePrice" th:text="${#numbers.formatDecimal(totalMoney, 0, 'POINT', 0, 'POINT')}+ ' VND'">$99</td>
                     </tr>
                     </tbody>
                     <tfoot class="font-weight-600">
@@ -626,7 +626,16 @@
       // Loại bỏ ký hiệu tiền tệ và dấu chấm ngăn cách hàng nghìn
       return text.replace(/[^\d]/g, ''); // "10.000 ₫" => "10000"
     }
-
+    function parseCurrencyNumBer(text) {
+      return Number(text.replace(/[^\d]/g, '')) || 0;
+    }
+    function getBeforePriceTotal() {
+      let total = 0;
+      $('.beforePrice').each(function () {
+        total += parseCurrencyNumBer($(this).text());
+      });
+      return total;
+    }
     $('#createBillOnline').on('submit', function (event) {
       event.preventDefault();
       
@@ -640,6 +649,8 @@
       }
 
       const itemDiscount = parseCurrency($('#voucherDiscount').text());
+      const beforePrice = getBeforePriceTotal();
+      const voucherId = $('#selectedVoucherId').val();
       const receiveDate = formatDate($('#confirm-day').text());
       const moneyShip = $('#shipFee').val();
       
@@ -652,6 +663,8 @@
       const requestBody = {
         receiveDate: receiveDate,
         itemDiscount: itemDiscount,
+        beforePrice: beforePrice,
+        voucherId: voucherId,
         moneyShip: $('#shipFee').val(),
         address: $('#customer-address').find(":selected").text(),
         note: $('#orderNote').val(),

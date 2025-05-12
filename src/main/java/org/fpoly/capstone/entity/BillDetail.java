@@ -45,7 +45,8 @@ public class BillDetail {
     private ProductDetail productDetail;
 
 
-    @ManyToOne
+//    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_bill", referencedColumnName = "id")
     private Bill bill;
 
