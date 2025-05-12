@@ -489,7 +489,6 @@ public class BillServiceImpl implements BillService {
 
         User loggedUser = this.userService.getUserFromContext();
         Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
-        String user = this.userService.getName();
         Bill bill = new Bill();
 
         User customer = cart.getUser();
@@ -544,9 +543,9 @@ public class BillServiceImpl implements BillService {
         bill.setMethod(paymentMethod);
 
         bill.setBillDetailList(billDetailList);
-        this.cartRepository.deleteById(cart.getId());
+        selectedCartDetails.forEach(cart.getCartDetails()::remove);
+        this.cartDetailRepository.deleteAll(selectedCartDetails);
         this.billRepository.save(bill);
-
 
         VoucherDetail voucherDetail = new VoucherDetail();
 
