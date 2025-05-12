@@ -81,6 +81,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 
@@ -488,7 +489,7 @@ public class BillServiceImpl implements BillService {
 
         User loggedUser = this.userService.getUserFromContext();
         Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
-        String user = userService.getName();
+        String user = this.userService.getName();
         Bill bill = new Bill();
 
         User customer = cart.getUser();
@@ -498,13 +499,20 @@ public class BillServiceImpl implements BillService {
         bill.setCode(GeneralStringCode.generateCodeAdmin());
         bill.setEmail(customer.getEmail());
 
-        double totalPrice = cart.getCartDetails().stream()
+        List<CartDetail> selectedCartDetails = cart.getCartDetails().stream()
+                .filter(cartDetail -> cartDetail.getIsSelected() != null && cartDetail.getIsSelected())  // Only keep cart details where isSelected is true
+                .collect(Collectors.toList());
+
+        double totalPrice = selectedCartDetails.stream()
                 .mapToDouble(detail -> detail.getPrice().doubleValue() * detail.getQuantity())
                 .sum();
         bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
 
+        // Save the Bill object first
+        this.billRepository.save(bill);
+
         List<BillDetail> billDetailList = new ArrayList<>();
-        for (CartDetail cartDetail : cart.getCartDetails()) {
+        for (CartDetail cartDetail : selectedCartDetails) {
             BillDetail billDetail = new BillDetail();
             billDetail.setBill(bill);
             billDetail.setProductDetail(cartDetail.getProductDetail());
@@ -548,7 +556,7 @@ public class BillServiceImpl implements BillService {
         // Lấy đối tượng Voucher từ voucherId
         if (voucherId != null) {
             try {
-                Voucher voucher = voucherService.findById(voucherId);
+                Voucher voucher = this.voucherService.findById(voucherId);
                 voucherDetail.setVoucher(voucher); // ✅ Truyền đúng đối tượng
             } catch (NotException e) {
                 throw new IllegalArgumentException("Voucher không tồn tại.");
@@ -561,7 +569,7 @@ public class BillServiceImpl implements BillService {
         voucherDetail.setDiscountPrice(itemDiscount);
         voucherDetail.setCreateDate(new Date());
 
-        voucherDetailReponsitory.save(voucherDetail);
+        this.voucherDetailReponsitory.save(voucherDetail);
 
         try {
             if (bill.getEmail() != null) {
@@ -588,6 +596,10 @@ public class BillServiceImpl implements BillService {
         bill.setStatus(BillStatus.CHO_XAC_NHAN);
         bill.setCode(GeneralStringCode.generateCodeAdmin());
         bill.setEmail(customer.getEmail());
+
+        List<CartDetail> selectedCartDetails = cart.getCartDetails().stream()
+                .filter(cartDetail -> cartDetail.getIsSelected() != null && cartDetail.getIsSelected())  // Only keep cart details where isSelected is true
+                .collect(Collectors.toList());
 
         List<BillDetail> billDetailList = new ArrayList<>();
         for (CreateBillDetailFromCartRequest createBillDetailFromCartRequest : createBillDetailFromCartRequests) {
@@ -616,7 +628,10 @@ public class BillServiceImpl implements BillService {
         bill.setMethod(paymentMethod);
 
         bill.setBillDetailList(billDetailList);
-        this.cartRepository.deleteById(cart.getId());
+        // Delete selected cart details
+        selectedCartDetails.forEach(cart.getCartDetails()::remove);
+        this.cartDetailRepository.deleteAll(selectedCartDetails);
+
         this.billRepository.save(bill);
 
         try {
@@ -908,7 +923,7 @@ public class BillServiceImpl implements BillService {
         // Lấy đối tượng Voucher từ voucherId
         if (voucherId != null) {
             try {
-                Voucher voucher = voucherService.findById(voucherId);
+                Voucher voucher = this.voucherService.findById(voucherId);
                 voucherDetail.setVoucher(voucher); // ✅ Truyền đúng đối tượng
             } catch (NotException e) {
                 throw new IllegalArgumentException("Voucher không tồn tại.");
@@ -919,7 +934,7 @@ public class BillServiceImpl implements BillService {
         voucherDetail.setAfterPrice(grandTotal);
         voucherDetail.setDiscountPrice(itemDiscount);
         voucherDetail.setCreateDate(new Date());
-        voucherDetailReponsitory.save(voucherDetail);
+        this.voucherDetailReponsitory.save(voucherDetail);
 
         try {
             if (lastestBill.getEmail() != null) {
@@ -946,7 +961,38 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Optional<Bill> searchCode(String code) {
-        return billRepository.findByCode(code);
+        return this.billRepository.findByCode(code);
     }
+
+//    @Override
+//    public void checkoutFormCart(List<Long> selectedCartDetailIds) {
+//        User loggedUser = this.userService.getUserFromContext();
+//        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+//
+//        for (CartDetail cartDetail : cart.getCartDetails()) {
+//            if (selectedCartDetailIds.contains(cartDetail.getId())) {
+//                cartDetail.setIsSelected(true);
+//
+//                cartDetailRepository.save(cartDetail);
+//            }
+//        }
+//    }
+
+    @Override
+    public void checkoutFormCart(List<Long> selectedCartDetailIds) {
+        User loggedUser = this.userService.getUserFromContext();
+        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+
+        List<CartDetail> selectedCartDetails = cart.getCartDetails().stream()
+                .filter(cartDetail -> selectedCartDetailIds.contains(cartDetail.getId()))
+                .collect(Collectors.toList());
+
+        for (CartDetail cartDetail : selectedCartDetails) {
+            cartDetail.setIsSelected(true);
+            this.cartDetailRepository.save(cartDetail);
+        }
+
+    }
+
 
 }

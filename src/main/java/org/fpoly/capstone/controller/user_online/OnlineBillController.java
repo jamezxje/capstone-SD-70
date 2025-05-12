@@ -5,18 +5,31 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.fpoly.capstone.controller.payload.bill_detail.BillDetailViewModel;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailViewModel;
-import org.fpoly.capstone.entity.*;
+import org.fpoly.capstone.entity.Address;
+import org.fpoly.capstone.entity.Bill;
+import org.fpoly.capstone.entity.BillDetail;
+import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.entity.Voucher;
 import org.fpoly.capstone.entity.enum_status.PaymentMethod;
 import org.fpoly.capstone.repository.CartRepository;
-import org.fpoly.capstone.service.*;
+import org.fpoly.capstone.service.BillDetailService;
+import org.fpoly.capstone.service.BillService;
+import org.fpoly.capstone.service.CartDetailService;
+import org.fpoly.capstone.service.OnlineAddressService;
+import org.fpoly.capstone.service.UserService;
+import org.fpoly.capstone.service.VnPayService;
+import org.fpoly.capstone.service.VoucherService;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
 import org.fpoly.capstone.service.payload.bill_detail.BillDetailResponse;
 import org.fpoly.capstone.service.payload.cart_detail.CartDetailResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.net.URLDecoder;
@@ -25,6 +38,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @Log4j2
@@ -42,27 +56,35 @@ public class OnlineBillController {
     private final VnPayService vnPayService;
     private final VoucherService voucherService;
 
-    @GetMapping(path = "checkout")
-    public String onOpenCheckoutView(Model model) {
+    @PostMapping(path = "checkout")
+    public String onOpenCheckoutView(@RequestParam List<Long> selectedCartDetailIds, Model model) {
 
         User loggedUser = this.userService.getUserFromContext();
+
+        this.billService.checkoutFormCart(selectedCartDetailIds);
 
         Address defaultAddress = this.onlineAddressService.findDefaultAddressByUserId();
 
         List<CartDetailResponse> cartDetailResponseList = this.cartDetailService.findCartDetailByUserId();
 
+        // Filter the cart details to include only those that are in the selectedCartDetailIds list
         List<CartDetailViewModel> viewModels = cartDetailResponseList.stream()
-                .map(response -> this.modelMapper.map(response, CartDetailViewModel.class))
-                .toList();
+                .filter(cartDetail -> selectedCartDetailIds.contains(cartDetail.getId()))  // Only keep the selected cart details
+                .map(response -> this.modelMapper.map(response, CartDetailViewModel.class))  // Map to CartDetailViewModel
+                .collect(Collectors.toList());
+
+        double totalSelectedPrice = viewModels.stream()
+                .mapToDouble(cart -> cart.getPrice().doubleValue() * cart.getQuantity())  // Calculate price * quantity for each cart item
+                .sum();
 
         List<Address> addressList = this.onlineAddressService.getListAddressByLoggedUser();
-        List<Voucher> listVoucher = voucherService.getAllVouchers();
+        List<Voucher> listVoucher = this.voucherService.getAllVouchers();
         model.addAttribute("cartDetailList", viewModels);
         model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("shoppingCart", this.cartRepository.findCartByUserId(loggedUser.getId()));
         model.addAttribute("addressList", addressList);
         model.addAttribute("defaultAddress", defaultAddress);
-        model.addAttribute("cartTotalMoney", this.cartRepository.findCartByUserId(loggedUser.getId()).getTotalPrice());
+        model.addAttribute("cartTotalMoney", totalSelectedPrice);
         model.addAttribute("createBillRequest", new CreateBillRequest());
         model.addAttribute("listVoucher", listVoucher);
         return "/views/user-online-view/checkout-form";
@@ -83,7 +105,7 @@ public class OnlineBillController {
 
         BillDetail billDetail = billDetailList.get(0);
 
-        List<Voucher> listVoucher = voucherService.getAllVouchers();
+        List<Voucher> listVoucher = this.voucherService.getAllVouchers();
         model.addAttribute("loggedUser", loggedUser);
         model.addAttribute("addressList", addressList);
         model.addAttribute("defaultAddress", defaultAddress);
