@@ -2340,7 +2340,7 @@ function searchCustomer() {
              data.forEach((customer, index) => {
                  const row = document.createElement('tr');
                  row.innerHTML = `
-                    <td>${index + 1}</td>
+                    <td style="height: 20px;">${index + 1}</td>
                     <td>${customer.fullName}</td>
                     <td>${customer.numberPhone}</td>
                     <td>${customer.email}</td>

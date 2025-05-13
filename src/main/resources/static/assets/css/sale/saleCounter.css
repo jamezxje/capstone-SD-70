@@ -116,7 +116,7 @@
 }
 /* Nếu bạn muốn tăng khoảng cách giữa các phần tử bên trong */
 .voucher-1 strong {
-    margin-left: 10px; /* Tạo khoảng cách giữa các phần tử <strong> */
+    /*margin-left: 10px; !* Tạo khoảng cách giữa các phần tử <strong> *!*/
 }
 
 .last-right {
@@ -127,6 +127,7 @@
     display: flex;
     flex-wrap: wrap; /* Cho phép các phần tử xuống dòng khi không đủ không gian */
     gap: 20px;
+    margin-left:10px ;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
     height: auto;
 }
@@ -395,7 +396,6 @@ th , td{
     display: flex;
     justify-content: space-between;
     margin: 50px 20px 10px 20px;
-padding: 20px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
@@ -408,9 +408,9 @@ padding: 20px;
 }
 .payment-1 {
     border: 1px solid gray;
-    width: 49%;
+    /*width: 60%;*/
     padding: 10px;
-    height: 630px;
+    height: 610px;
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
 
@@ -419,16 +419,17 @@ padding: 20px;
     padding: 10px;
     border-radius: 10px;
     border: 1px solid gray;
-    margin-right: 180px;
+    margin-right: 50px;
+    width: 300px;
 }
 #total-price  {
-    margin-left: 470px;
+    margin-left: 400px;
 }
 #shipping {
     margin-left: 430px;
 }
 #discount {
-    margin-left: 475px;
+    margin-left: 430px;
 }
 #total-amount{
     margin-left: 470px;
@@ -449,7 +450,7 @@ padding: 20px;
     font-size: 14px;
 }
 
-.shipping-method label {
+.shipping-method .switch {
     margin-left: 40px;
 }
 .payment-btn-success {
@@ -801,4 +802,11 @@ a.page-link {
     border: 1px solid #ddd;
     border-radius: 5px;
     width: 150px;
+}
+.pagination .page-item .page-link {
+    font-size: 13px;
+
+}
+.pagination {
+    margin: 0;
 }
