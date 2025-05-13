@@ -16,10 +16,15 @@ import java.util.Date;
 public class CreateBillRequest {
 
     private Date receiveDate;
+    private BigDecimal itemDiscount;
     private BigDecimal moneyShip;
     private String address;
     private String note;
     private BigDecimal grandTotal;
     private PaymentMethod paymentMethod;
+
+
+    private Long voucherId;
+    private BigDecimal beforePrice;
 
 }

@@ -15,8 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -91,6 +90,51 @@ public class UserServiceImpl implements UserService {
         String subject = "Khôi phục mật khẩu - CAPSTONE";
         emailServiceImpl.sendEmailPassword(user.getEmail(), subject, rawPassword);
         return "Mật khẩu mới đã được gửi về email của bạn.";
+    }
+    @Override
+    @Transactional
+    public Map<String, String> changeUserPassword(String currentPassword, String newPassword, String confirmPassword) {
+        Map<String, String> errors = new HashMap<>();
+        User loggedUser = getUserFromContext();
+
+        if (loggedUser == null) {
+            errors.put("globalError", "Người dùng chưa đăng nhập.");
+            return errors;
+        }
+
+        if (currentPassword == null || currentPassword.trim().isEmpty()) {
+            errors.put("currentPassword", "Mật khẩu hiện tại không được để trống.");
+        } else if (!passwordEncoder.matches(currentPassword, loggedUser.getPassword())) {
+            errors.put("currentPassword", "Mật khẩu hiện tại không chính xác.");
+        }
+
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            errors.put("newPassword", "Mật khẩu mới không được để trống.");
+        } else if (newPassword.length() < 6 || newPassword.length() > 20) {
+            errors.put("newPassword", "Mật khẩu mới phải từ 6 đến 20 ký tự.");
+        }
+
+        if (confirmPassword == null || confirmPassword.trim().isEmpty()) {
+            errors.put("confirmPassword", "Xác nhận mật khẩu không được để trống.");
+        } else if (!newPassword.equals(confirmPassword)) {
+            errors.put("confirmPassword", "Mật khẩu xác nhận không khớp.");
+        }
+
+        if (!errors.isEmpty()) {
+            return errors;
+        }
+
+        loggedUser.setPassword(passwordEncoder.encode(newPassword));
+        loggedUser.setLastModifiedDate(new Date());
+        userRepository.save(loggedUser);
+
+        emailServiceImpl.sendEmailPassword(
+                loggedUser.getEmail(),
+                "Thay đổi mật khẩu thành công - CAPSTONE",
+                newPassword
+        );
+
+        return Collections.emptyMap(); // Không có lỗi => thành công
     }
 
     //validate

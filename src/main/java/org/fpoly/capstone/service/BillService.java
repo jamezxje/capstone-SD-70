@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BillService {
     CreateBillRequest create(CreateBillRequest createBillDTO);
@@ -39,6 +40,8 @@ public interface BillService {
     Bill save(Long id, CreateBillOfflineDTO request);
 
     List<BillProductDTO> getBillDetail(Long billId);
+
+    List<BillProductDTO> getBillDetailCustomer(String code);
 
     Bill saveProductInBill(Long id, CreateBillOfflineDTO request);
 
@@ -98,5 +101,8 @@ public interface BillService {
 
     List<Bill> findLastestBillByCustomerId();
 
+    Optional<Bill> searchCode(String code);
+
+    void checkoutFormCart(List<Long> selectedCartDetailIds);
 
 }

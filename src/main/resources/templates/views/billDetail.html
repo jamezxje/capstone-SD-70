@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
+
         <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>
     </th:block>
 </head>
@@ -73,25 +75,25 @@
                 </div>
                 <div id="historyModalStatus" class="modal">
                     <div class="modal-content">
-                            <h5 class="modal-title" id="historyModalLabel">Lịch sử thay đổi trạng thái</h5>
-                            <span class="closehistory">&times;</span>
+                        <h5 class="modal-title" id="historyModalLabel">Lịch sử thay đổi trạng thái</h5>
+                        <span class="closehistory">&times;</span>
                         <div class="modal-body">
                             <table class="table table-bordered">
                                 <thead>
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Loại giao dịch</th>
-                                        <th>Trạng thái</th>
-                                        <th>Mô tả</th>
-                                        <th>Thời gian</th>
-                                        <th>Người thực hiện</th>
-                                    </tr>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Loại giao dịch</th>
+                                    <th>Trạng thái</th>
+                                    <th>Mô tả</th>
+                                    <th>Thời gian</th>
+                                    <th>Người thực hiện</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="billHistory, index : ${billHistorys}">
-                                        <td th:text="${index.index + 1}"></td>
-                                        <td th:text="${billHistory.bill.type}"></td>
-                                        <td>
+                                <tr th:each="billHistory, index : ${billHistorys}">
+                                    <td th:text="${index.index + 1}"></td>
+                                    <td th:text="${billHistory.bill.type}"></td>
+                                    <td>
                                             <span th:switch="${#strings.trim(billHistory.status)}">
                                                 <span th:case="'CHO_XAC_NHAN'">Chờ xác nhận</span>
                                                 <span th:case="'CHO_VAN_CHUYEN'">Chờ vận chuyển</span>
@@ -103,11 +105,11 @@
                                                 <span th:case="'DA_HUY'">Hủy</span>
                                                 <span th:case="*">Không xác định</span>
                                             </span>
-                                        </td>
-                                        <td th:text="${billHistory.actionDescription}"></td>
-                                        <td th:text="${billHistory.createDate}"></td>
-<!--                                        <td th:text="${billHistory.user.fullName}"></td>-->
-                                    </tr>
+                                    </td>
+                                    <td th:text="${billHistory.actionDescription}"></td>
+                                    <td th:text="${billHistory.createDate}"></td>
+                                    <td th:text="${billHistory.createdBy}"></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -150,7 +152,8 @@
                             <p><strong>Thời gian dự kiến nhận:</strong> <span id="shipDate"></span></p>
                         </div>
                     </div>
-                </div><br>
+                </div>
+                <br>
 
 
             </div>
@@ -164,10 +167,10 @@
 
                     <div id="changeAddressForm">
                         <label for="customerNameModal">Tên khách hàng:</label>
-                        <input type="text" id="customerNameModal" ><br>
+                        <input type="text" id="customerNameModal"><br>
 
                         <label for="phoneNumberModal">Số điện thoại:</label>
-                        <input type="text" id="phoneNumberModal" ><br>
+                        <input type="text" id="phoneNumberModal"><br>
 
                         <label for="citySelectModal">Thành phố:</label>
                         <select id="citySelectModal">
@@ -188,70 +191,144 @@
 
                         <label for="detailAddressModal">Địa chỉ chi tiết:</label>
                         <input type="text" id="detailAddressModal"><br>
-                       <div style="display: none" id="shipform">
-                           <label >Tiền ship:</label>
-                           <input type="text" id="totalShip"><br>
-                           <label > Ngày nhận:</label>
-                           <input type="text" id="confirm-day"><br>
-                       </div>
+                        <div style="display: none" id="shipform">
+                            <label>Tiền ship:</label>
+                            <input type="text" id="totalShip"><br>
+                            <label> Ngày nhận:</label>
+                            <input type="text" id="confirm-day"><br>
+                        </div>
                         <button id="btn-changeInfor">Lưu thay đổi</button>
                     </div>
                 </div>
             </div>
 
 
-           <div class="table-container">
-               <h5>Sản phẩm đã mua</h5>
-               <table>
-                   <thead>
-                   <tr>
-                       <th>STT</th>
-                       <th>Tên sản phẩm</th>
-                       <th>Size</th>
-                       <th>Màu sắc</th>
-                       <th>Số lượng</th>
-                       <th>Giá</th>
-                       <th>Tổng tiền</th>
-                   </tr>
-                   </thead>
-                   <tbody>
-                   <tr th:each="detailsp, index : ${billDetailsp}">
-                       <td th:text="${index.index + 1}"></td>
-                       <td th:text="${detailsp.productName}"></td>
-                       <td th:text="${detailsp.size}"></td>
-                       <td th:text="${detailsp.color}"></td>
-                       <td th:text="${detailsp.quantity}"></td>
-                       <td th:text="${#numbers.formatDecimal(detailsp.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
-                       <td th:text="${#numbers.formatDecimal(detailsp.price * detailsp.quantity, 0, 'COMMA', 0, 'POINT')} +' VND'"></td>
-                   </tr>
-                   </tbody>
-               </table><br><br>
-               <div  class="d-flex justify-content-end">
-                   <div th:if="${voucherDetail != null}">
-                       <h5>Tổng tiền hàng :<span th:text="${#numbers.formatDecimal(voucherDetail.beforePrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
-                       <h5>Phí vận chuyển :<span th:text="${#numbers.formatDecimal(voucherDetail.moneyShip, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
-                       <h5>Voucher giảm giá :<span th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
-                       <h5>Tổng tiền giảm :<span th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span> VND</h5>
-                       <hr>
-                       <h4>Tổng tiền thanh toán:<span th:text="${#numbers.formatDecimal(voucherDetail.afterPrice + voucherDetail.moneyShip, 0, 'COMMA', 0, 'POINT')}"></span> VND</h4>
-                   </div>
-               </div>
-           </div>
-            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="table-container">
+                <h5>Sản phẩm đã mua</h5>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Sản phẩm</th>
+                        <th>Size</th>
+                        <th>Màu sắc</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
+                        <th>Tổng tiền</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="detailsp, index : ${billDetailsp}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td>
+                            <img th:src="${detailsp.image}" alt="Ảnh sản phẩm" width="70" height="70"
+                                 style="object-fit: cover; border-radius: 6px;"/>
+                            <div><h6 th:text="${detailsp.productName}"></h6></div>
+                        </td>
+                        <td th:text="${detailsp.size}"></td>
+                        <td th:text="${detailsp.color}"></td>
+                        <td th:text="${detailsp.quantity}"></td>
+                        <td th:text="${#numbers.formatDecimal(detailsp.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td th:text="${#numbers.formatDecimal((detailsp.price ?: 0) * (detailsp.quantity ?: 0), 0, 'COMMA', 0, 'POINT')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <br><br>
+                <div class="d-flex justify-content-end">
+                    <div th:if="${voucherDetail != null}">
+                        <h5>Tổng tiền hàng :<span
+                                th:text="${#numbers.formatDecimal(voucherDetail.beforePrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                            VND</h5>
+                        <h5>Phí vận chuyển :<span
+                                th:text="${#numbers.formatDecimal(voucherDetail.moneyShip, 0, 'COMMA', 0, 'POINT')}"></span>
+                            VND</h5>
+                        <h5>Voucher giảm giá :<span
+                                th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                            VND</h5>
+                        <h5>Tổng tiền giảm :<span
+                                th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                            VND</h5>
+                        <hr>
+                        <h4>Tổng tiền thanh toán:<span
+                                th:text="${#numbers.formatDecimal(voucherDetail.afterPrice + voucherDetail.moneyShip, 0, 'COMMA', 0, 'POINT')}"></span>
+                            VND</h4>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="invoice-container" id="invoice-container" style="display: none">
+
+                <!-- PHẦN HEADER -->
+                <div class="invoice-header section">
+                    <h2>CastonStore</h2>
+                    <p>Hóa đơn giao hàng</p>
+                    <p><strong>Mã hóa đơn:</strong> <span id="printCode"></span></p>
+                </div>
+
+                <!-- PHẦN THÔNG TIN NGƯỜI GỬI / NGƯỜI NHẬN -->
+                <div class="invoice-info-section section">
+                    <div class="invoice-info-box">
+                        <h6>Từ</h6>
+                        <p>Cao đẳng fpt polytenich - Đồ án tốt nghiệp sd-32 </p>
+                        <p>SDT : 190023123</p>
+                    </div>
+                    <div class="invoice-info-box">
+                        <h6>Đến</h6>
+                        <p id="printNameCustomer"></p>
+                        <p id="printAddress"></p>
+                        <p id="printNumberPhoneCustomer"></p>
+                    </div>
+                </div>
+
+                <!-- PHẦN NỘI DUNG ĐƠN HÀNG -->
+                <div class="section">
+                    <div class="order-content-header">
+                        <span>Nội dung đơn hàng</span>
+                        <span>Ngày đặt hàng: <span id="printCreateDate"></span></span>
+                    </div>
+
+                    <ol id="productList" class="product-list"></ol>
+
+                </div>
+
+                <!-- PHẦN THANH TOÁN + CHỮ KÝ -->
+                <div class="invoice-footer section">
+                    <div class="invoice-payment">
+                        <p>Tiền thu người nhận: </p>
+                        <strong id="printTotalPayment"></strong>
+                    </div>
+                    <div class="invoice-signature">
+                        <p>Chữ ký người nhận</p>
+                        <div class="signature-line">Xác nhận hàng nguyên vẹn, không đổ vỡ, không móp méo</div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div>
+                <button id="checkprint">Check print</button>
+            </div>
+
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <form th:action="@{/bill/detail/{id}/confirm(id=${bill.id})}" method="post">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="confirmModalLabel">Xác nhận</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
                             </div>
                             <div class="modal-body">
-                                <input type="hidden" name="billId" th:value="${bill.id}" />
-                                <input type="hidden" name="newStatus" id="newStatusInput" />
+                                <input type="hidden" name="billId" th:value="${bill.id}"/>
+                                <input type="hidden" name="newStatus" id="newStatusInput"/>
 
                                 <div class="mb-3">
                                     <label for="noteInput" class="form-label">Ghi chú</label>
-                                    <textarea class="form-control" id="noteInput" name="note" rows="3" placeholder="Nhập ghi chú..."></textarea>
+                                    <textarea class="form-control" id="noteInput" name="note" rows="3"
+                                              placeholder="Nhập ghi chú..."></textarea>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -261,11 +338,25 @@
                         </form>
                     </div>
                 </div>
+
             </div>
         </div>
+
     </div>
 
-
+    <div id="toast" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #f44336;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: none;
+    transition: opacity 0.5s ease;
+    "></div>
 
 </th:block>
 <th:block id="th-js">
@@ -280,140 +371,147 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-        var confirmModal = document.getElementById("confirmModal");
-        confirmModal.addEventListener("show.bs.modal", function (event) {
-            var button = event.relatedTarget; // Button được click
-            var newStatus = button.getAttribute("data-status"); // Lấy trạng thái mới
-            document.getElementById("newStatusInput").value = newStatus;
-        });
+            var confirmModal = document.getElementById("confirmModal");
+            confirmModal.addEventListener("show.bs.modal", function (event) {
+                var button = event.relatedTarget; // Button được click
+                var newStatus = button.getAttribute("data-status"); // Lấy trạng thái mới
+                document.getElementById("newStatusInput").value = newStatus;
+            });
         });
 
         document.getElementById("btn-changeInfor").addEventListener("click", function (event) {
-        event.preventDefault(); // Ngăn chặn hành động submit mặc định
+            event.preventDefault(); // Ngăn chặn hành động submit mặc định
 
-        let customerName = document.getElementById("customerNameModal").value.trim();
-        let phoneNumber = document.getElementById("phoneNumberModal").value.trim();
-        let city = document.getElementById("citySelectModal").value;
-        let district = document.getElementById("districtSelectModal").value;
-        let ward = document.getElementById("wardSelectModal").value;
-        let detailAddress = document.getElementById("detailAddressModal").value.trim();
+            let customerName = document.getElementById("customerNameModal").value.trim();
+            let phoneNumber = document.getElementById("phoneNumberModal").value.trim();
+            let city = document.getElementById("citySelectModal").value;
+            let district = document.getElementById("districtSelectModal").value;
+            let ward = document.getElementById("wardSelectModal").value;
+            let detailAddress = document.getElementById("detailAddressModal").value.trim();
 
-        // Biến kiểm tra lỗi
-        // let isValid = true;
-        let errorMessage = "";
+            // Biến kiểm tra lỗi
+            // let isValid = true;
+            let errorMessage = "";
 
-        // Kiểm tra tên khách hàng (chỉ chứa chữ cái và khoảng trắng)
-        let nameRegex = /^[a-zA-ZÀ-Ỹà-ỹ\s]+$/;
-        if (customerName === "") {
-            function showToast(message) {
-                Toastify({
-                    text: message,
-                    duration: 3000, // 3 giây tự ẩn
-                    gravity: "top", // Vị trí: top / bottom
-                    position: "right", // Vị trí: left / center / right
-                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
-                    close: true // Có nút đóng
-                }).showToast();
+            // Kiểm tra tên khách hàng (chỉ chứa chữ cái và khoảng trắng)
+            let nameRegex = /^[a-zA-ZÀ-Ỹà-ỹ\s]+$/;
+            if (customerName === "") {
+                function showToast(message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000, // 3 giây tự ẩn
+                        gravity: "top", // Vị trí: top / bottom
+                        position: "right", // Vị trí: left / center / right
+                        backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                        close: true // Có nút đóng
+                    }).showToast();
+                }
+
+                // Khi cần hiển thị thông báo
+                showToast("Tên khách hàng không được để trống.");
+            } else if (!nameRegex.test(customerName)) {
+                function showToast(message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000, // 3 giây tự ẩn
+                        gravity: "top", // Vị trí: top / bottom
+                        position: "right", // Vị trí: left / center / right
+                        backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                        close: true // Có nút đóng
+                    }).showToast();
+                }
+
+                showToast("Tên khách hàng chỉ được chứa chữ cái và khoảng trắng.");
+                return;
             }
-            // Khi cần hiển thị thông báo
-            showToast("Tên khách hàng không được để trống.");
-        } else if (!nameRegex.test(customerName)) {
-            function showToast(message) {
-                Toastify({
-                    text: message,
-                    duration: 3000, // 3 giây tự ẩn
-                    gravity: "top", // Vị trí: top / bottom
-                    position: "right", // Vị trí: left / center / right
-                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
-                    close: true // Có nút đóng
-                }).showToast();
-            }
-            showToast("Tên khách hàng chỉ được chứa chữ cái và khoảng trắng.");
-            return;
-        }
 
-        // Kiểm tra số điện thoại (chỉ chứa số, 10 chữ số, bắt đầu bằng 0)
-        let phoneRegex = /^0\d{9}$/;
-        if (!phoneRegex.test(phoneNumber)) {
-            function showToast(message) {
-                Toastify({
-                    text: message,
-                    duration: 3000, // 3 giây tự ẩn
-                    gravity: "top", // Vị trí: top / bottom
-                    position: "right", // Vị trí: left / center / right
-                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
-                    close: true // Có nút đóng
-                }).showToast();
-            }
-            showToast("Số điện thoại không hợp lệ (phải có 10 số, bắt đầu bằng 0, chỉ chứa chữ số).");
-            return;
-        }
+            // Kiểm tra số điện thoại (chỉ chứa số, 10 chữ số, bắt đầu bằng 0)
+            let phoneRegex = /^0\d{9}$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                function showToast(message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000, // 3 giây tự ẩn
+                        gravity: "top", // Vị trí: top / bottom
+                        position: "right", // Vị trí: left / center / right
+                        backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                        close: true // Có nút đóng
+                    }).showToast();
+                }
 
-        // Kiểm tra chọn tỉnh/thành phố
-        if (city === "") {
-            function showToast(message) {
-                Toastify({
-                    text: message,
-                    duration: 3000, // 3 giây tự ẩn
-                    gravity: "top", // Vị trí: top / bottom
-                    position: "right", // Vị trí: left / center / right
-                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
-                    close: true // Có nút đóng
-                }).showToast();
+                showToast("Số điện thoại không hợp lệ (phải có 10 số, bắt đầu bằng 0, chỉ chứa chữ số).");
+                return;
             }
-            showToast("Vui lòng chọn thành phố.");
-            return;
-        }
 
-        // Kiểm tra chọn quận/huyện
-        if (district === "") {
-            function showToast(message) {
-                Toastify({
-                    text: message,
-                    duration: 3000, // 3 giây tự ẩn
-                    gravity: "top", // Vị trí: top / bottom
-                    position: "right", // Vị trí: left / center / right
-                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
-                    close: true // Có nút đóng
-                }).showToast();
+            // Kiểm tra chọn tỉnh/thành phố
+            if (city === "") {
+                function showToast(message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000, // 3 giây tự ẩn
+                        gravity: "top", // Vị trí: top / bottom
+                        position: "right", // Vị trí: left / center / right
+                        backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                        close: true // Có nút đóng
+                    }).showToast();
+                }
+
+                showToast("Vui lòng chọn thành phố.");
+                return;
             }
-            showToast("Vui lòng chọn huyện.");
-            return;
-        }
 
-        // Kiểm tra chọn xã/phường
-        if (ward === "") {
-            function showToast(message) {
-                Toastify({
-                    text: message,
-                    duration: 3000, // 3 giây tự ẩn
-                    gravity: "top", // Vị trí: top / bottom
-                    position: "right", // Vị trí: left / center / right
-                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
-                    close: true // Có nút đóng
-                }).showToast();
+            // Kiểm tra chọn quận/huyện
+            if (district === "") {
+                function showToast(message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000, // 3 giây tự ẩn
+                        gravity: "top", // Vị trí: top / bottom
+                        position: "right", // Vị trí: left / center / right
+                        backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                        close: true // Có nút đóng
+                    }).showToast();
+                }
+
+                showToast("Vui lòng chọn huyện.");
+                return;
             }
-            showToast("Vui lòng chọn xã.");
-            return;
-        }
 
-        // Kiểm tra địa chỉ chi tiết
-        if (detailAddress === "") {
-            function showToast(message) {
-                Toastify({
-                    text: message,
-                    duration: 3000, // 3 giây tự ẩn
-                    gravity: "top", // Vị trí: top / bottom
-                    position: "right", // Vị trí: left / center / right
-                    backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
-                    close: true // Có nút đóng
-                }).showToast();
+            // Kiểm tra chọn xã/phường
+            if (ward === "") {
+                function showToast(message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000, // 3 giây tự ẩn
+                        gravity: "top", // Vị trí: top / bottom
+                        position: "right", // Vị trí: left / center / right
+                        backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                        close: true // Có nút đóng
+                    }).showToast();
+                }
+
+                showToast("Vui lòng chọn xã.");
+                return;
             }
-            showToast("Vui lòng nhập địa chỉ chi tiết.");
-            return;
-        }
 
-    });
+            // Kiểm tra địa chỉ chi tiết
+            if (detailAddress === "") {
+                function showToast(message) {
+                    Toastify({
+                        text: message,
+                        duration: 3000, // 3 giây tự ẩn
+                        gravity: "top", // Vị trí: top / bottom
+                        position: "right", // Vị trí: left / center / right
+                        backgroundColor: "linear-gradient(to right, #ff7e5f, #feb47b)",
+                        close: true // Có nút đóng
+                    }).showToast();
+                }
+
+                showToast("Vui lòng nhập địa chỉ chi tiết.");
+                return;
+            }
+
+        });
 
     </script>
 </th:block>

@@ -57,8 +57,14 @@ public class CartDetail {
     @Column(name = "updated_by", length = 255)
     private String updatedBy;
 
+    private Boolean isSelected;
+
     @PrePersist
     public void prePersist() {
+//        if (this.isSelected == null) {
+//            this.isSelected = false;  // Default to false if not set
+//        }
+
         if (this.createDate == null) {
             this.createDate = LocalDateTime.now();
         }
@@ -73,7 +79,6 @@ public class CartDetail {
 
         this.updatedBy = CommonUtils.getPrincipal();
     }
-
 
     @Override
     public int hashCode() {

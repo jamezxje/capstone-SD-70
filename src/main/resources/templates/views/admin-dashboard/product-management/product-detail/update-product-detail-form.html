@@ -33,7 +33,8 @@
       
       <form class="form-update-product-detail"
             th:action="@{/dashboard/product-management/product-detail/update}"
-            th:object="${productDetailModel}" method="post" enctype="multipart/form-data">
+            th:object="${productDetailModel}" method="post" enctype="multipart/form-data"
+            onsubmit="removeCommasBeforeSubmit()">
         
         <input type="hidden" th:field="*{id}"/>
         <!--Thong tin san pham start-->
@@ -180,8 +181,9 @@
                     
                     <div class="form-group col-md-4">
                       <label for="price">Giá tiền (VND) <span class="text-danger">*</span></label>
-                      <input id="price" type="number" name="price" th:field="*{price}" class="form-control"
-                             oninput="formatCurrency(event)"
+                      <input id="price" type="text" name="price" th:field="*{price}"
+                             class="form-control product-detail-price"
+                             oninput="formatPrice(this)"
                              placeholder="" required>
                     </div>
                     
@@ -336,6 +338,31 @@
       
       // Cập nhật lại giá trị trong input
       input.value = formattedValue;
+    }
+    
+    // window.onload = function () {
+    //   const priceInput = document.getElementById('price');
+    //   const priceValue = parseFloat(priceInput.value);
+    //   const formattedPrice = priceValue.toLocaleString('de-DE');
+    //   priceInput.value = formattedPrice;
+    // };
+    
+    function formatPrice(input) {
+      // Remove non-numeric characters
+      let value = input.value.replace(/\D/g, '');
+      
+      // Format the number with commas
+      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      
+      // Set the formatted value back into the input field
+      input.value = value;
+    }
+    
+    function removeCommasBeforeSubmit() {
+      const inputs = document.querySelectorAll('.product-detail-price');
+      inputs.forEach(input => {
+        input.value = input.value.replace(/,/g, ''); // Remove commas before submission
+      });
     }
     
     window.onload = function () {

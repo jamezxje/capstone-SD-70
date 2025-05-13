@@ -30,7 +30,7 @@
 <body>
 
 <th:block id="th-body">
-  
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
   <!--Body Content-->
   <div id="page-content">
     <!--Page Title-->
@@ -110,33 +110,33 @@
                   <div class="row">
                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                       <label for="input-lastname">Họ và tên <span class="required-f">*</span></label>
-                      <input name="lastname" value="" id="input-lastname" type="text" th:value="${loggedUser.fullName}">
+                      <input name="lastname" value="" id="input-lastname" type="text" th:value="${loggedUser.fullName}" disabled>
                     </div>
                     
                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                       <label for="input-email">E-Mail <span class="required-f">*</span></label>
-                      <input name="email" value="" id="input-email" type="email" th:value="${loggedUser.email}">
+                      <input name="email" value="" id="input-email" type="email" th:value="${loggedUser.email}" disabled>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                      <label for="input-telephone">Số điện thoại <span class="required-f">*</span></label>
-                      <input name="telephone" value="" id="input-telephone" type="tel"
-                             th:value="${loggedUser.phoneNumber}">
-                    </div>
-                  </div>
+<!--                  <div class="row">-->
+<!--                    <div class="form-group col-md-6 col-lg-6 col-xl-6 required">-->
+<!--                      <label for="input-telephone">Số điện thoại <span class="required-f">*</span></label>-->
+<!--                      <input name="telephone" value="" id="input-telephone" type="tel"-->
+<!--                             th:value="${loggedUser.phoneNumber}">-->
+<!--                    </div>-->
+<!--                  </div>-->
                 </fieldset>
                 
                 <fieldset>
                   <div class="row">
                     <div class="form-group col-md-12 col-lg-12 col-xl-12 required">
-                      <label for="customer-address">Địa chỉ</label>
+                      <label for="customer-address">Địa chỉ nhận hàng</label>
                       <select id="customer-address" name="address">
                         <option th:each="address : ${addressList}"
                                 th:value="${address.detailAddress} + ' - '+${address.ward} + ' - ' + ${address.district} + ' - ' + ${address.province}"
                                 th:data-districtId="${address.toDistrictId}"
                                 th:data-wardCode="${address.wardCode}"
-                                th:text="${address.detailAddress} + ' - '+${address.ward} + ' - ' + ${address.district} + ' - ' + ${address.province} "
+                                th:text="${address.fullName} + ' - ' + ${address.phoneNumber} + ' , ' + ${address.detailAddress} + ' , '+${address.ward} + ' , ' + ${address.district} + ' , ' + ${address.province}"
                                 th:selected="${address.id == defaultAddress.id}">
                         </option>
                       </select>
@@ -161,7 +161,17 @@
             <div class="your-order-payment">
               <div class="your-order">
                 <h2 class="order-title mb-4">Đơn hàng</h2>
-                
+                <div class="row border-bottom pb-2 pt-2 align-items-center">
+                  <div class="col-6">
+                    <span class="cart__subtotal-title font-weight-bold">Giảm giá</span>
+                  </div>
+                  <div class="col-6 text-right">
+                    <span id="openVoucherModalBtn" class="text-primary" style="cursor: pointer;">
+                      Chọn mã giảm giá
+                    </span>
+                  </div>
+                </div>
+                <br>
                 <div class="table-responsive-sm order-table">
                   <table class="bg-white table table-bordered table-hover text-center">
                     <thead>
@@ -176,21 +186,26 @@
                     <tbody>
                     <tr th:each="billDetail : ${billDetailList}">
                       <td class="text-left" th:text="${billDetail.productDetail.product.name}">Spike Jacket</td>
-                      <td th:text="${#numbers.formatDecimal(billDetail.productDetail.price, 0, 'POINT', 0, 'POINT')}">
+                      <td th:text="${#numbers.formatDecimal(billDetail.productDetail.price, 0, 'POINT', 0, 'POINT')}+ ' VND'">
                         $99
                       </td>
                       <td th:text="${billDetail.productDetail.size.name}">S</td>
                       <td th:text="${billDetail.quantity}">1</td>
-                      <td th:text="${#numbers.formatDecimal(totalMoney, 0, 'POINT', 0, 'POINT')}">$99</td>
+                      <td class="beforePrice" th:text="${#numbers.formatDecimal(totalMoney, 0, 'POINT', 0, 'POINT')}+ ' VND'">$99</td>
                     </tr>
                     </tbody>
                     <tfoot class="font-weight-600">
+                    <tr>
+                      <td colspan="4" class="text-right">Giảm giá</td>
+                      <td id="voucherDiscount">0 VND</td>
+                      <input type="hidden" id="selectedVoucherId" name="voucherId">
+                    </tr>
                     <tr>
                       <td colspan="4" class="text-right">Phí ship</td>
                       <td id="shipFee"></td>
                     </tr>
                     <tr>
-                      <td colspan="4" class="text-right">Ngày nhận hàng</td>
+                      <td colspan="4" class="text-right">Ngày nhận hàng dự kiến</td>
                       <td id="confirm-day">$50.00</td>
                     </tr>
                     <tr>
@@ -226,9 +241,8 @@
                       </div>
                     </div>
                   </div>
-                  
                   <div class="order-button-payment">
-                    <button class="btn" value="Place order" type="submit">Đặt hàng</button>
+                    <p id="openConfirmModalBtn" class="btn">Đặt hàng</p>
                   </div>
                 </div>
               </div>
@@ -241,7 +255,101 @@
   
   </div>
   <!--End Body Content-->
-  
+  <div class="modal fade" id="confirmOrderModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 400px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Xác nhận đặt hàng</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Bạn có chắc chắn muốn đặt hàng không?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-success" id="confirmSubmitOrderBtn">Đặt hàng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalVoucher" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 450px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title mb-0">Chọn mã giảm giá</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="max-height: 450px; overflow-y: auto;">
+
+          <!-- Voucher hợp lệ -->
+          <div th:each="voucher : ${listVoucher}"
+               th:if="${voucher.minimumBill <= totalMoney}"
+               class="voucher-item border rounded p-3 mb-2 d-flex justify-content-between align-items-center">
+
+            <div class="voucher-info">
+              <p class="mb-1" th:if="${voucher.name != null and !voucher.name.isEmpty()}"><span th:text="${voucher.name}"></span></p>
+              <p class="mb-1" th:if="${voucher.value != null}">
+                Giảm: <span th:text="${#numbers.formatDecimal(voucher.value, 0, 'POINT', 0, 'POINT')}"></span> VND
+              </p>
+              <p class="mb-1" th:if="${voucher.minimumBill != null}">
+                Đơn tối thiểu: <span th:text="${#numbers.formatDecimal(voucher.minimumBill, 0, 'POINT', 0, 'POINT')}"></span> VND
+              </p>
+              <p class="mb-0" th:if="${voucher.endDate != null}">
+                HSD: <span th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy')}"></span>
+              </p>
+            </div>
+            <div class="voucher-select">
+              <input type="radio"
+                     name="selectedVoucher"
+                     th:value="${voucher.id}"
+                     th:data-value="${voucher.value.intValue()}"
+                     th:data-name="${voucher.name}"
+                     th:data-minimum="${voucher.minimumBill.intValue()}"
+                     style="transform: scale(1.3); cursor: pointer;">
+            </div>
+          </div>
+
+          <!-- Voucher KHÔNG hợp lệ -->
+          <div th:each="voucher : ${listVoucher}"
+               th:if="${voucher.minimumBill > totalMoney}"
+               class="voucher-item border rounded p-3 mb-2 d-flex justify-content-between align-items-center"
+               style="opacity: 0.6;">
+
+            <div class="voucher-info">
+              <p class="mb-1 text-muted" th:if="${voucher.name != null and !voucher.name.isEmpty()}">
+                <span th:text="${voucher.name}"></span>
+              </p>
+              <p class="mb-1" th:if="${voucher.value != null}">
+                Giảm: <span th:text="${#numbers.formatDecimal(voucher.value, 0, 'POINT', 0, 'POINT')}"></span> VND
+              </p>
+              <p class="mb-1" th:if="${voucher.minimumBill != null}">
+                Đơn tối thiểu: <span th:text="${#numbers.formatDecimal(voucher.minimumBill, 0, 'POINT', 0, 'POINT')}"></span> VND
+              </p>
+              <p class="mb-0" th:if="${voucher.endDate != null}">
+                HSD: <span th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy')}"></span>
+              </p>
+              <small>Chưa đạt giá trị đơn hàng tối thiểu</small>
+            </div>
+            <div class="voucher-select">
+              <input type="radio"
+                     name="selectedVoucher"
+                     disabled
+                     style="transform: scale(1.3); cursor: not-allowed;">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-primary" id="btnApplyVoucher">Chọn</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!--Scoll Top-->
   <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
   <!--End Scoll Top-->
@@ -256,27 +364,71 @@
     const totalMoney = /*[[${totalMoney}]]*/ [];
   </script>
   <script>
+    $(document).ready(function () {
+      // Mở modal khi nhấn nút "Chọn mã giảm giá"
+      $('#openVoucherModalBtn').on('click', function () {
+        const modal = new bootstrap.Modal(document.getElementById('modalVoucher'));
+        modal.show();
+      });
+
+      // Áp dụng voucher
+      $('#btnApplyVoucher').on('click', function () {
+        const selectedVoucher = $('input[name="selectedVoucher"]:checked');
+
+        if (selectedVoucher.length > 0) {
+          // Xử lý đồng nhất kiểu dữ liệu (number) như shipFee
+          let discountText = selectedVoucher.data('value').toString().replace(/\./g, '').trim();
+          const discountValue = parseInt(discountText) || 0;
+
+          // Lấy phí ship
+          const shipFeeText = document.getElementById('shipFee').textContent.replace(' VND', '').replace(/\./g, '').trim();
+          const shipFee = parseInt(shipFeeText) || 0;
+
+          // Tính tổng tiền
+          const totalProductMoney = totalMoney || 0;
+          const finalTotal = totalProductMoney + shipFee - discountValue;
+
+          // Cập nhật thông tin giảm giá và tổng tiền
+          $('#voucherDiscount').text(discountValue.toLocaleString('vi-VN') + ' VND');
+          $('#selectedVoucherId').val(selectedVoucher.val());
+          $('#totalPriceWithShipping').text(finalTotal.toLocaleString('vi-VN') + ' VND');
+
+          showToast('Áp dụng mã giảm giá thành công!', 'success');
+          $('#modalVoucher').modal('hide');
+        } else {
+          showToast('Vui lòng chọn mã giảm giá!', 'error');
+        }
+      });
+
+      // Đóng modal bằng nút đóng hoặc nút hủy
+      $('#modalVoucher .close, #modalVoucher .btn-danger').on('click', function () {
+        $('#modalVoucher').modal('hide');
+      });
+    });
+  </script>
+
+  <script>
     // Function to calculate shipping
     function calculateShipping() {
       // Get selected address details
       const selectedOption = document.querySelector("#customer-address option:checked");
-      
+
       // Log the selected option to inspect its data
       console.log("Selected option:", selectedOption);
-      
+
       // Parse the selected address data (districtId and wardCode)
       const selectedDistrictId = selectedOption.getAttribute("data-districtid");
       const selectedWardCode = selectedOption.getAttribute("data-wardcode");
-      
+
       console.log("selectedDistrictId: " + selectedDistrictId);
       console.log("selectedWardCode: " + selectedWardCode);
-      
+
       // If no district or ward is selected, alert the user
       if (!selectedDistrictId || !selectedWardCode) {
         alert("Please select both district and ward.");
         return;
       }
-      
+
       // Prepare the request body
       const requestBody = {
         "service_id": 53321,
@@ -290,7 +442,7 @@
         "weight": 1000,
         "width": 15
       };
-      
+
       // Make the AJAX request
       $.ajax({
         url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee",  // API URL
@@ -305,44 +457,51 @@
           if (response && response.data && response.data.total) {
             // Set the total shipping cost
             const totalShippingCost = response.data.total;
-            
+
             // Update the shipping cost display
-            document.getElementById("shipFee").textContent = totalShippingCost + " VND";  // Assuming the response is in VND
-            
+            document.getElementById("shipFee").textContent = totalShippingCost.toLocaleString('vi-VN') + " VND";
+
+            // document.getElementById("shipFee").textContent = totalShippingCost + " VND";  // Assuming the response is in VND
+
             console.log("Updated ship fee: ", document.getElementById('shipFee').textContent);
-            
+
             document.getElementById("shipFee").value = totalShippingCost;  // Assuming the response is in VND
-            
+
             var totalPrice = totalMoney; // giá trị totalPrice trong VND
             var shipFeeText = document.getElementById('shipFee').textContent.replace(' VND', '').replace('.', '').trim();
-            
+
             var shipFee = parseInt(shipFeeText.replace(' VND', '').replace('.', '').trim());
-            
-            
+
+
             console.log("total price: ", totalMoney);
             console.log("ship fee: ", shipFee)
-            
+
             // Tính tổng
             var totalPriceWithShipping = totalPrice + shipFee;
-            
+
+            // Trừ đi giảm giá nếu có
+            const voucherDiscountText = document.getElementById('voucherDiscount').textContent.replace(' VND', '').replace(/\./g, '').trim();
+            const voucherDiscount = parseInt(voucherDiscountText) || 0;
+
+            totalPriceWithShipping -= voucherDiscount;
             // Cập nhật giá trị vào thẻ Total
             document.getElementById('totalPriceWithShipping').innerText = totalPriceWithShipping.toLocaleString() + ' VND';
           } else {
             // Handle cases where there's no valid 'total' field in the response
-            alert("Error calculating shipping. Please try again later.");
+            showToast("Có lỗi trong việc tính phí vận chuyển. Vui lòng thử lại sau.", 'error');
           }
         },
         error: function (xhr, status, error) {
           // Handle error
           console.error("Error fetching shipping fee:", status, error);
-          alert("Failed to calculate shipping. Please try again later.");
+          showToast("Tính phí vận chuyển thất bại. Vui lòng thử lại sau.", 'error');
         }
       });
     }
-    
+
     // Add event listener to the address select to trigger the shipping calculation when changed
     document.getElementById("customer-address").addEventListener("change", calculateShipping);
-    
+
     // Run calculateShipping when the page loads if an address is already selected
     window.onload = function () {
       const selectedOption = document.querySelector("#customer-address option:checked");
@@ -408,13 +567,13 @@
             // Display the delivery date
             document.getElementById('confirm-day').innerText = `${formattedToDate}`;
           } else {
-            alert("Error calculating delivery time. Please try again later.");
+            showToast("Có lỗi trong việc tính thời gian giao hàng. Vui lòng thử lại sau.", 'error');
           }
         },
         error: function (xhr, status, error) {
           // Handle error
           console.error("Error fetching delivery time:", status, error);
-          alert("Failed to calculate delivery time. Please try again later.");
+          showToast("Tính thời gian giao hàng thất bại. Vui lòng thử lại sau.", 'error');
         }
       });
     }
@@ -440,7 +599,19 @@
       }
     });
   </script>
-  
+  <script>
+    $(document).ready(function () {
+      // Khi click vào thẻ <p> "Đặt hàng", hiển thị modal xác nhận
+      $('#openConfirmModalBtn').click(function () {
+        $('#confirmOrderModal').modal('show');
+      });
+      // Khi click nút xác nhận trong modal, ẩn modal và submit form
+      $('#confirmSubmitOrderBtn').click(function () {
+        $('#confirmOrderModal').modal('hide');
+        $('#createBillOnline').trigger('submit');
+      });
+    });
+  </script>
   <script>
     
     function formatDate(dateString) {
@@ -451,7 +622,20 @@
     function formatCurrency(value) {
       return value.replace(/[^\d.-]/g, '');
     }
-    
+    function parseCurrency(text) {
+      // Loại bỏ ký hiệu tiền tệ và dấu chấm ngăn cách hàng nghìn
+      return text.replace(/[^\d]/g, ''); // "10.000 ₫" => "10000"
+    }
+    function parseCurrencyNumBer(text) {
+      return Number(text.replace(/[^\d]/g, '')) || 0;
+    }
+    function getBeforePriceTotal() {
+      let total = 0;
+      $('.beforePrice').each(function () {
+        total += parseCurrencyNumBer($(this).text());
+      });
+      return total;
+    }
     $('#createBillOnline').on('submit', function (event) {
       event.preventDefault();
       
@@ -460,14 +644,17 @@
       
       if (!paymentMethod) {
         // Hiển thị thông báo nếu người dùng chưa chọn phương thức thanh toán
-        alert("Please select a payment method before placing the order.");
+        showToast('Vui lòng chọn phương thức thanh toán!', 'error');
         return;  // Ngừng việc gửi form
       }
-      
+
+      const itemDiscount = parseCurrency($('#voucherDiscount').text());
+      const beforePrice = getBeforePriceTotal();
+      const voucherId = $('#selectedVoucherId').val();
       const receiveDate = formatDate($('#confirm-day').text());
       const moneyShip = $('#shipFee').val();
       
-      const grandTotal = $('#totalPriceWithShipping').text();
+      const grandTotal = parseCurrency($('#totalPriceWithShipping').text());
       console.log("grand total: ", grandTotal)
       console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
       
@@ -475,10 +662,13 @@
       
       const requestBody = {
         receiveDate: receiveDate,
+        itemDiscount: itemDiscount,
+        beforePrice: beforePrice,
+        voucherId: voucherId,
         moneyShip: $('#shipFee').val(),
         address: $('#customer-address').find(":selected").text(),
         note: $('#orderNote').val(),
-        grandTotal: formatCurrency(grandTotal),
+        grandTotal: grandTotal,
         paymentMethod: paymentMethod
       };
       
@@ -514,8 +704,9 @@
           contentType: "application/json",
           data: JSON.stringify(requestBody),
           success: function () {
-            window.location.href = "/bill";
+            window.location.href = "/";
             console.error("Create online bill successfully");
+            localStorage.setItem("successMessage", "Đặt hàng trực tuyến thành công");
           },
           error: function (xhr, status, error) {
             console.error("Error adding new address", status, error);
@@ -526,6 +717,84 @@
     });
   </script>
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script>
+    function showToast(message, type = "success", duration = 3000) {
+      const toastContainer = document.getElementById("toast-container");
+      const toast = document.createElement("div");
 
+      // Cấu hình theo loại
+      let bgColor, textColor, borderColor, icon;
+
+      if (type === "success") {
+        bgColor = "#d4edda";
+        textColor = "#155724";
+        borderColor = "#28a745";
+        icon = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>`;
+      } else {
+        bgColor = "#fff3cd";
+        textColor = "#856404";
+        borderColor = "#ffc107";
+        icon = `<i class="fas fa-exclamation-triangle" style="color: #ffc107; margin-right: 10px;"></i>`;
+      }
+
+      // Phần thân toast
+      toast.innerHTML = `
+      <div style="display: flex; align-items: center;">${icon}<span>${message}</span></div>
+      <div class="toast-progress-bar"></div>
+    `;
+
+      toast.style.cssText = `
+      background-color: ${bgColor};
+      color: ${textColor};
+      border-left: 5px solid ${borderColor};
+      padding: 12px 20px 6px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateX(100%);
+      transition: opacity 0.5s, transform 0.5s ease-in-out;
+      margin-bottom: 10px;
+      position: relative;
+      min-width: 280px;
+    `;
+
+      // Thanh thời gian
+      const progressBarStyle = document.createElement("style");
+      progressBarStyle.innerHTML = `
+      .toast-progress-bar {
+        height: 4px;
+        background-color: ${borderColor};
+        width: 100%;
+        animation: progress ${duration}ms linear forwards;
+        border-radius: 0 0 5px 5px;
+        margin-top: 8px;
+      }
+      @keyframes progress {
+        from { width: 100%; }
+        to { width: 0%; }
+      }
+    `;
+      document.head.appendChild(progressBarStyle);
+
+      toastContainer.appendChild(toast);
+
+      // Animate in
+      setTimeout(() => {
+        toast.style.opacity = "1";
+        toast.style.transform = "translateX(0)";
+      }, 100);
+
+      // Animate out and remove
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(100%)";
+        setTimeout(() => toast.remove(), 500);
+      }, 3000);
+    }
+  </script>
 </th:block>
 </html>

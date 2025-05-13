@@ -5,400 +5,267 @@
 <head>
   <meta charset="utf-8">
   <th:block id="th-css">
-    <style>
-      /* Reset cho tất cả các phần tử */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: 'Poppins', sans-serif;
-        background-color: #f4f7fc; /* Soft background color */
-        color: #333;
-      }
-
-      .container-fluid {
-        padding: 50px 20px;
-      }
-
-      /* Card container */
-      .card {
-        border-radius: 15px; /* Rounded corners for a sleek look */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
-        background-color: #fff;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      .card:hover {
-        transform: translateY(-6px); /* Lift effect on hover */
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
-      }
-
-      .card-body {
-        padding: 35px;
-      }
-
- h4.mb-3 {
-  font-size: 14px; /* Giảm kích thước chữ */
-  font-weight: 600; /* Đậm chữ */
-  color: white; /* Màu chữ trắng */
-  text-align: center; /* Căn giữa chữ */
-  margin-bottom: 20px; /* Khoảng cách dưới */
-  padding: 12px; /* Padding trong */
-  background: #FF8C00; /* Màu nền cam */
-  border-radius: 8px; /* Bo góc */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng đổ nhẹ */
-  transition: all 0.3s ease; /* Hiệu ứng chuyển động mượt mà */
-  width: 110px; /* Đặt chiều rộng */
-  white-space: nowrap; /* Ngăn văn bản xuống dòng */
-  overflow: hidden; /* Ẩn phần văn bản vượt quá */
-  text-overflow: ellipsis; /* Hiển thị ba chấm nếu văn bản dài */
-}
-
-h4.mb-3:hover {
-  transform: scale(0.95); /* Hiệu ứng co lại khi hover */
-  background: #FF7F50; /* Đổi màu nền khi hover */
-}
-
-
-
-      /* Style for input elements */
-      .form-control {
-        font-size: 16px;
-        padding: 18px 20px;
-        border-radius: 12px; /* Soft rounded borders */
-        border: 1px solid #d1d9e6; /* Subtle border color */
-        background-color: #fafafa;
-        color: #333;
-        width: 100%;
-        transition: all 0.3s ease;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-        margin-bottom: 18px; /* Add bottom margin between inputs */
-      }
-
-      /* Focused state for inputs */
-      .form-control:focus {
-        border-color: #6c8eeb; /* Soft blue border on focus */
-        background-color: #f1f7fe; /* Slightly lighter background */
-        box-shadow: 0 4px 12px rgba(108, 142, 235, 0.2); /* Subtle focus shadow */
-        outline: none;
-      }
-
-      /* Invalid state for inputs */
-      .form-control.is-invalid {
-        border-color: #e74c3c;
-        background-color: #fff5f5;
-      }
-
-      /* Label style */
-      label {
-        font-size: 16px;
-        font-weight: 500;
-        color: #333;
-        margin-bottom: 8px;
-        display: block;
-        position: relative;
-        padding-left: 10px;
-        transition: all 0.3s ease;
-      }
-
-      .form-control:focus + label,
-      .form-control:valid + label {
-        font-size: 14px;
-        color: #6c8eeb;
-        transform: translateY(-12px); /* Shrink and lift the label */
-      }
-
-      /* Feedback for invalid input */
-      .invalid-feedback {
-        color: #e74c3c;
-        font-size: 14px;
-        margin-top: 5px;
-        font-weight: 500;
-      }
-      /* Style cho select (dropdown) */
-/* Wrapper cho select */
-.select-container {
-  position: relative;
-  width: 100%;
-}
-
-/* Style cho select (dropdown) */
-.select-container select {
-  font-size: 16px;
-  padding: 12px 26px;
-  border-radius: 8px; /* Bo góc nhẹ */
-  border: 1px solid #d1d9e6; /* Viền nhạt */
-  background-color: #fafafa; /* Màu nền sáng */
-  color: #333;
-  width: 100%;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-  appearance: none; /* Tắt kiểu mặc định của select */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-/* Biểu tượng mũi tên */
-.select-container::after {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
-  font-size: 16px;
-  color: #aaa;
-  pointer-events: none;
-}
-
-/* Kiểu khi select bị focus */
-.select-container select:focus {
-  border-color: #6c8eeb;
-  background-color: #f1f7fe;
-  box-shadow: 0 4px 12px rgba(108, 142, 235, 0.2);
-  outline: none;
-}
-/* Media query cho màn hình có độ rộng từ 768px đến 1920px */
-@media (min-width: 768px) and (max-width: 1920px) {
-  .select-container select {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-}
-
-@media (max-width: 500px) {
-  .select-container select {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-}
-
-
-/* Kiểu cho label */
-label {
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 8px;
-  display: block;
-  position: relative;
-  padding-left: 10px;
-}
-
-
-
-      /* Submit and Back button styles */
-      .btn-primary {
-        background-color: #f39c12; /* Bright, energetic yellow */
-        border: none;
-        border-radius: 30px;
-        padding: 12px 30px;
-        font-size: 16px;
-        font-weight: 600;
-        color: #fff;
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-        display: inline-block;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .btn-primary:hover {
-        background-color: #e67e22; /* Darker shade when hovering */
-        transform: translateY(-2px); /* Slight lift effect */
-      }
-
-      .btn-primary:active {
-        background-color: #d35400;
-        transform: translateY(0);
-      }
-
-
-      /* Back button style */
-      .btn-back {
-        background-color: #3498db;
-        border: none;
-        border-radius: 30px;
-        padding: 12px 30px;
-        font-size: 16px;
-        font-weight: 600;
-        color: #fff;
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-        display: inline-block;
-        text-align: center;
-        margin-right: 15px;
-      }
-
-      .btn-back:hover {
-        background-color: #2980b9;
-        transform: translateY(-2px);
-      }
-
-      .btn-back:active {
-        background-color: #1c5a8a;
-        transform: translateY(0);
-      }
-
-      /* Flex container for buttons */
-      .btn-container {
-        display: flex;
-        justify-content: flex-end; /* Align buttons to the right */
-        margin-top: 25px;
-      }
-
-      /* Make buttons look disabled */
-      .btn-primary:disabled, .btn-back:disabled {
-        background-color: #bdc3c7;
-        cursor: not-allowed;
-      }
-
-
-
-      /* Responsive Design */
-      @media (max-width: 768px) {
-        .card-body {
-          padding: 30px 20px;
-        }
-
-        .page-titles h4 {
-          font-size: 26px;
-        }
-
-        .form-control {
-          padding: 16px 18px;
-        }
-
-        .btn-primary {
-          padding: 14px 20px;
-          font-size: 15px;
-        }
-
-        .btn-back {
-          padding: 14px 20px;
-          font-size: 15px;
-        }
-      }
-    </style>
   </th:block>
 
 </head>
 
 <body>
 <th:block id="th-body">
-  <div class="container">
-    <div class="content-body">
-      <div class="container-fluid">
+  <div class="content-body">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Khuyến mại chi tiết</h4>
+            </div>
+            <div class="card-body">
+              <div class="form-validation">
 
+                <form class="needs-validation"
+                      th:object="${voucher}" method="post">
 
-        <div class="row">
-          <div class="col-xl-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <h4 class="mb-3">Thông tin voucher</h4>
+                  <div class="row">
 
-                    <form id="voucherForm" class="needs-validation" novalidate th:object="${voucher}" method="post">
+                    <div class="col-xl-6">
 
-                      <div class="mb-3">
-                        <label for="id">Tên Voucher</label>
-                        <input type="text" class="form-control" id="id" th:value="${voucher.id}" required disabled="disabled">
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label" for="name">Tên Voucher</label>
+                        <div class="col-lg-6">
+                          <input type="text" class="form-control" id="name" th:value="${voucher.name}" placeholder="Nhập tên..." oninput="validateName()" disabled>
+                        </div>
                       </div>
 
-                      <div class="mb-3">
-                        <label for="name">Tên Voucher</label>
-                        <input type="text" class="form-control" id="name" th:value="${voucher.name}" required disabled="disabled">
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label" for="value">Số tiền (VND)</label>
+                        <div class="col-lg-6">
+                          <input type="text" class="form-control" id="value" name="value" th:value="${formattedValue}" placeholder="Nhập số tiền..." disabled oninput="formatCurrency(event)">
+                        </div>
                       </div>
 
-                      <!-- Số tiền -->
-                      <div class="mb-3">
-                        <label for="value">Số tiền (VND)</label>
-                        <input type="text" class="form-control" id="value" name="value" th:value="${formattedValue}" disabled="disabled"
-                               oninput="formatCurrency(event)">
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label" for="quantity">Số lượng</label>
+                        <div class="col-lg-6">
+                          <input type="number" class="form-control" id="quantity" th:value="${voucher.quantity}" placeholder="Nhập số lượng..." disabled min="1" max="10000">
+                        </div>
                       </div>
 
-                      <!-- Số lượng -->
-                      <div class="mb-3">
-                        <label for="quantity">Số lượng</label>
-                        <input type="number" class="form-control" id="quantity" th:th:value="${voucher.quantity}" placeholder="Nhập số lượng..." disabled="disabled">
-                      </div>
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label" for="createAt">Ngày tạo:</label>
+                        <div class="col-lg-6">
+                          <input
+                                  type="text"
+                                  class="form-control"
+                                  id="createAt"
+                                  name="createAt"
+                                  th:value="${#dates.format(voucher.createDate, 'dd/MM/yyyy HH:mm')}"
+                                  disabled>
 
-                      <!-- Ngày bắt đầu -->
-                      <div class="mb-3">
-                        <label for="startDate">Ngày bắt đầu</label>
-                        <input type="datetime-local" class="form-control" id="startDate" name="startDate"
-                               th:value="${#temporals.format(startDate, 'yyyy-MM-dd''T''HH:mm')}" disabled="disabled">
-                      </div>
+                        </div>
+                        </div>
 
-                      <!-- Ngày kết thúc -->
-                      <div class="mb-3">
-                        <label for="endDate">Ngày kết thúc</label>
-                        <input type="datetime-local" class="form-control" id="endDate" name="endDate"
-                               th:value="${#temporals.format(endDate, 'yyyy-MM-dd''T''HH:mm')}" disabled="disabled">
-                      </div>
-
-
-                      <div class="mb-3">
-                        <label for="minimumBill">Hóa đơn tối thiểu</label>
-                        <input type="text" class="form-control" id="minimumBill" oninput="formatCurrency(event)" th:value="${miniBill}" name="miniBill" placeholder="Nhập hóa đơn tối thiểu..." disabled="disabled">
-                      </div>
-
-                      <div class="mb-3">
-                        <label for="createAt" class="form-label">Ngày tạo:</label>
-                        <input
-                                type="text"
-                                class="form-control"
-                                id="createAt"
-                                name="createAt"
-                                th:value="${#dates.format(voucher.createDate, 'dd/MM/yyyy HH:mm')}"
-                                disabled>
-                      </div>
-
-                      <div class="mb-3">
-                        <label for="lastModifiedDate" class="form-label">Ngày sửa cuối:</label>
-                        <input
-                                type="text"
-                                class="form-control"
-                                id="lastModifiedDate"
-                                name="lastModifiedDate"
-                                th:value="${#temporals.format(voucher.lastModifiedDate, 'dd/MM/yyyy HH:mm')}"
-                                disabled>
-                      </div>
-
-
-
-
-
-                      <div class="mb-3 select-container">
-                        <label for="status">Trạng thái</label>
-                        <select class="form-control" id="status" name="status" disabled="disabled">
-                          <option th:each="status : ${status}"
-                                  th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label" for="status">Trạng thái</label>
+                        <div class="col-lg-6">
+                          <select class="form-control" id="status" name="status" disabled="disabled">
+                            <option th:each="status : ${status}"
+                                    th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :
                 (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}"
-                                  th:value="${status}"
-                                  th:selected="*{status} == ${status}" disabled="disabled"></option>
-                        </select>
+                                    th:value="${status}"
+                                    th:selected="*{status} == ${status}" disabled="disabled"></option>
+                          </select>
+                        </div>
                       </div>
 
-                      <div class="btn-container">
-                        <!-- Nút quay lại -->
-                        <button class="btn btn-back" type="button" onclick="window.history.back();">Quay lại</button>
+                    </div>
 
-                        <!-- Nút gửi -->
+                    <div class="col-xl-6">
+
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label" for="id">ID</label>
+                        <div class="col-lg-6">
+                       <input type="text" class="form-control" id="id" th:value="${voucher.id}" required disabled="disabled">
+                        </div>
                       </div>
-                    </form>
-                  </div>
-                </div>
+
+
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label" for="startDate">Ngày bắt đầu</label>
+                        <div class="col-lg-6">
+                          <input type="datetime-local" class="form-control" id="startDate" name="startDate"
+                                 th:value="${#temporals.format(startDate, 'yyyy-MM-dd''T''HH:mm')}" disabled>                          <div class="invalid-feedback">Ngày bắt đầu phải trước ngày kết thúc.</div>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label" for="endDate">Ngày kết thúc</label>
+                        <div class="col-lg-6">
+                          <input type="datetime-local" class="form-control" id="endDate" name="endDate"
+                                 th:value="${#temporals.format(endDate, 'yyyy-MM-dd''T''HH:mm')}" disabled>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label" for="minimumBill">Hóa đơn tối thiểu</label>
+                        <div class="col-lg-6">
+                          <input type="text" class="form-control" id="minimumBill" oninput="formatCurrency(event)"
+                                 th:value="${miniBill}" name="miniBill" placeholder="Nhập hóa đơn tối thiểu..." disabled>                         </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-lg-4 col-form-label"  for="lastModifiedDate">Ngày sửa cuối:</label>
+                        <div class="col-lg-6">
+                          <input
+                                  type="text"
+                                  class="form-control"
+                                  id="lastModifiedDate"
+                                  name="lastModifiedDate"
+                                  th:value="${#temporals.format(voucher.lastModifiedDate, 'dd/MM/yyyy HH:mm')}"
+                                  disabled>
+                        </div>
+                      </div>
+
+                    </div>
+
+
               </div>
+
+
+                  <div style="text-align: right; margin-top: 20px">
+                    <button class="btn btn-primary mr-2" type="button" onclick="window.history.back();">Quay lại</button>
+                  </div>
+                </form>
+              </div>
+
             </div>
           </div>
         </div>
       </div>
     </div>
+    <script th:src="@{/assets/js/voucher/voucherUpdate.js}"></script>
   </div>
 </th:block>
+
+<!--<th:block id="th-body">-->
+<!--  <div class="container">-->
+<!--    <div class="content-body">-->
+<!--      <div class="container-fluid">-->
+
+
+<!--        <div class="row">-->
+<!--          <div class="col-xl-12">-->
+<!--            <div class="card">-->
+<!--              <div class="card-body">-->
+<!--                <div class="row">-->
+<!--                  <div class="col-lg-12">-->
+
+<!--                    <div class="row">-->
+<!--                      <div class="col-12">-->
+<!--                        <h4 class="mb-3 mx-auto d-block">Thông Tin Khuyến Mại</h4>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <hr>-->
+<!--                    <form id="voucherForm" class="needs-validation" novalidate th:object="${voucher}" method="post">-->
+<!--                      <div class="row g-3">-->
+<!--                      <div class="col-12 col-md-6">-->
+<!--                        <label for="id">Tên Voucher</label>-->
+<!--                        <input type="text" class="form-control" id="id" th:value="${voucher.id}" required disabled="disabled">-->
+<!--                      </div>-->
+
+<!--                      <div class="col-12 col-md-6">-->
+<!--                        <label for="name">Tên Voucher</label>-->
+<!--                        <input type="text" class="form-control" id="name" th:value="${voucher.name}" required disabled="disabled">-->
+<!--                      </div>-->
+
+<!--                      &lt;!&ndash; Số tiền &ndash;&gt;-->
+<!--                      <div class="col-12 col-md-6">-->
+<!--                        <label for="value">Số tiền (VND)</label>-->
+<!--                        <input type="text" class="form-control" id="value" name="value" th:value="${formattedValue}" disabled="disabled"-->
+<!--                               oninput="formatCurrency(event)">-->
+<!--                      </div>-->
+
+<!--                      &lt;!&ndash; Số lượng &ndash;&gt;-->
+<!--                      <div class="col-12 col-md-6">-->
+<!--                        <label for="quantity">Số lượng</label>-->
+<!--                        <input type="number" class="form-control" id="quantity" th:th:value="${voucher.quantity}" placeholder="Nhập số lượng..." disabled="disabled">-->
+<!--                      </div>-->
+
+<!--                      &lt;!&ndash; Ngày bắt đầu &ndash;&gt;-->
+<!--                      <div class="col-12 col-md-6">-->
+<!--                        <label for="startDate">Ngày bắt đầu</label>-->
+<!--                        <input type="datetime-local" class="form-control" id="startDate" name="startDate"-->
+<!--                               th:value="${#temporals.format(startDate, 'yyyy-MM-dd''T''HH:mm')}" disabled="disabled">-->
+<!--                      </div>-->
+
+<!--                      &lt;!&ndash; Ngày kết thúc &ndash;&gt;-->
+<!--                      <div class="col-12 col-md-6">-->
+<!--                        <label for="endDate">Ngày kết thúc</label>-->
+<!--                        <input type="datetime-local" class="form-control" id="endDate" name="endDate"-->
+<!--                               th:value="${#temporals.format(endDate, 'yyyy-MM-dd''T''HH:mm')}" disabled="disabled">-->
+<!--                      </div>-->
+
+
+<!--                      <div class="col-12 col-md-6">-->
+<!--                        <label for="minimumBill">Hóa đơn tối thiểu</label>-->
+<!--                        <input type="text" class="form-control" id="minimumBill" oninput="formatCurrency(event)" th:value="${miniBill}" name="miniBill" placeholder="Nhập hóa đơn tối thiểu..." disabled="disabled">-->
+<!--                      </div>-->
+
+<!--                      <div class="col-12 col-md-6">-->
+<!--                        <label for="createAt" class="form-label">Ngày tạo:</label>-->
+<!--                        <input-->
+<!--                                type="text"-->
+<!--                                class="form-control"-->
+<!--                                id="createAt"-->
+<!--                                name="createAt"-->
+<!--                                th:value="${#dates.format(voucher.createDate, 'dd/MM/yyyy HH:mm')}"-->
+<!--                                disabled>-->
+<!--                      </div>-->
+
+<!--                      <div class="col-12 col-md-6">-->
+<!--                        <label for="lastModifiedDate" class="form-label">Ngày sửa cuối:</label>-->
+<!--                        <input-->
+<!--                                type="text"-->
+<!--                                class="form-control"-->
+<!--                                id="lastModifiedDate"-->
+<!--                                name="lastModifiedDate"-->
+<!--                                th:value="${#temporals.format(voucher.lastModifiedDate, 'dd/MM/yyyy HH:mm')}"-->
+<!--                                disabled>-->
+<!--                      </div>-->
+
+
+
+
+
+<!--                      <div class="col-12 col-md-6 select-container">-->
+<!--                        <label for="status">Trạng thái</label>-->
+<!--                        <select class="form-control" id="status" name="status" disabled="disabled">-->
+<!--                          <option th:each="status : ${status}"-->
+<!--                                  th:text="${status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).ACTIVE ? 'Đang hoạt động' :-->
+<!--                (status == T(org.fpoly.capstone.entity.enum_status.VoucherStatus).INACTIVE ? 'Chưa hoạt động' : 'Hết hạn')}"-->
+<!--                                  th:value="${status}"-->
+<!--                                  th:selected="*{status} == ${status}" disabled="disabled"></option>-->
+<!--                        </select>-->
+<!--                      </div>-->
+<!--                      </div>-->
+<!--                      <hr>-->
+<!--                      <div class="btn-container">-->
+<!--                        &lt;!&ndash; Nút quay lại &ndash;&gt;-->
+<!--                        <button class="btn btn-back" type="button" onclick="window.history.back();">Quay lại</button>-->
+
+<!--                        &lt;!&ndash; Nút gửi &ndash;&gt;-->
+<!--                      </div>-->
+
+<!--                    </form>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</th:block>-->
 </body>
 
 

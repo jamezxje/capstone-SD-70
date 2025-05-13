@@ -50,7 +50,7 @@ public class OnlineProductController {
 
     @GetMapping(path = "")
     public String onOpenProductView(ProductDetailFilterModel productDetailFilterModel, Model model) {
-
+        User loggedUser = this.userService.getUserFromContext();
         ProductDetailFilterRequest request = this.modelMapper.map(productDetailFilterModel, ProductDetailFilterRequest.class);
 
         List<ProductDetailResponse> productDetailResponsePage = this.productDetailService.searchAvailableProductDetail(request);
@@ -64,7 +64,7 @@ public class OnlineProductController {
         model.addAttribute("materialList", this.materialService.getAllMaterial());
         model.addAttribute("colorList", this.colorService.getAllColor());
         model.addAttribute("brandList", this.brandService.getAllBrand());
-
+        model.addAttribute("loggedUser", loggedUser);
 
         return "/views/user-online-view/products-page";
     }
@@ -95,7 +95,7 @@ public class OnlineProductController {
         model.addAttribute("productDetailId", productDetailId);
         model.addAttribute("addProductToCartModel", new AddProductToCartModel());
         model.addAttribute("loggedUserEmail", loggedUserEmail);
-
+        model.addAttribute("loggedUser", loggedUser);
         return "/views/user-online-view/product-detail";
     }
 

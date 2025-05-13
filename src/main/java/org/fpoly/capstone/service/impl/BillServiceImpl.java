@@ -37,6 +37,7 @@ import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.entity.enum_status.VoucherStatus;
+import org.fpoly.capstone.exceptions.NotException;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.BillDetailRepository;
 import org.fpoly.capstone.repository.BillHistoryRepository;
@@ -80,6 +81,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 
@@ -487,7 +489,6 @@ public class BillServiceImpl implements BillService {
 
         User loggedUser = this.userService.getUserFromContext();
         Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
-
         Bill bill = new Bill();
 
         User customer = cart.getUser();
@@ -497,13 +498,20 @@ public class BillServiceImpl implements BillService {
         bill.setCode(GeneralStringCode.generateCodeAdmin());
         bill.setEmail(customer.getEmail());
 
-        double totalPrice = cart.getCartDetails().stream()
+        List<CartDetail> selectedCartDetails = cart.getCartDetails().stream()
+                .filter(cartDetail -> cartDetail.getIsSelected() != null && cartDetail.getIsSelected())  // Only keep cart details where isSelected is true
+                .collect(Collectors.toList());
+
+        double totalPrice = selectedCartDetails.stream()
                 .mapToDouble(detail -> detail.getPrice().doubleValue() * detail.getQuantity())
                 .sum();
         bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
 
+        // Save the Bill object first
+        this.billRepository.save(bill);
+
         List<BillDetail> billDetailList = new ArrayList<>();
-        for (CartDetail cartDetail : cart.getCartDetails()) {
+        for (CartDetail cartDetail : selectedCartDetails) {
             BillDetail billDetail = new BillDetail();
             billDetail.setBill(bill);
             billDetail.setProductDetail(cartDetail.getProductDetail());
@@ -513,6 +521,7 @@ public class BillServiceImpl implements BillService {
             billDetailList.add(billDetail);
         }
 
+        BigDecimal itemDiscount = request.getItemDiscount();
         BigDecimal moneyShip = request.getMoneyShip();
         Date recieveDate = request.getReceiveDate();
         BigDecimal grandTotal = request.getGrandTotal();
@@ -520,16 +529,46 @@ public class BillServiceImpl implements BillService {
         String note = request.getNote();
         PaymentMethod paymentMethod = request.getPaymentMethod();
 
+        bill.setItemDiscount(itemDiscount);
         bill.setTotalMoney(grandTotal);
         bill.setMoneyShip(moneyShip);
+
         bill.setReceiveDate(recieveDate);
+        bill.setShipDate(recieveDate);
         bill.setAddress(address);
+        bill.setUserName(address);
+        bill.setPhoneNumber(address);
+
         bill.setNote(note);
         bill.setMethod(paymentMethod);
 
         bill.setBillDetailList(billDetailList);
-        this.cartRepository.deleteById(cart.getId());
+        selectedCartDetails.forEach(cart.getCartDetails()::remove);
+        this.cartDetailRepository.deleteAll(selectedCartDetails);
         this.billRepository.save(bill);
+
+        VoucherDetail voucherDetail = new VoucherDetail();
+
+        Long voucherId = request.getVoucherId();
+        BigDecimal beforePrice = request.getBeforePrice();
+        BigDecimal grandTotals = request.getGrandTotal();
+        // Lấy đối tượng Voucher từ voucherId
+        if (voucherId != null) {
+            try {
+                Voucher voucher = this.voucherService.findById(voucherId);
+                voucherDetail.setVoucher(voucher); // ✅ Truyền đúng đối tượng
+            } catch (NotException e) {
+                throw new IllegalArgumentException("Voucher không tồn tại.");
+            }
+        }
+
+        voucherDetail.setBill(bill);
+        voucherDetail.setBeforePrice(beforePrice);
+        voucherDetail.setAfterPrice(grandTotals);
+        voucherDetail.setDiscountPrice(itemDiscount);
+        voucherDetail.setCreateDate(new Date());
+
+        this.voucherDetailReponsitory.save(voucherDetail);
 
         try {
             if (bill.getEmail() != null) {
@@ -556,6 +595,10 @@ public class BillServiceImpl implements BillService {
         bill.setStatus(BillStatus.CHO_XAC_NHAN);
         bill.setCode(GeneralStringCode.generateCodeAdmin());
         bill.setEmail(customer.getEmail());
+
+        List<CartDetail> selectedCartDetails = cart.getCartDetails().stream()
+                .filter(cartDetail -> cartDetail.getIsSelected() != null && cartDetail.getIsSelected())  // Only keep cart details where isSelected is true
+                .collect(Collectors.toList());
 
         List<BillDetail> billDetailList = new ArrayList<>();
         for (CreateBillDetailFromCartRequest createBillDetailFromCartRequest : createBillDetailFromCartRequests) {
@@ -584,7 +627,10 @@ public class BillServiceImpl implements BillService {
         bill.setMethod(paymentMethod);
 
         bill.setBillDetailList(billDetailList);
-        this.cartRepository.deleteById(cart.getId());
+        // Delete selected cart details
+        selectedCartDetails.forEach(cart.getCartDetails()::remove);
+        this.cartDetailRepository.deleteAll(selectedCartDetails);
+
         this.billRepository.save(bill);
 
         try {
@@ -688,6 +734,25 @@ public class BillServiceImpl implements BillService {
     @Override
     public List<BillProductDTO> getBillDetail(Long billId) {
         List<Object[]> results = this.billDetailRepository.getProductByIDBill(billId);
+        List<BillProductDTO> billDetails = new ArrayList<>();
+        for (Object[] result : results) {
+            Long id = (Long) result[0];
+            String name = (String) result[1];
+            BigDecimal price = (BigDecimal) result[2];
+            Integer quantity = (Integer) result[3];
+            String size = (String) result[4];
+            String color = (String) result[5];
+            Long idProductDetail = (Long) result[6];
+            String image = (String) result[7];
+            BillProductDTO billProductDTO = new BillProductDTO(id, name, price, quantity, size, color, idProductDetail, image);
+            billDetails.add(billProductDTO);
+        }
+        return billDetails;
+    }
+
+    @Override
+    public List<BillProductDTO> getBillDetailCustomer(String code) {
+        List<Object[]> results = this.billDetailRepository.getProductByBillCode(code);
         List<BillProductDTO> billDetails = new ArrayList<>();
         for (Object[] result : results) {
             Long id = (Long) result[0];
@@ -826,7 +891,7 @@ public class BillServiceImpl implements BillService {
         Bill lastestBill = lastestBillList.get(0); // Lấy hóa đơn mới nhất
 
         log.info("Lastest bill id: ", lastestBill.getId());
-
+        BigDecimal itemDiscount = request.getItemDiscount();
         BigDecimal moneyShip = request.getMoneyShip();
         Date receiveDate = request.getReceiveDate();
         BigDecimal grandTotal = request.getGrandTotal();
@@ -835,16 +900,40 @@ public class BillServiceImpl implements BillService {
         PaymentMethod paymentMethod = request.getPaymentMethod();
 
         // Cập nhật các giá trị của bill
+        lastestBill.setItemDiscount(itemDiscount);
         lastestBill.setTotalMoney(grandTotal);
         lastestBill.setMoneyShip(moneyShip);
         lastestBill.setReceiveDate(receiveDate);
+        lastestBill.setShipDate(receiveDate);
         lastestBill.setAddress(address);
+        lastestBill.setUserName(address);
+        lastestBill.setPhoneNumber(address);
         lastestBill.setNote(note);
         lastestBill.setMethod(paymentMethod);
         lastestBill.setCode(GeneralStringCode.generateCodeAdmin());
 
         // Lưu hóa đơn đã cập nhật
         this.billRepository.save(lastestBill); // Không tạo một bill mới, chỉ cập nhật hóa đơn hiện tại
+
+        VoucherDetail voucherDetail = new VoucherDetail();
+        Long voucherId = request.getVoucherId();
+        BigDecimal beforePrice = request.getBeforePrice();
+//        BigDecimal grandTotals = request.getGrandTotal();
+        // Lấy đối tượng Voucher từ voucherId
+        if (voucherId != null) {
+            try {
+                Voucher voucher = this.voucherService.findById(voucherId);
+                voucherDetail.setVoucher(voucher); // ✅ Truyền đúng đối tượng
+            } catch (NotException e) {
+                throw new IllegalArgumentException("Voucher không tồn tại.");
+            }
+        }
+        voucherDetail.setBill(lastestBill);
+        voucherDetail.setBeforePrice(beforePrice);
+        voucherDetail.setAfterPrice(grandTotal);
+        voucherDetail.setDiscountPrice(itemDiscount);
+        voucherDetail.setCreateDate(new Date());
+        this.voucherDetailReponsitory.save(voucherDetail);
 
         try {
             if (lastestBill.getEmail() != null) {
@@ -868,5 +957,41 @@ public class BillServiceImpl implements BillService {
 
         return this.billRepository.getLastestBill(loggedUser.getId(), PageRequest.ofSize(1));
     }
+
+    @Override
+    public Optional<Bill> searchCode(String code) {
+        return this.billRepository.findByCode(code);
+    }
+
+//    @Override
+//    public void checkoutFormCart(List<Long> selectedCartDetailIds) {
+//        User loggedUser = this.userService.getUserFromContext();
+//        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+//
+//        for (CartDetail cartDetail : cart.getCartDetails()) {
+//            if (selectedCartDetailIds.contains(cartDetail.getId())) {
+//                cartDetail.setIsSelected(true);
+//
+//                cartDetailRepository.save(cartDetail);
+//            }
+//        }
+//    }
+
+    @Override
+    public void checkoutFormCart(List<Long> selectedCartDetailIds) {
+        User loggedUser = this.userService.getUserFromContext();
+        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+
+        List<CartDetail> selectedCartDetails = cart.getCartDetails().stream()
+                .filter(cartDetail -> selectedCartDetailIds.contains(cartDetail.getId()))
+                .collect(Collectors.toList());
+
+        for (CartDetail cartDetail : selectedCartDetails) {
+            cartDetail.setIsSelected(true);
+            this.cartDetailRepository.save(cartDetail);
+        }
+
+    }
+
 
 }

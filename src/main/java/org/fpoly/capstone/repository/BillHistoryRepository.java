@@ -25,6 +25,8 @@ public interface BillHistoryRepository extends JpaRepository<BillHistory, Long> 
     @Query("SELECT h.id , h.status as status , h.createDate as createDate FROM BillHistory h WHERE h.status != 'TAO_HOA_DON' AND h.bill.id = :id")
     List<Object[]> findAllStatusExcludingTaoHoaDon(@Param("id") Long id);
 
+    @Query("SELECT h.id , h.status as status , h.createDate as createDate FROM BillHistory h WHERE h.status != 'TAO_HOA_DON' AND h.bill.code = :code")
+    List<Object[]> findAllStatusSearchCustomer(@Param("code") String code);
 
 //    @Query(value = """
 //    SELECT

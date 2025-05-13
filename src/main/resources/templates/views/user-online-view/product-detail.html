@@ -41,6 +41,7 @@
 <body>
 
 <th:block id="th-body">
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
   <!--Body Content-->
   <div id="page-content">
     <!--MainContent-->
@@ -152,7 +153,16 @@
                     </div>
                   </div>
                 </div>
-                
+
+                <!-- <div class="swatch clearfix swatch-1 option2" data-option-index="1">
+                  <div class="m">
+                    <label class="header">Số lượng tồn: <span class="slVariant"></span></label>    
+                    <span
+                      class="quantity"
+                      th:text="${product.quantity}">
+                    </span>                             
+                  </div>
+                </div> -->
                 
                 <p class="infolinks"><a href="#sizechart" class="sizelink btn"> Hướng dẫn chọn size</a></p>
                 <!-- Product Action -->
@@ -752,7 +762,7 @@
     </div>
   </div>
   
-  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="pswp__bg"></div>
     <div class="pswp__scroll-wrap">
       <div class="pswp__container">
@@ -785,10 +795,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   
   <!-- Size required Popup -->
-  <div class="newsletter-wrap" id="popup-container">
+  <div class="newsletter-wrap" id="popup-container" style="width: 350px; height: 120px; text-align: center;">
     <div id="popup-window">
       <a class="btn closepopup"><i class="icon icon anm anm-times-l"></i></a>
       <!-- Modal content-->
@@ -917,8 +927,8 @@
         
         // If user is not logged in, add login and register buttons
         if (loggedUserEmail == null) {
-          var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Đăng nhập</a>');
-          var registerButton = $('<button id="registerButton" class="btn">Đăng kí</button>');
+          var loginButton = $('<a id="loginButton" class="btn" href="/auth/login">Đăng nhập</a>');
+          var registerButton = $('<a id="registerButton" class="btn" href="/auth/register">Đăng ký</a>');
           
           // Append the buttons to the popup
           $('#popup-container').append(loginButton);
@@ -959,7 +969,7 @@
         
         // Kiểm tra nếu người dùng chưa đăng nhập
         if (loggedUserEmail == null) {
-          alert("Vui lòng đăng nhập để tiếp tục");
+          showToast("Vui lòng đăng nhập để tiếp tục");
           return;
         }
         
@@ -970,11 +980,11 @@
         
         // Kiểm tra tính hợp lệ của các giá trị đã chọn
         if (selectedColor === undefined) {
-          alert("Vui lòng chọn màu sắc");
+          showToast("Vui lòng chọn màu sắc");
           return;
         }
         if (selectedSize === undefined) {
-          alert("Vui lòng chọn size");
+          showToast("Vui lòng chọn size");
           return;
         }
         
@@ -1160,8 +1170,8 @@
         if (loggedUserEmail == null) {
           // Only add login and register buttons if they are not already in the popup
           if ($('#popup-container #loginButton').length === 0 && $('#popup-container #registerButton').length === 0) {
-            var loginButton = $('<a id="loginButton" class="btn" href="/auth/login/online">Đăng nhập</a>');
-            var registerButton = $('<button id="registerButton" class="btn">Đăng kí</button>');
+            var loginButton = $('<a id="loginButton" class="btn" href="/auth/login">Đăng nhập</a>');
+            var registerButton = $('<a id="registerButton" class="btn" href="/auth/register">Đăng ký</a>');
             
             // Append the buttons to the popup
             $('#popup-container').append(loginButton);
@@ -1169,12 +1179,12 @@
             
             // Set the action for the login button (redirect to login page)
             loginButton.on('click', function () {
-              window.location.href = "/login";  // Replace with your login page URL
+              window.location.href = "/auth/login";  // Replace with your login page URL
             });
             
             // Set the action for the register button (redirect to register page)
             registerButton.on('click', function () {
-              window.location.href = "/register";  // Replace with your register page URL
+              window.location.href = "/auth/register";  // Replace with your register page URL
             });
           }
         }
@@ -1227,6 +1237,54 @@
       
     });
   </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script>
+    function showToast(message) {
+        const toastContainer = document.getElementById("toast-container");
+        const toast = document.createElement("div");
 
+        toast.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i> ${message}`;
+        toast.style.cssText = `
+        background-color: #d4edda;
+        color: #155724;
+        border-left: 5px solid #28a745;
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transform: translateX(100%);
+        transition: opacity 0.5s, transform 0.5s ease-in-out;
+        margin-bottom: 10px;
+        position: relative;
+        min-width: 280px;
+    `;
+
+        toastContainer.appendChild(toast);
+
+        // Hiện thông báo (trượt từ phải vào)
+        setTimeout(() => {
+            toast.style.opacity = "1";
+            toast.style.transform = "translateX(0)";
+        }, 100);
+
+        // Ẩn sau 3 giây (trượt ra phải)
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            toast.style.transform = "translateX(100%)";
+            setTimeout(() => toast.remove(), 500);
+        }, 3000);
+    }
+
+    // Hiển thị thông báo nếu có từ server
+    document.addEventListener("DOMContentLoaded", function () {
+        let successMessage = "[[${successMessage}]]";
+        if (successMessage && successMessage.trim() !== "") {
+            showToast(successMessage);
+        }
+    });
+  </script>
 </th:block>
 </html>

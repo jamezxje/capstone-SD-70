@@ -28,7 +28,7 @@
                             <div class="row no-gutters">
                                 <div class="col-xl-12">
                                     <div class="auth-form">
-                                        <form th:action="@{/auth/register/online/save}" method="post" th:object="${userRegister}">
+                                        <form th:action="@{/auth/register/online}" method="post" th:object="${userRegister}">
                                             <div class="form-group">
                                                 <label class="text-label">Họ và tên</label>
                                                 <div class="input-group">
@@ -60,7 +60,7 @@
                                                 <p class="error" th:if="${errors['phoneNumber']}" th:text="${errors['phoneNumber']}" th:classappend="text-danger"></p>
                                             </div>
                                             <div class="form-group">
-                                                <label class="text-label">Mật khẩu *</label>
+                                                <label class="text-label">Mật khẩu</label>
                                                 <div class="input-group transparent-append">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text text-black"> <i class="fa fa-lock"></i> </span>

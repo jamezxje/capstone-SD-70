@@ -104,7 +104,7 @@ document.getElementById("add-row-btn").addEventListener("click", function () {
       </div>
       <div class="form-group col-md-3">
         <label for="price">Giá (nghìn VND) <span class="text-danger">*</span> </label>
-        <input id="price" name="productVariantList[${variantIndex}].price" type="text" class="form-control" placeholder="" oninput="formatCurrency(event)" required>
+        <input id="price" name="productVariantList[${variantIndex}].price" type="text" class="form-control product-detail-price" placeholder="" oninput="formatPrice(this)" required>
       </div>
       <div class="form-group col-md-3 d-flex align-items-end">
         <button type="button" class="btn btn-danger btn-delete mb-1">Delete</button>
@@ -127,22 +127,25 @@ document.getElementById("product-details-container").addEventListener("click", f
 
 function formatCurrency(event) {
     let input = event.target;
-    let value = input.value;
-
-    // Xóa tất cả ký tự không phải là số
-    value = value.replace(/\D/g, '');
-
-    // Định dạng thành tiền tệ với dấu phân cách hàng nghìn
+    let value = input.value.replace(/\D/g, ''); // Xóa tất cả ký tự không phải số
     let formattedValue = new Intl.NumberFormat('vi-VN').format(value);
-
-    // Cập nhật lại giá trị trong input
     input.value = formattedValue;
 }
 
 function formatPrice(input) {
-    let value = input.value.replace(/[^\d]/g, '');
-    if (value) {
-        value = Number(value).toLocaleString('de-DE');
-    }
+    // Remove non-numeric characters
+    let value = input.value.replace(/\D/g, '');
+
+    // Format the number with commas
+    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    // Set the formatted value back into the input field
     input.value = value;
+}
+
+function removeCommasBeforeSubmit() {
+    const inputs = document.querySelectorAll('.product-detail-price');
+    inputs.forEach(input => {
+        input.value = input.value.replace(/,/g, ''); // Remove commas before submission
+    });
 }

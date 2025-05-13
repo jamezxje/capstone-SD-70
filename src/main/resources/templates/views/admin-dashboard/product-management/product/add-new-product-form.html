@@ -32,7 +32,7 @@
       </div>
       
       <form class="form-create-product" th:action="@{/dashboard/product-management/product}" th:object="${productModel}"
-            method="post" enctype="multipart/form-data">
+            method="post" enctype="multipart/form-data" onsubmit="removeCommasBeforeSubmit()">
         <!--Thong tin san pham start-->
         <div class="row">
           <div class="col-lg-3">
@@ -191,9 +191,9 @@
                       
                       <div class="form-group col-md-3">
                         <label for="price">Giá tiền (VND) <span class="text-danger">*</span></label>
-                        <input id="price" type="number" name="productVariantList[0].price"
+                        <input id="price" type="text" name="productVariantList[0].price"
+                               class="form-control product-detail-price"
                                oninput="formatPrice(this)"
-                               class="form-control"
                                placeholder="" required>
                       </div>
                     </div>

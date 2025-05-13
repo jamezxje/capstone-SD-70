@@ -56,10 +56,18 @@ public class SecurityConfiguration {
             "/delete-product-bill/**" ,
             "/products/**",
             "/getAllProductDetail" ,
+            "/getStatus-history-customer/**" ,
+            "/getInforBillCustomer/**" ,
+            "/search-product-customer/**" ,
+            "/searchBill/**" ,
+            "/searchBillCode/**" ,
+            "/search/**" ,
+            "/cancel-bill-customer/**" ,
+            "/getTotalBill/**" ,
+            "/auth/login/**",
             "/auth/register",
-            "/auth/register/save",
+            "/auth/register/**",
             "/auth/forgot-password",
-            "/auth/forgot-password/save",
             "/home",
             "/login",
             "/register",
@@ -82,8 +90,6 @@ public class SecurityConfiguration {
             "/details/**",
             "/shop/**",
             "/cart/**",
-            "/auth/login/**",
-            "/auth/register/**",
     };
 
     @Bean
@@ -109,6 +115,7 @@ public class SecurityConfiguration {
                                 .logoutSuccessUrl("/auth/login")
                                 .invalidateHttpSession(true)
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "GET"))
+                                .logoutSuccessUrl("/")
                                 .permitAll()
                 );
 

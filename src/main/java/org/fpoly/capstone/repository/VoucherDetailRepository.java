@@ -10,11 +10,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface VoucherDetailRepository extends JpaRepository<VoucherDetail, Long> {
-    List<VoucherDetail> findByBillId(Long id);
+    Optional<VoucherDetail> findByBillId(Long id);
 
     @Query(value = """
             SELECT vd.before_price,\s
@@ -26,4 +27,16 @@ public interface VoucherDetailRepository extends JpaRepository<VoucherDetail, Lo
             WHERE b.id = :id;
             """, nativeQuery = true)
     List<Object[]> findPricesByBillId(@Param("id") Long id);
+
+    @Query(value = """
+            SELECT vd.before_price,\s
+                   vd.after_price,\s
+                   vd.discount_price,
+                   b.money_ship
+            FROM voucher_detail vd
+            INNER JOIN bill b ON vd.id_bill = b.id
+            WHERE b.code = :code;
+            """, nativeQuery = true)
+    List<Object[]> findPriceForBillCodeCustomer(@Param("code") String code);
+
 }
