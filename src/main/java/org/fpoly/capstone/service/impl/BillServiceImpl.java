@@ -982,6 +982,13 @@ public class BillServiceImpl implements BillService {
         User loggedUser = this.userService.getUserFromContext();
         Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
 
+        // Đặt lại tất cả các CartDetail thành không được chọn (isSelected = false)
+        for (CartDetail cartDetail : cart.getCartDetails()) {
+            cartDetail.setIsSelected(false);
+            this.cartDetailRepository.save(cartDetail);
+        }
+
+        // Chỉ set những CartDetail người dùng chọn thành isSelected = true
         List<CartDetail> selectedCartDetails = cart.getCartDetails().stream()
                 .filter(cartDetail -> selectedCartDetailIds.contains(cartDetail.getId()))
                 .collect(Collectors.toList());
@@ -990,7 +997,6 @@ public class BillServiceImpl implements BillService {
             cartDetail.setIsSelected(true);
             this.cartDetailRepository.save(cartDetail);
         }
-
     }
 
 
