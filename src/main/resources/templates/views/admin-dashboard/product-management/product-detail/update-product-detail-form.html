@@ -361,7 +361,7 @@
     function removeCommasBeforeSubmit() {
       const inputs = document.querySelectorAll('.product-detail-price');
       inputs.forEach(input => {
-        input.value = input.value.replace(/,/g, ''); // Remove commas before submission
+        input.value = input.value.replace(/[.,]/g, ''); // Remove commas before submission
       });
     }
     
@@ -371,6 +371,7 @@
       const formattedPrice = priceValue.toLocaleString('de-DE');
       priceInput.value = formattedPrice;
     };
+  
   </script>
 </th:block>
 
