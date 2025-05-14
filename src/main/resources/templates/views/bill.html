@@ -41,23 +41,23 @@
                         <!-- Loại đơn -->
                         <div class="col-md-6">
                             <label class="form-label">Loại đơn</label>
-                            <select name="orderType" class="form-select w-250">
+                            <select name="orderType" class="form-select w-250" id="orderTypeSelect" >
                                 <option value="" th:selected="${orderType == null or orderType == ''}">Tất cả loại hóa đơn</option>
                                 <option value="ONLINE" th:selected="${orderType == 'ONLINE'}">Online</option>
                                 <option value="OFFLINE" th:selected="${orderType == 'OFFLINE'}">Offline</option>
                             </select>
                         </div>
-                        <!-- </div>
-                        <div class="row md-12"> -->
+
                         <!-- Ngày bắt đầu -->
                         <div class="col-md-6">
                             <label class="form-label">Ngày bắt đầu</label>
-                            <input type="date" class="form-control w-250" name="startDate">
+                            <input type="date" class="form-control w-250" name="startDate" id="startDateInput" th:value="${startDate}">
                         </div>
+
                         <!-- Ngày kết thúc -->
                         <div class="col-md-6">
                             <label class="form-label">Ngày kết thúc</label>
-                            <input type="date" class="form-control w-250" name="endDate">
+                            <input type="date" class="form-control w-250" name="endDate" id="endDateInput" th:value="${endDate}">
                         </div>
                     </div><br>
 
@@ -66,7 +66,7 @@
                             <button type="submit" class="btn btn-success px-4 py-2 rounded">🔍 Tìm kiếm</button>
                         </div>
                         <div>
-                            <button type="reset" class="btn btn-danger px-4 py-2 rounded">🔄 Làm mới</button>
+                            <a href="/bill/listBill" class="btn btn-danger px-4 py-2 rounded">🔄 Làm mới</a>
                         </div>
                     </div>
                 </form>
@@ -81,60 +81,70 @@
                     <!-- Tabs Trạng Thái -->
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
-                            <a class="nav-link [[${status} == null or ${status} == '' ? 'active' : '']]"
+                            <a class="nav-link"
+                               th:classappend="${status} == null or ${status} == '' ? 'active fw-bold text-dark'"
                                th:href="@{/bill/listBill(status='', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                                Tất cả
+                                <i class="bi bi-card-list me-1"></i> Tất cả
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link [[${status} == 'CHO_XAC_NHAN' ? 'active' : '']]"
+                            <a class="nav-link"
+                               th:classappend="${status} == 'CHO_XAC_NHAN' ? 'active fw-bold text-primary'"
                                th:href="@{/bill/listBill(status='CHO_XAC_NHAN', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                                Chờ xác nhận
+                                <i class="bi bi-hourglass-split me-1"></i> Chờ xác nhận
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link [[${status} == 'XAC_NHAN' ? 'active' : '']]"
+                            <a class="nav-link"
+                               th:classappend="${status} == 'XAC_NHAN' ? 'active fw-bold text-info'"
                                th:href="@{/bill/listBill(status='XAC_NHAN', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                                Đã xác nhận
+                                <i class="bi bi-check2-square me-1"></i> Đã xác nhận
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link [[${status} == 'CHO_VAN_CHUYEN' ? 'active' : '']]"
+                            <a class="nav-link"
+                               th:classappend="${status} == 'CHO_VAN_CHUYEN' ? 'active fw-bold text-warning'"
                                th:href="@{/bill/listBill(status='CHO_VAN_CHUYEN', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                                Chờ vận chuyển
+                                <i class="bi bi-box-seam me-1"></i> Chờ vận chuyển
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link [[${status} == 'VAN_CHUYEN' ? 'active' : '']]"
+                            <a class="nav-link"
+                               th:classappend="${status} == 'VAN_CHUYEN' ? 'active fw-bold text-orange'"
                                th:href="@{/bill/listBill(status='VAN_CHUYEN', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                                Đang vận chuyển
+                                <i class="bi bi-truck me-1"></i> Đang vận chuyển
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link [[${status} == 'DA_THANH_TOAN' ? 'active' : '']]"
+                            <a class="nav-link"
+                               th:classappend="${status} == 'DA_THANH_TOAN' ? 'active fw-bold text-success'"
                                th:href="@{/bill/listBill(status='DA_THANH_TOAN', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                                Đã thanh toán
+                                <i class="bi bi-cash-stack me-1"></i> Đã thanh toán
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link [[${status} == 'THANH_CONG' ? 'active' : '']]"
+                            <a class="nav-link"
+                               th:classappend="${status} == 'THANH_CONG' ? 'active fw-bold text-success'"
                                th:href="@{/bill/listBill(status='THANH_CONG', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                                Hoàn thành
+                                <i class="bi bi-patch-check me-1"></i> Hoàn thành
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link [[${status} == 'TRA_HANG' ? 'active' : '']]"
+                            <a class="nav-link"
+                               th:classappend="${status} == 'TRA_HANG' ? 'active fw-bold text-danger'"
                                th:href="@{/bill/listBill(status='TRA_HANG', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                                Trả hàng
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> Trả hàng
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link [[${status} == 'DA_HUY' ? 'active' : '']]"
+                            <a class="nav-link"
+                               th:classappend="${status} == 'DA_HUY' ? 'active fw-bold text-secondary'"
                                th:href="@{/bill/listBill(status='DA_HUY', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                                Hủy
+                                <i class="bi bi-x-circle me-1"></i> Hủy
                             </a>
                         </li>
                     </ul>
+
 
                     <!-- Bảng danh sách hóa đơn -->
                     <div class="row md-12">
@@ -203,9 +213,9 @@
                             <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                                 <a class="page-link"
                                    th:href="@{/bill/listBill(page=${currentPage - 1}, size=10,
-                   status=${status}, keyword=${keyword}, orderType=${orderType},
-                   startDate=${startDate}, endDate=${endDate},
-                   sortField=${sortField}, sortDirection=${sortDirection})}">
+                                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                                   startDate=${startDate}, endDate=${endDate},
+                                   sortField=${sortField}, sortDirection=${sortDirection})}">
                                     Trước
                                 </a>
                             </li>
@@ -214,9 +224,9 @@
                             <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
                                 <a class="page-link"
                                    th:href="@{/bill/listBill(page=1, size=10,
-                   status=${status}, keyword=${keyword}, orderType=${orderType},
-                   startDate=${startDate}, endDate=${endDate},
-                   sortField=${sortField}, sortDirection=${sortDirection})}">
+                                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                                   startDate=${startDate}, endDate=${endDate},
+                                   sortField=${sortField}, sortDirection=${sortDirection})}">
                                     1
                                 </a>
                             </li>
@@ -233,9 +243,9 @@
                                 th:classappend="${i == currentPage} ? 'active'">
                                 <a class="page-link"
                                    th:href="@{/bill/listBill(page=${i}, size=10,
-                   status=${status}, keyword=${keyword}, orderType=${orderType},
-                   startDate=${startDate}, endDate=${endDate},
-                   sortField=${sortField}, sortDirection=${sortDirection})}"
+                                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                                   startDate=${startDate}, endDate=${endDate},
+                                   sortField=${sortField}, sortDirection=${sortDirection})}"
                                    th:text="${i}"></a>
                             </li>
 
@@ -248,9 +258,9 @@
                             <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
                                 <a class="page-link"
                                    th:href="@{/bill/listBill(page=${totalPages}, size=10,
-                   status=${status}, keyword=${keyword}, orderType=${orderType},
-                   startDate=${startDate}, endDate=${endDate},
-                   sortField=${sortField}, sortDirection=${sortDirection})}"
+                                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                                   startDate=${startDate}, endDate=${endDate},
+                                   sortField=${sortField}, sortDirection=${sortDirection})}"
                                    th:text="${totalPages}"></a>
                             </li>
 
@@ -258,9 +268,9 @@
                             <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                                 <a class="page-link"
                                    th:href="@{/bill/listBill(page=${currentPage + 1}, size=10,
-                   status=${status}, keyword=${keyword}, orderType=${orderType},
-                   startDate=${startDate}, endDate=${endDate},
-                   sortField=${sortField}, sortDirection=${sortDirection})}">
+                                   status=${status}, keyword=${keyword}, orderType=${orderType},
+                                   startDate=${startDate}, endDate=${endDate},
+                                   sortField=${sortField}, sortDirection=${sortDirection})}">
                                     Tiếp
                                 </a>
                             </li>
@@ -291,35 +301,24 @@
                 event.preventDefault();
             });
         });
-
+        // Tự động submit form khi thay đổi loại đơn hoặc ngày
         document.addEventListener("DOMContentLoaded", function () {
-            const orderTypeSelect = document.querySelector("select[name='orderType']");
-            const startDateInput = document.querySelector("input[name='startDate']");
-            const endDateInput = document.querySelector("input[name='endDate']");
+            const form = document.querySelector("form[action='/bill/listBill']");
+            const orderType = document.getElementById("orderTypeSelect");
+            const startDate = document.getElementById("startDateInput");
+            const endDate = document.getElementById("endDateInput");
 
-            function filterTable() {
-                let selectedType = orderTypeSelect.value.trim();
-                let startDate = startDateInput.value ? new Date(startDateInput.value) : null;
-                let endDate = endDateInput.value ? new Date(endDateInput.value) : null;
-
-                document.querySelectorAll("tbody tr").forEach(row => {
-                    let rowType = row.querySelector("td:nth-child(7)").textContent.trim(); // Cột Loại
-                    let rowDateText = row.querySelector("td:nth-child(9)").textContent.trim(); // Cột Ngày tạo
-                    let rowDate = rowDateText ? new Date(rowDateText) : null;
-
-                    let matchesType = (selectedType === "" || rowType === selectedType);
-                    let matchesDate = (!rowDate ||
-                        (!startDate || rowDate >= startDate) &&
-                        (!endDate || rowDate <= endDate));
-
-                    row.style.display = (matchesType && matchesDate) ? "" : "none";
-                });
+            if (orderType) {
+                orderType.addEventListener("change", () => form.submit());
             }
 
-            // Lắng nghe sự kiện thay đổi
-            orderTypeSelect.addEventListener("change", filterTable);
-            startDateInput.addEventListener("change", filterTable);
-            endDateInput.addEventListener("change", filterTable);
+            if (startDate) {
+                startDate.addEventListener("change", () => form.submit());
+            }
+
+            if (endDate) {
+                endDate.addEventListener("change", () => form.submit());
+            }
         });
     </script>
 </th:block>

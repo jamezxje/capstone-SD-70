@@ -66,7 +66,7 @@ confirmButton.onclick = function () {
         actionDescription = reason;
         confirmationReason.value = "";
         changeStatus();
-        // location.reload();
+        location.reload();
 
     } else if (!isValidChars) {
         showToast("Lý do không được chứa số hoặc ký tự đặc biệt.");
