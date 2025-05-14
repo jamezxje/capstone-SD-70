@@ -144,6 +144,21 @@ function getInforBill(code) {
             document.getElementById("customerName").textContent = data.userName || 'Không có dữ liệu';
             document.getElementById("phoneNumber").textContent = data.phoneNumber || 'Không có dữ liệu';
             document.getElementById("shipDate").textContent = data.shipDate ? formatDate1(data.shipDate) : 'Không có dữ liệu';
+            if (data.status === "VAN_CHUYEN") {
+                document.getElementById('cancelBill').style.display = 'none';
+            } else if (data.status === "DA_THANH_TOAN") {
+                document.getElementById('cancelBill').style.display = 'none';
+
+            } else if (data.status === "THANH_CONG") {
+                document.getElementById('cancelBill').style.display = 'none';
+
+            }  else if (data.status === "DA_HUY") {
+        document.getElementById('cancelBill').style.display = 'none';
+
+    }
+            else {
+                document.getElementById('cancelBill').style.display = 'block';
+            }
         })
         .catch(error => {
             console.log("Error fetching bill info", error);
@@ -221,7 +236,7 @@ function getInforBillPrice(code) {
         });
 }
 function cancelBill () {
-    const employeeId = 15;
+    const employeeId = 1;
     axios.put(`http://localhost:8080/cancel-bill-customer/${idBac}?idEmployee=${employeeId}`, {
         actionDescription: actionDescription
     })
@@ -262,6 +277,7 @@ function updateTimelineStatus(status) {
         case "DA_THANH_TOAN":
             if (document.getElementById("paid").style.display === "none") {
                 document.getElementById("paid").style.display = "block";
+                document.getElementById('cancelBill').style.display = 'none'
             }
             break;
         case "THANH_CONG":
@@ -277,6 +293,7 @@ function updateTimelineStatus(status) {
             }
         default:
             console.error("Unknown status", status);
+            cancelButton.style.display = "none";
     }
 }
 function formatVND(value) {

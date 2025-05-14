@@ -266,6 +266,7 @@ public class BillDetailServiceImpl implements BillDetailService {
 
     @Override
     public Bill cancelBillCustomer(String code, Long idCusomter, ChangeStatusBillRequest request) {
+        System.out.println("Checkl");
         Optional<Bill> bill = billRepository.findByCode(code);
         Optional<User> user = userRepository.findById(idCusomter);
         if (!bill.isPresent()) {
