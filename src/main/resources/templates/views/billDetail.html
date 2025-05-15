@@ -245,12 +245,9 @@
                         <h5>Voucher giảm giá :<span
                                 th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span>
                             VND</h5>
-                        <h5>Tổng tiền giảm :<span
-                                th:text="${#numbers.formatDecimal(voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span>
-                            VND</h5>
                         <hr>
                         <h4>Tổng tiền thanh toán:<span
-                                th:text="${#numbers.formatDecimal(voucherDetail.afterPrice + voucherDetail.moneyShip, 0, 'COMMA', 0, 'POINT')}"></span>
+                                th:text="${#numbers.formatDecimal(voucherDetail.afterPrice, 0, 'COMMA', 0, 'POINT')}"></span>
                             VND</h4>
                     </div>
                 </div>

@@ -142,8 +142,8 @@ async function restTab() {
     const reaming = document.getElementById('remaining-amount');
     const totalAmount = document.getElementById('total-amount');
     totalAmount.innerText = '';
-    shipping.innerText= '';
-    discount.innerText= '';
+    shipping.innerText = '';
+    discount.innerText = '';
     reaming.innerText = '';
     totalPrice.innerText = '';
     strMissing.innerText = '';
@@ -289,7 +289,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 let idCusomter = null, name = null, phoneNumber = null, mail = null;
-function  attachChoseCustomer() {
+
+function attachChoseCustomer() {
     document.querySelectorAll('.btnChose_customer').forEach(button => {
         button.addEventListener('click', function () {
             const id = this.getAttribute('data-id');
@@ -305,7 +306,7 @@ function  attachChoseCustomer() {
             phoneNumber = phone;
             mail = email;
             fetchAllAddressCustomer(id);
-            console.log("Chọn khah thanh công id" , idCusomter )
+            console.log("Chọn khah thanh công id", idCusomter)
             toastr.options.positionClass = 'toast-top-right'
             toastr.success('Chọn khách hàng thành công');
         });
@@ -377,7 +378,7 @@ async function confirmProduct() {
         });
 
         console.log("data send ", billDetails);
-        addProductToInvoice1(idProductD, nameProductD, sizeProductD, colorProductD, quantityInputChange, priceProductD , imageD);
+        addProductToInvoice1(idProductD, nameProductD, sizeProductD, colorProductD, quantityInputChange, priceProductD, imageD);
         await saveProductInBill(idBill);
         fetchProducts(0);
         toastr.options.positionClass = 'toast-top-right';
@@ -386,33 +387,34 @@ async function confirmProduct() {
     }
 }
 
-let idProductD = null, nameProductD = null, sizeProductD = null, colorProductD = null, priceProductD = null , imageD = null;
+let idProductD = null, nameProductD = null, sizeProductD = null, colorProductD = null, priceProductD = null,
+    imageD = null;
 
 let idProductDetail = null;
 let productForBill = null;
 
-            async function fetchProductsForAllBills(billIds) {
+async function fetchProductsForAllBills(billIds) {
 
-                try {
-                    const response = await axios.get(`/products/${billIds}`, {
-                        params: {t: new Date().getTime()}
-                    });
-                    console.log("Dữ liệu trả về từ API:", response.data);
-                    idProductDetail = response.data[0].idProductDetail;
+    try {
+        const response = await axios.get(`/products/${billIds}`, {
+            params: {t: new Date().getTime()}
+        });
+        console.log("Dữ liệu trả về từ API:", response.data);
+        idProductDetail = response.data[0].idProductDetail;
 
-                    console.log('Check dữ liệu ', idProductDetail)
-                    if (Array.isArray(response.data)) {
+        console.log('Check dữ liệu ', idProductDetail)
+        if (Array.isArray(response.data)) {
 
 
-                        response.data.forEach(product => {
-                            addProductToInvoice(product.id, product.name, product.size, product.color, product.quantity, product.price , product.image);
-                        });
-                    } else {
-                        console.error("Dữ liệu trả về không phải là mảng");
-                    }
-                } catch (error) {
-                    console.log("Lỗi khi gọi API sản phẩm:", error);
-                }
+            response.data.forEach(product => {
+                addProductToInvoice(product.id, product.name, product.size, product.color, product.quantity, product.price, product.image);
+            });
+        } else {
+            console.error("Dữ liệu trả về không phải là mảng");
+        }
+    } catch (error) {
+        console.log("Lỗi khi gọi API sản phẩm:", error);
+    }
 
 }
 
@@ -425,6 +427,7 @@ async function getVoucherInBill(minimumBill) {
         })
         if (isDelivery === false) {
             totalShipLocal = 0;
+            console.log("Không chạy va")
         }
         console.log("APi minimumBill", response.data);
         console.log("miniMumBill", response.data[0].minimumBill)
@@ -437,6 +440,7 @@ async function getVoucherInBill(minimumBill) {
         document.getElementById('ip-voucher').value = voucherName;
         document.getElementById('customer-payment').innerText = "0đ";
         document.getElementById('remaining-amount').innerText = "0đ";
+
         applyVoucher(totalBill, voucherID, voucherValueLocal, voucherMinimumBill, totalShipLocal);
 
     } catch (error) {
@@ -444,25 +448,15 @@ async function getVoucherInBill(minimumBill) {
     }
 }
 
-function clearTable() {
-    const table = document.getElementById("invoice-table"); // Thay "invoice-table" bằng id bảng của bạn
-    const rows = table.querySelectorAll("tr");
-    rows.forEach(row => {
-        if (row !== table.querySelector("thead")) {
-            row.remove(); // Xóa tất cả các hàng trong bảng, trừ header
-        }
-    });
-}
 
 let totalBill = 0;
 
-function addProductToInvoice(id, name, size, color, quantity, price , image) {
+function addProductToInvoice(id, name, size, color, quantity, price, image) {
     const tabContent = document.querySelector('.tab-content.active-content'); // Bảng chi tiết hóa đơn
     const tbody = tabContent.querySelector('tbody');
     let productExists = false;
     let productTotal = 0;
 
-    // Kiểm tra xem sản phẩm đã có trong bảng chưa
     for (let row of tbody.rows) {
         const rowName = row.cells[2].textContent;
         const rowSize = row.cells[3].textContent;
@@ -473,19 +467,12 @@ function addProductToInvoice(id, name, size, color, quantity, price , image) {
             const rowTotalCell = row.cells[7];
             let currentQuantity = parseInt(rowQuantityCell.textContent);
 
-            // Cập nhật số lượng
-            // rowQuantityCell.textContent = currentQuantity + quantity;
-
-            // Tính lại tổng tiền
-            // productTotal = (currentQuantity + quantity) * parseFloat(rowPriceCell.textContent.replace(/[^\d.-]/g, ''));
-            // rowTotalCell.textContent = formatVND(productTotal);
 
             productExists = true;
             break;
         }
     }
 
-    // Nếu sản phẩm chưa có trong bảng, thêm dòng mới
     if (!productExists) {
         const newRow = document.createElement('tr');
         productTotal = quantity * price;
@@ -524,7 +511,7 @@ function addProductToInvoice(id, name, size, color, quantity, price , image) {
     console.log('Check totoal Bill', totalBill)
 }
 
-function addProductToInvoice1(id, name, size, color, quantity, price , image) {
+function addProductToInvoice1(id, name, size, color, quantity, price, image) {
     const tabContent = document.querySelector('.tab-content.active-content'); // Bảng chi tiết hóa đơn
     const tbody = tabContent.querySelector('tbody');
     let productExists = false;
@@ -599,7 +586,7 @@ function addProductToInvoice1(id, name, size, color, quantity, price , image) {
         totalAmount += parseFloat(rowTotalCell.textContent.replace(/[^\d.-]/g, ''));  // Loại bỏ ký tự không phải số
     }
     totalBill = totalAmount;
-    console.log("Check totalPrice 1" , formatVND(totalAmount))
+    console.log("Check totalPrice 1", formatVND(totalAmount))
     document.getElementById('total-price').innerText = formatVND(totalAmount) + "đ";
     document.getElementById('total-amount').innerText = formatVND(totalAmount) + "đ";
     document.getElementById('amount').innerText = formatVND(totalAmount) + "đ";
@@ -625,7 +612,6 @@ async function removeProduct(button) {
         console.error("Lỗi khi xóa sản phẩm:", error);
     }
 }
-
 
 
 function formatVND(value) {
@@ -677,7 +663,7 @@ function attachChangeVoucher() {
                 const response = await axios.get(`/products/${idBill}`, {
                     params: {t: new Date().getTime()}
                 });
-
+                console.log("Check vao attackChange")
 
                 if (!Array.isArray(response.data) || response.data.length === 0) {
                     toastr.options.positionClass = 'toast-top-right';
@@ -714,28 +700,36 @@ let voucherDetail = [];
 function applyVoucher(totalPrice, voucherId, voucherValue, voucherMinium, shipping) {
     let discount = 0;
     console.log("Check voucher", voucherValue)
+    const shipFromLocal = parseInt(localStorage.getItem('shipOffice')) || 0;
 
     console.log("voucher", voucherValue)
-    if (voucherValue > totalPrice){
+    if (voucherValue > totalPrice) {
         totalCustomerPayment = 0;
-    }
-    else if  (totalPrice >= voucherMinium) {
+        console.log("Chay vao voucher1")
+    } else if (totalPrice >= voucherMinium) {
         discount = (totalPrice - voucherValue) + shipping;
+        console.log("Chay vao voucher2")
+
     } else if (totalPrice < voucherMinium) {
         alert("Không áp dụng")
+        console.log("Chay vao voucher3")
+
         return;
     } else {
         discount = totalPrice + shipping;
     }
+
+
     totalCustomerPayment = discount;
     console.log("check total customerpaayment", totalCustomerPayment)
     voucherDetail = [];
     voucherDetail.push({
         idVoucher: voucherId,
         beforVoucher: totalPrice,
-        afterVoucher: discount,
+        afterVoucher: discount + shipFromLocal,
         discountVoucher: voucherValue
     })
+    localStorage.removeItem('shipOffice');
     localStorage.setItem('idVoucher', voucherId);
     console.log("Check voucher detail push", voucherDetail);
     console.log("Total Customer Payment:", totalCustomerPayment);
@@ -767,8 +761,8 @@ btnPaymentSuccess.addEventListener('click', async () => {
             // const isDistrictValid = checkDistrict();
             // const isProvinceValid = checkProvince();
             // const isWardValid = checkWard();
-        // || !isDistrictValid || !isProvinceValid || !isWardValid
-            if (!isNameValid || !isPhoneValid ) {
+            // || !isDistrictValid || !isProvinceValid || !isWardValid
+            if (!isNameValid || !isPhoneValid) {
                 toastr.options.positionClass = 'toast-top-right';
                 toastr.error('Vui lòng kiểm tra lại các thông tin giao hàng');
                 return;
@@ -808,7 +802,6 @@ btnPaymentSuccess.addEventListener('click', async () => {
                 toastr.options.positionClass = 'toast-top-right';
                 toastr.options.timeOut = 2000;
                 toastr.success('Thanh toán hóa đơn thành công');
-
                 // setTimeout(() => {
                 //     location.reload();
                 // }, 2200);
@@ -852,7 +845,7 @@ btnPayment.addEventListener("click", async () => {
                 const btnBank = document.getElementById('btn-bank');
                 let totalPayment = document.getElementById('input-payment').value;
 
-localStorage.setItem('isComfirmPay' , 'true');
+                localStorage.setItem('isComfirmPay', 'true');
                 let missing = 0;
                 totalPayment = totalPayment.replace(/,/g, '');
                 totalPayment = parseFloat(totalPayment);
@@ -1197,7 +1190,7 @@ document.getElementById('addressValue').addEventListener('input', () => {
 let totalShipLocal = 0;
 let priceAmountBillAndShipNoVoucher = 0;
 
-function fetchMoneyShip(to_id_district, to_code_ward, quantity) {
+async function fetchMoneyShip(to_id_district, to_code_ward, quantity) {
     let quantityProducts = 0;
     if (quantity == "" || quantity == null || quantity == undefined) {
         quantityProducts = 1;
@@ -1228,11 +1221,14 @@ function fetchMoneyShip(to_id_district, to_code_ward, quantity) {
             if (totalShip && totalShip.total !== undefined) {
                 console.log("Tiền ship:", totalShip.total);
                 totalShipLocal = totalShip.total;
+                localStorage.setItem("shipOffice", totalShipLocal)
+                console.log("Check ship local ra gia trị", totalShipLocal)
                 document.getElementById('shipping').innerText = formatVND(totalShip.total) + "đ";
                 priceAmountBillAndShipNoVoucher = totalBill + totalShipLocal - voucherValueLocal;
                 document.getElementById('total-amount').innerText = formatVND(priceAmountBillAndShipNoVoucher) + "đ";
                 document.getElementById('amount').innerText = formatVND(priceAmountBillAndShipNoVoucher);
-                document.getElementById('input-payment').value = formatVND(priceAmountBillAndShipNoVoucher)
+                document.getElementById('input-payment').value = formatVND(priceAmountBillAndShipNoVoucher);
+                return totalShipLocal;
             } else {
                 console.log("Không có giá trị total.");
             }
@@ -1305,7 +1301,7 @@ async function deleteProductInBill(idBill, idProduct) {
 
 
 function saveBill(id) {
-    const nameCustomer = document.getElementById('nameCustomer').value ;
+    const nameCustomer = document.getElementById('nameCustomer').value;
     const numberCusomter = document.getElementById('numberPhoneCustomer').value;
     if (voucherValueLocal == null) {
         voucherValueLocal = 0; // Gán giá trị mặc định 0 nếu voucherNameLocal là null
@@ -1321,7 +1317,7 @@ function saveBill(id) {
         email: mail,
         openDelivery: isDelivery,
         itemDiscount: voucherValueLocal,
-        totalMoney: customerPayMentInput -totalShipLocal,
+        totalMoney: customerPayMentInput - totalShipLocal,
         moneyShip: totalShipLocal,
         type: 'OFFLINE',
         address: fullAddress,
@@ -1340,7 +1336,7 @@ function saveBill(id) {
 
 }
 
-function  printBillVnPay() {
+function printBillVnPay() {
     const code = localStorage.getItem('code');
     const name = localStorage.getItem('name');
     const phone = localStorage.getItem('phone');
@@ -1354,8 +1350,8 @@ function  printBillVnPay() {
     const deliveryDate = localStorage.getItem('deliveryDate');
     document.getElementById('printCode').innerText = code;
     document.getElementById('printCreateDate').innerText = new Date().toLocaleDateString('vi-VN');
-document.getElementById('printNameCustomer').innerText = name || 'Khách lẻ';
-document.getElementById('printNumberPhoneCustomer').innerText = phone || '';
+    document.getElementById('printNameCustomer').innerText = name || 'Khách lẻ';
+    document.getElementById('printNumberPhoneCustomer').innerText = phone || '';
 
     document.getElementById('printTotal').innerText = formatVND(totalPrice) || '0đ';
     document.getElementById('printDiscount').innerText = formatVND(itemDiscount) || '0đ';
@@ -1427,6 +1423,17 @@ document.getElementById('printNumberPhoneCustomer').innerText = phone || '';
                     padding: 8px;
                     text-align: left;
                 }
+                           .address-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.left-column, .right-column {
+    width: 48%;
+    box-sizing: border-box;
+}
                 th {
                     background-color: #f4f4f4;
                 }
@@ -1510,7 +1517,6 @@ function printBill(billData) {
         const rowPrice = row.cells[6].textContent;
         const totalPrice = row.cells[7].textContent;
 
-        // Tạo dòng mới trong bảng in hóa đơn
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
             <td>${row.cells[0].textContent}</td>
@@ -1523,11 +1529,10 @@ function printBill(billData) {
             
         `;
 
-        // Thêm dòng mới vào bảng
         printTableBody.appendChild(newRow);
     }
     localStorage.removeItem('isConfirmPay');
-
+    localStorage.removeItem('invoiceProducts')
     printJS({
         printable: 'printable-content',
         type: 'html', // Loại in là HTML
@@ -1563,6 +1568,18 @@ function printBill(billData) {
                     font-size: 16px;
                     margin: 5px 0;
                 }
+                .address-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.left-column, .right-column {
+    width: 48%;
+    box-sizing: border-box;
+}
+
                 * {
                     -webkit-print-color-adjust: exact !important;
                     print-color-adjust: exact !important;
@@ -1597,6 +1614,7 @@ function fetchAllAddressCustomer(idCustomer) {
 }
 
 let idDistrictChose = null, idWardCodeChose = null;
+
 function displayAddress(addresses) {
     const addressListContainer = document.getElementById('addressList');
 
@@ -1750,14 +1768,12 @@ function checkProvince() {
 function checkDistrict() {
     let districtSelect = document.getElementById("districtSelect").value;
     const districtSelectError = document.getElementById("districtSelectError");
-    if (!idDistrictChose ) {
+    if (!idDistrictChose) {
         console.log("chay 1")
         districtSelectError.innerText = "Vui lòng chọn Quận/Huyện";
         districtSelectError.style.display = "block";
         return false;
-    }
-
-    else {
+    } else {
         districtSelectError.innerText = "";
         districtSelectError.style.display = "none";
         return true;
@@ -1767,7 +1783,7 @@ function checkDistrict() {
 function checkWard() {
     let wardSelect = document.getElementById("wardSelect").value;
     const wardSelectError = document.getElementById("wardSelectError");
-    if (!idWardCodeChose ) {
+    if (!idWardCodeChose) {
         wardSelectError.innerText = "Vui lòng chọn xã/phường";
         wardSelectError.style.display = "block";
         return false;
@@ -1790,12 +1806,13 @@ function checkFullAddress() {
         addressValueError.innerText = 'Vui lòng nhập tối thiểu 10 chữ';
         addressValueError.style.display = 'block';
         return false;
-    }  else {
+    } else {
         addressValueError.innerText = "";
         addressValueError.style.display = 'none';
         return true;
     }
 }
+
 // document.getElementById("provinceSelect").addEventListener('change', checkProvince);
 // document.getElementById("districtSelect").addEventListener('change', checkDistrict);
 // document.getElementById("wardSelect").addEventListener('change', checkWard);
@@ -1840,7 +1857,7 @@ function fetchProducts(page = 0) {
     axios.get(`http://localhost:8080/getAllProduct?page=${page}&size=${pageSize1}`)
         .then((response) => {
             const data = response.data;
-            console.log("Check data product" , data)
+            console.log("Check data product", data)
             const products = data.content;
             const totalPages = data.totalPages;
             updateProductTable(products);
@@ -1850,6 +1867,7 @@ function fetchProducts(page = 0) {
             console.error("Lỗi khi lấy sản phẩm:", error);
         });
 }
+
 function updateProductTable(products) {
     const tbody = document.querySelector('#productTable tbody');
     tbody.innerHTML = '';  // Xóa dữ liệu cũ
@@ -1896,6 +1914,7 @@ function updateProductTable(products) {
 
     attachChooseProductEvent();
 }
+
 function updatePaginationProduct(totalPages, currentPage1) {
     const paginationDiv = document.getElementById('pagination1');
     paginationDiv.innerHTML = '';
@@ -1943,11 +1962,10 @@ function updatePaginationProduct(totalPages, currentPage1) {
 fetchProducts(currentPage1);
 
 
-
 document.getElementById('btn-bank').addEventListener('click', function () {
     const vnp_Amount = totalShipLocal !== 0 && totalShipLocal ? priceAmountBillAndShipNoVoucher : totalCustomerPayment || 0;
-    localStorage.setItem('totalPayment' , vnp_Amount)
-    localStorage.setItem('totalPrice' , totalBill)
+    localStorage.setItem('totalPayment', vnp_Amount)
+    localStorage.setItem('totalPrice', totalBill)
     const payModel = {
         vnp_Amount: vnp_Amount,
         vnp_OrderInfo: "Thanh toán cho đơn hàng",
@@ -1971,8 +1989,8 @@ document.getElementById('btn-bank').addEventListener('click', function () {
     // }
     // localStorage.setItem('billDataaaaa', JSON.stringify(billData));
     localStorage.setItem('idUser', idCustomerPay);
-    localStorage.setItem('name' , name);
-    localStorage.setItem('phone' , phoneNumber)
+    localStorage.setItem('name', name);
+    localStorage.setItem('phone', phoneNumber)
     localStorage.setItem('userName', nameCustomer);
     localStorage.setItem('note', "Office");
     localStorage.setItem('phoneNumber', phoneCustomer);
@@ -2001,8 +2019,6 @@ document.getElementById('btn-bank').addEventListener('click', function () {
             console.error("Error in payment API:", error);
         });
 });
-
-
 
 
 document.getElementById('closeModalADDCustomer').style.display = 'none'
@@ -2209,16 +2225,17 @@ function revoveLocalStrong() {
     localStorage.removeItem('deliveryDate');
     localStorage.removeItem('voucherDetails');
 }
+
 let currentPageVoucher = 0;
 const pageSizeVoucher = 5;
 
 function fetchVouchers(page = 0) {
     const totalAmount = totalBill;
-    console.log("Check totalamount" , totalAmount)
+    console.log("Check totalamount", totalAmount)
     axios.get(`/getAllVoucher?totalAmount=${totalAmount}&page=${page}&size=${pageSizeVoucher}`)
         .then((response) => {
             const data = response.data;
-            console.log("Data voucher" , data)
+            console.log("Data voucher", data)
             const vouchers = data.content;
             const totalPages = data.totalPages;
             updateVoucherTable(vouchers);
@@ -2228,6 +2245,7 @@ function fetchVouchers(page = 0) {
             console.error("Lỗi khi lấy danh sách voucher:", error);
         });
 }
+
 function formatDateFromArray(dateArray) {
     if (!Array.isArray(dateArray) || dateArray.length < 3) return "Invalid Date";
 
@@ -2276,6 +2294,7 @@ function updateVoucherTable(vouchers) {
         attachChangeVoucher()
     });
 }
+
 function updatePaginationVoucher(totalPages, currentPage) {
     const paginationDiv = document.getElementById('paginationVoucher');
     paginationDiv.innerHTML = '';
@@ -2317,29 +2336,30 @@ function updatePaginationVoucher(totalPages, currentPage) {
         paginationDiv.appendChild(nextButton);
     }
 }
+
 fetchVouchers(currentPageVoucher);
 
 function searchCustomer() {
- let search = document.getElementById('inputSearchCustomer').value;
- axios.get('/searchCustomer' , {
-     params : {
-         searchQuery : search
-     }
- })
-     .then(response => {
-         const data = response.data;
-         console.log("data search" , response.data)
-         const customerTableBody = document.getElementById('customerTable');
-         customerTableBody.innerHTML = '';
+    let search = document.getElementById('inputSearchCustomer').value;
+    axios.get('/searchCustomer', {
+        params: {
+            searchQuery: search
+        }
+    })
+        .then(response => {
+            const data = response.data;
+            console.log("data search", response.data)
+            const customerTableBody = document.getElementById('customerTable');
+            customerTableBody.innerHTML = '';
 
-         if (data.length === 0) {
-             const noResultsRow = document.createElement('tr');
-             noResultsRow.innerHTML = '<td colspan="5">No customers found.</td>';
-             customerTableBody.appendChild(noResultsRow);
-         } else {
-             data.forEach((customer, index) => {
-                 const row = document.createElement('tr');
-                 row.innerHTML = `
+            if (data.length === 0) {
+                const noResultsRow = document.createElement('tr');
+                noResultsRow.innerHTML = '<td colspan="5">No customers found.</td>';
+                customerTableBody.appendChild(noResultsRow);
+            } else {
+                data.forEach((customer, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                     <td style="height: 20px;">${index + 1}</td>
                     <td>${customer.fullName}</td>
                     <td>${customer.numberPhone}</td>
@@ -2350,17 +2370,17 @@ function searchCustomer() {
                         </button>
                     </td>
                 `;
-                 customerTableBody.appendChild(row);
-             });
-         }
-         attachChoseCustomer();
-     })
-     .catch(error => {
-         console.log("error" , error)
-     })
+                    customerTableBody.appendChild(row);
+                });
+            }
+            attachChoseCustomer();
+        })
+        .catch(error => {
+            console.log("error", error)
+        })
 }
 
-document.getElementById('inputSearchCustomer').addEventListener('input' , function () {
+document.getElementById('inputSearchCustomer').addEventListener('input', function () {
     let search = document.getElementById("inputSearchCustomer").value.trim();
     if (search) {
         searchCustomer();
@@ -2369,11 +2389,11 @@ document.getElementById('inputSearchCustomer').addEventListener('input' , functi
     }
 })
 
-function getAllBrand(){
+function getAllBrand() {
     axios.get('/getAllBrand')
         .then(response => {
             const data = response.data;
-            console.log("Data brand",data)
+            console.log("Data brand", data)
             const brandSelect = document.getElementById('brand');
             brandSelect.innerHTML = '<option>Chọn</option>';
             data.forEach(item => {
@@ -2387,6 +2407,7 @@ function getAllBrand(){
             console.log("error", error)
         })
 }
+
 function getAllCategory() {
     axios.get('/getAllCategory')
         .then(response => {
@@ -2408,7 +2429,8 @@ function getAllCategory() {
             console.log("Error:", error);
         });
 }
-function getAllColor(){
+
+function getAllColor() {
     axios.get('/getAllColor')
         .then(response => {
             const data = response.data;
@@ -2425,7 +2447,8 @@ function getAllColor(){
             console.log("error", error)
         })
 }
-function getAllSize(){
+
+function getAllSize() {
     axios.get('/getAllSize')
         .then(response => {
             const data = response.data;
@@ -2442,7 +2465,8 @@ function getAllSize(){
             console.log("error", error)
         })
 }
-function getAllMaterial(){
+
+function getAllMaterial() {
     axios.get('/getAllMaterial')
         .then(response => {
             const data = response.data;
@@ -2459,6 +2483,7 @@ function getAllMaterial(){
             console.log("error", error)
         })
 }
+
 getAllBrand();
 getAllColor()
 getAllMaterial()
