@@ -932,7 +932,8 @@
       26. Quantity Plus Minus
     ------------------------------------*/
     function qnt_incre() {
-        $(".qtyBtn").on("click", function () {
+        $(".qtyBtn").on("click", function (e) {
+            e.preventDefault();
             var qtyField = $(this).closest(".qtyField"),
                 qtyInput = $(qtyField).find(".qty"),
                 oldValue = parseInt(qtyInput.val()),
@@ -992,24 +993,20 @@
         };
 
         // Send an AJAX request to the server to update the cart
-        fetch('/cart/update', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedCartItem)  // Sending the updated cart item in an array
-        })
-            .then(response => response.json())
-            .then(data => {
-
-                window.location.reload();
-                // Handle success (you could update the UI, total price, etc.)
+        $.ajax({
+            url: '/cart/update',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedCartItem),
+            success: function (data) {
                 console.log('Cart updated successfully', data);
-            })
-            .catch(error => {
+                window.location.href = "/cart";
+            },
+            error: function (error) {
                 // Handle error
                 console.error('Error updating cart:', error);
-            });
+            }
+        });
     }
 
     /*----------------------------------
