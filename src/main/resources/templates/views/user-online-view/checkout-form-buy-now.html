@@ -676,7 +676,16 @@
       
       // Kiểm tra nếu phương thức thanh toán là "chuyen_khoan"
       if (paymentMethod === 'CHUYEN_KHOAN') {
-        const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}, data_buyType: buyNow, data_address: ${address}`;
+        // const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}, data_buyType: buyNow, data_address: ${address}`;
+        const orderInfo =
+                `data_grandTotal: ${grandTotal}, ` +
+                `data_receiveDate: ${receiveDate}, ` +
+                `data_shipFee: ${moneyShip}, ` +
+                `data_buyType: addToCart, ` +
+                `data_itemDiscount: ${itemDiscount}, ` +
+                `data_beforePrice: ${beforePrice}, ` +
+                `data_voucherId: ${voucherId}, `+
+                `data_address: ${address}`;
         // Gọi API "online-payment"
         $.ajax({
           url: '/bill/online-payment',

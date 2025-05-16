@@ -73,7 +73,7 @@
                     <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'POINT', 0, 'POINT')} + ' VND'">
                       Spike Jacket
                     </td>
-                    <td th:text="${#dates.format(bill.receiveDate, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${#dates.format(bill.shipDate, 'dd-MM-yyyy')}"></td>
                     <td>
                       <span
                           th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).CHO_XAC_NHAN}">CHỜ XÁC NHẬN</span>
