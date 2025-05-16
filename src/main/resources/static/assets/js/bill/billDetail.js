@@ -302,7 +302,7 @@ function getInforBill(billId) {
     axios.get(`http://localhost:8080/getInforBill/${billId}`)
         .then(response => {
             const data = response.data;
-            console.log("Check data", data)
+            console.log("Check data nhận được ", data)
             document.getElementById("billId").textContent = data.code || 'Không có dữ liệu';
             document.getElementById("status").textContent = getStatusText(data.status) || 'Không có dữ liệu';
             document.getElementById("type").textContent = data.type || 'Không có dữ liệu';

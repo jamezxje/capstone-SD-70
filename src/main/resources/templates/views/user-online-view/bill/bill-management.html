@@ -27,8 +27,10 @@
         <div class="col-md-2 mb-4 wrapper">
           <div class="create-ac-content bg-light-gray padding-20px-all d-flex flex-column gap-2">
             <div class="p-4 text-center border-b">
-              <img th:src="${loggedUser.avatar}" class="rounded-full mx-auto mb-2"
-                   style="width: 80px; height: 80px; object-fit: cover;"/>
+              <img th:if="${loggedUser != null and loggedUser.avatar != null and !#strings.isEmpty(loggedUser.avatar)}"
+                   th:src="${loggedUser.avatar}"
+                   class="rounded-full mx-auto mb-2"
+                   style="width: 80px; height: 80px; object-fit: cover;" />
               <p class="font-bold" th:text="${loggedUser.fullName}"></p>
             </div>
             <button class="tab-btn w-100 text-start">
@@ -73,7 +75,7 @@
                     <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'POINT', 0, 'POINT')} + ' VND'">
                       Spike Jacket
                     </td>
-                    <td th:text="${#dates.format(bill.receiveDate, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${#dates.format(bill.shipDate, 'dd-MM-yyyy')}"></td>
                     <td>
                       <span
                           th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).CHO_XAC_NHAN}">CHỜ XÁC NHẬN</span>

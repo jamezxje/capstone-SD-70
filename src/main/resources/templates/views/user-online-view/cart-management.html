@@ -670,25 +670,34 @@
   </script>
   <script>
     // Function to check if any item is selected
-    function checkCartSelection() {
-      const checkboxes = document.querySelectorAll('input[name="selectedCartDetailIds"]:checked');
-      const checkoutButton = document.getElementById('cart_checkout_button');
-      
-      // If any checkbox is selected, enable the checkout button, otherwise disable it
-      if (checkboxes.length > 0) {
-        checkoutButton.disabled = false;
-      } else {
-        checkoutButton.disabled = true;
+    // function checkCartSelection() {
+    //   const checkboxes = document.querySelectorAll('input[name="selectedCartDetailIds"]:checked');
+    //   const checkoutButton = document.getElementById('cart_checkout_button');
+    //
+    //   // If any checkbox is selected, enable the checkout button, otherwise disable it
+    //   if (checkboxes.length > 0) {
+    //     checkoutButton.disabled = false;
+    //   } else {
+    //     checkoutButton.disabled = true;
+    //   }
+    // }
+    //
+    // // Add event listeners to checkboxes to call checkCartSelection when changed
+    // document.querySelectorAll('input[name="selectedCartDetailIds"]').forEach(checkbox => {
+    //   checkbox.addEventListener('change', checkCartSelection);
+    // });
+    //
+    // // Initial check in case the page is loaded with selected items
+    // checkCartSelection();
+
+    //fix bug Thanh toán
+    document.getElementById('cart_checkout_button').addEventListener('click', function (e) {
+      const selected = document.querySelectorAll('input[name="selectedCartDetailIds"]:checked');
+      if (selected.length === 0) {
+        e.preventDefault(); // Prevent form submit or link action
+        showToast('Bạn chưa chọn sản phẩm nào để mua!', 'error');
       }
-    }
-    
-    // Add event listeners to checkboxes to call checkCartSelection when changed
-    document.querySelectorAll('input[name="selectedCartDetailIds"]').forEach(checkbox => {
-      checkbox.addEventListener('change', checkCartSelection);
     });
-    
-    // Initial check in case the page is loaded with selected items
-    checkCartSelection();
   </script>
 </th:block>
 </html>

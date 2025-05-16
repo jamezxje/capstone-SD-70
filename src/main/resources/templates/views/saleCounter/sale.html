@@ -533,33 +533,30 @@
             <div>
                 <h2>CAPSTONE</h2>
 
-                <div class="invoice-info">
-                    <p>Mã hóa đơn: <strong id="printCode"></strong></p>
-                    <p>Ngày tạo: <strong id="printCreateDate"></strong></p>
+                <div class="address-info">
+                    <div class="left-column">
+                        <p>Mã hóa đơn: <strong id="printCode"></strong></p>
+                        <p>Ngày tạo: <strong id="printCreateDate"></strong></p>
+                        <p><strong>Từ:</strong> CAPSTONE</p>
+                        <p>Đồ án tốt nghiệp sd-70</p>
+                        <p>Nhân viên bán hàng: <strong id="printStaff">Bảo</strong></p>
+                    </div>
+
+                    <div class="right-column">
+                        <p style="font-size: 16px;">Thông tin người mua hàng</p>
+                        <p>Họ và tên: <strong id="printNameCustomer"></strong></p>
+                        <p>Số điện thoại: <strong id="printNumberPhoneCustomer"></strong> </p>
+
+                        <p style="font-size: 16px; display: none;" id="printInforShip">Thông tin người nhận hàng</p>
+                        <p id="p-printNameShip">Họ tên: <strong id="printNameShip"></strong></p>
+                        <p id="p-printPhoneShip">Số điện thoại: <strong id="printPhoneShip"></strong></p>
+                        <p id="p-printAddress">Địa chỉ: <strong id="printAddress"></strong></p>
+                        <p id="p-printShipDay" style="display: none;">Dự tính ngày nhận: <strong id="printShipDay"></strong></p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="address-info">
-                <div>
-                    <p><strong>Từ:</strong> CAPSTONE</p>
-                    <p>Đồ án tốt nghiệp sd-70</p>
-                    <p>Nhân viên bán hàng: <strong id="printStaff">Bảo</strong> </p>
-                </div>
-                <div style="text-align: right;" class="rightCustomer">
-                    <p style="font-size: 16px;" >Thông tin người mua hàng</p>
 
-                    <p>Họ và tên: <strong id="printNameCustomer"></strong></p>
-                    <p>Số điện thoại: <strong id="printNumberPhoneCustomer"></strong> </p>
-
-                    <p style="font-size: 16px; display: none" id="printInforShip" >Thông tin người nhận hàng</p>
-                    <p id="p-printNameShip">Họ tên: <strong id="printNameShip"></strong></p>
-                    <p id="p-printPhoneShip">Số điện thoại: <strong id="printPhoneShip"></strong></p>
-                    <p id="p-printAddress">Đia chỉ: <strong id="printAddress"></strong></p>
-                    <p id="p-printShipDay" style="display: none">Dự tính ngày nhận: <strong id="printShipDay"></strong></p>
-                </div>
-            </div>
-
-            <!-- Nội dung đơn hàng -->
+                <!-- Nội dung đơn hàng -->
             <div>
                 <p style="font-weight: bold;">Nội dung đơn hàng:</p>
                 <table id="ttt">

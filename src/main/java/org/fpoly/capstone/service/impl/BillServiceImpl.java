@@ -533,7 +533,7 @@ public class BillServiceImpl implements BillService {
         bill.setTotalMoney(grandTotal);
         bill.setMoneyShip(moneyShip);
 
-        bill.setReceiveDate(recieveDate);
+//        bill.setReceiveDate(recieveDate);
         bill.setShipDate(recieveDate);
         bill.setAddress(address);
         bill.setUserName(customer.getFullName());
@@ -905,7 +905,7 @@ public class BillServiceImpl implements BillService {
         lastestBill.setItemDiscount(itemDiscount);
         lastestBill.setTotalMoney(grandTotal);
         lastestBill.setMoneyShip(moneyShip);
-        lastestBill.setReceiveDate(receiveDate);
+//        lastestBill.setReceiveDate(receiveDate);
         lastestBill.setShipDate(receiveDate);
         lastestBill.setAddress(address);
         lastestBill.setUserName(customer.getFullName());

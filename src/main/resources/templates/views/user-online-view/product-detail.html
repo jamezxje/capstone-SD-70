@@ -969,7 +969,7 @@
         
         // Kiểm tra nếu người dùng chưa đăng nhập
         if (loggedUserEmail == null) {
-          showToast("Vui lòng đăng nhập để tiếp tục");
+          showToast("Vui lòng đăng nhập để tiếp tục", 'error');
           return;
         }
         
@@ -980,11 +980,11 @@
         
         // Kiểm tra tính hợp lệ của các giá trị đã chọn
         if (selectedColor === undefined) {
-          showToast("Vui lòng chọn màu sắc");
+          showToast("Vui lòng chọn màu sắc", 'error');
           return;
         }
         if (selectedSize === undefined) {
-          showToast("Vui lòng chọn size");
+          showToast("Vui lòng chọn size", 'error');
           return;
         }
         
@@ -1000,23 +1000,51 @@
         
         // Gửi dữ liệu đến API
         $.ajax({
-          url: '/cart/api/add',  // Đường dẫn đến API
+          url: '/cart/api/add',
           method: 'POST',
           contentType: 'application/json',
-          data: JSON.stringify(formData),  // Chuyển đổi dữ liệu thành JSON
+          data: JSON.stringify(formData),
           success: function (response) {
-            toastr.success("Sản phẩm đã được thêm vào giỏ hàng!", "Thành công");
-            // Bỏ chọn tất cả các size và color
-            $('input[name="sizeId"]:checked').prop('checked', false);
-            $('input[name="colorId"]:checked').prop('checked', false);
-            
-            // Đặt lại quantity về 1
-            $('#Quantity').val(1);
+            // Gọi lại API lấy số lượng
+            fetch('/cart/api/quantity')
+              .then(res => res.json())
+              .then(quantity => {
+                const badge = document.querySelector('.cart-count-badge');
+                if (badge) {
+                  badge.textContent = quantity;
+                  badge.style.display = quantity > 0 ? 'flex' : 'none';
+                }
+
+                showToast('Thêm vào giỏ hàng thành công!', 'success');
+                $('input[name="sizeId"]:checked').prop('checked', false);
+                $('input[name="colorId"]:checked').prop('checked', false);
+                $('#Quantity').val(1);
+              });
           },
-          error: function (xhr, status, error) {
-            toastr.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng: " + error, "Lỗi");
+          error: function () {
+            showToast('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng', 'error');
           }
         });
+        // $.ajax({
+        //   url: '/cart/api/add',  // Đường dẫn đến API
+        //   method: 'POST',
+        //   contentType: 'application/json',
+        //   data: JSON.stringify(formData),  // Chuyển đổi dữ liệu thành JSON
+        //   success: function (response) {
+        //     // toastr.success("Sản phẩm đã được thêm vào giỏ hàng!", "Thành công");
+        //      showToast('Thêm vào giỏ hàng thành công!', 'success');
+        //     // Bỏ chọn tất cả các size và color
+        //     $('input[name="sizeId"]:checked').prop('checked', false);
+        //     $('input[name="colorId"]:checked').prop('checked', false);
+            
+        //     // Đặt lại quantity về 1
+        //     $('#Quantity').val(1);
+        //   },
+        //   error: function (xhr, status, error) {
+        //     // toastr.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng: " + error, "Lỗi");
+        //      showToast('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng:', 'error');
+        //   }
+        // });
       });
     });
   </script>
@@ -1239,52 +1267,82 @@
   </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <script>
-    function showToast(message) {
-        const toastContainer = document.getElementById("toast-container");
-        const toast = document.createElement("div");
-
-        toast.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i> ${message}`;
-        toast.style.cssText = `
-        background-color: #d4edda;
-        color: #155724;
-        border-left: 5px solid #28a745;
-        padding: 12px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        opacity: 0;
-        transform: translateX(100%);
-        transition: opacity 0.5s, transform 0.5s ease-in-out;
-        margin-bottom: 10px;
-        position: relative;
-        min-width: 280px;
+    function showToast(message, type = "success", duration = 1800) {
+      const toastContainer = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      
+      // Cấu hình theo loại
+      let bgColor, textColor, borderColor, icon;
+      
+      if (type === "success") {
+        bgColor = "#d4edda";
+        textColor = "#155724";
+        borderColor = "#28a745";
+        icon = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>`;
+      } else {
+        bgColor = "#fff3cd";
+        textColor = "#856404";
+        borderColor = "#ffc107";
+        icon = `<i class="fas fa-exclamation-triangle" style="color: #ffc107; margin-right: 10px;"></i>`;
+      }
+      
+      // Phần thân toast
+      toast.innerHTML = `
+      <div style="display: flex; align-items: center;">${icon}<span>${message}</span></div>
+      <div class="toast-progress-bar"></div>
     `;
-
-        toastContainer.appendChild(toast);
-
-        // Hiện thông báo (trượt từ phải vào)
-        setTimeout(() => {
-            toast.style.opacity = "1";
-            toast.style.transform = "translateX(0)";
-        }, 100);
-
-        // Ẩn sau 3 giây (trượt ra phải)
-        setTimeout(() => {
-            toast.style.opacity = "0";
-            toast.style.transform = "translateX(100%)";
-            setTimeout(() => toast.remove(), 500);
-        }, 3000);
+      
+      toast.style.cssText = `
+      background-color: ${bgColor};
+      color: ${textColor};
+      border-left: 5px solid ${borderColor};
+      padding: 12px 20px 6px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateX(100%);
+      transition: opacity 0.5s, transform 0.5s ease-in-out;
+      margin-bottom: 10px;
+      position: relative;
+      min-width: 280px;
+    `;
+      
+      // Thanh thời gian
+      const progressBarStyle = document.createElement("style");
+      progressBarStyle.innerHTML = `
+      .toast-progress-bar {
+        height: 4px;
+        background-color: ${borderColor};
+        width: 100%;
+        animation: progress ${duration}ms linear forwards;
+        border-radius: 0 0 5px 5px;
+        margin-top: 8px;
+      }
+      @keyframes progress {
+        from { width: 100%; }
+        to { width: 0%; }
+      }
+    `;
+      document.head.appendChild(progressBarStyle);
+      
+      toastContainer.appendChild(toast);
+      
+      // Animate in
+      setTimeout(() => {
+        toast.style.opacity = "1";
+        toast.style.transform = "translateX(0)";
+      }, 100);
+      
+      // Animate out and remove
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(100%)";
+        setTimeout(() => toast.remove(), 500);
+      }, 1800);
     }
-
-    // Hiển thị thông báo nếu có từ server
-    document.addEventListener("DOMContentLoaded", function () {
-        let successMessage = "[[${successMessage}]]";
-        if (successMessage && successMessage.trim() !== "") {
-            showToast(successMessage);
-        }
-    });
   </script>
 </th:block>
 </html>

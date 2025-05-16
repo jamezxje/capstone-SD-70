@@ -802,6 +802,22 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
     float: right;
     position: relative;
 }
+.cart-count-badge {
+    position: absolute;
+    top: -8px;
+    right: -19px;
+    background-color: red;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 12px;
+    min-width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 16px;
+    font-size: 12px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
 
 .site-header__cart {
     color: #000;

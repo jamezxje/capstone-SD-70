@@ -81,7 +81,9 @@
                     <path d="M12 12C14.209 12 16 10.209 16 8C16 5.791 14.209 4 12 4C9.791 4 8 5.791 8 8C8 10.209 9.791 12 12 12Z"
                           stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <span th:if="${loggedUser != null}" th:text="${loggedUser.fullName}"></span>
+                <span th:if="${loggedUser != null}">
+                    Xin chào, <span th:text="${loggedUser.fullName}"></span> !
+                </span>
                 <span th:if="${loggedUser == null}">
                   <a th:href="@{/auth/login}" style="color: #fff; text-decoration: none;">Đăng nhập</a>
                   <span style="color: #fff;">|</span>

@@ -53,9 +53,13 @@
         </div>
         <!--Mobile Logo-->
         <div class="col-4 col-sm-3 col-md-3 col-lg-2">
-          <div class="site-cart">
-            <a th:href="@{/cart}" class="site-header__cart" title="Cart">
-              <i class="icon anm anm-bag-l"></i>
+          <div class="site-cart" style="position: relative;">
+            <a th:href="@{/cart}" class="site-header__cart" title="Cart" style="position: relative; display: inline-block;">
+              <i class="icon anm anm-bag-l" style="font-size: 24px;"></i>
+              <span class="cart-count-badge"
+                th:if="${cartQuantity != null and cartQuantity > 0}"
+                th:text="${cartQuantity}">
+          </span>
             </a>
           </div>
           <div class="site-header__search">

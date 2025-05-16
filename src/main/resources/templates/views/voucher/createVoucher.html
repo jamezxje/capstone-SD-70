@@ -171,8 +171,8 @@
                         <label class="col-lg-4 col-form-label" for="minimumBill">Hóa đơn tối thiểu</label>
                         <div class="col-lg-6">
                           <input type="text" class="form-control" id="minimumBill" th:field="*{minimumBill}" placeholder="Nhập hóa đơn tối thiểu..." oninput="formatCurrency(event)" required>
+                          <div class="invalid-feedback">Hóa đơn tối thiểu phải lớn hơn 1,000 VNĐ và nhỏ hơn 10,000,000 VNĐ</div>
                         </div>
-                        <div class="invalid-feedback">Hóa đơn tối thiểu phải lớn hơn 1,000 VNĐ và nhỏ hơn 10,000,000 VNĐ</div>
                       </div>
                     </div>
 

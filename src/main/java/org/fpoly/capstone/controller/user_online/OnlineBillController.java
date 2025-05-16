@@ -167,6 +167,10 @@ public class OnlineBillController {
         String moneyShip = null;
         String transactionType = null;
         String address = null;
+// 3 trường mới
+        String itemDiscount = null;
+        String beforePrice = null;
+        String voucherId = null;
 
         log.info("orderInfo: {}", orderInfo);
 
@@ -208,10 +212,38 @@ public class OnlineBillController {
                 address = orderInfo.substring(addressStart).trim(); // Lấy tất cả phần còn lại là địa chỉ
                 address = URLDecoder.decode(address, StandardCharsets.UTF_8); // Giải mã địa chỉ
             }
+
+            // data_itemDiscount
+            if (orderInfo.contains("data_itemDiscount")) {
+                int start = orderInfo.indexOf("data_itemDiscount") + "data_itemDiscount:".length();
+                int end = orderInfo.indexOf(",", start);
+                if (end == -1) end = orderInfo.length();
+                itemDiscount = orderInfo.substring(start, end).trim();
+            }
+
+            // data_beforePrice
+            if (orderInfo.contains("data_beforePrice")) {
+                int start = orderInfo.indexOf("data_beforePrice") + "data_beforePrice:".length();
+                int end = orderInfo.indexOf(",", start);
+                if (end == -1) end = orderInfo.length();
+                beforePrice = orderInfo.substring(start, end).trim();
+            }
+
+            // data_voucherId
+            if (orderInfo.contains("data_voucherId")) {
+                int start = orderInfo.indexOf("data_voucherId") + "data_voucherId:".length();
+                int end = orderInfo.indexOf(",", start);
+                if (end == -1) end = orderInfo.length();
+                voucherId = orderInfo.substring(start, end).trim();
+            }
         }
 
         log.info("transactionType: {}", transactionType);
         log.info("address: {}", address);
+
+        log.info("itemDiscount: {}", itemDiscount);
+        log.info("beforePrice: {}", beforePrice);
+        log.info("voucherId: {}", voucherId);
 
 
         // Kiểm tra nếu nhận được thông tin ngày nhận hàng và phí vận chuyển
@@ -228,7 +260,22 @@ public class OnlineBillController {
                     createBillRequest.setReceiveDate(this.parseDate(receiveDate)); // Lấy từ orderInfo và chuyển đổi thành Date
                     createBillRequest.setMoneyShip(BigDecimal.valueOf(Long.parseLong(moneyShip))); // Lấy từ orderInfo
                     createBillRequest.setAddress(address);
+                    if (itemDiscount != null && !itemDiscount.isEmpty()) {
+                        createBillRequest.setItemDiscount(new BigDecimal(itemDiscount));
+                    }
 
+                    if (beforePrice != null && !beforePrice.isEmpty()) {
+                        createBillRequest.setBeforePrice(new BigDecimal(beforePrice));
+                    }
+
+                    if (voucherId != null && !voucherId.isEmpty()) {
+                        try {
+                            createBillRequest.setVoucherId(Long.parseLong(voucherId));
+                        } catch (NumberFormatException e) {
+                            log.warn("Voucher ID không hợp lệ: {}", voucherId);
+                            createBillRequest.setVoucherId(null);
+                        }
+                    }
                     if ("addToCart".equals(transactionType)) {
                         // Gọi phương thức lưu hóa đơn cho giỏ hàng
                         this.billService.saveToBillForOnlineUser(createBillRequest);
@@ -239,7 +286,7 @@ public class OnlineBillController {
 
                     log.info("Bill saved successfully after VNPAY payment.");
 
-                    return "redirect:/bill";
+                    return "redirect:/";
                 } catch (Exception e) {
                     log.error("Failed to save bill after VNPAY payment", e);
                     return "/views/user-online-view/vn-pay/orderFail";
