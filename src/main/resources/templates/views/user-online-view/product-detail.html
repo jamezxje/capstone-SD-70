@@ -1000,25 +1000,51 @@
         
         // Gửi dữ liệu đến API
         $.ajax({
-          url: '/cart/api/add',  // Đường dẫn đến API
+          url: '/cart/api/add',
           method: 'POST',
           contentType: 'application/json',
-          data: JSON.stringify(formData),  // Chuyển đổi dữ liệu thành JSON
+          data: JSON.stringify(formData),
           success: function (response) {
-            // toastr.success("Sản phẩm đã được thêm vào giỏ hàng!", "Thành công");
-             showToast('Sản phẩm đã được thêm vào giỏ hàng!', 'success');
-            // Bỏ chọn tất cả các size và color
-            $('input[name="sizeId"]:checked').prop('checked', false);
-            $('input[name="colorId"]:checked').prop('checked', false);
-            
-            // Đặt lại quantity về 1
-            $('#Quantity').val(1);
+            // Gọi lại API lấy số lượng
+            fetch('/cart/api/quantity')
+              .then(res => res.json())
+              .then(quantity => {
+                const badge = document.querySelector('.cart-count-badge');
+                if (badge) {
+                  badge.textContent = quantity;
+                  badge.style.display = quantity > 0 ? 'flex' : 'none';
+                }
+
+                showToast('Thêm vào giỏ hàng thành công!', 'success');
+                $('input[name="sizeId"]:checked').prop('checked', false);
+                $('input[name="colorId"]:checked').prop('checked', false);
+                $('#Quantity').val(1);
+              });
           },
-          error: function (xhr, status, error) {
-            // toastr.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng: " + error, "Lỗi");
-             showToast('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng:', 'error');
+          error: function () {
+            showToast('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng', 'error');
           }
         });
+        // $.ajax({
+        //   url: '/cart/api/add',  // Đường dẫn đến API
+        //   method: 'POST',
+        //   contentType: 'application/json',
+        //   data: JSON.stringify(formData),  // Chuyển đổi dữ liệu thành JSON
+        //   success: function (response) {
+        //     // toastr.success("Sản phẩm đã được thêm vào giỏ hàng!", "Thành công");
+        //      showToast('Thêm vào giỏ hàng thành công!', 'success');
+        //     // Bỏ chọn tất cả các size và color
+        //     $('input[name="sizeId"]:checked').prop('checked', false);
+        //     $('input[name="colorId"]:checked').prop('checked', false);
+            
+        //     // Đặt lại quantity về 1
+        //     $('#Quantity').val(1);
+        //   },
+        //   error: function (xhr, status, error) {
+        //     // toastr.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng: " + error, "Lỗi");
+        //      showToast('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng:', 'error');
+        //   }
+        // });
       });
     });
   </script>
@@ -1281,7 +1307,7 @@
       transition: opacity 0.5s, transform 0.5s ease-in-out;
       margin-bottom: 10px;
       position: relative;
-      min-width: 300px;
+      min-width: 280px;
     `;
       
       // Thanh thời gian
