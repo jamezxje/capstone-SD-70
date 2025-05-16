@@ -135,7 +135,8 @@
                                       data-toggle="modal"
                                       data-target="#deleteAddressModal"
                                       class="btn btn-sm btn-outline-warning mx-2"
-                                      th:data-addressId="${address.id}">
+                                      th:data-addressId="${address.id}"
+                                      th:if="${address.status != T(org.fpoly.capstone.entity.enum_status.AddressStatus).DANG_SU_DUNG}">
                                 Xóa
                               </button>
                             </div>
