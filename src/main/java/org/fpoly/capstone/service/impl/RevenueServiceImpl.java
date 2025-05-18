@@ -1,6 +1,5 @@
 package org.fpoly.capstone.service.impl;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.entity.Bill;
 import org.fpoly.capstone.entity.BillDetail;
@@ -247,6 +246,19 @@ public class RevenueServiceImpl implements RevenueService {
                 .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
                 .limit(5)
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public Integer totalProductCanelMonthAndYear(int month, int year) {
+        LocalDate startDate = YearMonth.of(year, month).atDay(1);
+        LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
+
+        List<BillDetail> bills = billDetailService.findByCreateDateBetween(startDate, endDate);
+        return bills.stream()
+                .filter(bd -> bd.getStatusBill() == BillStatus.DA_HUY)
+                .mapToInt(BillDetail::getQuantity)
+                .sum();
     }
 
     @Override

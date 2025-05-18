@@ -143,6 +143,20 @@
 
                 <div class="col-3 text-center mt-4">
                   <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                  <a th:href="@{'/dashboard/product-management/revenue/export?timePeriod=' + ${timePeriod}
+              + '&totalRevenueToday=' + ${totalRevenueToday}
+              + '&totalProductToday=' + ${totalProductToday}
+              + '&totalProductRefundToday=' + ${totalProductRefundToday}
+              + '&totalProductCandelToday=' + ${totalProductCandelToday}
+                + ${dateExcel != null and dateExcel != 'null' ? '&dateExcel=' + dateExcel : ''}
+              + ${monthExcel != null and monthExcel != 'null' ? '&monthExcel=' + monthExcel : ''}
+              + ${yearExcel != null and yearExcel != 'null' ? '&yearExcel=' + yearExcel : ''}}"
+                     class="btn btn-success">
+                    Xuất Excel
+                  </a>
+
+
+
                 </div>
               </form>
 
@@ -151,7 +165,12 @@
 
             <div class="justify-content-center m-5">
               <canvas id="myChart" style="width:100%;max-width:90%"></canvas>
+              <div class="d-flex justify-content-center">
+                <h4>Biểu đồ những sản phẩm bán chạy</h4>
+              </div>
             </div>
+
+
 
 
           <div class="m-5">
