@@ -61,4 +61,20 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
                            @Param("startDate") LocalDateTime startDate,
                            @Param("endDate") LocalDateTime endDate,
                            Pageable pageable);
+
+    @Query("SELECT b FROM Bill b " +
+            "WHERE b.status IN :statuses " +
+            "AND (:keyword IS NULL OR b.code LIKE %:keyword% OR b.userName LIKE %:keyword%) " +
+            "AND (:type IS NULL OR b.type = :type) " +
+            "AND (:startDate IS NULL OR b.createDate >= :startDate) " +
+            "AND (:endDate IS NULL OR b.createDate <= :endDate)")
+    Page<Bill> findByMultipleStatuses(
+            @Param("statuses") List<BillStatus> statuses,
+            @Param("keyword") String keyword,
+            @Param("type") BillType type,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            Pageable pageable
+    );
+
 }
