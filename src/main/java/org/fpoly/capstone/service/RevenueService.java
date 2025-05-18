@@ -49,6 +49,8 @@ public interface RevenueService {
 
     List<Map.Entry<ProductDetail, Integer>> getBestSellingProductYears(Integer year);
 
+    Integer totalProductCanelMonthAndYear(int month, int year);
+
     BigDecimal totalRevenueMonthAndYear(int month, int year);
 
     Integer totalProductMonthAndYear(int month, int year);
