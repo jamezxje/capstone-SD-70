@@ -646,6 +646,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Page<VoucherRequest1> findAllVoucherPage(Integer totalAmount, int page, int size) {
+        this.voucherService.updateVoucherStatuses();
         Pageable pageable = PageRequest.of(page, size);
         Page<Object[]> results = this.voucherRepository.findAllVoucherRequests(totalAmount, pageable);
         List<VoucherRequest1> voucherRequests = new ArrayList<>();
