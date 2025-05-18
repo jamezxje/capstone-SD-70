@@ -105,4 +105,12 @@ public interface BillService {
 
     void checkoutFormCart(List<Long> selectedCartDetailIds);
 
+    Page<Bill> searchBillsWithStatuses(String keyword,
+                                       BillType billType,
+                                       List<BillStatus> statuses,
+                                       LocalDateTime startDate,
+                                       LocalDateTime endDate,
+                                       Pageable pageable);
+
+
 }

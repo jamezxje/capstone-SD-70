@@ -536,8 +536,8 @@ public class BillServiceImpl implements BillService {
 //        bill.setReceiveDate(recieveDate);
         bill.setShipDate(recieveDate);
         bill.setAddress(address);
-        bill.setUserName(customer.getFullName());
-        bill.setPhoneNumber(customer.getPhoneNumber());
+        bill.setUserName(address);
+        bill.setPhoneNumber(address);
 
         bill.setNote(note);
         bill.setMethod(paymentMethod);
@@ -891,8 +891,6 @@ public class BillServiceImpl implements BillService {
 
         Bill lastestBill = lastestBillList.get(0); // Lấy hóa đơn mới nhất
 
-        User customer = lastestBill.getUser();
-
         log.info("Lastest bill id: ", lastestBill.getId());
         BigDecimal itemDiscount = request.getItemDiscount();
         BigDecimal moneyShip = request.getMoneyShip();
@@ -909,8 +907,8 @@ public class BillServiceImpl implements BillService {
 //        lastestBill.setReceiveDate(receiveDate);
         lastestBill.setShipDate(receiveDate);
         lastestBill.setAddress(address);
-        lastestBill.setUserName(customer.getFullName());
-        lastestBill.setPhoneNumber(customer.getPhoneNumber());
+        lastestBill.setUserName(address);
+        lastestBill.setPhoneNumber(address);
         lastestBill.setNote(note);
         lastestBill.setMethod(paymentMethod);
         lastestBill.setCode(GeneralStringCode.generateCodeAdmin());
@@ -1000,6 +998,16 @@ public class BillServiceImpl implements BillService {
             cartDetail.setIsSelected(true);
             this.cartDetailRepository.save(cartDetail);
         }
+    }
+
+    @Override
+    public Page<Bill> searchBillsWithStatuses(String keyword,
+                                              BillType billType,
+                                              List<BillStatus> statuses,
+                                              LocalDateTime startDate,
+                                              LocalDateTime endDate,
+                                              Pageable pageable) {
+        return billRepository.findByMultipleStatuses(statuses, keyword, billType, startDate, endDate, pageable);
     }
 
 

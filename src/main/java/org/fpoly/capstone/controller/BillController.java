@@ -97,17 +97,32 @@ public class BillController {
             return "views/bill";
         }
 
-        BillStatus billStatus = null;
-        try {
-            if (status != null && !status.isEmpty()) {
-                billStatus = BillStatus.valueOf(status.toUpperCase());
+        Page<Bill> billPage;
+
+        if (status != null && !status.isEmpty()) {
+            // Có truyền status: tìm theo 1 trạng thái cụ thể
+            try {
+                BillStatus billStatus = BillStatus.valueOf(status.toUpperCase());
+                billPage = billService.searchBills(keyword, billType, billStatus, startDateTime, endDateTime, pageable);
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("error", "Trạng thái không hợp lệ.");
+                return "views/bill";
             }
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", "Trạng thái không hợp lệ.");
-            return "views/bill";
+        } else {
+            // Không truyền status: tìm theo danh sách trạng thái hợp lệ
+            List<BillStatus> allowedStatuses = List.of(
+                    BillStatus.CHO_XAC_NHAN,
+                    BillStatus.CHO_VAN_CHUYEN,
+                    BillStatus.VAN_CHUYEN,
+                    BillStatus.XAC_NHAN,
+                    BillStatus.DA_THANH_TOAN,
+                    BillStatus.THANH_CONG,
+                    BillStatus.TRA_HANG,
+                    BillStatus.DA_HUY
+            );
+            billPage = billService.searchBillsWithStatuses(keyword, billType, allowedStatuses, startDateTime, endDateTime, pageable);
         }
 
-        Page<Bill> billPage = billService.searchBills(keyword, billType, billStatus, startDateTime, endDateTime, pageable);
         boolean showPaging = billPage.getTotalElements() >= size;
 
         model.addAttribute("isPaging", showPaging);
@@ -124,6 +139,7 @@ public class BillController {
 
         return "views/bill";
     }
+
 
     private Sort getSortOrder(String sortField, String sortDirection) {
         if (sortDirection.equalsIgnoreCase("asc")) {
