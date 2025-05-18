@@ -10,6 +10,10 @@
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
 
+        <!-- JavaScript Toastr -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
         <link rel="stylesheet" th:href="@{/assets/css/bill/BillDetail.css}"/>
     </th:block>
 </head>
@@ -247,7 +251,7 @@
                             VND</h5>
                         <hr>
                         <h4>Tổng tiền thanh toán:<span
-                                th:text="${#numbers.formatDecimal(voucherDetail.afterPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                                    th:text="${#numbers.formatDecimal(voucherDetail.afterPrice, 0, 'COMMA', 0, 'POINT')}"></span>
                             VND</h4>
                     </div>
                 </div>

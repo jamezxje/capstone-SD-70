@@ -226,11 +226,11 @@ public class BillServiceImpl implements BillService {
                     .build());
             System.out.println("Check vô đây");
         } else {
-            bill.setStatus(BillStatus.CHO_XAC_NHAN);
+            bill.setStatus(BillStatus.XAC_NHAN);
             bill.setCompletionDate(this.getCurrmentTimeStampInVN());
             this.billRepository.save(bill);
             this.billHistoryRepository.save(BillHistory.builder()
-                    .status(BillStatus.CHO_XAC_NHAN)
+                    .status(BillStatus.XAC_NHAN)
                     .bill(bill)
                     .user(bill.getEmployee())
                     .build());

@@ -141,6 +141,8 @@ async function restTab() {
     const discount = document.getElementById('discount');
     const reaming = document.getElementById('remaining-amount');
     const totalAmount = document.getElementById('total-amount');
+    localStorage.removeItem('voucherCancelled');
+    localStorage.removeItem('shipOffice');
     totalAmount.innerText = '';
     shipping.innerText = '';
     discount.innerText = '';
@@ -362,6 +364,11 @@ async function confirmProduct() {
     const maxQuantity = parseInt(document.querySelector('.chose-product[data-product-id="' + idProductD + '"]').getAttribute('data-product-quantity'));
 
     if (!isNaN(currentQuantity)) {
+        if (currentQuantity === 0) {
+            toastr.options.positionClass = 'toast-top-right'
+            toastr.error('Vui lòng nhập số luượng lớn hơn 0')
+            return;
+        }
         if (currentQuantity > maxQuantity) {
             toastr.options.positionClass = 'toast-top-right';
             toastr.error('Số lượng nhập vào vượt quá số lượng hiện tại. Vui lòng nhập lại.');
@@ -419,6 +426,7 @@ async function fetchProductsForAllBills(billIds) {
 }
 
 async function getVoucherInBill(minimumBill) {
+    console.log("Check voucherInbill" )
     try {
         const response = await axios.get(`/getMinimumBill`, {
             params: {
@@ -429,6 +437,9 @@ async function getVoucherInBill(minimumBill) {
             totalShipLocal = 0;
             console.log("Không chạy va")
         }
+        const isCancelled = localStorage.getItem("voucherCancelled") === 'true' ;
+        console.log('voucherCancelled' , isCancelled)
+
         console.log("APi minimumBill", response.data);
         console.log("miniMumBill", response.data[0].minimumBill)
         const voucherName = response.data[0].name;
@@ -440,7 +451,10 @@ async function getVoucherInBill(minimumBill) {
         document.getElementById('ip-voucher').value = voucherName;
         document.getElementById('customer-payment').innerText = "0đ";
         document.getElementById('remaining-amount').innerText = "0đ";
-
+        if (isCancelled) {
+            document.getElementById("ip-voucher").value = "";
+            voucherValueLocal = 0;
+        }
         applyVoucher(totalBill, voucherID, voucherValueLocal, voucherMinimumBill, totalShipLocal);
 
     } catch (error) {
@@ -654,9 +668,10 @@ let billDetails = [];
 let voucherValueLocal = null;
 let voucherMininumLocal = null;
 let voucherNameLocal = null;
-
+let voucherIDLocal = null;
 
 function attachChangeVoucher() {
+    console.log("Check vào hàm attach")
     document.querySelectorAll('.select-voucher-btn').forEach(button => {
         button.addEventListener('click', async function () {
             try {
@@ -672,12 +687,17 @@ function attachChangeVoucher() {
                 }
 
                 const voucherId = this.getAttribute('data-id');
-                const voucherValue = this.getAttribute('data-value');
+                let voucherValue = this.getAttribute('data-value');
                 const voucherName = this.getAttribute('data-name');
                 const voucherMininum = this.getAttribute('data-mininumBill');
                 voucherValueLocal = voucherValue;
                 voucherMininumLocal = voucherMininum;
                 voucherNameLocal = voucherName;
+                voucherIDLocal = voucherId
+                localStorage.removeItem('voucherCancelled');
+                const districtID = document.getElementById('districtSelect').value;
+                const wardCodeId = document.getElementById('wardSelect').value;
+                fetchMoneyShip(districtID , wardCodeId , 1)
                 document.getElementById('ip-voucher').value = voucherName;
                 applyVoucher(totalBill, voucherId, voucherValue, voucherMininum, totalShipLocal);
                 document.getElementById('modalVoucher').style.display = 'none';
@@ -698,49 +718,50 @@ let totalCustomerPayment = 0;
 let voucherDetail = [];
 
 function applyVoucher(totalPrice, voucherId, voucherValue, voucherMinium, shipping) {
+    console.log("Check shipping" , shipping)
     let discount = 0;
-    console.log("Check voucher", voucherValue)
+    console.log("Check voucher", voucherValue);
     const shipFromLocal = parseInt(localStorage.getItem('shipOffice')) || 0;
 
-    console.log("voucher", voucherValue)
-    if (voucherValue > totalPrice) {
-        totalCustomerPayment = 0;
-        console.log("Chay vao voucher1")
-    } else if (totalPrice >= voucherMinium) {
-        discount = (totalPrice - voucherValue) + shipping;
-        console.log("Chay vao voucher2")
-
-    } else if (totalPrice < voucherMinium) {
-        alert("Không áp dụng")
-        console.log("Chay vao voucher3")
-
-        return;
-    } else {
-        discount = totalPrice + shipping;
+    const isCancelled = localStorage.getItem("voucherCancelled") === 'true';
+    console.log('voucherCancelled', isCancelled);
+    if (isCancelled) {
+        voucherValue = 0;
     }
 
+    if (voucherValue > totalPrice) {
+        totalCustomerPayment = shipping;
+    } else if (totalPrice >= voucherMinium) {
+        console.log("Check totalprice voucher" , totalPrice)
+        console.log("Checkk voucherValue" , voucherValue)
+        console.log("Check shiipping voucher" , shipping)
+        discount = totalPrice - voucherValue + shipping;
+    } else if (totalPrice < voucherMinium) {
+        alert("Không áp dụng");
+        return;
+    } else {
+        discount = totalPrice + shipping; // Fallback
+    }
 
     totalCustomerPayment = discount;
-    console.log("check total customerpaayment", totalCustomerPayment)
+    console.log("Check shipoffice" + shipFromLocal)
     voucherDetail = [];
     voucherDetail.push({
-        idVoucher: voucherId,
+        idVoucher: voucherId || 1,
         beforVoucher: totalPrice,
-        afterVoucher: discount + shipFromLocal,
+        afterVoucher: totalPrice - voucherValue + shipFromLocal,
         discountVoucher: voucherValue
-    })
-    localStorage.removeItem('shipOffice');
+    });
+
     localStorage.setItem('idVoucher', voucherId);
     console.log("Check voucher detail push", voucherDetail);
     console.log("Total Customer Payment:", totalCustomerPayment);
+
     document.getElementById('amount').innerText = formatVND(discount) + "đ";
     document.getElementById('input-payment').value = formatVND(discount) + "đ";
     document.getElementById('discount').innerText = formatVND(voucherValue) + "đ";
     document.getElementById('total-amount').innerText = formatVND(discount) + "đ";
-
-
 }
-
 const btnpayment = document.getElementById("btnChosePayMent");
 const modald = document.getElementById("modalPayment");
 const closeModalPaymey = document.getElementById('closeModalPayment');
@@ -802,6 +823,8 @@ btnPaymentSuccess.addEventListener('click', async () => {
                 toastr.options.positionClass = 'toast-top-right';
                 toastr.options.timeOut = 2000;
                 toastr.success('Thanh toán hóa đơn thành công');
+                localStorage.removeItem('voucherCancelled')
+                localStorage.removeItem('shipOffice');
                 // setTimeout(() => {
                 //     location.reload();
                 // }, 2200);
@@ -856,8 +879,12 @@ btnPayment.addEventListener("click", async () => {
                     alert("Vui lòng nhập giá trị hợp lệ !");
                     return;
                 }
+                const isCancelled = localStorage.getItem("voucherCancelled") === "true";
+                if (isCancelled) {
+                    voucherValueLocal = null;
+                }
                 document.getElementById('customer-payment').innerText = formatVND(totalPayment) + "đ";
-
+                console.log("check voucher valie loca" , voucherValueLocal)
                 if (voucherValueLocal == null) {
                     console.log("Check total payment", totalPayment);
                     console.log("Check tổng tiền đơn hàng", totalBill);
@@ -869,7 +896,7 @@ btnPayment.addEventListener("click", async () => {
                 } else {
                     console.log("check totalcustoemr 2", totalCustomerPayment)
                     console.log("total ship 2", totalShipLocal)
-                    const price = totalCustomerPayment + totalShipLocal;
+                    const price = totalCustomerPayment
                     console.log("total paymetn", totalPayment, "price ", price, 'missign 2')
                     missing = totalPayment - price;
 
@@ -890,6 +917,7 @@ btnPayment.addEventListener("click", async () => {
                 }
             } else {
             }
+
         });
     } catch (error) {
         toastr.error("Có lỗi xảy ra trong quá trình xử lý!");
@@ -1131,6 +1159,13 @@ document.getElementById('districtSelect').addEventListener('change', function ()
     const selectOption = this.options[this.selectedIndex];
     districtName = selectOption.textContent || selectOption.innerText;
     console.log("Check distric", districtID);
+    if (!districtID) {
+        districtSelectError.style.display = "block";
+        districtSelectError.innerText = "Vui lòng chọn Quận/Huyện";
+
+    } else {
+        districtSelectError.style.display = 'none';
+    }
     if (districtID) {
         fetchProvinceWard(districtID);
     } else {
@@ -1144,6 +1179,12 @@ document.getElementById('wardSelect').addEventListener('change', function () {
     const selectOption = this.options[this.selectedIndex]
     wardName = selectOption.textContent || selectOption.innerText;
 
+    if (!wardCode) {
+        wardSelectError.style.display = 'block';
+        wardSelectError.innerText = 'Vui lòng chọn xã/phường!';
+    } else {
+        wardSelectError.style.display = 'none';
+    }
     console.log("Check ward", wardCode)
     const districtID = document.getElementById('districtSelect').value;
     if (districtID && wardCode) {
@@ -1216,18 +1257,26 @@ async function fetchMoneyShip(to_id_district, to_code_ward, quantity) {
             shop_id: shopId,
         }
     })
+
         .then(response => {
             const totalShip = response.data.data;
+            const isCancelled = localStorage.getItem("voucherCancelled") === "true";
+            if (isCancelled) {
+                voucherValueLocal = 0;
+            }
             if (totalShip && totalShip.total !== undefined) {
                 console.log("Tiền ship:", totalShip.total);
                 totalShipLocal = totalShip.total;
                 localStorage.setItem("shipOffice", totalShipLocal)
                 console.log("Check ship local ra gia trị", totalShipLocal)
+                console.log(" check total bill" , totalBill)
+                console.log("chekc voucjer local" , voucherValueLocal)
                 document.getElementById('shipping').innerText = formatVND(totalShip.total) + "đ";
                 priceAmountBillAndShipNoVoucher = totalBill + totalShipLocal - voucherValueLocal;
                 document.getElementById('total-amount').innerText = formatVND(priceAmountBillAndShipNoVoucher) + "đ";
                 document.getElementById('amount').innerText = formatVND(priceAmountBillAndShipNoVoucher);
                 document.getElementById('input-payment').value = formatVND(priceAmountBillAndShipNoVoucher);
+                applyVoucher(totalBill, voucherIDLocal, voucherValueLocal, voucherMininumLocal, totalShipLocal);
                 return totalShipLocal;
             } else {
                 console.log("Không có giá trị total.");
@@ -1456,7 +1505,7 @@ function printBillVnPay() {
     document.getElementById("printable-content").style.display = 'none';
     setTimeout(() => {
         if (!document.hidden) {
-            location.reload();
+            // location.reload();
         }
     }, 1000);
 }
@@ -1471,6 +1520,7 @@ function printBill(billData) {
     } else {
         printBack.textContent = '0đ';
     }
+
     const phoneCustomer = document.getElementById("numberPhoneCustomer").value;
     const nameCustomer = document.getElementById("nameCustomer").value;
     document.getElementById('printCode').innerText = invoiceCodeLocal || 'Chưa có mã';
@@ -1482,7 +1532,8 @@ function printBill(billData) {
     document.getElementById('printTotal').innerText = formatVND(totalBill) || '0đ';
     document.getElementById('printDiscount').innerText = formatVND(billData.itemDiscount) || '0đ';
     document.getElementById('printShip').innerText = formatVND(billData.moneyShip) || '0đ';
-
+    console.log("Check bill and ship" , priceAmountBillAndShipNoVoucher)
+    console.log("Check custoemrpay print" , totalCustomerPayment)
     document.getElementById('printTotalPayment').innerText =
         totalShipLocal !== 0 && totalShipLocal ? formatVND(priceAmountBillAndShipNoVoucher) : formatVND(totalCustomerPayment) || '0đ';
 
@@ -1688,6 +1739,8 @@ function displayAddress(addresses) {
             document.getElementById('nameCustomer').value = fullName;
             document.getElementById('numberPhoneCustomer').value = phoneNumber;
             document.getElementById('provinceSelect').value = province;
+            document.getElementById('districtSelect').value = district;
+            document.getElementById('wardSelect').value = ward
             document.getElementById('addressValue').value = address;
             document.getElementById('provinceSelect').dispatchEvent(new Event('change'));
             document.getElementById('districtSelect').dispatchEvent(new Event('change'));
@@ -1701,6 +1754,27 @@ function displayAddress(addresses) {
     });
 }
 
+document.getElementById("btn-cancel-voucher").addEventListener("click", function () {
+
+    localStorage.removeItem("idVoucher");
+    localStorage.setItem("voucherCancelled", "true");
+
+
+    document.getElementById("ip-voucher").value = "";
+    document.getElementById("discount").innerText = "0đ";
+    document.getElementById("total-amount").innerText = formatVND(totalBill);
+    document.getElementById("amount").innerText = "0đ";
+    document.getElementById('input-payment').value = formatVND(totalBill);
+    document.getElementById('modalVoucher').style.display = 'none';
+    const districtID = document.getElementById('districtSelect').value;
+    const wardCodeId = document.getElementById('wardSelect').value;
+
+    fetchMoneyShip(districtID , wardCodeId , 1)
+    getVoucherInBill(totalBill)
+
+    // Show a confirmation message to the user
+
+});
 
 document.getElementById('btn-address').addEventListener('click', () => {
     document.getElementById('modalAddress').style.display = 'block'
