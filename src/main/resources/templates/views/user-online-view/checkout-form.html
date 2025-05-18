@@ -255,12 +255,12 @@
     </div>
   
   </div>
-  <div class="modal fade" id="confirmOrderModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 400px;">
+  <div class="modal fade" id="confirmOrderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 400px;">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Xác nhận đặt hàng</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Đóng">
             <span>&times;</span>
           </button>
         </div>
@@ -268,12 +268,13 @@
           Bạn có chắc chắn muốn đặt hàng không?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
           <button type="button" class="btn btn-success" id="confirmSubmitOrderBtn">Đặt hàng</button>
         </div>
       </div>
     </div>
   </div>
+
   <!--End Body Content-->
   <div class="modal fade" id="modalVoucher" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 450px;">
@@ -403,7 +404,7 @@
           showToast('Vui lòng chọn mã giảm giá!', 'error');
         }
       });
-      
+
       // Đóng modal bằng nút đóng hoặc nút hủy
       $('#modalVoucher .close, #modalVoucher .btn-danger').on('click', function () {
         $('#modalVoucher').modal('hide');
@@ -643,18 +644,20 @@
   </script>
   <script>
     $(document).ready(function () {
-      // Khi click vào thẻ <p> "Đặt hàng", hiển thị modal xác nhận
-      $('#openConfirmModalBtn').click(function () {
-        $('#confirmOrderModal').modal('show');
+      // Mở modal xác nhận khi nhấn nút "Đặt hàng"
+      $('#openConfirmModalBtn').on('click', function () {
+        const modal = new bootstrap.Modal(document.getElementById('confirmOrderModal'));
+        modal.show();
       });
-      // Khi click nút xác nhận trong modal, ẩn modal và submit form
-      $('#confirmSubmitOrderBtn').click(function () {
-        $('#confirmOrderModal').modal('hide');
-        $('#createBillOnline').trigger('submit');
+
+      // Khi bấm nút "Đặt hàng" trong modal, submit form chính
+      $('#confirmSubmitOrderBtn').on('click', function () {
+        $('#createBillOnline').submit();
       });
     });
   </script>
-  
+
+
   <script>
     
     function formatDate(dateString) {
