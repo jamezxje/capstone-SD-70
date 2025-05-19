@@ -945,11 +945,11 @@
                 newVal = oldValue - 1;
             }
             qtyInput.val(newVal);
-            updateCart(qtyInput);
+            // updateCart(qtyInput);
         });
     }
 
-    qnt_incre();
+    // qnt_incre();
 
     // Listen for 'Enter' key and prevent form submission, trigger cart update
     $(".cart__qty-input").on("keydown", function (e) {

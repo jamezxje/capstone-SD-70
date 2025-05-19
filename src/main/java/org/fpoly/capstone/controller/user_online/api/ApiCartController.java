@@ -3,6 +3,7 @@ package org.fpoly.capstone.controller.user_online.api;
 import lombok.RequiredArgsConstructor;
 import org.fpoly.capstone.controller.payload.cart.AddProductToCartModel;
 import org.fpoly.capstone.controller.payload.cart_detail.CartDetailUpdateModel;
+import org.fpoly.capstone.exceptions.ErrorResponse;
 import org.fpoly.capstone.service.CartDetailService;
 import org.fpoly.capstone.service.CartService;
 import org.fpoly.capstone.service.UserService;
@@ -37,10 +38,12 @@ public class ApiCartController {
             return new ResponseEntity<>("Cart updated successfully", HttpStatus.OK);
         } catch (Exception e) {
             // Log the exception here for better traceability
+            // Log the exception here for better traceability
             e.printStackTrace();
 
-            // Return an error response with appropriate status
-            return new ResponseEntity<>("Failed to update cart: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            // Return an error response with detailed error message and error code
+            ErrorResponse errorResponse = new ErrorResponse("Thêm vào giỏ hàng thất bại: " + e.getMessage(), "CART_UPDATE_ERROR");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -56,11 +59,12 @@ public class ApiCartController {
             // Return a successful response
             return new ResponseEntity<>("Cart updated successfully", HttpStatus.OK);
         } catch (Exception e) {
-            // Log the exception here for better traceability
             e.printStackTrace();
 
             // Return an error response with appropriate status
-            return new ResponseEntity<>("Failed to update cart: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+//            return new ResponseEntity<>("Failed to update cart: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            ErrorResponse errorResponse = new ErrorResponse("Sửa số lượng sản phẩm thất bại: " + e.getMessage(), "CART_UPDATE_ERROR");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
     }
 

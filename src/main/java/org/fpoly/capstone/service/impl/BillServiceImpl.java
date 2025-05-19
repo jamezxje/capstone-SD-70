@@ -38,6 +38,7 @@ import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.entity.enum_status.VoucherStatus;
 import org.fpoly.capstone.exceptions.NotException;
+import org.fpoly.capstone.exceptions.ServiceRuntimeException;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.BillDetailRepository;
 import org.fpoly.capstone.repository.BillHistoryRepository;
@@ -852,7 +853,7 @@ public class BillServiceImpl implements BillService {
         if (request.getQuantity() > productDetailRequest.getQuantity()) {
             log.error("Not enough product quantity: {}",
                     request.getQuantity());
-            throw new RuntimeException("Not enough quantity");
+            throw new ServiceRuntimeException("Không đủ số lượng trong kho");
         }
 
         Bill bill = new Bill();
@@ -864,6 +865,8 @@ public class BillServiceImpl implements BillService {
 
         double totalPrice = request.getQuantity() * productDetailRequest.getPrice().doubleValue();
         bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
+        this.billRepository.save(bill);
+
 
         List<BillDetail> billDetailList = new ArrayList<>();
 
