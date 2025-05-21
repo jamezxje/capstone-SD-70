@@ -98,8 +98,8 @@
                                     <td th:text="${index.index + 1}"></td>
                                     <td>
                                         <span th:switch="${#strings.trim(billHistory.bill.type)}">
+                                            <span th:case="'ONLINE'">Online</span>
                                             <span th:case="'OFFLINE'">Tại quầy</span>
-                                            <span th:case="'ONLINE'">ONLINE</span>
                                         </span>
                                     </td>
                                     <td>
@@ -112,6 +112,7 @@
                                                 <span th:case="'THANH_CONG'">Hoàn thành</span>
                                                 <span th:case="'TRA_HANG'">Trả hàng</span>
                                                 <span th:case="'DA_HUY'">Hủy</span>
+                                                <span th:case="'TAO_HOA_DON'">Tạo hóa đơn</span>
                                                 <span th:case="*">Không xác định</span>
                                             </span>
                                     </td>
@@ -150,6 +151,7 @@
                     <span id="status"></span>
                 </span>
                             </p>
+
                             <p><strong>Loại:</strong> <span id="type"></span></p>
                             <p><strong>Địa chỉ:</strong> <span id="address"></span></p>
                             <p><strong>Ghi chú:</strong> <span id="note"></span></p>
@@ -162,6 +164,8 @@
                     </div>
                 </div>
                 <br>
+
+
             </div>
 
             <!--Modal change infor-->
