@@ -1,6 +1,7 @@
 package org.fpoly.capstone.repository;
 
 import org.fpoly.capstone.entity.ProductDetail;
+import org.fpoly.capstone.entity.enum_status.Gender;
 import org.fpoly.capstone.service.payload.product_detail.ProductDetailResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -109,4 +110,19 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
 
     @Query("SELECT pd.quantity FROM ProductDetail pd WHERE pd.id = :productDetailId")
     Integer findProductDetailQuantityByProductDetailId(@Param("productDetailId") Long productDetailId);
+
+    @Query("SELECT pd " +
+            "FROM ProductDetail pd " +
+            "WHERE pd.product.id = :productId " +
+            "AND pd.brand.id = :brandId " +
+            "AND pd.material.id = :materialId " +
+            "AND pd.size.id = :sizeId " +
+            "AND pd.gender = :gender " +
+            "AND pd.color.id = :colorId")
+    ProductDetail findProductDetailForValidateRequest(@Param("productId") Long productId,
+                                                      @Param("brandId") Long brandId,
+                                                      @Param("materialId") Long materialId,
+                                                      @Param("sizeId") Long sizeId,
+                                                      @Param("gender") Gender gender,
+                                                      @Param("colorId") Long colorId);
 }
