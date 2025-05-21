@@ -66,7 +66,7 @@ confirmButton.onclick = function () {
         actionDescription = reason;
         confirmationReason.value = "";
         changeStatus();
-        location.reload();
+        // location.reload();
 
     } else if (!isValidChars) {
         showToast("Lý do không được chứa số hoặc ký tự đặc biệt.");
@@ -113,6 +113,18 @@ function changeStatus() {
         })
         .catch(error => {
             console.error("Error changing status", error);
+            if (error.response && error.response.data) {
+                const errorMessage = error.response.data.message || "Đã có lỗi xảy ra!";
+                console.log('Check error' , errorMessage)
+                // alert(`Lỗi: ${errorMessage}`);
+                showToast(errorMessage)
+                // toastr.options.positionClass = 'toast-top-right'
+                // toastr.error(errorMessage);
+            } else {
+                // Trường hợp không có phản hồi rõ ràng
+                alert("Lỗi không xác định. Vui lòng thử lại sau.");
+            }
+
         });
 }
 

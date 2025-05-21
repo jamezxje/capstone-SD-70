@@ -11,6 +11,7 @@ import org.fpoly.capstone.entity.Product;
 import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.Size;
 import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
+import org.fpoly.capstone.exceptions.ServiceRuntimeException;
 import org.fpoly.capstone.repository.BrandRepository;
 import org.fpoly.capstone.repository.ColorRepository;
 import org.fpoly.capstone.repository.ImageRepository;
@@ -112,7 +113,16 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetail.setDescription(request.getDescription());
     }
 
+    private void validateProductDetailRequest(ProductDetailRequest request) {
+        ProductDetail existProductDetail =
+                this.productDetailRepository.findProductDetailForValidateRequest(request.getProductId(), request.getBrandId(), request.getMaterialId(), request.getSizeId(), request.getGender(), request.getColorId());
+        if (existProductDetail != null) {
+            throw new ServiceRuntimeException("Chi tiết sản phẩm đã tồn tại");
+        }
+    }
+
     @Override
+
     public List<ProductDetail> getAllProductDetails() {
         return this.productDetailRepository.findAll();
     }
@@ -120,6 +130,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Override
     @Transactional
     public void createProductDetail(ProductDetailRequest request) throws Exception {
+
+        this.validateProductDetailRequest(request);
+
         ProductDetail productDetail = new ProductDetail();
 
         productDetail.setStatus(ProductVariantStatus.DANG_SU_DUNG);

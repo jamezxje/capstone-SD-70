@@ -38,6 +38,7 @@ import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.fpoly.capstone.entity.enum_status.VoucherStatus;
 import org.fpoly.capstone.exceptions.NotException;
+import org.fpoly.capstone.exceptions.ServiceRuntimeException;
 import org.fpoly.capstone.repository.AddressRepository;
 import org.fpoly.capstone.repository.BillDetailRepository;
 import org.fpoly.capstone.repository.BillHistoryRepository;
@@ -226,11 +227,11 @@ public class BillServiceImpl implements BillService {
                     .build());
             System.out.println("Check vô đây");
         } else {
-            bill.setStatus(BillStatus.CHO_XAC_NHAN);
+            bill.setStatus(BillStatus.XAC_NHAN);
             bill.setCompletionDate(this.getCurrmentTimeStampInVN());
             this.billRepository.save(bill);
             this.billHistoryRepository.save(BillHistory.builder()
-                    .status(BillStatus.CHO_XAC_NHAN)
+                    .status(BillStatus.XAC_NHAN)
                     .bill(bill)
                     .user(bill.getEmployee())
                     .build());
@@ -646,6 +647,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Page<VoucherRequest1> findAllVoucherPage(Integer totalAmount, int page, int size) {
+        this.voucherService.updateVoucherStatuses();
         Pageable pageable = PageRequest.of(page, size);
         Page<Object[]> results = this.voucherRepository.findAllVoucherRequests(totalAmount, pageable);
         List<VoucherRequest1> voucherRequests = new ArrayList<>();
@@ -851,7 +853,7 @@ public class BillServiceImpl implements BillService {
         if (request.getQuantity() > productDetailRequest.getQuantity()) {
             log.error("Not enough product quantity: {}",
                     request.getQuantity());
-            throw new RuntimeException("Not enough quantity");
+            throw new ServiceRuntimeException("Không đủ số lượng trong kho");
         }
 
         Bill bill = new Bill();
@@ -863,6 +865,8 @@ public class BillServiceImpl implements BillService {
 
         double totalPrice = request.getQuantity() * productDetailRequest.getPrice().doubleValue();
         bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
+        this.billRepository.save(bill);
+
 
         List<BillDetail> billDetailList = new ArrayList<>();
 
