@@ -44,7 +44,7 @@
                             <select name="orderType" class="form-select w-250" id="orderTypeSelect" >
                                 <option value="" th:selected="${orderType == null or orderType == ''}">Tất cả loại hóa đơn</option>
                                 <option value="ONLINE" th:selected="${orderType == 'ONLINE'}">Online</option>
-                                <option value="OFFLINE" th:selected="${orderType == 'OFFLINE'}">Offline</option>
+                                <option value="OFFLINE" th:selected="${orderType == 'OFFLINE'}">Tại quầy</option>
                             </select>
                         </div>
 
@@ -183,7 +183,12 @@
                                 <td th:text="${bill.user != null ? bill.user.fullName : 'Không có dữ liệu'}"></td>
                                 <td th:text="${bill.phoneNumber}"></td>
                                 <td th:text="${bill.address}"></td>
-                                <td th:text="${bill.type}"></td>
+                                <td>
+                                    <span th:switch="${#strings.trim(bill.type)}">
+                                        <span th:case="'OFFLINE'">Tại quầy</span>
+                                        <span th:case="'ONLINE'">ONLINE</span>
+                                    </span>
+                                </td>
                                 <td class="status-cell">
                                     <span th:switch="${#strings.trim(bill.status)}">
                                         <span th:case="'CHO_XAC_NHAN'">Chờ xác nhận</span>
@@ -197,7 +202,7 @@
                                         <span th:case="*">Không xác định</span>
                                     </span>
                                 </td>
-                                <td th:text="${#temporals.format(bill.createDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                                <td th:text="${#temporals.format(bill.createDate, 'HH:mm:ss dd/MM/yyyy')}"></td>
                                 <td>
                                     <a th:href="@{/bill/detail/{id}(id=${bill.id})}" class="btn btn-info">
                                         <i class="bi bi-eye"></i>

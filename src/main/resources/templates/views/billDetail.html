@@ -92,7 +92,12 @@
                                 <tbody>
                                 <tr th:each="billHistory, index : ${billHistorys}">
                                     <td th:text="${index.index + 1}"></td>
-                                    <td th:text="${billHistory.bill.type}"></td>
+                                    <td>
+                                        <span th:switch="${#strings.trim(billHistory.bill.type)}">
+                                            <span th:case="'OFFLINE'">Tại quầy</span>
+                                            <span th:case="'ONLINE'">ONLINE</span>
+                                        </span>
+                                    </td>
                                     <td>
                                             <span th:switch="${#strings.trim(billHistory.status)}">
                                                 <span th:case="'CHO_XAC_NHAN'">Chờ xác nhận</span>
@@ -107,8 +112,8 @@
                                             </span>
                                     </td>
                                     <td th:text="${billHistory.actionDescription}"></td>
-                                    <td th:text="${billHistory.createDate}"></td>
-                                    <td th:text="${billHistory.createdBy}"></td>
+                                    <td th:text="${#dates.format(billHistory.createDate, 'HH:mm:ss dd/MM/yyyy')}"></td>
+                                    <td th:text="${billHistory.bill.createdBy}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -141,7 +146,6 @@
                     <span id="status"></span>
                 </span>
                             </p>
-
                             <p><strong>Loại:</strong> <span id="type"></span></p>
                             <p><strong>Địa chỉ:</strong> <span id="address"></span></p>
                             <p><strong>Ghi chú:</strong> <span id="note"></span></p>
@@ -154,8 +158,6 @@
                     </div>
                 </div>
                 <br>
-
-
             </div>
 
             <!--Modal change infor-->
