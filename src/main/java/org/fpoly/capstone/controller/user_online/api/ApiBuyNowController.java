@@ -2,6 +2,7 @@ package org.fpoly.capstone.controller.user_online.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.fpoly.capstone.exceptions.ErrorResponse;
 import org.fpoly.capstone.service.BillService;
 import org.fpoly.capstone.service.payload.bill.BuyNowBillRequest;
 import org.fpoly.capstone.service.payload.bill.CreateBillRequest;
@@ -26,7 +27,9 @@ public class ApiBuyNowController {
             return new ResponseEntity<>("Buy now product successfully", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Failed to buy now product: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+
+            ErrorResponse errorResponse = new ErrorResponse("Mua sản phẩm thất bại: " + e.getMessage(), "CART_UPDATE_ERROR");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
     }
 

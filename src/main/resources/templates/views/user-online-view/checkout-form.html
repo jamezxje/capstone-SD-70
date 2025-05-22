@@ -193,7 +193,9 @@
                       <td th:text="${cart.sizeName}">S</td>
                       <td th:text="${cart.colorName}"></td>
                       <td th:text="${cart.quantity}">1</td>
-                      <td class="beforePrice" th:text="${#numbers.formatDecimal(cart.subtotal, 0, 'POINT', 0, 'POINT')}">$99</td>
+                      <td class="beforePrice"
+                          th:text="${#numbers.formatDecimal(cart.subtotal, 0, 'POINT', 0, 'POINT')}">$99
+                      </td>
                     </tr>
                     </tbody>
                     <tfoot class="font-weight-600">
@@ -436,7 +438,7 @@
         document.getElementById('totalPriceWithShipping').innerText = newTotal.toLocaleString('vi-VN') + ' VND';
       }
     });
-
+    
     // document.addEventListener("DOMContentLoaded", function () {
     //   var voucherValue = localStorage.getItem('selectedVoucher');
     //   if (voucherValue) {
@@ -458,23 +460,23 @@
     function calculateShipping() {
       // Get selected address details
       const selectedOption = document.querySelector("#customer-address option:checked");
-
+      
       // Log the selected option to inspect its data
       console.log("Selected option:", selectedOption);
-
+      
       // Parse the selected address data (districtId and wardCode)
       const selectedDistrictId = selectedOption.getAttribute("data-districtid");
       const selectedWardCode = selectedOption.getAttribute("data-wardcode");
-
+      
       console.log("selectedDistrictId: " + selectedDistrictId);
       console.log("selectedWardCode: " + selectedWardCode);
-
+      
       // If no district or ward is selected, alert the user
       if (!selectedDistrictId || !selectedWardCode) {
         alert("Please select both district and ward.");
         return;
       }
-
+      
       // Prepare the request body
       const requestBody = {
         "service_id": 53321,
@@ -488,7 +490,7 @@
         "weight": 1000,
         "width": 15
       };
-
+      
       // Make the AJAX request
       $.ajax({
         url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee",  // API URL
@@ -503,29 +505,29 @@
           if (response && response.data && response.data.total) {
             // Set the total shipping cost
             const totalShippingCost = response.data.total;
-
+            
             // Update the shipping cost display
             // document.getElementById("shipFee").textContent = totalShippingCost + " VND";  // Assuming the response is in VND
             document.getElementById("shipFee").textContent = totalShippingCost.toLocaleString('vi-VN') + " VND";
             console.log("Updated ship fee: ", document.getElementById('shipFee').textContent);
-
+            
             document.getElementById("shipFee").value = totalShippingCost;  // Assuming the response is in VND
-
+            
             var totalPrice = cartTotalMoney; // giá trị totalPrice trong VND
             var shipFeeText = document.getElementById('shipFee').textContent.replace(' VND', '').replace('.', '').trim();
-
+            
             var shipFee = parseInt(shipFeeText.replace(' VND', '').replace('.', '').trim());
-
-
+            
+            
             console.log("total price: ", cartTotalMoney);
             console.log("ship fee: ", shipFee)
-
+            
             // Tính tổng
             var totalPriceWithShipping = totalPrice + shipFee;
             // Trừ đi giảm giá nếu có
             const voucherDiscountText = document.getElementById('voucherDiscount').textContent.replace(' VND', '').replace(/\./g, '').trim();
             const voucherDiscount = parseInt(voucherDiscountText) || 0;
-
+            
             totalPriceWithShipping -= voucherDiscount;
             // Cập nhật giá trị vào thẻ Total
             document.getElementById('totalPriceWithShipping').innerText = totalPriceWithShipping.toLocaleString() + ' VND';
@@ -541,10 +543,10 @@
         }
       });
     }
-
+    
     // Add event listener to the address select to trigger the shipping calculation when changed
     document.getElementById("customer-address").addEventListener("change", calculateShipping);
-
+    
     // Run calculateShipping when the page loads if an address is already selected
     window.onload = function () {
       const selectedOption = document.querySelector("#customer-address option:checked");
@@ -553,29 +555,29 @@
       }
     };
   </script>
-
+  
   <script>
     // Function to calculate lead time (shipping time)
     function calculateLeadTime() {
       // Get selected address details
       const selectedOption = document.querySelector("#customer-address option:checked");
-
+      
       // Log the selected option to inspect its data
       console.log("Selected option:", selectedOption);
-
+      
       // Parse the selected address data (districtId and wardCode)
       const selectedDistrictId = selectedOption ? parseInt(selectedOption.getAttribute("data-districtid"), 10) : null;
       const selectedWardCode = selectedOption ? selectedOption.getAttribute("data-wardcode") : null;
-
+      
       console.log("selectedDistrictId: " + selectedDistrictId);
       console.log("selectedWardCode: " + selectedWardCode);
-
+      
       // If no district or ward is selected, alert the user
       if (!selectedDistrictId || !selectedWardCode) {
         alert("Please select both district and ward.");
         return;
       }
-
+      
       // Prepare the request body for lead time calculation
       const requestBody = {
         "from_district_id": 1492,
@@ -584,9 +586,9 @@
         "to_ward_code": selectedWardCode, // Ward code remains as string
         "service_id": 53321 // Service ID for lead time calculation
       };
-
+      
       console.log("requestBody date calculate:", requestBody);
-
+      
       // Make the AJAX request for lead time
       $.ajax({
         url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/leadtime",  // API URL
@@ -600,13 +602,13 @@
         success: function (response) {
           if (response && response.data && response.data.leadtime_order) {
             const leadtimeOrder = response.data.leadtime_order;
-
+            
             // Extract to_estimate_date
             const toDate = new Date(leadtimeOrder.to_estimate_date);
-
+            
             // Format the date as DD/MM/YYYY
             const formattedToDate = `${toDate.getDate().toString().padStart(2, '0')}/${(toDate.getMonth() + 1).toString().padStart(2, '0')}/${toDate.getFullYear()}`;
-
+            
             // Display the delivery date
             document.getElementById('confirm-day').innerText = `${formattedToDate}`;
           } else {
@@ -620,10 +622,10 @@
         }
       });
     }
-
+    
     // Add event listener to the address select to trigger the lead time calculation when changed
     document.getElementById("customer-address").addEventListener("change", calculateLeadTime);
-
+    
     // Run calculateLeadTime when the page loads if an address is already selected
     window.onload = function () {
       const selectedOption = document.querySelector("#customer-address option:checked");
@@ -632,7 +634,7 @@
       }
     };
   </script>
-
+  
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const selectedOption = document.querySelector("#customer-address option:checked");
@@ -673,9 +675,11 @@
       // Loại bỏ ký hiệu tiền tệ và dấu chấm ngăn cách hàng nghìn
       return text.replace(/[^\d]/g, ''); // "10.000 ₫" => "10000"
     }
+    
     function parseCurrencyNumBer(text) {
       return Number(text.replace(/[^\d]/g, '')) || 0;
     }
+    
     function getBeforePriceTotal() {
       let total = 0;
       $('.beforePrice').each(function () {
@@ -744,14 +748,14 @@
       if (paymentMethod === 'CHUYEN_KHOAN') {
         // const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}, data_buyType: addToCart, data_address: ${address}`;
         const orderInfo =
-                `data_grandTotal: ${grandTotal}, ` +
-                `data_receiveDate: ${receiveDate}, ` +
-                `data_shipFee: ${moneyShip}, ` +
-                `data_buyType: addToCart, ` +
-                `data_itemDiscount: ${itemDiscount}, ` +
-                `data_beforePrice: ${beforePrice}, ` +
-                `data_voucherId: ${voucherId}, `+
-                `data_address: ${address}`;
+            `data_grandTotal: ${grandTotal}, ` +
+            `data_receiveDate: ${receiveDate}, ` +
+            `data_shipFee: ${moneyShip}, ` +
+            `data_buyType: addToCart, ` +
+            `data_itemDiscount: ${itemDiscount}, ` +
+            `data_beforePrice: ${beforePrice}, ` +
+            `data_voucherId: ${voucherId}, ` +
+            `data_address: ${address}`;
         // Gọi API "online-payment"
         $.ajax({
           url: '/bill/online-payment',

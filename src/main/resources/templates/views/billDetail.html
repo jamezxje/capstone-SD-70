@@ -96,7 +96,12 @@
                                 <tbody>
                                 <tr th:each="billHistory, index : ${billHistorys}">
                                     <td th:text="${index.index + 1}"></td>
-                                    <td th:text="${billHistory.bill.type}"></td>
+                                    <td>
+                                        <span th:switch="${#strings.trim(billHistory.bill.type)}">
+                                            <span th:case="'ONLINE'">Online</span>
+                                            <span th:case="'OFFLINE'">Tại quầy</span>
+                                        </span>
+                                    </td>
                                     <td>
                                             <span th:switch="${#strings.trim(billHistory.status)}">
                                                 <span th:case="'CHO_XAC_NHAN'">Chờ xác nhận</span>
@@ -107,12 +112,13 @@
                                                 <span th:case="'THANH_CONG'">Hoàn thành</span>
                                                 <span th:case="'TRA_HANG'">Trả hàng</span>
                                                 <span th:case="'DA_HUY'">Hủy</span>
+                                                <span th:case="'TAO_HOA_DON'">Tạo hóa đơn</span>
                                                 <span th:case="*">Không xác định</span>
                                             </span>
                                     </td>
                                     <td th:text="${billHistory.actionDescription}"></td>
-                                    <td th:text="${billHistory.createDate}"></td>
-                                    <td th:text="${billHistory.createdBy}"></td>
+                                    <td th:text="${#dates.format(billHistory.createDate, 'HH:mm:ss dd/MM/yyyy')}"></td>
+                                    <td th:text="${billHistory.bill.createdBy}"></td>
                                 </tr>
                                 </tbody>
                             </table>

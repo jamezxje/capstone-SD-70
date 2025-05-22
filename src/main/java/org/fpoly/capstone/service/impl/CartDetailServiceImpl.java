@@ -8,6 +8,7 @@ import org.fpoly.capstone.entity.Cart;
 import org.fpoly.capstone.entity.CartDetail;
 import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.exceptions.ServiceRuntimeException;
 import org.fpoly.capstone.repository.CartDetailRepository;
 import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.repository.ProductDetailRepository;
@@ -41,7 +42,15 @@ public class CartDetailServiceImpl implements CartDetailService {
 
         Long userId = loggedUser.getId();
 
-        return this.cartDetailRepository.findCartDetailByUserId(userId);
+        List<CartDetailResponse> cartDetailResponseList = this.cartDetailRepository.findCartDetailByUserId(userId);
+
+        for (CartDetailResponse cartDetailResponse : cartDetailResponseList) {
+            Integer stockQuantity = this.productDetailRepository.findProductDetailQuantityByProductDetailId(cartDetailResponse.getProductDetailId());
+
+            cartDetailResponse.setQuantityInStock(stockQuantity);
+        }
+
+        return cartDetailResponseList;
     }
 
     @Override
@@ -57,7 +66,7 @@ public class CartDetailServiceImpl implements CartDetailService {
                 .orElseThrow(() -> new EntityNotFoundException("Product detail not found with id:" + request.getProductDetailId()));
 
         if (request.getQuantity() > productDetail.getQuantity()) {
-            throw new RuntimeException("Not enough quantity");
+            throw new ServiceRuntimeException("Không đủ số lượng trong kho");
         }
 
         CartDetail cartDetail = this.cartDetailRepository
@@ -90,7 +99,7 @@ public class CartDetailServiceImpl implements CartDetailService {
                     cart.getId(), cart.getUser().getId(), cart.getCartDetails().size(), cart.getTotalPrice());
         } catch (Exception e) {
             log.error("Failed to update Cart. Error: {}", e.getMessage());
-            throw new RuntimeException("Failed to update Cart", e);
+            throw new ServiceRuntimeException("Failed to update Cart", e);
         }
     }
 
@@ -123,7 +132,7 @@ public class CartDetailServiceImpl implements CartDetailService {
         // Set total price to cart
         cart.setTotalPrice(BigDecimal.valueOf(totalPrice));
 
-        cartRepository.save(cart);
+        this.cartRepository.save(cart);
 
     }
 }

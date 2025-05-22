@@ -43,6 +43,17 @@
         opacity: 0.5;
         pointer-events: none;
       }
+      
+      /*.cart__row.disabled {*/
+      /*  opacity: 0.5;*/
+      /*  pointer-events: none;*/
+      /*}*/
+      
+      .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    
     </style>
   </th:block>
 </head>
@@ -86,10 +97,13 @@
               <tr th:if="${#lists.isEmpty(cartDetailList)}">
                 <td colspan="10" class="text-center pt-5"><h3>Giỏ hàng của bạn đang trống</h3></td>
               </tr>
-              <tr class="cart__row border-bottom line1 cart-flex border-top" th:each="cartDetail: ${cartDetailList}">
+              <tr class="cart__row border-bottom line1 cart-flex border-top"
+                  th:each="cartDetail: ${cartDetailList}">
+                <input type="hidden" th:value="${cartDetail.quantityInStock}" class="availableStock">
                 <td>
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" th:id="'customCheck_' + ${cartDetail.id}"
+                    <input type="checkbox" class="custom-control-input cart-checkbox"
+                           th:id="'customCheck_' + ${cartDetail.id}"
                            name="selectedCartDetailIds" th:value="${cartDetail.id}">
                     <label class="custom-control-label" th:for="'customCheck_' + ${cartDetail.id}"></label>
                   </div>
@@ -526,6 +540,117 @@
     });
   
   </script>
+  
+  <script>
+    (function ($) {
+      // Start of use strict
+      'use strict';
+      
+      function qnt_incre() {
+        $(".qtyBtn").on("click", function (e) {
+          e.preventDefault();
+          var qtyField = $(this).closest(".qtyField"),
+              qtyInput = $(qtyField).find(".qty"),
+              oldValue = parseInt(qtyInput.val()),
+              newVal = oldValue;
+          
+          if ($(this).is(".plus")) {
+            newVal = oldValue + 1;
+          } else if ($(this).is(".minus") && oldValue > 1) {
+            newVal = oldValue - 1;
+          }
+          qtyInput.val(newVal);
+          updateCart(qtyInput);
+        });
+      }
+      
+      qnt_incre();
+      
+      function updateCart(qtyInput) {
+        const cartDetailId = $(qtyInput).closest("tr").find(".cartDetailId").val();
+        const updatedQuantity = $(qtyInput).val();
+        const productDetailId = $(qtyInput).closest("tr").find(".productDetailId").val(); // Get the productDetailId
+        
+        // Validation: quantity must be greater than 0
+        if (updatedQuantity <= 0) {
+          alert('Quantity must be greater than 0');
+          return;
+        }
+        
+        const updatedCartItem = {
+          cartDetailId: cartDetailId,
+          productDetailId: productDetailId,
+          quantity: updatedQuantity
+        };
+        
+        // Send an AJAX request to the server to update the cart
+        $.ajax({
+          url: '/cart/update',
+          type: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify(updatedCartItem),
+          success: function (data) {
+            showToast('Sửa số lượng sản phẩm thành công!', 'success');
+            // Đợi một khoảng thời gian ngắn để người dùng có thể thấy thông báo toast
+            setTimeout(function () {
+              window.location.href = "/cart";
+            }, 1500);
+          },
+          error: function (xhr, status, error) {
+            // Check if responseJSON exists and is not null
+            let errorMessage = 'Có lỗi xảy ra khi thay đổi số lượng sản phẩm';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+              errorMessage = xhr.responseJSON.message;
+            }
+            
+            // Show the toast with the error message
+            showToast(errorMessage, 'error');
+            setTimeout(function () {
+              window.location.href = "/cart";
+            }, 1500);
+          }
+        });
+      }
+    })(jQuery);
+  
+  </script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const cartRows = document.querySelectorAll('.cart__row.border-bottom');
+      console.log('cartRows:', cartRows);
+      
+      
+      cartRows.forEach(function (row) {
+        const quantityInput = row.querySelector('.cart__qty-input');
+        const availableStock = parseInt(row.querySelector('.availableStock').value); // Lấy giá trị availableStock
+        
+        console.log('Row:', row);
+        console.log('Quantity Input:', quantityInput.value); // log giá trị của input số lượng
+        console.log('Available Stock:', availableStock);
+        
+        const minusButton = row.querySelector('.qtyBtn.minus');
+        const plusButton = row.querySelector('.qtyBtn.plus');
+        const checkbox = row.querySelector('.cart-checkbox');
+        const deleteButton = row.querySelector('.cart__remove');
+        
+        const currentQuantity = parseInt(quantityInput.value);
+        
+        // Nếu số lượng sản phẩm lớn hơn số lượng còn lại trong kho, disable toàn bộ dòng
+        if (currentQuantity > availableStock) {
+          row.classList.add('disabled');
+          checkbox.disabled = true;
+          minusButton.disabled = true;
+          plusButton.disabled = true;
+          quantityInput.disabled = true;
+          deleteButton.disabled = false;
+        }
+      });
+    });
+  
+  </script>
+  
+  
   <!--cũ-->
   <!--  <script>-->
   <!--    $(document).ready(function () {-->
@@ -612,44 +737,44 @@
       
       // Phần thân toast
       toast.innerHTML = `
-      <div style="display: flex; align-items: center;">${icon}<span>${message}</span></div>
-      <div class="toast-progress-bar"></div>
-    `;
+        <div style="display: flex; align-items: center;">${icon}<span>${message}</span></div>
+        <div class="toast-progress-bar"></div>
+      `;
       
       toast.style.cssText = `
-      background-color: ${bgColor};
-      color: ${textColor};
-      border-left: 5px solid ${borderColor};
-      padding: 12px 20px 6px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      opacity: 0;
-      transform: translateX(100%);
-      transition: opacity 0.5s, transform 0.5s ease-in-out;
-      margin-bottom: 10px;
-      position: relative;
-      min-width: 280px;
-    `;
+        background-color: ${bgColor};
+        color: ${textColor};
+        border-left: 5px solid ${borderColor};
+        padding: 12px 20px 6px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transform: translateX(100%);
+        transition: opacity 0.5s, transform 0.5s ease-in-out;
+        margin-bottom: 10px;
+        position: relative;
+        min-width: 280px;
+      `;
       
       // Thanh thời gian
       const progressBarStyle = document.createElement("style");
       progressBarStyle.innerHTML = `
-      .toast-progress-bar {
-        height: 4px;
-        background-color: ${borderColor};
-        width: 100%;
-        animation: progress ${duration}ms linear forwards;
-        border-radius: 0 0 5px 5px;
-        margin-top: 8px;
-      }
-      @keyframes progress {
-        from { width: 100%; }
-        to { width: 0%; }
-      }
-    `;
+        .toast-progress-bar {
+          height: 4px;
+          background-color: ${borderColor};
+          width: 100%;
+          animation: progress ${duration}ms linear forwards;
+          border-radius: 0 0 5px 5px;
+          margin-top: 8px;
+        }
+        @keyframes progress {
+          from { width: 100%; }
+          to { width: 0%; }
+        }
+      `;
       document.head.appendChild(progressBarStyle);
       
       toastContainer.appendChild(toast);
@@ -668,6 +793,100 @@
       }, 3000);
     }
   </script>
+  
+  <!--  <script>-->
+  <!--    function showToast(message, type = "success", duration = 3000) {-->
+  <!--      const toastContainer = document.getElementById("toast-container");-->
+  <!--      const toast = document.createElement("div");-->
+  <!--      -->
+  <!--      // Cấu hình theo loại-->
+  <!--      let bgColor, textColor, borderColor, icon;-->
+  <!--      -->
+  <!--      if (type === "success") {-->
+  <!--        bgColor = "#d4edda";-->
+  <!--        textColor = "#155724";-->
+  <!--        borderColor = "#28a745";-->
+  <!--        icon = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>`;-->
+  <!--      } else {-->
+  <!--        bgColor = "#fff3cd";-->
+  <!--        textColor = "#856404";-->
+  <!--        borderColor = "#ffc107";-->
+  <!--        icon = `<i class="fas fa-exclamation-triangle" style="color: #ffc107; margin-right: 10px;"></i>`;-->
+  <!--      }-->
+  <!--      -->
+  <!--      // Phần thân toast-->
+  <!--      toast.innerHTML = `-->
+  <!--    <div style="display: flex; align-items: center;">${icon}<span>${message}</span></div>-->
+  <!--    <div class="toast-progress-bar"></div>-->
+  <!--    <button class="toast-close-btn" style="background: none; border: none; color: ${textColor}; font-size: 18px; margin-left: auto; cursor: pointer;">-->
+  <!--      &times;-->
+  <!--    </button>-->
+  <!--  `;-->
+  <!--      -->
+  <!--      toast.style.cssText = `-->
+  <!--    background-color: ${bgColor};-->
+  <!--    color: ${textColor};-->
+  <!--    border-left: 5px solid ${borderColor};-->
+  <!--    padding: 12px 20px 6px 20px;-->
+  <!--    font-size: 16px;-->
+  <!--    border-radius: 5px;-->
+  <!--    display: flex;-->
+  <!--    flex-direction: row;-->
+  <!--    align-items: center;-->
+  <!--    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+  <!--    opacity: 0;-->
+  <!--    transform: translateX(100%);-->
+  <!--    transition: opacity 0.5s, transform 0.5s ease-in-out;-->
+  <!--    margin-bottom: 10px;-->
+  <!--    position: relative;-->
+  <!--    min-width: 280px;-->
+  <!--  `;-->
+  <!--      -->
+  <!--      // Thanh thời gian-->
+  <!--      const progressBarStyle = document.createElement("style");-->
+  <!--      progressBarStyle.innerHTML = `-->
+  <!--    .toast-progress-bar {-->
+  <!--      height: 4px;-->
+  <!--      background-color: ${borderColor};-->
+  <!--      width: 100%;-->
+  <!--      animation: progress ${duration}ms linear forwards;-->
+  <!--      border-radius: 0 0 5px 5px;-->
+  <!--      margin-top: 8px;-->
+  <!--    }-->
+  <!--    @keyframes progress {-->
+  <!--      from { width: 100%; }-->
+  <!--      to { width: 0%; }-->
+  <!--    }-->
+  <!--  `;-->
+  <!--      document.head.appendChild(progressBarStyle);-->
+  <!--      -->
+  <!--      toastContainer.appendChild(toast);-->
+  <!--      -->
+  <!--      // Sự kiện đóng toast khi nhấn nút-->
+  <!--      const closeButton = toast.querySelector(".toast-close-btn");-->
+  <!--      closeButton.addEventListener("click", () => {-->
+  <!--        toast.style.opacity = "0";-->
+  <!--        toast.style.transform = "translateX(100%)";-->
+  <!--        setTimeout(() => toast.remove(), 500);-->
+  <!--      });-->
+  <!--      -->
+  <!--      // Animate in-->
+  <!--      setTimeout(() => {-->
+  <!--        toast.style.opacity = "1";-->
+  <!--        toast.style.transform = "translateX(0)";-->
+  <!--      }, 100);-->
+  <!--      -->
+  <!--      // Animate out and remove (nếu không nhấn nút đóng)-->
+  <!--      setTimeout(() => {-->
+  <!--        if (!toast.contains(closeButton)) {  // Kiểm tra nếu nút chưa được nhấn-->
+  <!--          toast.style.opacity = "0";-->
+  <!--          toast.style.transform = "translateX(100%)";-->
+  <!--          setTimeout(() => toast.remove(), 500);-->
+  <!--        }-->
+  <!--      }, duration);-->
+  <!--    }-->
+  <!--  -->
+  <!--  </script>-->
   <script>
     // Function to check if any item is selected
     // function checkCartSelection() {
@@ -689,7 +908,7 @@
     //
     // // Initial check in case the page is loaded with selected items
     // checkCartSelection();
-
+    
     //fix bug Thanh toán
     document.getElementById('cart_checkout_button').addEventListener('click', function (e) {
       const selected = document.querySelectorAll('input[name="selectedCartDetailIds"]:checked');

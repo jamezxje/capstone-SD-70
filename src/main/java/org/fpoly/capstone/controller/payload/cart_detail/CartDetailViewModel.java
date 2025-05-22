@@ -21,6 +21,7 @@ public class CartDetailViewModel {
     private String colorName;
     private BigDecimal price;
     private Integer quantity;
+    private Integer quantityInStock;
     private BigDecimal subtotal;
 
     public void setPrice(BigDecimal price) {

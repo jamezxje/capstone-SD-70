@@ -8,6 +8,7 @@ import org.fpoly.capstone.entity.Cart;
 import org.fpoly.capstone.entity.CartDetail;
 import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.User;
+import org.fpoly.capstone.exceptions.ServiceRuntimeException;
 import org.fpoly.capstone.repository.CartDetailRepository;
 import org.fpoly.capstone.repository.CartRepository;
 import org.fpoly.capstone.service.CartService;
@@ -50,11 +51,11 @@ public class CartServiceImpl implements CartService {
         }
 
         //check if quantity from request is valid or not
-        if (request.getQuantity() > productDetailRequest.getQuantity()) {
-            log.error("Not enough product quantity: {}",
-                    request.getQuantity());
-            throw new RuntimeException("Not enough quantity");
-        }
+//        if (request.getQuantity() > productDetailRequest.getQuantity()) {
+//            log.error("Not enough product quantity: {}",
+//                    request.getQuantity());
+//            throw new ServiceRuntimeException("Not enough quantity");
+//        }
 
         Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
 
@@ -76,6 +77,11 @@ public class CartServiceImpl implements CartService {
         //if the product is first added to cart
         if (existingCartDetail == null) {
             existingCartDetail = new CartDetail();
+            if (request.getQuantity() > productDetailRequest.getQuantity()) {
+                log.error("Not enough product quantity: {}",
+                        request.getQuantity());
+                throw new ServiceRuntimeException("Không đủ số lượng trong kho");
+            }
             existingCartDetail.setProductDetail(productDetailRequest);
             existingCartDetail.setQuantity(request.getQuantity());
             existingCartDetail.setPrice(productDetailRequest.getPrice());
@@ -85,6 +91,11 @@ public class CartServiceImpl implements CartService {
             log.info("Added new product to cart. Product ID: {}, Size ID: {}, Quantity: {}", request.getProductId(), request.getSizeId(), request.getQuantity());
         } else {
             //if the product already added to cart => update its quantity only
+            if (request.getQuantity() > productDetailRequest.getQuantity() - existingCartDetail.getQuantity()) {
+                log.error("Not enough product quantity: {}",
+                        request.getQuantity());
+                throw new ServiceRuntimeException("Không đủ số lượng trong kho");
+            }
             existingCartDetail.setQuantity(existingCartDetail.getQuantity() + request.getQuantity());
             this.cartDetailRepository.save(existingCartDetail);
             log.info("Updated existing product in cart. Product ID: {}, Size ID: {}, New Quantity: {}",
