@@ -192,12 +192,35 @@
                       <span>Thêm vào giỏ hàng</span>
                     </button>
                   </div>
-                  <div class="shopify-payment-button" data-shopify="payment-button">
+                  <div class="shopify-payment-button" data-shopify="payment-button" style="display: none" id="btnLogin">
                     <button type="button"
                             class="shopify-payment-button__button shopify-payment-button__button--unbranded">
                       Mua ngay!
                     </button>
                   </div>
+                  <div id="btnNoLogin" style="display: none">
+                    <button type="button"
+                            id="btnLoginNo"
+                            style="
+            background-color: #E95144;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            width: 100%;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+          ">
+                      Mua ngay!
+                    </button>
+                  </div>
+
+                </div>
+                <div>
+                  <button id="checkpay">CHeckPay</button>
                 </div>
                 <!-- End Product Action -->
               </form>
@@ -914,9 +937,9 @@
       }
       
       // Check if the user is logged in
-      if (loggedUserEmail == null) {
-        popupMessage = "Đăng nhập để tiếp tục";
-      }
+      // if (loggedUserEmail == null) {
+      //   popupMessage = "Đăng nhập để tiếp tục";
+      // }
       
       // If any validation failed, show the modal
       if (popupMessage !== "") {
@@ -938,16 +961,16 @@
         if (loggedUserEmail == null) {
           var loginButton = $('<a id="loginButton" class="btn" href="/auth/login">Đăng nhập</a>');
           var registerButton = $('<a id="registerButton" class="btn" href="/auth/register">Đăng ký</a>');
-          
+
           // Append the buttons to the popup
           $('#popup-container').append(loginButton);
           $('#popup-container').append(registerButton);
-          
+
           // Set the action for the login button (redirect to login page)
           loginButton.on('click', function () {
             window.location.href = "/login";  // Replace with your login page URL
           });
-          
+
           // Set the action for the register button (redirect to register page)
           registerButton.on('click', function () {
             window.location.href = "/register";  // Replace with your register page URL
@@ -977,10 +1000,10 @@
         event.preventDefault(); // Ngăn chặn hành động submit form mặc định
         
         // Kiểm tra nếu người dùng chưa đăng nhập
-        if (loggedUserEmail == null) {
-          showToast("Vui lòng đăng nhập để tiếp tục", 'error');
-          return;
-        }
+        // if (loggedUserEmail == null) {
+        //   showToast("Vui lòng đăng nhập để tiếp tục", 'error');
+        //   return;
+        // }
         
         // Validate các giá trị trước khi gửi
         let selectedSize = $('input[name="sizeId"]:checked').val();
@@ -1173,28 +1196,121 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const addToCartBtn = document.getElementById('product-form__item--submit');
+      const btnNoLogin = document.getElementById('btnNoLogin');
+      const btnLogin = document.getElementById('btnLogin');
       const noLoginBtn = document.getElementById('noLogin');
       console.log("Check loggeed UserEmail" , loggedUserEmail);
       function toggleButtons() {
         if (loggedUserEmail) {
           console.log("log" , loggedUserEmail)
           addToCartBtn.style.display = 'block';
+          btnLogin.style.display = 'block';
+          btnNoLogin.style.display = 'none'
           noLoginBtn.style.display = 'none';
         } else {
           console.log("No log")
           addToCartBtn.style.display = 'none';
+          btnLogin.style.display = 'none';
+          btnNoLogin.style.display = 'block'
           noLoginBtn.style.display = 'block';
+          // const btnNoLogin = document.getElementById('btnLoginNo');
+          // if (btnNoLogin) {
+          //   btnNoLogin.addEventListener('click', handleNoLoginPurchase);
+          // }
         }
       }
       toggleButtons();
     });
+
+    const checkPay = document.getElementById('checkpay');
+    checkPay.addEventListener('click' , function () {
+      window.location.href = 'http://localhost:8080/NoLogin'
+    })
+    const btnNoLogin = document.getElementById('btnLoginNo');
+    if (btnNoLogin) {
+      btnNoLogin.addEventListener('click', handleNoLoginPurchase);
+    }
+    async function handleNoLoginPurchase(e) {
+      e.preventDefault();
+
+      const productId = document.querySelector('input[name="productId"]').value;
+      const featureImageUrl = document.querySelector('.zoompro')?.getAttribute('src') || '';
+      const name = document.querySelector('.product-single__title')?.innerText || '';
+      const price = document.querySelector('.money')?.innerText.replace(' VND', '').replace(/\./g, '') || '0';
+      const quantity = document.getElementById('Quantity')?.value || 1;
+
+      const colorInput = document.querySelector("input[name='colorId']:checked");
+      const colorId = colorInput?.value;
+      const colorName = colorInput?.nextElementSibling?.innerText;
+
+      const sizeInput = document.querySelector("input[name='sizeId']:checked");
+      const sizeId = sizeInput?.value;
+      const sizeName = sizeInput?.nextElementSibling?.innerText;
+
+      let idProductLocal = 0;
+      let quantityLocal = 0;
+
+      try {
+        const response = await axios.get(`/detail-productId/${productId}/size/${sizeId}/color/${colorId}`);
+        const data = response.data;
+        idProductLocal = data.id;
+        quantityLocal = data.quantity;
+      } catch (error) {
+        console.log('Lỗi không lấy được dữ liệu từ API:', error);
+        return;
+      }
+
+      if (!colorId || !sizeId) {
+        showToastError('Vui lòng chọn màu sắc và kích cỡ.');
+        return;
+      }
+
+      if (!quantity || quantity <= 0) {
+        showToastError('Vui lòng nhập số lượng hợp lệ.');
+        return;
+      }
+
+      if (quantity > quantityLocal) {
+        showToastError('Số lượng sản phẩm không đủ để thêm giỏ hàng.');
+        return;
+      }
+
+      const product = {
+        idProductLocal,
+        featureImageUrl,
+        name,
+        price: parseInt(price),
+        quantity: parseInt(quantity),
+        color: { id: colorId, name: colorName },
+        size: { id: sizeId, name: sizeName }
+      };
+
+      const cart = JSON.parse(localStorage.getItem('noLoginCart')) || [];
+      const index = cart.findIndex(item =>
+              item.name === product.name &&
+              item.color.id === product.color.id &&
+              item.size.id === product.size.id
+      );
+
+      if (index > -1) {
+        cart[index].quantity += product.quantity;
+      } else {
+        cart.push(product);
+      }
+
+      localStorage.setItem('noLoginCart', JSON.stringify(cart));
+      window.location.href = 'http://localhost:8080/NoLogin';
+    }
+
   </script>
+
   <script type="text/javascript" th:src="@{/assets/js/cartNoLogin/header.js}"></script>
   <script>
     let idProductLocal = 0;
     let quantityLocal = 0;
     document.addEventListener('DOMContentLoaded', function ()  {
       const addToCartButton = document.querySelector('.noLogin button');
+      const btnNoLogin = document.getElementById('btnLoginNo');
 
       addToCartButton.addEventListener('click',async function (e) {
         e.preventDefault();
@@ -1295,9 +1411,9 @@
       }
       
       // Check if the user is logged in
-      if (loggedUserEmail == null) {
-        popupMessage = "Đăng nhập để tiếp tục";
-      }
+      // if (loggedUserEmail == null) {
+      //   popupMessage = "Đăng nhập để tiếp tục";
+      // }
       
       // If any validation failed, show the modal
       if (popupMessage !== "") {
@@ -1321,16 +1437,16 @@
           if ($('#popup-container #loginButton').length === 0 && $('#popup-container #registerButton').length === 0) {
             var loginButton = $('<a id="loginButton" class="btn" href="/auth/login">Đăng nhập</a>');
             var registerButton = $('<a id="registerButton" class="btn" href="/auth/register">Đăng ký</a>');
-            
+
             // Append the buttons to the popup
             $('#popup-container').append(loginButton);
             $('#popup-container').append(registerButton);
-            
+
             // Set the action for the login button (redirect to login page)
             loginButton.on('click', function () {
               window.location.href = "/auth/login";  // Replace with your login page URL
             });
-            
+
             // Set the action for the register button (redirect to register page)
             registerButton.on('click', function () {
               window.location.href = "/auth/register";  // Replace with your register page URL

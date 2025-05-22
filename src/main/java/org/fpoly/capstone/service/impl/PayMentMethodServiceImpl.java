@@ -227,7 +227,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
             Bill bill = Bill.builder()
                     .code(generalStringCode.generateCodeAdmin())
                     .user(user)
-                    .totalMoney(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() - 2)))
+                    .totalMoney(response.getTotalPrice())
                     .method(PaymentMethod.CHUYEN_KHOAN)
                     .userName(response.getUserName())
                     .phoneNumber(response.getPhoneNumber())
@@ -242,23 +242,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                     .shipDate(response.getShipDate())
                     .vnpTransaction(response.getVnp_TransactionNo())
                     .build();
-//                bill.setUser(user);
-//                bill.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-//                bill.setTotalMoney(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() - 2)));
-//                bill.setMethod(PaymentMethod.CHUYEN_KHOAN);
-//                bill.setUserName(response.getUserName());
-//                System.out.println("Láy username " + response.getUserName());
-//                System.out.println("Lay email " + bill.getEmail());
-//                System.out.println("lay phone" + bill.getPhoneNumber());
-//                bill.setPhoneNumber(response.getPhoneNumber());
-//                bill.setEmail(response.getEmail());
-//                bill.setAddress(response.getAddress());
-//                bill.setItemDiscount(response.getItemDiscount());
-//                bill.setMoneyShip(response.getMoneyShip());
-//                bill.setNote("Thanh toán thành công VNPay");
-//                System.out.println("Cehck ngggayf ship" + response.getDeliveryDate());
-//
-//                bill.setVnpTransaction(response.getVnp_TransactionNo());
+
             billRepository.save(bill);
 
             billHistoryRepository.save(BillHistory.builder()
@@ -291,7 +275,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 VoucherDetail voucherDetail = VoucherDetail.builder()
                         .voucher(voucher)
                         .bill(bill)
-                        .beforePrice(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() -2)))
+                        .beforePrice(response.getTotalPrice())
                         .afterPrice(response.getAfterPrice())
                         .discountPrice(response.getItemDiscount())
                         .build();

@@ -37,6 +37,7 @@ public class PayMentVnPayResponse {
     private Boolean openDelivery;
     private BigDecimal itemDiscount;
     private BigDecimal moneyShip;
+    private BigDecimal totalPrice;
     private BillType type;
     private String address;
     private Long idVoucher;

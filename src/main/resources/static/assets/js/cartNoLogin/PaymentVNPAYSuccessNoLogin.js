@@ -92,7 +92,7 @@ document.getElementById('changeSale').addEventListener('click' , function (){
     const idVoucher = localStorage.getItem('voucherIdNoLogin');
     const afterPrice = localStorage.getItem('afterPriceNoLogin');
     const billDetail = JSON.parse(localStorage.getItem('billDetailNoLogin')) || [];
-
+    const totalItemNoLogin = localStorage.getItem('totalItemNoLogin');
     const response = {
         idUser: idUser,
         userName: userName,
@@ -103,6 +103,7 @@ document.getElementById('changeSale').addEventListener('click' , function (){
         moneyShip: moneyShip,
         address: address,
         shipDate: dateShip,
+        totalPrice : totalItemNoLogin ,
         idVoucher : idVoucher ,
         billDetail : billDetail,
         afterPrice : afterPrice ,

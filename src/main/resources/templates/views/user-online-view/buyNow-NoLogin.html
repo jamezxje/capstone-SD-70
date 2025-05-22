@@ -38,7 +38,59 @@
             .right {
                 background-color: #dfeeff; /* Bạn có thể thay màu này */
             }
+            .right h4 {
+                font-size: 24px;
+                font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #eee;
+                padding-bottom: 10px;
+            }
 
+            #checkout-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 30px;
+                font-size: 16px;
+            }
+
+            #checkout-table th,
+            #checkout-table td {
+                border: 1px solid #ddd;
+                padding: 12px;
+                text-align: center;
+            }
+
+            #checkout-table th {
+                background-color: #f8f8f8;
+                font-weight: bold;
+                color: #2c3e50;
+                text-transform: uppercase;
+            }
+
+            #checkout-table tbody tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+
+            #checkout-table tbody tr:hover {
+                background-color: #f1f1f1;
+            }
+
+            .right div {
+                margin-top: 20px;
+            }
+
+            .right p {
+                font-size: 18px;
+                margin: 12px 0;
+                text-transform: uppercase;
+                color: #2c3e50;
+            }
+
+            .right span {
+                font-weight: bold;
+                /*color: #e74c3c; !* Đỏ nhấn mạnh số tiền *!*/
+            }
             .form-group {
                 margin-bottom: 15px;
             }
@@ -79,6 +131,40 @@
                 background-color: #007BFF;
                 color: white;
             }
+            .summary-totals {
+                margin-top: 30px;
+                border-top: 1px solid #eee;
+                padding-top: 20px;
+            }
+
+            .summary-row {
+                display: flex;
+                justify-content: space-between;
+                margin: 10px 0;
+                font-size: 18px;
+                color: #2c3e50;
+                text-transform: uppercase;
+            }
+
+            .summary-row .label {
+                font-weight: 500;
+            }
+
+            .summary-row .value {
+                font-weight: bold;
+                color: #e74c3c; /* Màu đỏ nổi bật cho giá trị */
+            }
+
+            .summary-row.total .value {
+                font-size: 20px;
+                color: #c0392b;
+            }
+
+            .summary-row.total .label {
+                font-size: 20px;
+                font-weight: 600;
+            }
+
         </style>
     </th:block>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
@@ -155,7 +241,7 @@
             <!-- Bên phải -->
             <div class="right">
                 <!-- Nội dung bên phải bạn có thể thêm sau -->
-                <h4 style="text-align: center ; margin-top: 20px; padding: 10px">Thông tin sản phẩm mua </h4>
+                <h4 style="text-align: center ; margin-top: 10px; padding: 10px">Thông tin sản phẩm mua </h4>
                 <table id="checkout-table" style="margin-top: 40px; ">
                     <thead>
                     <tr>
@@ -172,19 +258,35 @@
 
                     </tbody>
                 </table>
-                <div style="margin-top: 20px; padding: 10px">
-                    <p style="margin-top: 10px ; margin-bottom: 10px ; font-size: 18px ;text-transform: uppercase">Tổng
-                        tiền hàng <span id="span-totalItem">VND</span></p>
-                    <p style="margin-bottom: 10px;font-size: 18px ;text-transform: uppercase">Phí ship : <span
-                            id="shipping">VND</span></p>
-                    <p style="margin-bottom: 10px ; font-size: 18px ; text-transform: uppercase"> Giảm giá : <span
-                            id="span-voucherValue"></span></p>
-                    <p style="margin-bottom: 10px ; font-size: 18px;text-transform: uppercase">Tổng tiền thanh toán :
-                        <span id="span-totalPayMent"></span></p>
+                <div class="summary-totals">
+                    <div class="summary-row">
+                        <span class="label">Tổng tiền hàng</span>
+                        <span id="span-totalItem" class="value">VND</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Phí ship</span>
+                        <span id="shipping" class="value">VND</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Giảm giá</span>
+                        <span id="span-voucherValue" class="value">VND</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span class="label">Tổng tiền thanh toán</span>
+                        <span id="span-totalPayMent" class="value">VND</span>
+                    </div>
                 </div>
-                <div>
-                    <p style="margin-top: 10px ; margin-bottom: 10px ; font-size: 18px ;text-transform: uppercase">Ngày
-                        nhận hàng <span id="confirm-day"></span></p>
+
+                <div class="summary-row" style="margin-top: 20px;">
+                    <span class="label">Ngày nhận hàng</span>
+                    <span id="confirm-day" class="value">--</span>
+                </div>
+
+                <div style="align-items: center; margin-left: 200px ; display: none" id="image-ghn">
+                    <img
+                            src="https://cdn.haitrieu.com/wp-content/uploads/2022/05/Logo-GHN-Slogan-VN.png"
+                            style="height: 60px">
+
                 </div>
             </div>
         </div>

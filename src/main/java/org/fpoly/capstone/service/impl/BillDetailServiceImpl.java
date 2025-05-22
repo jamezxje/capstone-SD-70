@@ -275,12 +275,7 @@ public class BillDetailServiceImpl implements BillDetailService {
         if (!user.isPresent()) {
             throw new RuntimeException("User not found for ID: " + idCusomter);
         }
-        if (user.get().getRoles() != UserRole.ROLE_ADMIN && !bill.get().getEmployee().getId().equals(idCusomter)) {
-            throw new RuntimeException("User admin and employee is not admin");
-        }
-        if (bill.get().getStatus() == BillStatus.VAN_CHUYEN && user.get().getRoles() != UserRole.ROLE_ADMIN) {
-            throw new RuntimeException("User is not admin and Van chuyen No cacel");
-        }
+
         if (bill.get().getStatus() == BillStatus.XAC_NHAN) {
             System.out.println("Chay vao day");
             Long idBill = bill.get().getId();

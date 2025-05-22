@@ -22,10 +22,13 @@ cancelButton.onclick = function () {
         cancelBill();
         location.reload();
     } else if (!isValidChars) {
-        showToast("Lý do không được chứa số hoặc ký tự đặc biệt.");
+        toastr.options.positionClass = 'toast-top-right';
+        toastr.error('Lý do không được chứa số hoặc ký tự đặc biệt.!');
     } else {
-        showToast("Vui lòng nhập ít nhất 20 ký tự.");
+        toastr.options.positionClass = 'toast-top-right';
+        toastr.error('Vui lòng nhập ít nhất 20 ký tự!');
     }
+   showToast('Đã hủy đơn hàng thành công!');
 };
 function getTimeStatus(code) {
     axios.get(`http://localhost:8080/getStatus-history-customer?code=${code}`)

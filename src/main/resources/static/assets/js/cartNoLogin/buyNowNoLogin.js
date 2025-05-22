@@ -232,9 +232,10 @@ function fetchMoneyShip(to_id_district, to_code_ward, quantity) {
                 totalShipLocal = totalShip.total;
                 const wardSelect = document.getElementById("wardSelect").value;
                 console.log('CHeck ward fetchh money', wardSelect)
-                    document.getElementById('shipping').innerText = formatVND(totalShip.total) + "VND";
+                    document.getElementById('shipping').innerText = formatVND(totalShip.total) + " VND";
                     const totalPayShip = totalShip.total + totalShipAndItem;
-                    document.getElementById('span-totalPayMent').innerText = formatVND(totalPayShip) + 'VND';
+                    document.getElementById('span-totalPayMent').innerText = formatVND(totalPayShip) + ' VND';
+                    document.getElementById('image-ghn').style.display = 'block';
                 // priceAmountBillAndShipNoVoucher = totalBill + totalShipLocal - voucherValueLocal;
                 // document.getElementById('total-amount').innerText = formatVND(priceAmountBillAndShipNoVoucher) + "đ";
                 // document.getElementById('amount').innerText = formatVND(priceAmountBillAndShipNoVoucher);
@@ -282,9 +283,8 @@ let totalItem = 0;
 let totalShipAndItem = 0;
 let itemDiscountLocal = 0;
 document.addEventListener("DOMContentLoaded", function () {
-    // Hàm định dạng tiền tệ
     function formatCurrency(number) {
-        return number.toLocaleString("vi-VN") + " VNĐ";
+        return number.toLocaleString("vi-VN") + " VND";
     }
 
     const rawData = localStorage.getItem("selectedProductsForCheckout");
@@ -313,11 +313,11 @@ totalItem += total;
     const voucherValueRaw = localStorage.getItem('voucherValueNoLogin');
     const voucherValueNoLogin = parseInt(voucherValueRaw) || 0;
     itemDiscountLocal = voucherValueNoLogin;
-    document.getElementById('span-voucherValue').innerText = formatVND(voucherValueNoLogin) + "VND";
+    document.getElementById('span-voucherValue').innerText = formatVND(voucherValueNoLogin) + " VND";
     document.getElementById('span-totalItem').innerText = formatCurrency(totalItem)
     const totalPayment = totalItem - voucherValueNoLogin
     totalShipAndItem = totalPayment;
-    document.getElementById('span-totalPayMent').innerText = formatVND(totalPayment) + 'VND';
+    document.getElementById('span-totalPayMent').innerText = formatVND(totalPayment) + ' VND';
 });
 
 document.getElementById('cod-btn').addEventListener('click', function (event) {
@@ -407,7 +407,7 @@ document.getElementById('cod-btn').addEventListener('click', function (event) {
                     localStorage.removeItem('voucherIDNoLogin');
                     localStorage.removeItem('voucherValueNoLogin');
                     setTimeout(() => {
-                        window.location.href = '/shop';
+                        window.location.href = '/';
                     }, 2000);
                 })
                 .catch(error => {
@@ -550,7 +550,7 @@ function checkDistrict() {
         districtSelectError.innerText = "Vui lòng chọn Quận/Huyện";
         districtSelectError.style.display = "block";
         document.getElementById('shipping').innerText = "0 VND";
-        document.getElementById('span-totalPayMent').innerText = formatVND(totalItem) + 'VND';
+        document.getElementById('span-totalPayMent').innerText = formatVND(totalItem) + ' VND';
         return false;
     } else {
         districtSelectError.innerText = "";
@@ -567,7 +567,7 @@ function checkWard() {
         wardSelectError.innerText = "Vui lòng chọn Xã/Phường";
         wardSelectError.style.display = "block";
             document.getElementById('shipping').innerText = "0 VND";
-            document.getElementById('span-totalPayMent').innerText = formatVND(totalItem) + 'VND';
+            document.getElementById('span-totalPayMent').innerText = formatVND(totalItem) + ' VND';
         return false;
     } else {
         wardSelectError.innerText = "";
