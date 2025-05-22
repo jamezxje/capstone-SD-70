@@ -151,6 +151,7 @@
                           <span class="price"
                                 th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'POINT')} + ' VND'"></span>
                         </div>
+
                         <!-- End product price -->
                         
                         <div class="product-review">
@@ -181,6 +182,7 @@
                     </div>
                   </div>
                 </div>
+
                 <div id="tab2" class="tab_content grid-products">
                   <div class="productSlider">
                     <div class="col-12 item">
@@ -1656,6 +1658,8 @@
 <th:block id="th-js">
   <script th:src="@{/assets/user-online/js/vendor/jquery-3.3.1.min.js}"></script>
   <script th:src="@{/assets/user-online/js/vendor/jquery.cookie.js}"></script>
+
+
   <script>
     $(document).on('click', '[data-target="#content_quickview"]', function () {
       const button = $(this);

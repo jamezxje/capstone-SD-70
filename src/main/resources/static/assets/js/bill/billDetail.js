@@ -763,7 +763,7 @@ function getTotalPayMentCustomer(billCode) {
                 console.log("Tổng thanh toán:", billInfo.afterPrice);
                 const afterPrice = billInfo.afterPrice;
                 const moneyShip = billInfo.moneyShip;
-                const totalCustomerPayMent = afterPrice + moneyShip;
+                const totalCustomerPayMent = afterPrice ;
                 customerPaymentBill = totalCustomerPayMent;
                 console.log('Check customerPayMentBill', customerPaymentBill)
                 // Gán vào HTML nếu muốn

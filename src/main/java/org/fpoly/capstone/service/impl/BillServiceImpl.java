@@ -5,13 +5,11 @@ import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.fpoly.capstone.constant.MessageError;
 import org.fpoly.capstone.dto.address.BaseAddressRequest;
-import org.fpoly.capstone.dto.bill.CreateBillOfflineDTO;
-import org.fpoly.capstone.dto.bill.CreateCustomerBill;
-import org.fpoly.capstone.dto.bill.GetAllCusomter;
-import org.fpoly.capstone.dto.bill.ProductRequest;
-import org.fpoly.capstone.dto.bill.VoucherRequest1;
+import org.fpoly.capstone.dto.bill.*;
+import org.fpoly.capstone.dto.billDetail.BillDetailOnline;
 import org.fpoly.capstone.dto.billDetail.BillProductDTO;
 import org.fpoly.capstone.dto.voucher.VoucherRequest;
 import org.fpoly.capstone.entity.Bill;
@@ -389,6 +387,27 @@ public class BillServiceImpl implements BillService {
     public List<VoucherRequest> getVoucherMinimumbill(Integer minimumBill) {
         System.out.println("Check dữ liệu" + this.voucherRepository.getVoucherMinimumBill(minimumBill));
         List<Object[]> list = this.voucherRepository.getVoucherMinimumBill(minimumBill);
+        List<VoucherRequest> voucherRequests = new ArrayList<>();
+        for (Object[] result : list) {
+            Long id = (Long) result[0];
+            String code = (String) result[1];
+            BigDecimal value = (BigDecimal) result[3];
+            String name = (String) result[2];
+            Integer minimumbill = (Integer) result[4];
+            Integer quantity = (Integer) result[5];
+            LocalDateTime startDate = (LocalDateTime) result[6];
+            LocalDateTime endDate = (LocalDateTime) result[7];
+            VoucherStatus voucherStatus = (VoucherStatus) result[8];
+            VoucherRequest voucherRequest = new VoucherRequest(id, code, name, value,
+                    minimumbill, quantity, startDate, endDate, voucherStatus);
+            voucherRequests.add(voucherRequest);
+        }
+        return voucherRequests;
+    }
+
+    @Override
+    public List<VoucherRequest> getVoucherMiniNoLogin(Integer miniNoLogin) {
+        List<Object[]> list = this.voucherRepository.getVoucherMinimumBillNoLogin(miniNoLogin);
         List<VoucherRequest> voucherRequests = new ArrayList<>();
         for (Object[] result : list) {
             Long id = (Long) result[0];
@@ -1008,6 +1027,111 @@ public class BillServiceImpl implements BillService {
                                               LocalDateTime endDate,
                                               Pageable pageable) {
         return billRepository.findByMultipleStatuses(statuses, keyword, billType, startDate, endDate, pageable);
+    }
+
+    @Override
+    public Bill createBillOnlieCustomerRequest(CreateBillCustomerOnlineRequest request) throws MessagingException {
+
+        if (request.getPaymentMethod().equals("paymentReceive")) {
+            for (BillDetailOnline x : request.getBillDetail()) {
+                Optional<ProductDetail> optional = productDetailRepository.findById(x.getIdProductDetail());
+                if (!optional.isPresent()) {
+                    throw new RuntimeException(" Sản phẩm không tồn tại");
+                }
+                ProductDetail productDetail = optional.get();
+                if (productDetail.getQuantity() < x.getQuantity()) {
+                    throw new RuntimeException(" Sản phẩm không đủ để bán");
+                }
+                if (productDetail.getStatus() != ProductVariantStatus.DANG_SU_DUNG) {
+                    throw new RuntimeException(" Sản phẩm không phải trạng thái dang su dung");
+                }
+                if (productDetail.getQuantity() == 0) {
+                    productDetail.setStatus(ProductVariantStatus.HET_SAN_PHAM);
+                }
+                productDetailRepository.save(productDetail);
+            }
+        }
+
+        Optional<User> user = this.userRepository.findById(request.getIdUser());
+        if (!user.isPresent()) {
+            throw new RuntimeException("Employee not found");
+        }
+
+        Bill bill = Bill.builder()
+                .code(generalStringCode.generateCodeAdmin())
+                .shipDate(request.getShipDate())
+                .user(user.get())
+                .phoneNumber(request.getPhoneNumber())
+                .address(request.getAddress())
+                .userName(request.getUserName())
+                .moneyShip(request.getMoneyShip())
+                .itemDiscount(request.getItemDiscount())
+                .totalMoney(request.getTotalMoney())
+                .method(request.getPaymentMethod().equals("paymentReceive") ? PaymentMethod.TIEN_MAT : PaymentMethod.CHUYEN_KHOAN)
+                .type(BillType.ONLINE)
+                .note(request.getNote())
+                .email(request.getEmail())
+                .status(BillStatus.CHO_XAC_NHAN)
+                .build();
+        if (!request.getPaymentMethod().equals("paymentReceive")) {
+            bill.setVnpTransaction(request.getVnpTransaction());
+        }
+        billRepository.save(bill);
+        BillHistory billHistory = BillHistory.builder()
+                .bill(bill)
+                .status(request.getPaymentMethod().equals("paymentReceive") ? BillStatus.CHO_XAC_NHAN : BillStatus.DA_THANH_TOAN)
+                .actionDescription(
+                        request.getPaymentMethod().equals("paymentReceive") ? "Chưa thanh toán" : "Đã thanh toán"
+                )
+                .build();
+        billHistoryRepository.save(billHistory);
+        for (BillDetailOnline x : request.getBillDetail()) {
+            Optional<ProductDetail> optional = productDetailRepository.findById(x.getIdProductDetail());
+            if (!optional.isPresent()) {
+                throw new RuntimeException("Sản phẩm không tồn tại");
+            }
+
+            ProductDetail productDetail = optional.get();
+            BillDetail billDetail = BillDetail.builder()
+                    .productDetail(productDetail)
+                    .price(x.getPrice())
+                    .quantity(x.getQuantity())
+                    .bill(bill)
+                    .statusBill(BillStatus.THANH_CONG)
+                    .build();
+            billDetailRepository.save(billDetail);
+        }
+        if (request.getIdVoucher() != null) {
+            Optional<Voucher> optional = voucherRepository.findById(request.getIdVoucher());
+            if (!optional.isPresent()) {
+                throw new RuntimeException("Voucher không tồn tại");
+            }
+            Voucher voucher = optional.get();
+            VoucherDetail voucherDetail = VoucherDetail.builder()
+                    .voucher(voucher)
+                    .bill(bill)
+                    .beforePrice(request.getTotalMoney())
+                    .afterPrice(request.getAfterPrice())
+                    .discountPrice(request.getItemDiscount())
+                    .build();
+            voucherDetailReponsitory.save(voucherDetail);
+            voucher.setQuantity(voucher.getQuantity() - 1);
+            voucherRepository.save(voucher);
+        }
+        sendInVoiceEmail(bill);
+        return bill;
+    }
+
+    @Override
+    public Optional<ProductDetail> finProductDetailById(Long idProduct, Long idSize, Long idColor) {
+        Optional<ProductDetail> optional = productDetailRepository.findByProductIdAndSizeIdAndColorId(idProduct, idSize, idColor);
+        return optional;
+    }
+
+    @Override
+    public Optional<ProductDetail> findByIDProductDetail(Integer idProductDetail) {
+        Optional<ProductDetail> optional = productDetailRepository.findById(idProductDetail);
+        return optional;
     }
 
 

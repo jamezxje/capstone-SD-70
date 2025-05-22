@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.fpoly.capstone.constant.MessageError;
 import org.fpoly.capstone.constant.VnPayConstant;
+import org.fpoly.capstone.dto.billDetail.BillDetailOnline;
 import org.fpoly.capstone.dto.vnpay.CreatePayMentMethodRequest;
 import org.fpoly.capstone.dto.vnpay.OrderInFor;
 import org.fpoly.capstone.dto.vnpay.PayMentVnPayResponse;
@@ -16,7 +17,9 @@ import org.fpoly.capstone.repository.*;
 import org.fpoly.capstone.service.EmailService;
 import org.fpoly.capstone.service.PaymentMethodService;
 import org.fpoly.capstone.utils.Config;
+import org.fpoly.capstone.utils.general.GeneralStringCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -43,6 +46,12 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
     private EmailService emailService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GeneralStringCode generalStringCode;
+    @Autowired
+    private ProductDetailRepository productDetailRepository;
+    @Autowired
+    private BillDetailRepository billDetailRepository;
     @Override
     public String payWithVnpay(CreatePayMentMethodRequest payModel, HttpServletRequest request) throws UnsupportedEncodingException {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
@@ -50,6 +59,14 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String vnp_CreateDate = now.format(formatter);
         String vnp_ExpireDate = expireTime.format(formatter);
+        String returnUrl;
+
+        if ("GUEST".equalsIgnoreCase(payModel.getUserType())) {
+            returnUrl = VnPayConstant.vnp_ReturnUrl2; // cho khách
+        } else {
+            returnUrl = VnPayConstant.vnp_ReturnUrl; // cho user đăng nhập
+        }
+
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", VnPayConstant.vnp_Version);
@@ -63,7 +80,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
         vnp_Params.put("vnp_Locale", VnPayConstant.vnp_Locale);
         vnp_Params.put("vnp_OrderInfo", payModel.getVnp_OrderInfo());
         vnp_Params.put("vnp_OrderType", payModel.getVnp_OrderType());
-        vnp_Params.put("vnp_ReturnUrl", VnPayConstant.vnp_ReturnUrl);
+        vnp_Params.put("vnp_ReturnUrl", returnUrl);
         vnp_Params.put("vnp_TxnRef", String.valueOf(payModel.getVnp_TxnRef()));
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
         List fieldList = new ArrayList(vnp_Params.keySet());
@@ -116,10 +133,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 }
             }
             Optional<Bill> billOptional = billRepository.findByCode(billCode);
-
-
             if (billOptional.isPresent()) {
-
                 Bill bill = billOptional.get();
                 Long idVoucher = response.getIdVoucher();
                 Long idBill = response.getIdBill();
@@ -197,6 +211,106 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 }
             }
         }
+        return true;
+    }
+
+    @Override
+    public boolean payMentSucessFullyOnlineNoLogin(PayMentVnPayResponse response) {
+        if (response.getVnp_ResponseCode().equals("00")) {
+            String billCode = response.getVnp_TxnRef().split("-")[0];
+            Long idVoucher = response.getIdVoucher();
+            Optional<User> optionalUser = userRepository.findById(response.getIdUser());
+            if (!optionalUser.isPresent()) {
+                throw new RuntimeException(MessageError.EMAIL_NULL.getMessage());
+            }
+            User user = optionalUser.get();
+            Bill bill = Bill.builder()
+                    .code(generalStringCode.generateCodeAdmin())
+                    .user(user)
+                    .totalMoney(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() - 2)))
+                    .method(PaymentMethod.CHUYEN_KHOAN)
+                    .userName(response.getUserName())
+                    .phoneNumber(response.getPhoneNumber())
+                    .email(response.getEmail())
+                    .type(BillType.ONLINE)
+                    .status(BillStatus.DA_THANH_TOAN)
+                    .address(response.getAddress())
+                    .itemDiscount(response.getItemDiscount())
+                    .moneyShip(response.getMoneyShip())
+                    .note(response.getNote())
+                    .lastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
+                    .shipDate(response.getShipDate())
+                    .vnpTransaction(response.getVnp_TransactionNo())
+                    .build();
+//                bill.setUser(user);
+//                bill.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+//                bill.setTotalMoney(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() - 2)));
+//                bill.setMethod(PaymentMethod.CHUYEN_KHOAN);
+//                bill.setUserName(response.getUserName());
+//                System.out.println("Láy username " + response.getUserName());
+//                System.out.println("Lay email " + bill.getEmail());
+//                System.out.println("lay phone" + bill.getPhoneNumber());
+//                bill.setPhoneNumber(response.getPhoneNumber());
+//                bill.setEmail(response.getEmail());
+//                bill.setAddress(response.getAddress());
+//                bill.setItemDiscount(response.getItemDiscount());
+//                bill.setMoneyShip(response.getMoneyShip());
+//                bill.setNote("Thanh toán thành công VNPay");
+//                System.out.println("Cehck ngggayf ship" + response.getDeliveryDate());
+//
+//                bill.setVnpTransaction(response.getVnp_TransactionNo());
+            billRepository.save(bill);
+
+            billHistoryRepository.save(BillHistory.builder()
+                    .status(BillStatus.DA_THANH_TOAN)
+                    .bill(bill)
+                    .user(bill.getEmployee())
+                    .build());
+            for (BillDetailOnline x : response.getBillDetail()) {
+                Optional<ProductDetail> optional = productDetailRepository.findById(x.getIdProductDetail());
+                if (!optional.isPresent()) {
+                    throw new RuntimeException("Sản phẩm không tồn tại");
+                }
+
+                ProductDetail productDetail = optional.get();
+                BillDetail billDetail = BillDetail.builder()
+                        .productDetail(productDetail)
+                        .price(x.getPrice())
+                        .quantity(x.getQuantity())
+                        .bill(bill)
+                        .statusBill(BillStatus.THANH_CONG)
+                        .build();
+                billDetailRepository.save(billDetail);
+            }
+            if (response.getIdVoucher() != null) {
+                Optional<Voucher> optional = voucherRepository.findById(response.getIdVoucher());
+                if (!optional.isPresent()) {
+                    throw new RuntimeException("Voucher không tồn tại");
+                }
+                Voucher voucher = optional.get();
+                VoucherDetail voucherDetail = VoucherDetail.builder()
+                        .voucher(voucher)
+                        .bill(bill)
+                        .beforePrice(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() -2)))
+                        .afterPrice(response.getAfterPrice())
+                        .discountPrice(response.getItemDiscount())
+                        .build();
+                voucherDetailReponsitory.save(voucherDetail);
+                voucher.setQuantity(voucher.getQuantity() - 1);
+                voucherRepository.save(voucher);
+            }
+
+                try {
+                    if (bill.getEmail() != null) {
+                        emailService.sendEmail(bill.getEmail() , "Thannh toán hóa đơn online" ,emailService.generateHtmlContent(bill) );
+                    }else {
+                        System.out.println("Email null no send");
+                    }
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+//        }
         return true;
     }
 

@@ -2044,24 +2044,13 @@ document.getElementById('btn-bank').addEventListener('click', function () {
         vnp_Amount: vnp_Amount,
         vnp_OrderInfo: "Thanh toán cho đơn hàng",
         vnp_OrderType: "other",
-        vnp_TxnRef: invoiceCodeLocal
+        vnp_TxnRef: invoiceCodeLocal ,
+        userType: "USER"
     };
     const nameCustomer = document.getElementById('nameCustomer').value;
     const phoneCustomer = document.getElementById('numberPhoneCustomer').value;
     let idCustomerPay = idCusomter || "13";
-    // let billData = {
-    //     code : invoiceCodeLocal ,
-    //     name : name ,
-    //     phoneNumber : phoneNumber,
-    //     nameCustomer : nameCustomer ,
-    //     phoneCustomer : phoneCustomer ,
-    //     fullAddress : fullAddress ,
-    //     dateShip : dateShip ,
-    //     totalBill : totalBill,
-    //     itemDiscount: voucherValueLocal ,
-    //     moneyShip : totalShipLocal,
-    // }
-    // localStorage.setItem('billDataaaaa', JSON.stringify(billData));
+
     localStorage.setItem('idUser', idCustomerPay);
     localStorage.setItem('name', name);
     localStorage.setItem('phone', phoneNumber)

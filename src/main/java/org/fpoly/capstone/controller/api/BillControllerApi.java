@@ -91,6 +91,11 @@ public class BillControllerApi {
         List<VoucherRequest> voucherRequest = billService.getVoucherMinimumbill(minimumBill);
         return voucherRequest;
     }
+    @GetMapping("/getMinimumBillNoLogin")
+    public List<VoucherRequest> getMinimumBillNoLogin(@Param("minimumBill") Integer minimumBill) {
+        List<VoucherRequest> voucherRequest = billService.getVoucherMiniNoLogin(minimumBill);
+        return voucherRequest;
+    }
 
     @GetMapping("/getAllProduct")
     public Page<ProductRequest> listProductDetail(@RequestParam(defaultValue = "0") int page
@@ -122,6 +127,16 @@ public class BillControllerApi {
     @PostMapping("/vnpay-success")
     public ResponseEntity<String> vnPayCallback(@RequestBody PayMentVnPayResponse response) {
         boolean paymentSuccess = paymentMethodService.paymentSucessFully(response);
+        if (paymentSuccess) {
+            return ResponseEntity.ok("Thanh toán thành công");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Thanh toán không thành công");
+        }
+    }
+
+    @PostMapping("/vnpay-success-no-login")
+    public ResponseEntity<String> vnPayCallbackNoLogin(@RequestBody PayMentVnPayResponse response) {
+        boolean paymentSuccess = paymentMethodService.payMentSucessFullyOnlineNoLogin(response);
         if (paymentSuccess) {
             return ResponseEntity.ok("Thanh toán thành công");
         } else {
@@ -187,6 +202,29 @@ public class BillControllerApi {
             return ResponseEntity.ok(billOpt.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mã hóa đơn không tồn tại.");
+        }
+    }
+    @PostMapping("/createBill-Customer")
+    public Bill createBill(@RequestBody CreateBillCustomerOnlineRequest request) throws MessagingException {
+        Bill bill = billService.createBillOnlieCustomerRequest(request);
+        return bill;
+    }
+    @GetMapping("/detail-productId/{idProduct}/size/{idSize}/color/{idColor}")
+    public ResponseEntity<?> getProductDetailById(@PathVariable Long idProduct, @PathVariable Long idSize, @PathVariable Long idColor) {
+        Optional<ProductDetail> productDetail = billService.finProductDetailById(idProduct, idSize, idColor);
+        if (productDetail.isPresent()) {
+            return ResponseEntity.ok(productDetail.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm với ID: " + idProduct);
+        }
+    }
+    @GetMapping("/getQuantityProductDetail/{idProductDetail}")
+    public ResponseEntity<?> getProductDetailById(@PathVariable Integer idProductDetail) {
+        Optional<ProductDetail> productDetail = billService.findByIDProductDetail(idProductDetail);
+        if (productDetail.isPresent()) {
+            return ResponseEntity.ok(productDetail.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm với ID: " + idProductDetail);
         }
     }
 

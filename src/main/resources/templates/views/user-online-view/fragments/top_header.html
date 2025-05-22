@@ -96,7 +96,7 @@
                 <div th:if="${loggedUser != null}">
                     <a th:href="@{/online/customer/profile}">Tài khoản của tôi</a>
                     <a th:href="@{/bill}">Đơn mua</a>
-                    <a th:href="@{/auth/logout}">Đăng xuất</a>
+                    <a th:href="@{/auth/logout}" id="logoutcustomer">Đăng xuất</a>
                 </div>
             </div>
           </div>
@@ -124,6 +124,9 @@
     userDropdown.addEventListener('mouseleave', () => {
         dropdownMenu.style.display = 'none';
     });
+    document.getElementById('logoutcustomer').addEventListener('click' , function () {
+        localStorage.removeItem('tempEmail');
+    })
 </script>
 
 </th:block>

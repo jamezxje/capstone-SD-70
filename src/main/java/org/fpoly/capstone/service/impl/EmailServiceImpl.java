@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -53,6 +55,10 @@ public class EmailServiceImpl implements EmailService {
         } else if (meThodBill.equals("CHUYEN_KHOAN")) {
             meThodBill = "Chuyển khoản";
         }
+        LocalDateTime createDate = bill.getCreateDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+        String formattedDate = createDate.format(formatter);
         List<BillDetail> billDetails = this.billDetailRepository.findByBillId(bill.getId());
         html.append("<html><head>")
                 .append("<style>")
@@ -76,7 +82,7 @@ public class EmailServiceImpl implements EmailService {
                 .append("<div class='info-section'>")
                 .append("<div class='info-left'>")
                 .append("<p><span class='info-title'>Mã hóa đơn:</span> <strong>").append(bill.getCode()).append("</strong></p>")
-                .append("<p><span class='info-title'>Ngày tạo:</span> <strong>").append(bill.getCreateDate()).append("</strong></p>")
+                .append("<p><span class='info-title'>Ngày tạo:</span> <strong>").append(formattedDate).append("</strong></p>")
                 .append("</div>")
                 .append("<div class='info-right'>")
                 .append("<p><span class='info-title'>Từ:</span> <strong>").append("CAPSTONE").append("</strong></p>")
@@ -123,7 +129,7 @@ public class EmailServiceImpl implements EmailService {
                 .append("<p class='total'>Tổng tiền: <strong>").append(currencyFormat.format(totalAmount)).append("</strong></p>")
                 .append("<p class='total'>Giảm giá: <strong>").append(currencyFormat.format(bill.getItemDiscount())).append("</strong></p>")
                 .append("<p class='total'>Phí giao hàng: <strong>").append(currencyFormat.format(bill.getMoneyShip())).append("</strong></p>")
-                .append("<p class='total'>Tổng tiền thanh toán: <strong>").append(currencyFormat.format(bill.getTotalMoney())).append("</strong></p>")
+                .append("<p class='total'>Tổng tiền thanh toán: <strong>").append(currencyFormat.format(bill.getTotalMoney().add(bill.getMoneyShip()))).append("</strong></p>")
 
                 .append("</body></html>");
 
