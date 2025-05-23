@@ -20,7 +20,10 @@ cancelButton.onclick = function () {
         actionDescription = reason;
         cancelReason.value = '';
         cancelBill();
-        location.reload();
+        showToast('Đã hủy đơn hàng thành công!');
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
     } else if (!isValidChars) {
         toastr.options.positionClass = 'toast-top-right';
         toastr.error('Lý do không được chứa số hoặc ký tự đặc biệt.!');
@@ -28,7 +31,7 @@ cancelButton.onclick = function () {
         toastr.options.positionClass = 'toast-top-right';
         toastr.error('Vui lòng nhập ít nhất 20 ký tự!');
     }
-   showToast('Đã hủy đơn hàng thành công!');
+
 };
 function getTimeStatus(code) {
     axios.get(`http://localhost:8080/getStatus-history-customer?code=${code}`)
