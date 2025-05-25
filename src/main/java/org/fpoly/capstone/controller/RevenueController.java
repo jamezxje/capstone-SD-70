@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -227,8 +225,15 @@ public class RevenueController {
         Row headerRow = sheet.createRow(1);
         headerRow.setHeightInPoints(25);
         String[] headers = {
-                "Tổng doanh thu", "Tổng số lượng sản phẩm", "Trả hàng", "Hủy đơn hàng", "Thời gian"
+                "Tổng doanh thu", "Tổng số lượng sản phẩm", "Hủy đơn hàng", "Thời gian"
         };
+
+
+        // Tạo formatter cho tiền tệ VN
+        NumberFormat vndFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+// Format tiền tệ
+        String formattedRevenue = vndFormat.format(totalRevenueToday).replace("₫", "VNĐ");
 
         for (int i = 0; i < headers.length; i++) {
             Cell cell = headerRow.createCell(columnOffset + i);
@@ -242,9 +247,8 @@ public class RevenueController {
         dataRow.setHeightInPoints(42);
 
         Object[] values = {
-                totalRevenueToday,
+                formattedRevenue,
                 totalProductToday,
-                totalProductRefundToday,
                 totalProductCandelToday,
                 timePeriod
         };
@@ -378,7 +382,7 @@ public class RevenueController {
 // Header bảng HÓA ĐƠN ĐÃ HỦY
         Row cancelledHeaderRow = sheet.createRow(rowIndex++);
         cancelledHeaderRow.setHeightInPoints(25);
-        String[] cancelledHeaders = {"Thời gian hủy", "Mã hóa đơn", "Loại Hóa Đơn", "Tên Khách Hàng", "Tên Nhân Viên", "Lý do hủy"};
+        String[] cancelledHeaders = {"Thời gian hủy", "Mã hóa đơn", "Loại Hóa Đơn", "Tên Khách Hàng", "Tên Nhân Viên", "Số Tiền Hủy", "Lý do hủy"};
 
         CellStyle cancelledHeaderStyle = workbook.createCellStyle();
         cancelledHeaderStyle.cloneStyleFrom(baseCenterStyle);
@@ -395,6 +399,14 @@ public class RevenueController {
             cell.setCellStyle(cancelledHeaderStyle);
             sheet.setColumnWidth(columnOffset + i, 30 * 256); // Độ rộng cột vừa phải
         }
+
+        BigDecimal totalCancelledAmount = totalsCancelledBills.stream()
+                .map(Bill::getTotalMoney)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        currencyFormat.setMaximumFractionDigits(0);
 
 // Dữ liệu các hóa đơn đã hủy
         for (Bill bill : totalsCancelledBills) {
@@ -426,12 +438,53 @@ public class RevenueController {
             cell4.setCellValue(bill.getEmployee() != null ? bill.getEmployee().getFullName() : "");
             cell4.setCellStyle(baseCenterStyle);
 
-            // Lý do hủy (giả sử getCancelReason())
-            Cell cell5 = row.createCell(columnOffset + 5);
-            cell5.setCellValue(bill.getNote() != null ? bill.getNote() : "");
-            cell5.setCellStyle(baseCenterStyle);
-        }
 
+            Cell cell5 = row.createCell(columnOffset + 5);
+            if (bill.getTotalMoney() != null) {
+                String formattedMoney = currencyFormat.format(bill.getTotalMoney()).replace("₫", " VNĐ");
+                cell5.setCellValue(formattedMoney);
+            } else {
+                cell5.setCellValue("");
+            }
+            cell5.setCellStyle(baseCenterStyle);
+
+            // Lý do hủy (giả sử getCancelReason())
+            Cell cell6 = row.createCell(columnOffset + 6);
+            cell6.setCellValue(bill.getNote() != null ? bill.getNote() : "");
+            cell6.setCellStyle(baseCenterStyle);
+        }
+        Row totalRow = sheet.createRow(rowIndex++);
+        totalRow.setHeightInPoints(30);
+
+// Style cho ô label "Tổng tiền đã huỷ"
+        CellStyle totalLabelStyle = workbook.createCellStyle();
+        Font boldFont = workbook.createFont();
+        boldFont.setBold(true);
+        totalLabelStyle.setFont(boldFont);
+        totalLabelStyle.setAlignment(HorizontalAlignment.CENTER);
+        totalLabelStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+// Style cho ô giá trị tổng tiền huỷ - màu đỏ
+        CellStyle redMoneyStyle = workbook.createCellStyle();
+        Font redFont = workbook.createFont();
+        redFont.setColor(IndexedColors.RED.getIndex());
+        redFont.setBold(true);
+        redFont.setFontHeightInPoints((short) 14); // 👈 Font to lên
+        redMoneyStyle.setFont(redFont);
+        redMoneyStyle.setFont(redFont);
+        redMoneyStyle.setAlignment(HorizontalAlignment.RIGHT);
+        redMoneyStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+// Ô hiển thị "TỔNG TIỀN ĐÃ HUỶ:" (cột "Số Tiền Hủy" = offset + 5)
+        Cell totalLabelCell = totalRow.createCell(columnOffset + 4);
+        totalLabelCell.setCellValue("TỔNG TIỀN ĐÃ HUỶ:");
+        totalLabelCell.setCellStyle(totalLabelStyle);
+
+// Ô hiển thị tổng số tiền đã huỷ (ở cột kế bên = offset + 6)
+        Cell totalValueCell = totalRow.createCell(columnOffset + 5);
+        String formattedTotal = currencyFormat.format(totalCancelledAmount).replace("₫", " VNĐ");
+        totalValueCell.setCellValue(formattedTotal);
+        totalValueCell.setCellStyle(redMoneyStyle);
 
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

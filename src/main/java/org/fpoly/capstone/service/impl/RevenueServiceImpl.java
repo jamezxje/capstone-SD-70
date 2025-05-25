@@ -105,11 +105,11 @@ public class RevenueServiceImpl implements RevenueService {
 
     @Override
     public Integer totalProductCanel() {
-        List<BillDetail> bills = billDetailService.findAll();
-        return bills.stream()
-                .filter(bd -> bd.getStatusBill() == BillStatus.DA_HUY)
-                .mapToInt(BillDetail::getQuantity)
-                .sum();
+        List<Bill> bills = billService.findAll();
+        long count = bills.stream()
+                .filter(bd -> bd.getStatus() == BillStatus.DA_HUY)
+                .count(); // Đếm số hóa đơn có trạng thái ĐÃ_HỦY
+        return (int) count; // Ép kiểu long -> int
     }
 
     @Override
@@ -147,11 +147,11 @@ public class RevenueServiceImpl implements RevenueService {
 
     @Override
     public Integer totalProductCanelToday() {
-        List<BillDetail> bills = billDetailService.findByCreateDate(LocalDate.now());
-        return bills.stream()
-                .filter(bd -> bd.getStatusBill() == BillStatus.DA_HUY)
-                .mapToInt(BillDetail::getQuantity)
-                .sum();
+        List<Bill> bills = billService.findCancelledBillsDate(LocalDate.now());
+        long count = bills.stream()
+                .filter(bd -> bd.getStatus() == BillStatus.DA_HUY)
+                .count(); // Đếm số hóa đơn có trạng thái ĐÃ_HỦY
+        return (int) count; // Ép kiểu long -> int
     }
 
     @Override
@@ -204,11 +204,11 @@ public class RevenueServiceImpl implements RevenueService {
 
     @Override
     public Integer totalProductCanelDate(LocalDate date) {
-        List<BillDetail> bills = billDetailService.findByCreateDate(date);
-        return bills.stream()
-                .filter(bd -> bd.getStatusBill() == BillStatus.DA_HUY)
-                .mapToInt(BillDetail::getQuantity)
-                .sum();
+        List<Bill> bills = billService.findCancelledBillsDate(date);
+        long count = bills.stream()
+                .filter(bd -> bd.getStatus() == BillStatus.DA_HUY)
+                .count(); // Đếm số hóa đơn có trạng thái ĐÃ_HỦY
+        return (int) count; // Ép kiểu long -> int
     }
 
     @Override
@@ -272,11 +272,11 @@ public class RevenueServiceImpl implements RevenueService {
     public Integer totalProductCanelYear(Integer year) {
         LocalDate startDate = LocalDate.of(year, 1, 1);
         LocalDate endDate = Year.of(year).atMonth(12).atEndOfMonth();
-        List<BillDetail> bills = billDetailService.findByCreateDateBetween(startDate, endDate);
-        return bills.stream()
-                .filter(bd -> bd.getStatusBill() == BillStatus.DA_HUY)
-                .mapToInt(BillDetail::getQuantity)
-                .sum();
+        List<Bill> bills = billService.findByCancelledDateBetween(startDate, endDate);
+        long count = bills.stream()
+                .filter(bd -> bd.getStatus() == BillStatus.DA_HUY)
+                .count(); // Đếm số hóa đơn có trạng thái ĐÃ_HỦY
+        return (int) count; // Ép kiểu long -> int
     }
 
     @Override
@@ -303,11 +303,11 @@ public class RevenueServiceImpl implements RevenueService {
         LocalDate startDate = YearMonth.of(year, month).atDay(1);
         LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
 
-        List<BillDetail> bills = billDetailService.findByCreateDateBetween(startDate, endDate);
-        return bills.stream()
-                .filter(bd -> bd.getStatusBill() == BillStatus.DA_HUY)
-                .mapToInt(BillDetail::getQuantity)
-                .sum();
+        List<Bill> bills = billService.findByCancelledDateBetween(startDate, endDate);
+        long count = bills.stream()
+                .filter(bd -> bd.getStatus() == BillStatus.DA_HUY)
+                .count(); // Đếm số hóa đơn có trạng thái ĐÃ_HỦY
+        return (int) count; // Ép kiểu long -> int
     }
 
     @Override
