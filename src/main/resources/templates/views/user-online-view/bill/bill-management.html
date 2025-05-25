@@ -30,7 +30,7 @@
               <img th:if="${loggedUser != null and loggedUser.avatar != null and !#strings.isEmpty(loggedUser.avatar)}"
                    th:src="${loggedUser.avatar}"
                    class="rounded-full mx-auto mb-2"
-                   style="width: 80px; height: 80px; object-fit: cover;" />
+                   style="width: 80px; height: 80px; object-fit: cover;"/>
               <p class="font-bold" th:text="${loggedUser.fullName}"></p>
             </div>
             <button class="tab-btn w-100 text-start">
@@ -67,7 +67,8 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr th:each="bill : ${billList}" th:if="${bill.code != null and bill.method != null}">
+                  <tr th:each="bill : ${billList}"
+                      th:if="${bill.code != null and bill.method != null and bill.shipDate != null}">
                     <td th:text="${bill.code}"></td>
                     <td th:text="${@globalControllerAdvice.formatDateTime(bill.createDate)}">
                       Spike Jacket

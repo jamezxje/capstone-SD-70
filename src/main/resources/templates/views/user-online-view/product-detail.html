@@ -1356,5 +1356,32 @@
       }, 1800);
     }
   </script>
+  
+  <script>
+    (function ($) {
+      // Start of use strict
+      'use strict';
+      
+      function qnt_incre() {
+        $(".qtyBtn").on("click", function (e) {
+          e.preventDefault();
+          var qtyField = $(this).closest(".qtyField"),
+              qtyInput = $(qtyField).find(".qty"),
+              oldValue = parseInt(qtyInput.val()),
+              newVal = oldValue;
+          
+          if ($(this).is(".plus")) {
+            newVal = oldValue + 1;
+          } else if ($(this).is(".minus") && oldValue > 1) {
+            newVal = oldValue - 1;
+          }
+          qtyInput.val(newVal);
+        });
+      }
+      
+      qnt_incre();
+    })(jQuery);
+  
+  </script>
 </th:block>
 </html>
