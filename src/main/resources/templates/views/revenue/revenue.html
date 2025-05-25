@@ -197,7 +197,33 @@
               </tbody>
             </table>
           </div>
-
+            <!--            <div class="m-5">-->
+            <!--              <h4>THỐNG KÊ CÁC HOÁ ĐƠN ĐÃ HUỶ</h4>-->
+            <!--              <table class="table table-bordered table-hover" id="cancelledBillsTable">-->
+            <!--                <thead>-->
+            <!--                <tr>-->
+            <!--                  <th>STT</th>-->
+            <!--                  <th>Thời gian hủy</th>-->
+            <!--                  <th>Mã hóa đơn</th>-->
+            <!--                  <th>Loại hóa đơn</th>-->
+            <!--                  <th>Tên khách hàng</th>-->
+            <!--                  <th>Tên nhân viên</th>-->
+            <!--                  <th>Lý do hủy</th>-->
+            <!--                </tr>-->
+            <!--                </thead>-->
+            <!--                <tbody>-->
+            <!--                <tr th:each="bill, iterStat : ${totalsCancelledBillsToday}">-->
+            <!--                  <td th:text="${iterStat.index + 1}"></td>-->
+            <!--                  <td th:text="${#dates.format(bill.confirmationDate, 'dd/MM/yyyy HH:mm')}"></td>-->
+            <!--                  <td th:text="${bill.code}"></td>-->
+            <!--                  <td th:text="${bill.type}"></td>-->
+            <!--                  <td th:text="${bill.user != null ? bill.user.fullName : 'Khách lẻ'}"></td>-->
+            <!--                  <td th:text="${bill.employee != null ? bill.employee.fullName : 'Chưa xác định'}"></td>-->
+            <!--                  <td th:text="${bill.note}"></td>-->
+            <!--                </tr>-->
+            <!--                </tbody>-->
+            <!--              </table>-->
+            <!--            </div>-->
 
           </div>
     </div>

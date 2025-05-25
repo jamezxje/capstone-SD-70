@@ -112,5 +112,9 @@ public interface BillService {
                                        LocalDateTime endDate,
                                        Pageable pageable);
 
+    List<Bill> findCancelledBillsDate(LocalDate date);
+
+    List<Bill> findByCancelledDateBetween(LocalDate start, LocalDate end);
+
 
 }

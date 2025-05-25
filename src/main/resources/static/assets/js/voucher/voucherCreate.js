@@ -25,12 +25,12 @@ document.getElementById("voucherForm").addEventListener("submit", function(event
   let valueInput = document.getElementById("value");
   let numericValue = valueInput.value.replace(/\D/g, ''); // Loại bỏ tất cả ký tự không phải số
 
-  if (!numericValue || isNaN(numericValue) || parseInt(numericValue) < 10000 || parseInt(numericValue) > 10000000) {
-    valueInput.classList.add("is-invalid");
-    isValid = false;
-  } else {
-    valueInput.classList.remove("is-invalid");
-  }
+//  if (!numericValue || isNaN(numericValue) || parseInt(numericValue) < 10000 || parseInt(numericValue) > 10000000) {
+//    valueInput.classList.add("is-invalid");
+//    isValid = false;
+//  } else {
+//    valueInput.classList.remove("is-invalid");
+//  }
 
   // Kiểm tra số lượng hợp lệ
   let quantityInput = document.getElementById("quantity");
@@ -61,18 +61,39 @@ document.getElementById("voucherForm").addEventListener("submit", function(event
   let minimumBillInput = document.getElementById("minimumBill");
   let minimumBillValue = minimumBillInput.value.replace(/\D/g, ''); // Loại bỏ dấu phẩy từ giá trị nhập vào
 
-  if (parseInt(numericValue) > parseInt(minimumBillValue)) {
+if (parseInt(numericValue) > parseInt(minimumBillValue)) {
     minimumBillInput.classList.add("is-invalid");
     valueInput.classList.add("is-invalid");
     isValid = false;
   } else {
-    if (!minimumBillValue || isNaN(minimumBillValue) || parseInt(minimumBillValue) < 1000 || parseInt(minimumBillValue) > 10000000) {
-      minimumBillInput.classList.add("is-invalid");
-      isValid = false;
-    } else {
-      minimumBillInput.classList.remove("is-invalid");
-    }
+    // Nếu số tiền hợp lệ, xóa dấu lỗi
+       if (!numericValue || isNaN(numericValue) || parseInt(numericValue) < 10000 || parseInt(numericValue) > 100000000) {
+           valueInput.classList.add("is-invalid");
+           isValid = false;
+       } else {
+           valueInput.classList.remove("is-invalid");
+       }
+
+       if (!minimumBillValue || isNaN(minimumBillValue) || parseInt(minimumBillValue) < 1000 || parseInt(minimumBillValue) > 10000000) {
+             minimumBillInput.classList.add("is-invalid");
+             isValid = false;
+         } else {
+             minimumBillInput.classList.remove("is-invalid");
+         }
   }
+
+//  if (parseInt(numericValue) > parseInt(minimumBillValue)) {
+//    minimumBillInput.classList.add("is-invalid");
+//    valueInput.classList.add("is-invalid");
+//    isValid = false;
+//  } else {
+//    if (!minimumBillValue || isNaN(minimumBillValue) || parseInt(minimumBillValue) < 1000 || parseInt(minimumBillValue) > 10000000) {
+//      minimumBillInput.classList.add("is-invalid");
+//      isValid = false;
+//    } else {
+//      minimumBillInput.classList.remove("is-invalid");
+//    }
+//  }
 
   // Ngăn chặn gửi form nếu không hợp lệ
   if (!isValid) {

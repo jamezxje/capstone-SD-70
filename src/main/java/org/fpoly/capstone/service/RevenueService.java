@@ -1,5 +1,6 @@
 package org.fpoly.capstone.service;
 
+import org.fpoly.capstone.entity.Bill;
 import org.fpoly.capstone.entity.BillDetail;
 import org.fpoly.capstone.entity.ProductDetail;
 
@@ -10,6 +11,16 @@ import java.util.Map;
 
 
 public interface RevenueService {
+
+    List<Bill> totalsCancelledBills();
+
+    List<Bill> totalsCancelledBillsToday();
+
+    List<Bill> totalsCancelledBillsDate(LocalDate date);
+
+    List<Bill> totalsCancelledBillsMonth(int month, int year);
+
+    List<Bill> totalsCancelledBillsYear(Integer year);
 
     BigDecimal totalRevenue();
 

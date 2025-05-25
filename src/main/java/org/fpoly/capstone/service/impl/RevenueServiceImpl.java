@@ -15,12 +15,61 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @RequiredArgsConstructor
 public class RevenueServiceImpl implements RevenueService {
 
     private final BillService billService;
     private final BillDetailService billDetailService;
+
+    @Override
+    public List<Bill> totalsCancelledBills() {
+        List<Bill> totalBill = billService.findAll();
+        return totalBill.stream()
+                .filter(b -> b.getStatus() == BillStatus.DA_HUY)
+                .collect(toList());
+    }
+
+    @Override
+    public List<Bill> totalsCancelledBillsToday() {
+        List<Bill> totalBill = billService.findCancelledBillsDate(LocalDate.now());
+        return totalBill.stream()
+                .filter(b -> b.getStatus() == BillStatus.DA_HUY)
+                .collect(toList());
+    }
+
+    @Override
+    public List<Bill> totalsCancelledBillsDate(LocalDate date) {
+        List<Bill> totalBill = billService.findCancelledBillsDate(date);
+        return totalBill.stream()
+                .filter(b -> b.getStatus() == BillStatus.DA_HUY)
+                .collect(toList());
+    }
+
+    @Override
+    public List<Bill> totalsCancelledBillsMonth(int month, int year) {
+        LocalDate startDate = YearMonth.of(year, month).atDay(1);
+        LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
+
+
+        List<Bill> totalBill = billService.findByCancelledDateBetween(startDate, endDate);
+        return totalBill.stream()
+                .filter(b -> b.getStatus() == BillStatus.DA_HUY)
+                .collect(toList());
+    }
+
+    @Override
+    public List<Bill> totalsCancelledBillsYear(Integer year) {
+        LocalDate startDate = LocalDate.of(year, 1, 1);
+        LocalDate endDate = Year.of(year).atMonth(12).atEndOfMonth();
+
+        List<Bill> totalBill = billService.findByCancelledDateBetween(startDate, endDate);
+        return totalBill.stream()
+                .filter(b -> b.getStatus() == BillStatus.DA_HUY)
+                .collect(toList());
+    }
 
     @Override
     public BigDecimal totalRevenue() {
@@ -118,7 +167,7 @@ public class RevenueServiceImpl implements RevenueService {
                 .entrySet().stream()
                 .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
                 .limit(5)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -175,7 +224,7 @@ public class RevenueServiceImpl implements RevenueService {
                 .entrySet().stream()
                 .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
                 .limit(5)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -245,7 +294,7 @@ public class RevenueServiceImpl implements RevenueService {
                 .entrySet().stream()
                 .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
                 .limit(5)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
 
@@ -320,7 +369,7 @@ public class RevenueServiceImpl implements RevenueService {
                 .entrySet().stream()
                 .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
                 .limit(5)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
 
@@ -338,7 +387,7 @@ public class RevenueServiceImpl implements RevenueService {
                 .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
                 .map(Map.Entry::getKey)
                 .limit(5)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -354,7 +403,7 @@ public class RevenueServiceImpl implements RevenueService {
                 .entrySet().stream()
                 .sorted(Map.Entry.<ProductDetail, Integer>comparingByValue(Comparator.reverseOrder()))
                 .limit(3)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
 

@@ -49,6 +49,12 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     @Query("SELECT b FROM Bill b WHERE b.createDate BETWEEN :startOfDay AND :endOfDay")
     List<Bill> findByCreateDateBetween(@Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
 
+    @Query("SELECT b FROM Bill b WHERE b.confirmationDate BETWEEN :startOfDay AND :endOfDay")
+    List<Bill> findCancelledBillsByDate(@Param("startOfDay") LocalDateTime startOfDay,
+                                        @Param("endOfDay") LocalDateTime endOfDay);
+
+
+
     @Query("SELECT b FROM Bill b " +
             "WHERE (:keyword IS NULL OR b.code LIKE %:keyword%) " +
             "AND (:orderType IS NULL OR b.type = :orderType) " +
