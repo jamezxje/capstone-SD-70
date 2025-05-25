@@ -155,9 +155,9 @@ public class VoucherController {
         } else if (startDate != null && endDate != null) {
             voucherPage = voucherService.searchByStartDateAndEndDate(pageable, null, null, startDate, endDate);
         }
-        if(voucherPage.isEmpty()){
-            voucherPage = voucherService.findAll(pageable);
-        }
+//        if(voucherPage.isEmpty()){
+//            voucherPage = voucherService.findAll(pageable);
+//        }
         voucherService.updateVoucherStatuses();
 
         log.info("(startDate) " + startDate);
