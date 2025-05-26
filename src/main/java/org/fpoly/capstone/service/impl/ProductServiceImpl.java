@@ -9,6 +9,7 @@ import org.fpoly.capstone.entity.ProductDetail;
 import org.fpoly.capstone.entity.enum_status.Gender;
 import org.fpoly.capstone.entity.enum_status.ProductStatus;
 import org.fpoly.capstone.exceptions.ResourceNotFoundException;
+import org.fpoly.capstone.exceptions.ServiceRuntimeException;
 import org.fpoly.capstone.repository.CategoryRepository;
 import org.fpoly.capstone.repository.ProductDetailRepository;
 import org.fpoly.capstone.repository.ProductRepository;
@@ -65,8 +66,19 @@ public class ProductServiceImpl implements ProductService {
         return this.productRepository.findByFilter(request, pageable);
     }
 
+    private void validateProductName(String productName) {
+        Product existProductByName =
+                this.productRepository.findProductByProductName(productName);
+        if (existProductByName != null) {
+            throw new ServiceRuntimeException("Tên sản phẩm đã tồn tại");
+        }
+    }
+
     @Override
     public void createProduct(ProductRequest request) throws Exception {
+
+        this.validateProductName(request.getName());
+
         Category category = this.categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 

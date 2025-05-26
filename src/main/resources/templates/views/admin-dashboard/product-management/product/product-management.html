@@ -73,6 +73,7 @@
             </form>
           </div>
         </div>
+        
         <!--Data table start-->
         <div class="card-body">
           <div class="table-responsive">
@@ -442,6 +443,7 @@
         <!-- Delete product modal end -->
       
       </div>
+    
     </div>
   </div>
 </th:block>
@@ -494,6 +496,12 @@
       };
     });
   
+  </script>
+  <script>
+    const input = document.getElementById('productNameEdit');
+    input.addEventListener('input', function () {
+      this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+    });
   </script>
 </th:block>
 </body>

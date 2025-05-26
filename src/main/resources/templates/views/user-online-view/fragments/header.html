@@ -52,24 +52,54 @@
           </div>
         </div>
         <!--Mobile Logo-->
-        <div class="col-4 col-sm-3 col-md-3 col-lg-2">
-          <div class="site-cart" style="position: relative;">
-            <a th:href="@{/cart}" class="site-header__cart" title="Cart" style="position: relative; display: inline-block;">
-              <i class="icon anm anm-bag-l" style="font-size: 24px;"></i>
-              <span class="cart-count-badge"
-                th:if="${cartQuantity != null and cartQuantity > 0}"
-                th:text="${cartQuantity}">
-          </span>
+        <div class="col-4 col-sm-3 col-md-3 col-lg-2 d-flex align-items-center justify-content-end">
+          <div class="site-header__search" style="margin-left: 20px;">
+            <a th:href="@{/searchBill}" class="search-trigger" title="Search">
+              <i class="icon anm anm-search-l" style="color: black"></i>
             </a>
           </div>
-          <div class="site-header__search">
-            <a th:href="@{/searchBill}" class="search-trigger" title="Search"><i class="icon anm anm-search-l" style="color: black"></i></a>
+          <div id="cartLoggedIn" class="site-cart" style="position: relative; display: none;">
+            <a href="/cart" class="site-header__cart" title="Cart" style="position: relative; display: inline-block;">
+              <i class="icon anm anm-bag-l" style="font-size: 24px;"></i>
+              <span class="cart-count-badge"
+                    th:if="${cartQuantity != null and cartQuantity > 0}"
+                    th:text="${cartQuantity}"></span>
+            </a>
           </div>
+
+          <div id="cartGuest" class="site-cart" style="position: relative; display: none;">
+            <a href="/NoLogin" class="site-header__cart" title="Cart" style="position: relative; display: inline-block;">
+              <i class="icon anm anm-bag-l" style="font-size: 24px;"></i>
+              <span class="cart-count-badge"></span>
+            </a>
+          </div>
+
+
+        </div>
         </div>
       </div>
     </div>
   </div>
-</th:block>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const emailCustomer = localStorage.getItem('tempEmail');
+      const cartLoggedIn = document.getElementById('cartLoggedIn');
+      const cartGuest = document.getElementById('cartGuest');
 
+      console.log("Check emailCustomer:", emailCustomer);
+
+      if (emailCustomer && emailCustomer.trim() !== "") {
+        cartLoggedIn.style.display = 'block';
+        cartGuest.style.display = 'none';
+      } else {
+        cartLoggedIn.style.display = 'none';
+        cartGuest.style.display = 'block';
+      }
+    });
+
+  </script>
+  <script type="text/javascript" th:src="@{/assets/js/cartNoLogin/header.js}"></script>
+</th:block>
 </body>
+
 </html>

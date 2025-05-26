@@ -30,7 +30,6 @@ public class SecurityConfiguration {
 
     protected static final String[] PUBLIC_UNAUTHENTICATION_URI = {
             "/",
-            "/sale-counter/**" ,
             "/getAllBill/**" ,
             "/deleteBill/**",
             "/save-bill/**" ,
@@ -52,6 +51,7 @@ public class SecurityConfiguration {
             "/sendInvoice/**",
             "/address-user/**" ,
             "/getMinimumBill/**" ,
+            "/getMinimumBillNoLogin/**" ,
             "/paymnet-success/**",
             "/delete-product-bill/**" ,
             "/products/**",
@@ -61,6 +61,13 @@ public class SecurityConfiguration {
             "/search-product-customer/**" ,
             "/searchBill/**" ,
             "/searchBillCode/**" ,
+            "/NoLogin/**" ,
+            "/buyNow-NoLogin/**" ,
+            "/vnpay-success-no-login/**" ,
+            "/payment-success-NoLogin/**" ,
+            "/getQuantityProductDetail/**" ,
+            "/createBill-Customer/**" ,
+            "/detail-productId/**" ,
             "/search/**" ,
             "/cancel-bill-customer/**" ,
             "/getTotalBill/**" ,
@@ -102,6 +109,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/assets/**")).permitAll()
                                 .requestMatchers("/shop/assets/**").permitAll()
                                 .requestMatchers("/dashboard/**").hasRole("ADMIN")
+                                .requestMatchers("/sale-counter/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .formLogin(

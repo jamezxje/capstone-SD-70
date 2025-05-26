@@ -10,4 +10,5 @@ import java.io.UnsupportedEncodingException;
 public interface PaymentMethodService {
     String payWithVnpay(CreatePayMentMethodRequest payModel , HttpServletRequest request) throws UnsupportedEncodingException;
     boolean paymentSucessFully(PayMentVnPayResponse response);
+    boolean payMentSucessFullyOnlineNoLogin(PayMentVnPayResponse request);
 }

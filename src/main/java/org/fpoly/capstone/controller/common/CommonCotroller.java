@@ -22,7 +22,7 @@ public class CommonCotroller {
         if (user.getRoles().equals(UserRole.ROLE_ADMIN)) {
             log.info("User role: {}", user.getRoles());
             redirectAttributes.addFlashAttribute("successMessage", "Đăng nhập thành công");
-            return "redirect:/dashboard";
+            return "redirect:/dashboard/product-management/revenue/list";
         } else if (user.getRoles().equals(UserRole.ROLE_CUSTOMER)) {
             log.info("User role: {}", user.getRoles());
             redirectAttributes.addFlashAttribute("successMessage", "Đăng nhập thành công");

@@ -63,7 +63,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.4/dist/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.4/dist/sweetalert2.min.css">
     <!-- Thêm thư viện Print.js -->
-<!--    <script src="https://printjs-4de3.kxcdn.com/print.min.js"></script>-->
+    <!--    <script src="https://printjs-4de3.kxcdn.com/print.min.js"></script>-->
     <!-- Link CDN cho Print.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
 
@@ -72,70 +72,70 @@
 <body>
 <th:block id="th-body">
     <div class="content-body">
-<div class="createbillf">
-        <div class="create">
-            <button id="createInvoiceBill" class="btn-create-bill">Tạo hóa đơn </button>
-            <button id="openModal"
-                    style="background-color: #0b66bc ; border-radius: 10px ; font-size: 16px ; color: white; padding: 8px ; margin: 20px 20px 20px 8px ; border: none">
-                Thêm sản phẩm
-            </button>
-        </div>
-        <div class="tab-container" id="tabContainer">
-            <!-- Các tab hóa đơn sẽ được tạo ra ở đây -->
-        </div>
+        <div class="createbillf">
+            <div class="create">
+                <button id="createInvoiceBill" class="btn-create-bill">Tạo hóa đơn</button>
+                <button id="openModal"
+                        style="background-color: #0b66bc ; border-radius: 10px ; font-size: 16px ; color: white; padding: 8px ; margin: 20px 20px 20px 8px ; border: none">
+                    Thêm sản phẩm
+                </button>
+            </div>
+            <div class="tab-container" id="tabContainer">
+                <!-- Các tab hóa đơn sẽ được tạo ra ở đây -->
+            </div>
 
-        <div class="tab-content-container" id="tabContentContainer">
-            <!--            &lt;!&ndash; Nội dung tab sẽ được tạo ở đây &ndash;&gt;-->
+            <div class="tab-content-container" id="tabContentContainer">
+                <!--            &lt;!&ndash; Nội dung tab sẽ được tạo ở đây &ndash;&gt;-->
 
+            </div>
         </div>
-</div>
         <!--        Modal product-->
         <div id="myModal"
              style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
             <div style="background-color: white; margin: 12% 20% 20% 22%; padding: 20px; border-radius: 10px; width: 73%; max-width: 1200px">
                 <span id="closeModal"
                       style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
-                    <p style="margin-bottom: 20px; font-size: 20px ;color: black ;">Danh sách sản phẩm</p>
-                    <div class="search-container">
-                        <p style="font-size: 15px; font-weight: bold; color: black">Tìm kiếm :
-                            <input type="text" placeholder="Nhập tên sản phẩm" id="nameInputProduct">
-                        </p>
-                    </div>
+                <p style="margin-bottom: 20px; font-size: 20px ;color: black ;">Danh sách sản phẩm</p>
+                <div class="search-container">
+                    <p style="font-size: 15px; font-weight: bold; color: black">Tìm kiếm :
+                        <input type="text" placeholder="Nhập tên sản phẩm" id="nameInputProduct">
+                    </p>
+                </div>
 
-                    <div class="filter-container">
-                        <p><label for="category">Danh mục:</label>
-                            <select id="category">
-                                <option>Chọn</option>
-                                <!-- Thêm các danh mục ở đây -->
-                            </select>
-                        </p>
+                <div class="filter-container">
+                    <p><label for="category">Danh mục:</label>
+                        <select id="category">
+                            <option>Chọn</option>
+                            <!-- Thêm các danh mục ở đây -->
+                        </select>
+                    </p>
 
-                        <p><label for="color">Màu sắc:</label>
-                            <select id="color">
-                                <option>Chọn</option>
-                                <!-- Thêm các màu sắc ở đây -->
-                            </select>
-                        </p>
+                    <p><label for="color">Màu sắc:</label>
+                        <select id="color">
+                            <option>Chọn</option>
+                            <!-- Thêm các màu sắc ở đây -->
+                        </select>
+                    </p>
 
-                        <p><label for="material">Chất liệu:</label>
-                            <select id="material">
-                                <option>Chọn</option>
-                                <!-- Thêm các chất liệu ở đây -->
-                            </select>
-                        </p>
+                    <p><label for="material">Chất liệu:</label>
+                        <select id="material">
+                            <option>Chọn</option>
+                            <!-- Thêm các chất liệu ở đây -->
+                        </select>
+                    </p>
 
-                        <p><label for="size">Kích cỡ:</label>
-                            <select id="size">
-                                <option>Chọn</option>
-                                <!-- Thêm các kích cỡ ở đây -->
-                            </select>
-                        </p>
-                        <p><label for="brand">Hãng:</label>
-                            <select id="brand">
-                                <option>Chọn</option>
-                                <!-- Thêm các kích cỡ ở đây -->
-                            </select>
-                        </p>
+                    <p><label for="size">Kích cỡ:</label>
+                        <select id="size">
+                            <option>Chọn</option>
+                            <!-- Thêm các kích cỡ ở đây -->
+                        </select>
+                    </p>
+                    <p><label for="brand">Hãng:</label>
+                        <select id="brand">
+                            <option>Chọn</option>
+                            <!-- Thêm các kích cỡ ở đây -->
+                        </select>
+                    </p>
                 </div>
                 <table class="table table-striped" style="margin: 0" id="productTable">
                     <thead>
@@ -156,32 +156,32 @@
                     </tr>
                     </thead>
                     <tbody>
-<!--                    <tr th:each="productDetail , index : ${listProductDetail}">-->
-<!--                        <td th:text="${index.index + 1}"></td>-->
-<!--                        <td th:text="${productDetail.product.code}"></td>-->
-<!--                        <td th:text="${productDetail.product.name}"></td>-->
-<!--                        <td th:text="${productDetail.product.category.name}"></td>-->
-<!--                        <td th:text="${productDetail.brand.name}"></td>-->
-<!--                        <td th:text="${productDetail.color.name}"></td>-->
-<!--                        <td th:text="${productDetail.material.name}"></td>-->
-<!--                        <td th:text="${productDetail.size.name}"></td>-->
-<!--                        <td th:text="${productDetail.gender}"></td>-->
-<!--                        <td th:text="${productDetail.quantity}"></td>-->
-<!--                        <td th:text="${productDetail.price}" id="text-price" class="text-price"></td>-->
-<!--                        <td th:text="${productDetail.status }" class="text-status"></td>-->
+                    <!--                    <tr th:each="productDetail , index : ${listProductDetail}">-->
+                    <!--                        <td th:text="${index.index + 1}"></td>-->
+                    <!--                        <td th:text="${productDetail.product.code}"></td>-->
+                    <!--                        <td th:text="${productDetail.product.name}"></td>-->
+                    <!--                        <td th:text="${productDetail.product.category.name}"></td>-->
+                    <!--                        <td th:text="${productDetail.brand.name}"></td>-->
+                    <!--                        <td th:text="${productDetail.color.name}"></td>-->
+                    <!--                        <td th:text="${productDetail.material.name}"></td>-->
+                    <!--                        <td th:text="${productDetail.size.name}"></td>-->
+                    <!--                        <td th:text="${productDetail.gender}"></td>-->
+                    <!--                        <td th:text="${productDetail.quantity}"></td>-->
+                    <!--                        <td th:text="${productDetail.price}" id="text-price" class="text-price"></td>-->
+                    <!--                        <td th:text="${productDetail.status }" class="text-status"></td>-->
 
 
-<!--                        <td>-->
-<!--                            <button class="chose-product" id="choseProduct" style="margin-left: 20px;"-->
-<!--                                    th:attr="data-product-id=${productDetail.id}, data-product-name=${productDetail.product.name}, data-product-size=${productDetail.size.name}, data-product-color=${productDetail.color.name}, data-product-quantity=${productDetail.quantity}, data-product-price=${productDetail.price}">-->
-<!--                                <i class="bi bi-chevron-down"></i>-->
+                    <!--                        <td>-->
+                    <!--                            <button class="chose-product" id="choseProduct" style="margin-left: 20px;"-->
+                    <!--                                    th:attr="data-product-id=${productDetail.id}, data-product-name=${productDetail.product.name}, data-product-size=${productDetail.size.name}, data-product-color=${productDetail.color.name}, data-product-quantity=${productDetail.quantity}, data-product-price=${productDetail.price}">-->
+                    <!--                                <i class="bi bi-chevron-down"></i>-->
 
-<!--                            </button>-->
+                    <!--                            </button>-->
 
-<!--                        </td>-->
-<!--                        </td>-->
+                    <!--                        </td>-->
+                    <!--                        </td>-->
 
-<!--                    </tr>-->
+                    <!--                    </tr>-->
 
                     </tbody>
                 </table>
@@ -232,7 +232,9 @@
                 <span id="closeModalCustomer"
                       style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: black">&times;</span>
                 <p style="font-size: 20px; color: black; padding: 5px">Danh sách khách hàng</p>
-                <p style="text-align: center"><strong>Tìm kiếm: </strong> <input style="width: 50%; padding: 5px; margin-left: 5px" placeholder="Mời nhập thông tin cần tim" id="inputSearchCustomer"></p>
+                <p style="text-align: center"><strong>Tìm kiếm: </strong> <input
+                        style="width: 50%; padding: 5px; margin-left: 5px" placeholder="Mời nhập thông tin cần tim"
+                        id="inputSearchCustomer"></p>
                 <table class="table table-striped " style="margin: 0" id="customerTableBody">
                     <thead>
                     <tr>
@@ -245,19 +247,19 @@
                     </tr>
                     </thead>
                     <tbody id="customerTable">
-<!--                    <tr th:each="customer ,index :${listUser}">-->
-<!--                        <td th:text="${index.index + 1}"></td>-->
-<!--                        <td th:text="${customer.fullName}"></td>-->
-<!--                        <td th:text="${customer.phoneNumber}"></td>-->
-<!--                        <td th:text="${customer.email}"></td>-->
-<!--                        <td>-->
-<!--                            <button class="btnChose_customer"-->
-<!--                                    th:attr=" data-id=${customer.id}, data-fullName=${customer.fullName}, data-phone=${customer.phoneNumber}, data-email=${customer.email}">-->
-<!--                                <i class="bi bi-chevron-down"></i>-->
-<!--                            </button>-->
+                    <!--                    <tr th:each="customer ,index :${listUser}">-->
+                    <!--                        <td th:text="${index.index + 1}"></td>-->
+                    <!--                        <td th:text="${customer.fullName}"></td>-->
+                    <!--                        <td th:text="${customer.phoneNumber}"></td>-->
+                    <!--                        <td th:text="${customer.email}"></td>-->
+                    <!--                        <td>-->
+                    <!--                            <button class="btnChose_customer"-->
+                    <!--                                    th:attr=" data-id=${customer.id}, data-fullName=${customer.fullName}, data-phone=${customer.phoneNumber}, data-email=${customer.email}">-->
+                    <!--                                <i class="bi bi-chevron-down"></i>-->
+                    <!--                            </button>-->
 
-<!--                        </td>-->
-<!--                    </tr>-->
+                    <!--                        </td>-->
+                    <!--                    </tr>-->
 
                     </tbody>
                 </table>
@@ -269,7 +271,6 @@
                 </div>
             </div>
         </div>
-
 
 
         <!--Modal list voucher -->
@@ -292,24 +293,26 @@
                     <th scope="col">Hành động</th>
                     </thead>
                     <tbody>
-<!--                    <tr th:each="voucher , index : ${listVoucher}">-->
-<!--                        <td th:text="${index.index + 1}"></td>-->
-<!--                        <td th:text="${voucher.name}"></td>-->
-<!--                        <td th:text="${voucher.value}"></td>-->
-<!--                        <td th:text="${voucher.minimumBill}"></td>-->
-<!--                        <td th:text="${voucher.quantity}"></td>-->
-<!--                        <td th:text="${voucher.startDate}"></td>-->
-<!--                        <td th:text="${voucher.endDate}"></td>-->
-<!--                        <td>-->
-<!--                            <button id="select-voucher-btn" class="select-voucher-btn"-->
-<!--                                    th:attr=" data-id=${voucher.id} ,data-value=${voucher.value} ,data-mininumBill=${voucher.minimumBill} , data-name = ${voucher.name}"-->
-<!--                            ><i class="bi bi-chevron-down"></i></button>-->
-<!--                        </td>-->
-<!--                    </tr>-->
+                    <!--                    <tr th:each="voucher , index : ${listVoucher}">-->
+                    <!--                        <td th:text="${index.index + 1}"></td>-->
+                    <!--                        <td th:text="${voucher.name}"></td>-->
+                    <!--                        <td th:text="${voucher.value}"></td>-->
+                    <!--                        <td th:text="${voucher.minimumBill}"></td>-->
+                    <!--                        <td th:text="${voucher.quantity}"></td>-->
+                    <!--                        <td th:text="${voucher.startDate}"></td>-->
+                    <!--                        <td th:text="${voucher.endDate}"></td>-->
+                    <!--                        <td>-->
+                    <!--                            <button id="select-voucher-btn" class="select-voucher-btn"-->
+                    <!--                                    th:attr=" data-id=${voucher.id} ,data-value=${voucher.value} ,data-mininumBill=${voucher.minimumBill} , data-name = ${voucher.name}"-->
+                    <!--                            ><i class="bi bi-chevron-down"></i></button>-->
+                    <!--                        </td>-->
+                    <!--                    </tr>-->
                     </tbody>
                 </table>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                    <button style="background: red; color: white; border-radius: 5px; padding: 10px;" id="btn-cancel-voucher">Hủy mã giảm</button>
+                    <button style="background: red; color: white; border-radius: 5px; padding: 10px;"
+                            id="btn-cancel-voucher">Hủy mã giảm
+                    </button>
                     <div id="paginationVoucher" class="paginationVoucher" style="display: flex;">
                         <!-- Các nút phân trang sẽ nằm đây -->
                     </div>
@@ -335,7 +338,7 @@
             </div>
         </div>
 
-<!--        Modal add CustomerBill-->
+        <!--        Modal add CustomerBill-->
 
         <div id="myModalADDCustomer"
              style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
@@ -346,13 +349,13 @@
 
                 <div class="form-container">
                     <p style="color: black; font-size: 15px; margin: 5px 0;">Họ tên:</p>
-                    <input  class="inputAdd" id="inputAddNameCustomer">
+                    <input class="inputAdd" id="inputAddNameCustomer">
                     <p style="color: red ; margin-left: 5px; display: none" id="inputErrrorName"></p>
                     <p style="color: black; font-size: 15px; margin: 5px 0;">Số điện thoại:</p>
-                    <input  class="inputAdd" id="inputAddPhoneCustomer">
+                    <input class="inputAdd" id="inputAddPhoneCustomer">
                     <p style="color: red ; margin-left: 5px; display: none" id="inputErrrorPhone"></p>
                     <p style="color: black; font-size: 15px; margin: 5px 0;">Email:</p>
-                    <input  class="inputAdd" id="inputAddEmailCustomer">
+                    <input class="inputAdd" id="inputAddEmailCustomer">
                     <p style="color: red ; margin-left: 5px; display: none" id="inputErrrorEmail"></p>
 
                     <div class="button-container">
@@ -360,7 +363,6 @@
                         <button class="btnAdd" id="btnAdd">Thêm</button>
                     </div>
                 </div>
-
 
 
             </div>
@@ -384,7 +386,7 @@
                 <div class="payment-details" style="margin-bottom: 10px">
                     <p class="pay-1">Số tiền:</p>
                     <input type="text" class="input-paymet" id="input-payment">
-                    <p id="moneyBackInputError" style="display: none ; color: red" ></p>
+                    <p id="moneyBackInputError" style="display: none ; color: red"></p>
                 </div>
                 <div class="missing-money" style="margin-top: 10px">
                     <p><strong style="color: black; font-size: 15px; margin-top: 10px" id="missing" class="missing">Tiền
@@ -454,9 +456,11 @@
 
 
                     <div class="voucher-1" style="margin-top: 20px">
-                        <p><strong class="strong-a" style="width: 150px;">Tiền hàng :</strong> <strong id="total-price">0đ</strong></p>
+                        <p><strong class="strong-a" style="width: 150px;">Tiền hàng :</strong> <strong id="total-price">0đ</strong>
+                        </p>
                         <p><strong class="strong-a">Phí vận chuyển :</strong> <strong id="shipping">0đ</strong></p>
-                        <p><strong class="strong-a" style="width: 118px">Giảm giá :</strong> <strong id="discount">0đ</strong></p>
+                        <p><strong class="strong-a" style="width: 118px">Giảm giá :</strong> <strong
+                                id="discount">0đ</strong></p>
                         <p><strong class="strong-a">Tổng tiền :</strong> <strong id="total-amount"> 0đ</strong></p>
                         <p class="payment-method">
                             <strong style="margin-right: 5px">Hình thức thanh toán: </strong>
@@ -535,7 +539,7 @@
                 </div>
             </div>
         </div>
-        <div id="printable-content" style="display: none" >
+        <div id="printable-content" style="display: none">
             <div>
                 <h2>CAPSTONE</h2>
 
@@ -551,71 +555,72 @@
                     <div class="right-column">
                         <p style="font-size: 16px;">Thông tin người mua hàng</p>
                         <p>Họ và tên: <strong id="printNameCustomer"></strong></p>
-                        <p>Số điện thoại: <strong id="printNumberPhoneCustomer"></strong> </p>
+                        <p>Số điện thoại: <strong id="printNumberPhoneCustomer"></strong></p>
 
                         <p style="font-size: 16px; display: none;" id="printInforShip">Thông tin người nhận hàng</p>
                         <p id="p-printNameShip">Họ tên: <strong id="printNameShip"></strong></p>
                         <p id="p-printPhoneShip">Số điện thoại: <strong id="printPhoneShip"></strong></p>
                         <p id="p-printAddress">Địa chỉ: <strong id="printAddress"></strong></p>
-                        <p id="p-printShipDay" style="display: none;">Dự tính ngày nhận: <strong id="printShipDay"></strong></p>
+                        <p id="p-printShipDay" style="display: none;">Dự tính ngày nhận: <strong
+                                id="printShipDay"></strong></p>
                     </div>
                 </div>
 
 
                 <!-- Nội dung đơn hàng -->
-            <div>
-                <p style="font-weight: bold;">Nội dung đơn hàng:</p>
-                <table id="ttt">
-                    <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Size</th>
-                        <th>Màu</th>
-                        <th>Số lượng</th>
-                        <th>Giá</th>
-                        <th>Tổng tiền</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Tổng tiền, Giảm giá, Phí ship -->
-            <div class="summary-info">
                 <div>
-                    <p id="tt">Tổng tiền hàng hóa:<strong id="printTotal">0đ</strong> </p>
-                </div>
-                <div>
-                    <p>Giảm giá: <strong id="printDiscount">0đ</strong> </p>
-                </div>
-            </div>
-            <div class="summary-info">
-                <div>
-                    <p>Phí giao hàng: <strong id="printShip">0đ</strong></p>
-                </div>
-                <div>
-                    <p>Tổng tiền hóa đơn:<strong id="printTotalPayment">0đ</strong></p>
-                </div>
-                <div>
-                    <p>Phương thức thanh toán:<strong id="printMethod">Tiền mặt</strong></p>
-                </div>
-            </div>
+                    <p style="font-weight: bold;">Nội dung đơn hàng:</p>
+                    <table id="ttt">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Size</th>
+                            <th>Màu</th>
+                            <th>Số lượng</th>
+                            <th>Giá</th>
+                            <th>Tổng tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
 
-            <!-- Số tiền thanh toán -->
-            <div class="payment-info">
-                <p>Số tiền khách thanh toán:<strong id="printCustomerPayment">0đ</strong> </p>
-                <p id="printMoneyBack">Số tiền trả lại:<strong id="printBack">0đ</strong></p>
-            </div>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tổng tiền, Giảm giá, Phí ship -->
+                <div class="summary-info">
+                    <div>
+                        <p id="tt">Tổng tiền hàng hóa:<strong id="printTotal">0đ</strong></p>
+                    </div>
+                    <div>
+                        <p>Giảm giá: <strong id="printDiscount">0đ</strong></p>
+                    </div>
+                </div>
+                <div class="summary-info">
+                    <div>
+                        <p>Phí giao hàng: <strong id="printShip">0đ</strong></p>
+                    </div>
+                    <div>
+                        <p>Tổng tiền hóa đơn:<strong id="printTotalPayment">0đ</strong></p>
+                    </div>
+                    <div>
+                        <p>Phương thức thanh toán:<strong id="printMethod">Tiền mặt</strong></p>
+                    </div>
+                </div>
+
+                <!-- Số tiền thanh toán -->
+                <div class="payment-info">
+                    <p>Số tiền khách thanh toán:<strong id="printCustomerPayment">0đ</strong></p>
+                    <p id="printMoneyBack">Số tiền trả lại:<strong id="printBack">0đ</strong></p>
+                </div>
 
 
-        </div>       <!-- div print bill -->
+            </div>       <!-- div print bill -->
 
-    </div>
+        </div>
 
     </div>
 

@@ -108,6 +108,10 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     BigDecimal findProductDetailPriceByIdAndSizeAndColor(@Param("productId") Long productId, @Param("sizeId") Long sizeId,
                                                          @Param("colorId") Long colorId);
 
+    Optional<ProductDetail> findByProductIdAndSizeIdAndColorId(Long productId, Long sizeId, Long colorId);
+
+
+
     @Query("SELECT pd.quantity FROM ProductDetail pd WHERE pd.id = :productDetailId")
     Integer findProductDetailQuantityByProductDetailId(@Param("productDetailId") Long productDetailId);
 
@@ -125,4 +129,5 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
                                                       @Param("sizeId") Long sizeId,
                                                       @Param("gender") Gender gender,
                                                       @Param("colorId") Long colorId);
+
 }

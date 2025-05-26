@@ -88,10 +88,13 @@
                 </div>
                 <div class="lightboximages">
                   <a th:each="image : ${product.imagesUrl}"
-                     href="${image}"
-                     data-size="1462x2048"></a>
+                     th:href="${image}"
+                     data-size="1462x2048"
+                     class="product-single-photo">
+                  </a>
                 </div>
-              
+
+
               </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
@@ -113,7 +116,7 @@
                     accept-charset="UTF-8" class="product-form product-form-product-template hidedropdown"
                     enctype="multipart/form-data" th:object="${addProductToCartModel}">
                 <input type="text" hidden="true" name="productId" th:value="${product.productId}">
-                
+
                 <div class="swatch clearfix swatch-0 option1" data-option-index="0">
                   <div class="product-form__item">
                     <label class="header">Màu: <span class="slVariant"></span></label>
@@ -167,28 +170,57 @@
                 <p class="infolinks"><a href="#sizechart" class="sizelink btn"> Hướng dẫn chọn size</a></p>
                 <!-- Product Action -->
                 <div class="product-action clearfix">
-                  <div class="product-form__item--quantity">
-                    <div class="wrapQtyBtn">
-                      <div class="qtyField">
-                        <a class="qtyBtn minus" href="javascript:void(0);"><i class="fa anm anm-minus-r"
-                                                                              aria-hidden="true"></i></a>
-                        <input type="text" id="Quantity" name="quantity" value="1" class="product-form__input qty">
-                        <a class="qtyBtn plus" href="javascript:void(0);"><i class="fa anm anm-plus-r"
-                                                                             aria-hidden="true"></i></a>
+                    <div class="product-form__item--quantity">
+                      <div class="wrapQtyBtn">
+                        <div class="qtyField">
+                          <a class="qtyBtn minus" href="javascript:void(0);"><i class="fa anm anm-minus-r"
+                                                                                aria-hidden="true"></i></a>
+                          <input type="number" id="Quantity" name="quantity" value="1" class="product-form__input qty" style="width: 60px">
+                          <a class="qtyBtn plus" href="javascript:void(0);"><i class="fa anm anm-plus-r"
+                                                                               aria-hidden="true"></i></a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="product-form__item--submit">
+                  <div class="product-form__item--submit" id="product-form__item--submit" style="display: none;">
                     <button name="add" class="btn product-form__cart-submit" id="add-to-cart-btn">
                       <span>Thêm vào giỏ hàng </span>
                     </button>
+
                   </div>
-                  <div class="shopify-payment-button" data-shopify="payment-button">
+                  <div class="noLogin product-form__item--submit" id="noLogin" style="display: none;">
+                    <button class="btn product-form__cart-submit">
+                      <span>Thêm vào giỏ hàng</span>
+                    </button>
+                  </div>
+                  <div class="shopify-payment-button" data-shopify="payment-button" style="display: none" id="btnLogin">
                     <button type="button"
                             class="shopify-payment-button__button shopify-payment-button__button--unbranded">
                       Mua ngay!
                     </button>
                   </div>
+                  <div id="btnNoLogin" style="display: none">
+                    <button type="button"
+                            id="btnLoginNo"
+                            style="
+            background-color: #E95144;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            width: 100%;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+          ">
+                      Mua ngay!
+                    </button>
+                  </div>
+
+                </div>
+                <div>
+                  <button id="checkpay">CHeckPay</button>
                 </div>
                 <!-- End Product Action -->
               </form>
@@ -564,7 +596,7 @@
                   <!-- End product label -->
                 </a>
                 <!-- end product image -->
-                
+
                 <!-- Start product button -->
                 <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post">
                   <button class="btn btn-addto-cart" type="button" tabindex="0">Select Options</button>
@@ -595,7 +627,7 @@
                   <span class="price" th:text="${product.price}">$600.00</span>
                 </div>
                 <!-- End product price -->
-                
+
                 <div class="product-review">
                   <i class="font-13 fa fa-star"></i>
                   <i class="font-13 fa fa-star"></i>
@@ -905,9 +937,9 @@
       }
       
       // Check if the user is logged in
-      if (loggedUserEmail == null) {
-        popupMessage = "Đăng nhập để tiếp tục";
-      }
+      // if (loggedUserEmail == null) {
+      //   popupMessage = "Đăng nhập để tiếp tục";
+      // }
       
       // If any validation failed, show the modal
       if (popupMessage !== "") {
@@ -929,16 +961,16 @@
         if (loggedUserEmail == null) {
           var loginButton = $('<a id="loginButton" class="btn" href="/auth/login">Đăng nhập</a>');
           var registerButton = $('<a id="registerButton" class="btn" href="/auth/register">Đăng ký</a>');
-          
+
           // Append the buttons to the popup
           $('#popup-container').append(loginButton);
           $('#popup-container').append(registerButton);
-          
+
           // Set the action for the login button (redirect to login page)
           loginButton.on('click', function () {
             window.location.href = "/login";  // Replace with your login page URL
           });
-          
+
           // Set the action for the register button (redirect to register page)
           registerButton.on('click', function () {
             window.location.href = "/register";  // Replace with your register page URL
@@ -968,10 +1000,10 @@
         event.preventDefault(); // Ngăn chặn hành động submit form mặc định
         
         // Kiểm tra nếu người dùng chưa đăng nhập
-        if (loggedUserEmail == null) {
-          showToast("Vui lòng đăng nhập để tiếp tục", 'error');
-          return;
-        }
+        // if (loggedUserEmail == null) {
+        //   showToast("Vui lòng đăng nhập để tiếp tục", 'error');
+        //   return;
+        // }
         
         // Validate các giá trị trước khi gửi
         let selectedSize = $('input[name="sizeId"]:checked').val();
@@ -1128,7 +1160,7 @@
         // Lấy giá trị của colorId và sizeId khi người dùng chọn
         const colorId = $('input[type="radio"][name="colorId"]:checked').val();
         const sizeId = $('input[type="radio"][name="sizeId"]:checked').val();
-        
+
         // Log giá trị của colorId và sizeId
         console.log("Selected colorId for price: ", colorId);
         console.log("Selected sizeId for price: ", sizeId);
@@ -1161,7 +1193,209 @@
   
   
   </script>
-  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const addToCartBtn = document.getElementById('product-form__item--submit');
+      const btnNoLogin = document.getElementById('btnNoLogin');
+      const btnLogin = document.getElementById('btnLogin');
+      const noLoginBtn = document.getElementById('noLogin');
+      console.log("Check loggeed UserEmail" , loggedUserEmail);
+      function toggleButtons() {
+        if (loggedUserEmail) {
+          console.log("log" , loggedUserEmail)
+          addToCartBtn.style.display = 'block';
+          btnLogin.style.display = 'block';
+          btnNoLogin.style.display = 'none'
+          noLoginBtn.style.display = 'none';
+        } else {
+          console.log("No log")
+          addToCartBtn.style.display = 'none';
+          btnLogin.style.display = 'none';
+          btnNoLogin.style.display = 'block'
+          noLoginBtn.style.display = 'block';
+          // const btnNoLogin = document.getElementById('btnLoginNo');
+          // if (btnNoLogin) {
+          //   btnNoLogin.addEventListener('click', handleNoLoginPurchase);
+          // }
+        }
+      }
+      toggleButtons();
+    });
+
+    const checkPay = document.getElementById('checkpay');
+    checkPay.addEventListener('click' , function () {
+      window.location.href = 'http://localhost:8080/NoLogin'
+    })
+    const btnNoLogin = document.getElementById('btnLoginNo');
+    if (btnNoLogin) {
+      btnNoLogin.addEventListener('click', handleNoLoginPurchase);
+    }
+    async function handleNoLoginPurchase(e) {
+      e.preventDefault();
+
+      const productId = document.querySelector('input[name="productId"]').value;
+      const featureImageUrl = document.querySelector('.zoompro')?.getAttribute('src') || '';
+      const name = document.querySelector('.product-single__title')?.innerText || '';
+      const price = document.querySelector('.money')?.innerText.replace(' VND', '').replace(/\./g, '') || '0';
+      const quantity = document.getElementById('Quantity')?.value || 1;
+
+      const colorInput = document.querySelector("input[name='colorId']:checked");
+      const colorId = colorInput?.value;
+      const colorName = colorInput?.nextElementSibling?.innerText;
+
+      const sizeInput = document.querySelector("input[name='sizeId']:checked");
+      const sizeId = sizeInput?.value;
+      const sizeName = sizeInput?.nextElementSibling?.innerText;
+
+      let idProductLocal = 0;
+      let quantityLocal = 0;
+
+      try {
+        const response = await axios.get(`/detail-productId/${productId}/size/${sizeId}/color/${colorId}`);
+        const data = response.data;
+        idProductLocal = data.id;
+        quantityLocal = data.quantity;
+      } catch (error) {
+        console.log('Lỗi không lấy được dữ liệu từ API:', error);
+        return;
+      }
+
+      if (!colorId || !sizeId) {
+        showToastError('Vui lòng chọn màu sắc và kích cỡ.');
+        return;
+      }
+
+      if (!quantity || quantity <= 0) {
+        showToastError('Vui lòng nhập số lượng hợp lệ.');
+        return;
+      }
+      if (isNaN(quantity)) {
+        showToastError("Vui lòng nhập số lượng là số")
+        return;
+      }
+
+      if (quantity > quantityLocal) {
+        showToastError('Số lượng sản phẩm không đủ để thêm giỏ hàng.');
+        return;
+      }
+
+      const product = {
+        idProductLocal,
+        featureImageUrl,
+        name,
+        price: parseInt(price),
+        quantity: parseInt(quantity),
+        color: { id: colorId, name: colorName },
+        size: { id: sizeId, name: sizeName }
+      };
+
+      const cart = JSON.parse(localStorage.getItem('noLoginCart')) || [];
+      const index = cart.findIndex(item =>
+              item.name === product.name &&
+              item.color.id === product.color.id &&
+              item.size.id === product.size.id
+      );
+
+      if (index > -1) {
+        cart[index].quantity += product.quantity;
+      } else {
+        cart.push(product);
+      }
+
+      localStorage.setItem('noLoginCart', JSON.stringify(cart));
+      window.location.href = 'http://localhost:8080/NoLogin';
+    }
+
+  </script>
+
+  <script type="text/javascript" th:src="@{/assets/js/cartNoLogin/header.js}"></script>
+  <script>
+    let idProductLocal = 0;
+    let quantityLocal = 0;
+    document.addEventListener('DOMContentLoaded', function ()  {
+      const addToCartButton = document.querySelector('.noLogin button');
+      const btnNoLogin = document.getElementById('btnLoginNo');
+
+      addToCartButton.addEventListener('click',async function (e) {
+        e.preventDefault();
+        console.log("Check choi" , productDetailIdReceived)
+
+        const productId = document.querySelector('input[name="productId"]').value;
+        const firstImageUrl = document.querySelector('.product-single-photo')?.href || '';
+        const imageElement = document.querySelector('.zoompro');
+        const featureImageUrl = imageElement?.getAttribute('src') || '';
+
+
+        const name = document.querySelector('.product-single__title')?.innerText || '';
+        const price = document.querySelector('.money')?.innerText.replace(' VND', '').replace(/\./g, '') || '0';
+        const quantity = document.getElementById('Quantity')?.value || 1;
+
+        const colorInput = document.querySelector("input[name='colorId']:checked");
+        const colorId = colorInput?.value;
+        const colorName = colorInput?.nextElementSibling?.innerText;
+
+        const sizeInput = document.querySelector("input[name='sizeId']:checked");
+        const sizeId = sizeInput?.value;
+        const sizeName = sizeInput?.nextElementSibling?.innerText;
+        try {
+          const response = await axios.get(`/detail-productId/${productId}/size/${sizeId}/color/${colorId}`)
+          console.log("Check du lieu id product trả ra :" , response.data);
+          const idProductDeail = response.data.id;
+          const quantityProduct = response.data.quantity;
+          console.log("Check quantity product trả ra :" , quantityProduct);
+          idProductLocal = idProductDeail;
+          quantityLocal = quantityProduct;
+          console.log('check id product detail' , productDetailId)
+        }catch (error) {
+          console.log('Lỗi không lâ được dữ liệu từ API:', error);
+        }
+
+        if (!colorId || !sizeId) {
+          showToastError('Vui lòng chọn màu sắc và kích cỡ.');
+          return;
+        }
+        if (!quantity || quantity <= 0) {
+          showToastError('Vui lòng nhập số lượng hợp lệ.');
+          return;
+        }
+        if (quantity > quantityLocal) {
+          showToastError('Số lượng sản phẩm không đủ để thêm giỏ hàng.');
+          return;
+        }
+
+        const product = {
+          idProductLocal ,
+          featureImageUrl ,
+          name,
+          price: parseInt(price),
+          quantity: parseInt(quantity),
+          color: { id: colorId, name: colorName },
+          size: { id: sizeId, name: sizeName }
+        };
+
+        const cart = JSON.parse(localStorage.getItem('noLoginCart')) || [];
+
+
+        const index = cart.findIndex(item =>
+                item.name === product.name &&
+                item.color.id === product.color.id &&
+                item.size.id === product.size.id
+        );
+
+        if (index > -1) {
+          cart[index].quantity += product.quantity;
+        } else {
+          cart.push(product);
+        }
+
+        localStorage.setItem('noLoginCart', JSON.stringify(cart));
+        localStorage.setItem('cartUpdated', Date.now());
+        showToast('Sản phẩm đã được thêm vào giỏ hàng!');
+        updateCartQuantity();
+      });
+    });
+  </script>
+
   <script>
     $('.shopify-payment-button__button--unbranded').on('click', function (e) {
       
@@ -1181,9 +1415,9 @@
       }
       
       // Check if the user is logged in
-      if (loggedUserEmail == null) {
-        popupMessage = "Đăng nhập để tiếp tục";
-      }
+      // if (loggedUserEmail == null) {
+      //   popupMessage = "Đăng nhập để tiếp tục";
+      // }
       
       // If any validation failed, show the modal
       if (popupMessage !== "") {
@@ -1207,16 +1441,16 @@
           if ($('#popup-container #loginButton').length === 0 && $('#popup-container #registerButton').length === 0) {
             var loginButton = $('<a id="loginButton" class="btn" href="/auth/login">Đăng nhập</a>');
             var registerButton = $('<a id="registerButton" class="btn" href="/auth/register">Đăng ký</a>');
-            
+
             // Append the buttons to the popup
             $('#popup-container').append(loginButton);
             $('#popup-container').append(registerButton);
-            
+
             // Set the action for the login button (redirect to login page)
             loginButton.on('click', function () {
               window.location.href = "/auth/login";  // Replace with your login page URL
             });
-            
+
             // Set the action for the register button (redirect to register page)
             registerButton.on('click', function () {
               window.location.href = "/auth/register";  // Replace with your register page URL
@@ -1355,6 +1589,86 @@
         setTimeout(() => toast.remove(), 500);
       }, 1800);
     }
+
+  </script>
+  <script>
+    function showToastError(message, type = "error", duration = 1800) {
+      const toastContainer = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+
+      // Cấu hình theo loại
+      let bgColor, textColor, borderColor, icon;
+
+      if (type === "success") {
+        bgColor = "#d4edda";
+        textColor = "#155724";
+        borderColor = "#28a745";
+        icon = `<i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>`;
+      } else {
+        bgColor = "#fff3cd";
+        textColor = "#856404";
+        borderColor = "#ffc107";
+        icon = `<i class="fas fa-exclamation-triangle" style="color: #ffc107; margin-right: 10px;"></i>`;
+      }
+
+      // Phần thân toast
+      toast.innerHTML = `
+      <div style="display: flex; align-items: center;">${icon}<span>${message}</span></div>
+      <div class="toast-progress-bar"></div>
+    `;
+
+      toast.style.cssText = `
+      background-color: ${bgColor};
+      color: ${textColor};
+      border-left: 5px solid ${borderColor};
+      padding: 12px 20px 6px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateX(100%);
+      transition: opacity 0.5s, transform 0.5s ease-in-out;
+      margin-bottom: 10px;
+      position: relative;
+      min-width: 280px;
+    `;
+
+      // Thanh thời gian
+      const progressBarStyle = document.createElement("style");
+      progressBarStyle.innerHTML = `
+      .toast-progress-bar {
+        height: 4px;
+        background-color: ${borderColor};
+        width: 100%;
+        animation: progress ${duration}ms linear forwards;
+        border-radius: 0 0 5px 5px;
+        margin-top: 8px;
+      }
+      @keyframes progress {
+        from { width: 100%; }
+        to { width: 0%; }
+      }
+    `;
+      document.head.appendChild(progressBarStyle);
+
+      toastContainer.appendChild(toast);
+
+      // Animate in
+      setTimeout(() => {
+        toast.style.opacity = "1";
+        toast.style.transform = "translateX(0)";
+      }, 100);
+
+      // Animate out and remove
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(100%)";
+        setTimeout(() => toast.remove(), 500);
+      }, 1800);
+    }
+
   </script>
   
   <script>

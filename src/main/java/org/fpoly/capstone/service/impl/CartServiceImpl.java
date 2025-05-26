@@ -33,7 +33,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void addToCart(AddProductToCartRequest request) {
+                    public void addToCart(AddProductToCartRequest request) {
         // get logged customer
         User loggedUser = this.userService.getUserFromContext();
 

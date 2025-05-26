@@ -33,6 +33,10 @@ public class BillControllerForBill {
     public String paymnetSuccess() {
         return "views/saleCounter/PayMentVNPAYSuccess";
     }
+    @GetMapping("/payment-success-NoLogin")
+    public String paymnetSuccessNoLogin() {
+        return "views/user-online-view/PayMentVNPAYSuccess-NoLogin";
+    }
 
     @GetMapping("/searchBill")
     public String searchBill(Model model) {
@@ -46,6 +50,16 @@ public class BillControllerForBill {
         User loggedUser = this.userService.getUserFromContext();
         model.addAttribute("loggedUser", loggedUser);
         return "views/searchBill-ForCustomer/searchBill";
+    }
+    @GetMapping("/NoLogin")
+    public String cartNoLogin(Model model) {
+//        User loggedUser = this.userService.getUserFromContext();
+//        model.addAttribute("loggedUser", loggedUser);
+        return "views/user-online-view/cart-NoLogin";
+    }
+    @GetMapping("/buyNow-NoLogin")
+    public String buyNowNoLogin(Model model) {
+        return "views/user-online-view/buyNow-NoLogin";
     }
 
 }

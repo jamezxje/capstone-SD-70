@@ -3,6 +3,7 @@ package org.fpoly.capstone.dto.vnpay;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+import org.fpoly.capstone.dto.billDetail.BillDetailOnline;
 import org.fpoly.capstone.dto.voucherdetail.CreateVoucherDetailRequest;
 import org.fpoly.capstone.entity.VoucherDetail;
 import org.fpoly.capstone.entity.enum_status.BillType;
@@ -36,10 +37,17 @@ public class PayMentVnPayResponse {
     private Boolean openDelivery;
     private BigDecimal itemDiscount;
     private BigDecimal moneyShip;
+    private BigDecimal totalPrice;
     private BillType type;
     private String address;
     private Long idVoucher;
     private Long idBill;
+    private String note;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private Date shipDate;
+    private List<BillDetailOnline> billDetail;
+    private BigDecimal afterPrice;
+
 //    @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "dd/MM/yyyy")
     private String deliveryDate;
     private List<CreateVoucherDetailRequest> voucherDetails;

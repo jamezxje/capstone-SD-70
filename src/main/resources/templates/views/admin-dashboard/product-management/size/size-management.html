@@ -274,6 +274,12 @@
 
 <th:block id="th-js">
   <script>
+    const input1 = document.getElementById('sizeNameEdit');
+    input1.addEventListener('input', function () {
+      this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+    });
+  </script>
+  <script>
     $(document).on('click', '[data-target="#editSizeModal"]', function () {
       const button = $(this);
       
@@ -294,6 +300,12 @@
       const sizeId = $(this).data('id');
       const formAction = `/dashboard/product-management/size/delete/${sizeId}`;
       $('#deleteTransactionForm').attr('action', formAction);
+    });
+  </script>
+  <script>
+    const input = document.getElementById('sizeName');
+    input.addEventListener('input', function () {
+      this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
     });
   </script>
 </th:block>

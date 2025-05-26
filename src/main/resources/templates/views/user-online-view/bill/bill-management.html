@@ -6,6 +6,44 @@
   <title>Index user</title>
   <th:block id="th-css">
     <link rel="stylesheet" th:href="@{/assets/user-online/css/plugins.css}">
+    <style>
+      .modal {
+        display: none; /* Ẩn modal mặc định */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 10% 0 0 40%;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+      }
+      .close {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 25px;
+        font-family: Arial, sans-serif;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
   </th:block>
 </head>
 <body>
@@ -108,9 +146,11 @@
                         <i class="icon anm anm-eye-l"></i>
                       </a>
                     </td>
-                    <td><a href="#" title="Cancel" class="site-header__cart">
-                      <i class="icon anm anm-times"></i>
-                    </a></td>
+                    <td th:if="${bill.status == T(org.fpoly.capstone.entity.enum_status.BillStatus).CHO_XAC_NHAN}">
+                      <button style="border: none" title="Cancel" class="site-header__cart btn-cancel" th:attr="data-bill-code=${bill.code}">
+                        <i class="icon anm anm-times"></i>
+                      </button>
+                    </td>
                   </tr>
                   </tbody>
                 </table>
@@ -118,6 +158,16 @@
             </div>
           
           </div>
+        </div>
+      </div>
+      <div id="cancelModalStatus" class="modal">
+        <div class="modal-content">
+          <span class="closehuy">&times;</span>
+          <h4>Xác nhận  hủy đơn hàng</h4>
+          <p>Vui lòng nhập hủy (tối thiểu 20 chữ):</p>
+          <textarea id="cancelmationReason" rows="4" cols="50"></textarea>
+          <br>
+          <button id="cancelButton" style="background-color: #4CAF50">Xác nhận</button>
         </div>
       </div>
     </div>
@@ -135,5 +185,64 @@
 <script>
 </script>
 <th:block id="th-js">
+  <script>
+    const cancelModal = document.getElementById('cancelModalStatus');
+    const closeBtnhuy = document.getElementsByClassName("closehuy")[0];
+    const cancelReason = document.getElementById("cancelmationReason");
+    const cancelButton = document.getElementById("cancelButton");
+
+    let selectedBillCode = null;
+    let actionDescription = "";
+
+    document.querySelectorAll('.btn-cancel').forEach(button => {
+      button.addEventListener('click', function () {
+        selectedBillCode = this.getAttribute("data-bill-code");
+        cancelModal.style.display = 'block';
+      });
+    });
+
+    cancelButton.onclick = function () {
+      const reason = cancelReason.value.trim();
+      const isValidChars = /^[\p{L}\s]+$/u.test(reason);
+
+      if (reason.length >= 20 && isValidChars) {
+        actionDescription = reason;
+
+        const employeeId = 3;
+        axios.put(`http://localhost:8080/cancel-bill-customer/${selectedBillCode}?idEmployee=${employeeId}`, {
+          actionDescription: actionDescription
+        })
+                .then(response => {
+                  const newStatus = response.data.status;
+                  console.log("New Status: ", newStatus);
+                  toastr.options.positionClass = 'toast-top-right';
+                  toastr.success('Hủy đơn hàng thành công.');
+                  cancelModal.style.display = 'none';
+                  cancelReason.value = '';
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
+                })
+                .catch(error => {
+                  console.error("Error changing status", error);
+                  toastr.options.positionClass = 'toast-top-right';
+                  toastr.error('Đã có lỗi xảy ra khi hủy đơn.');
+                });
+
+      } else if (!isValidChars) {
+        toastr.options.positionClass = 'toast-top-right';
+        toastr.error('Lý do không được chứa số hoặc ký tự đặc biệt.!');
+      } else {
+        toastr.options.positionClass = 'toast-top-right';
+        toastr.error('Vui lòng nhập ít nhất 20 ký tự!');
+      }
+    };
+
+    closeBtnhuy.onclick = function () {
+      cancelModal.style.display = 'none';
+      cancelReason.value = '';
+    };
+  </script>
+
 </th:block>
 </html>

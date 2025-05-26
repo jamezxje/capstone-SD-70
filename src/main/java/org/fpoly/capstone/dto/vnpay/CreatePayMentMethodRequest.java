@@ -10,4 +10,5 @@ private String vnp_OrderInfo = "Thanh toan hoa don";
 private String vnp_OrderType = "Thanh toan hoa don";
 private String vnp_TxnRef;
 private String vnp_Amount;
+private String userType;
 }
