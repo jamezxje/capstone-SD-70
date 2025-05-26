@@ -11,6 +11,7 @@ import org.fpoly.capstone.service.VoucherService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/dashboard/product-management/voucher")
@@ -37,7 +39,19 @@ public class VoucherController {
     public String showVoucher(Model model){
         model.addAttribute("voucher", new Voucher());
         model.addAttribute("status", VoucherStatus.values());
+        model.addAttribute("voucherNames", voucherService.findAllNames()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList()));
+
         return "views/voucher/createVoucher";
+    }
+
+    @GetMapping("/check-name")
+    @ResponseBody
+    public ResponseEntity<Boolean> checkVoucherName(@RequestParam String name) {
+        boolean exists = voucherService.findByName(name) != null;
+        return ResponseEntity.ok(exists);
     }
 
     @GetMapping("/list")
@@ -85,6 +99,11 @@ public class VoucherController {
         model.addAttribute("endDate", voucher.getEndDate());
         model.addAttribute("formattedValue", formattedValue);
         model.addAttribute("miniBill", formatted);
+        model.addAttribute("voucherNames", voucherService.findAllNames()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList()));
+
 
         return "views/voucher/updateVoucher";
     }
@@ -112,6 +131,7 @@ public class VoucherController {
         model.addAttribute("endDate", voucher.getEndDate());
         model.addAttribute("formattedValue", formattedValue);
         model.addAttribute("miniBill", formatted);
+
 
 
         return "views/voucher/detailVoucher";

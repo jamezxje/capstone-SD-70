@@ -13,6 +13,10 @@ import java.util.Date;
 import java.util.List;
 
 public interface VoucherService {
+    Voucher findByName(String name);
+
+    List<String> findAllNames();
+
     Voucher createVoucher(Voucher voucher) throws Exception;
 
     Page<Voucher> findAll(Pageable pageable);

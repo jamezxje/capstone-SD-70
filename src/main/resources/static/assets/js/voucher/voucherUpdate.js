@@ -12,14 +12,40 @@ document.getElementById("voucherForm").addEventListener("submit", function(event
   let isValid = true;
 
   // Kiểm tra Tên Voucher
-  let nameInput = document.getElementById("name");
+//  let nameInput = document.getElementById("name");
+//  let specialCharRegex = /[^\p{L}0-9\s]/u;
+//  if (nameInput == null || nameInput.value.trim() === "" || nameInput.value.length > 255 || specialCharRegex.test(nameInput.value)) {
+//    nameInput.classList.add("is-invalid");
+//    isValid = false;
+//  } else {
+//    nameInput.classList.remove("is-invalid");
+//  }
+
+let nameInput = document.getElementById("name");
   let specialCharRegex = /[^\p{L}0-9\s]/u;
-  if (nameInput == null || nameInput.value.trim() === "" || nameInput.value.length > 255 || specialCharRegex.test(nameInput.value)) {
-    nameInput.classList.add("is-invalid");
-    isValid = false;
-  } else {
-    nameInput.classList.remove("is-invalid");
-  }
+  let nameValue = nameInput.value.trim();
+
+  // Kiểm tra tên trùng (không phân biệt hoa thường)
+ let currentVoucherNameLower = currentVoucherName ? currentVoucherName.toLowerCase() : "";
+
+ // Kiểm tra tên trùng (không phân biệt hoa thường), bỏ qua tên hiện tại
+ let isDuplicateName = existingVoucherNames.some(name => {
+   let lowerName = name.toLowerCase();
+   return lowerName === nameValue.toLowerCase() && lowerName !== currentVoucherNameLower;
+ });
+
+ if (
+   nameInput == null ||
+   nameValue === "" ||
+   nameValue.length > 255 ||
+   specialCharRegex.test(nameValue) ||
+   isDuplicateName
+ ) {
+   nameInput.classList.add("is-invalid");
+   isValid = false;
+ } else {
+   nameInput.classList.remove("is-invalid");
+ }
 
   // Kiểm tra số tiền hợp lệ
   let valueInput = document.getElementById("value");
