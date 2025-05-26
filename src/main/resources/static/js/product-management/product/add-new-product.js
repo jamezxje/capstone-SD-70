@@ -149,3 +149,8 @@ function removeCommasBeforeSubmit() {
         input.value = input.value.replace(/,/g, ''); // Remove commas before submission
     });
 }
+
+const input = document.getElementById('productName');
+input.addEventListener('input', function () {
+    this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+});

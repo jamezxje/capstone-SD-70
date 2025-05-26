@@ -302,6 +302,12 @@
 </th:block>
 <th:block id="th-js">
   <script>
+    const input1 = document.getElementById('brandNameEdit');
+    input1.addEventListener('input', function () {
+      this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+    });
+  </script>
+  <script>
     $(document).on('click', '[data-target="#editBrandModal"]', function () {
       const button = $(this);
       
@@ -324,6 +330,12 @@
       const brandId = $(this).data('id');
       const formAction = `/dashboard/product-management/brand/delete/${brandId}`;
       $('#deleteTransactionForm').attr('action', formAction);
+    });
+  </script>
+  <script>
+    const input = document.getElementById('brandName');
+    input.addEventListener('input', function () {
+      this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
     });
   </script>
 </th:block>

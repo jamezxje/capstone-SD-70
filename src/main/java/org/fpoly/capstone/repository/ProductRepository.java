@@ -87,5 +87,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "JOIN ProductDetail pd ON p.id = pd.product.id")
     List<ProductUserResponse> getProductForOnlineUser();
 
+    @Query("SELECT p FROM Product p WHERE p.name = :productName")
+    Product findProductByProductName(@Param("productName") String productName);
+
 
 }

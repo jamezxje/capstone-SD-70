@@ -273,6 +273,12 @@
 </th:block>
 <th:block id="th-js">
   <script>
+    const input1 = document.getElementById('colorNameEdit');
+    input1.addEventListener('input', function () {
+      this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+    });
+  </script>
+  <script>
     $(document).on('click', '[data-target="#editColorModal"]', function () {
       const button = $(this);
       
@@ -293,6 +299,12 @@
       const colorId = $(this).data('id');
       const formAction = `/dashboard/product-management/color/delete/${colorId}`;
       $('#deleteTransactionForm').attr('action', formAction);
+    });
+  </script>
+  <script>
+    const input = document.getElementById('colorName');
+    input.addEventListener('input', function () {
+      this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
     });
   </script>
 </th:block>
