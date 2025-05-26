@@ -1725,6 +1725,7 @@
   </script>
   <!--End For Newsletter Popup-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script type="text/javascript" th:src="@{/assets/js/cartNoLogin/header.js}"></script>
   <script>
  document.addEventListener('DOMContentLoaded' , function () {
    localStorage.removeItem('idUserNoLogin')
@@ -1743,7 +1744,28 @@
    localStorage.removeItem('voucherIdNoLogin')
    localStorage.removeItem('voucherIDNoLogin')
     localStorage.removeItem('voucherValueNoLogin')
+   const selectedProducts = JSON.parse(localStorage.getItem('selectedProductsForCheckout')) || [];
+   const cart = JSON.parse(localStorage.getItem('noLoginCart')) || [];
+   selectedProducts.forEach(purchasedItem => {
+     const indexInCart = cart.findIndex(cartItem =>
+             cartItem.idProductLocal === purchasedItem.idProductLocal &&
+             cartItem.color.id === purchasedItem.color.id &&
+             cartItem.size.id === purchasedItem.size.id
+     );
 
+     if (indexInCart !== -1) {
+       const cartItem = cart[indexInCart];
+       if (purchasedItem.quantity < cartItem.quantity) {
+         cartItem.quantity -= purchasedItem.quantity;
+       } else {
+         cart.splice(indexInCart, 1);
+       }
+     }
+   });
+   localStorage.removeItem('selectedProductsForCheckout');
+   localStorage.setItem('noLoginCart', JSON.stringify(cart));
+   localStorage.setItem('cartUpdated', Date.now());
+   updateCartQuantity();
  })
   </script>
   <script>

@@ -283,6 +283,12 @@ let totalItem = 0;
 let totalShipAndItem = 0;
 let itemDiscountLocal = 0;
 document.addEventListener("DOMContentLoaded", function () {
+    const checkUseVoucher = localStorage.getItem('checkUseVoucher') === 'true';
+
+    if (checkUseVoucher) {
+        localStorage.setItem('voucherValueNoLogin', 0);
+        localStorage.setItem('voucherIDNoLogin', 12);
+    }
     function formatCurrency(number) {
         return number.toLocaleString("vi-VN") + " VND";
     }

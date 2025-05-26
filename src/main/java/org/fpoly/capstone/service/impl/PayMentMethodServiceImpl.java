@@ -164,7 +164,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 System.out.println("Cehck ngggayf ship" + response.getDeliveryDate());
                 if (deliveryDate != null) {
                     bill.setShipDate(deliveryDate);
-                    bill.setStatus(BillStatus.CHO_XAC_NHAN);
+                    bill.setStatus(BillStatus.XAC_NHAN);
                 } else {
                     bill.setShipDate(null);  // Nếu không có ngày giao hàng, gán null
                     bill.setStatus(BillStatus.THANH_CONG);
@@ -172,11 +172,25 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 bill.setVnpTransaction(response.getVnp_TransactionNo());
                 billRepository.save(bill);
 
-                billHistoryRepository.save(BillHistory.builder()
-                        .status(BillStatus.DA_THANH_TOAN)
-                        .bill(bill)
-                        .user(bill.getEmployee())
-                        .build());
+                billHistoryRepository.saveAll(List.of(
+                        BillHistory.builder()
+                                .status(BillStatus.CHO_XAC_NHAN)
+                                .bill(bill)
+                                .user(bill.getEmployee())
+                                .build(),
+
+                        BillHistory.builder()
+                                .status(BillStatus.XAC_NHAN)
+                                .bill(bill)
+                                .user(bill.getEmployee())
+                                .build(),
+
+                        BillHistory.builder()
+                                .status(BillStatus.DA_THANH_TOAN)
+                                .bill(bill)
+                                .user(bill.getEmployee())
+                                .build()
+                ));
 
                 response.getVoucherDetails().forEach(voucher -> {
                     Optional<Voucher> vouchers = voucherRepository.findById(idVoucher);
@@ -233,7 +247,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                     .phoneNumber(response.getPhoneNumber())
                     .email(response.getEmail())
                     .type(BillType.ONLINE)
-                    .status(BillStatus.DA_THANH_TOAN)
+                    .status(BillStatus.XAC_NHAN)
                     .address(response.getAddress())
                     .itemDiscount(response.getItemDiscount())
                     .moneyShip(response.getMoneyShip())
@@ -245,11 +259,27 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
 
             billRepository.save(bill);
 
-            billHistoryRepository.save(BillHistory.builder()
-                    .status(BillStatus.DA_THANH_TOAN)
-                    .bill(bill)
-                    .user(bill.getEmployee())
-                    .build());
+            billHistoryRepository.saveAll(List.of(
+                    BillHistory.builder()
+                            .status(BillStatus.CHO_XAC_NHAN)
+                            .bill(bill)
+                            .user(bill.getEmployee())
+                            .build(),
+
+                    BillHistory.builder()
+                            .status(BillStatus.XAC_NHAN)
+                            .bill(bill)
+                            .user(bill.getEmployee())
+                            .build(),
+
+                    BillHistory.builder()
+                            .status(BillStatus.DA_THANH_TOAN)
+                            .bill(bill)
+                            .user(bill.getEmployee())
+                            .build()
+            ));
+
+
             for (BillDetailOnline x : response.getBillDetail()) {
                 Optional<ProductDetail> optional = productDetailRepository.findById(x.getIdProductDetail());
                 if (!optional.isPresent()) {

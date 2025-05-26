@@ -120,6 +120,9 @@ function updateQty(index, change) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    localStorage.removeItem('voucherIDNoLogin');
+    localStorage.removeItem('voucherValueNoLogin')
+    localStorage.removeItem('checkUseVoucher')
     const selectedIndices = JSON.parse(localStorage.getItem('selectedCartIndices')) || [];
     const checkboxes = document.querySelectorAll('input[name="selectedCartDetailIds"]');
     const totalElement = document.getElementById('cart__subtotal-title money');
@@ -240,7 +243,7 @@ function formatDateFromArray(dateArray) {
 
     return `${day}/${month}/${year} ${hour}:${minute}`;
 }
-
+let voucherValueLocal = 0;
 document.getElementById('btnApplyVoucher').addEventListener('click', function () {
     const selectVoucher = document.querySelector('input[name="selectedVoucher"]:checked');
     if (selectVoucher) {
@@ -248,6 +251,7 @@ document.getElementById('btnApplyVoucher').addEventListener('click', function ()
         const voucherValue = selectVoucher.getAttribute('data-value');
         const voucherName = selectVoucher.getAttribute('data-name');
         const minimumBill = selectVoucher.getAttribute('data-minimum');
+        voucherValueLocal = voucherValue;
         localStorage.setItem('voucherValueNoLogin', voucherValue);
         localStorage.setItem('voucherIDNoLogin', voucherId)
         console.log("Selected Voucher ID:", voucherId);
@@ -274,6 +278,21 @@ document.getElementById('btnApplyVoucher').addEventListener('click', function ()
     const modal = bootstrap.Modal.getInstance(voucherModal) || new bootstrap.Modal(voucherModal);
     modal.hide();
 })
+document.getElementById('btnCancelVoucher').addEventListener('click' , function () {
+    document.getElementById('voucher').innerHTML = '0 VND';
+    localStorage.setItem('voucherValueNoLogin' , 0);
+    localStorage.setItem('voucherIDNoLogin', 12);
+    document.getElementById('totalPayMent').innerHTML = `${totalPayment.toLocaleString()} VND`
+    const selectedVoucher = document.querySelector('input[name="selectedVoucher"]:checked');
+    if (selectedVoucher) {
+        selectedVoucher.checked = false;
+    }
+
+    const voucherModal = document.getElementById('modalVoucher');
+    const modal = bootstrap.Modal.getInstance(voucherModal) || new bootstrap.Modal(voucherModal);
+    modal.hide();
+    showToast('Hủy voucher thành công')
+})
 document.getElementById('cart_checkout_button').addEventListener('click', function () {
     const selectedProducts = [];
     const checkboxes = document.querySelectorAll('input[name="selectedCartDetailIds"]:checked');
@@ -289,6 +308,10 @@ document.getElementById('cart_checkout_button').addEventListener('click', functi
 
     if (selectedProducts.length > 0) {
         localStorage.setItem('selectedProductsForCheckout', JSON.stringify(selectedProducts));
+        if (!voucherValueLocal || voucherValueLocal === "0") {
+            localStorage.setItem('checkUseVoucher', true);
+        }
+
     } else {
         showToastError('Vui lòng chọn  sản phẩm để thanh toán.' , 'error');
         return;

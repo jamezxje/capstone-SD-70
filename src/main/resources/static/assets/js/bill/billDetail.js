@@ -161,24 +161,27 @@ function updateTimelineStatus(status) {
         case "CHO_VAN_CHUYEN":
             if (document.getElementById("waiting-shipping").style.display === "none") {
                 document.getElementById("waiting-shipping").style.display = "block";
+                document.getElementById('changeInfor').style.display = 'none';
             }
             break;
         case "VAN_CHUYEN":
             if (document.getElementById("shipping").style.display === "none") {
                 document.getElementById("shipping").style.display = "block";
                 document.getElementById('cancelBill').style.display = 'none'
+                document.getElementById('changeInfor').style.display = 'none';
             }
             break;
         case "DA_THANH_TOAN":
             if (document.getElementById("paid").style.display === "none") {
                 document.getElementById("paid").style.display = "block";
+                document.getElementById('changeInfor').style.display = 'none';
             }
             break;
         case "THANH_CONG":
             if (document.getElementById("completed").style.display === "none") {
                 document.getElementById("completed").style.display = "block";
                 document.getElementById('changeStatusButton').style.display = 'none'
-                document.getElementById('cancelBill').style.display = 'none'
+                document.getElementById('changeInfor').style.display = 'none';
             }
             break;
         case "DA_HUY" :
@@ -271,14 +274,22 @@ function getStatusId(status) {
             document.getElementById('changeInfor').style.display = 'none'
             return "confirmed";
         case "CHO_VAN_CHUYEN":
+            document.getElementById('changeInfor').style.display = 'none'
+
             return "waiting-shipping";
         case "VAN_CHUYEN":
+            document.getElementById('changeInfor').style.display = 'none'
+
             return "shipping";
         case "DA_THANH_TOAN":
+            document.getElementById('changeInfor').style.display = 'none'
+
             return "paid";
         case "THANH_CONG":
             document.getElementById('changeStatusButton').style.display = 'none'
             document.getElementById('cancelBill').style.display = 'none'
+            document.getElementById('changeInfor').style.display = 'none'
+
             return "completed";
         case "DA_HUY":
             document.getElementById('changeStatusButton').style.display = 'none'
