@@ -135,13 +135,6 @@
             </li>
             <li class="nav-item">
               <a class="nav-link"
-                 th:classappend="${status} == 'TRA_HANG' ? 'active fw-bold text-danger'"
-                 th:href="@{/bill/listBill(status='TRA_HANG', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
-                <i class="bi bi-arrow-counterclockwise me-1"></i> Trả hàng
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link"
                  th:classappend="${status} == 'DA_HUY' ? 'active fw-bold text-secondary'"
                  th:href="@{/bill/listBill(status='DA_HUY', keyword=${keyword}, orderType=${orderType}, startDate=${startDate}, endDate=${endDate})}">
                 <i class="bi bi-x-circle me-1"></i> Hủy

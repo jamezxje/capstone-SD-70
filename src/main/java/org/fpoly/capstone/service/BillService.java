@@ -106,6 +106,10 @@ public interface BillService {
                                        Pageable pageable);
 
     Bill createBillOnlieCustomerRequest(CreateBillCustomerOnlineRequest request) throws MessagingException;
+    List<Bill> findCancelledBillsDate(LocalDate date);
+
+    List<Bill> findByCancelledDateBetween(LocalDate start, LocalDate end);
+
 
     Optional<ProductDetail> finProductDetailById(Long idProduct , Long idSize , Long idColor);
 

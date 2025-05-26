@@ -264,14 +264,14 @@ button:active {
 }
 button {
     padding: 10px 20px;
-    /*background-color: #4CAF50;*/
+    background-color: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: white;
 }
 textarea {
     padding: 10px;

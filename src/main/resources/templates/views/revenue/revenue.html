@@ -29,21 +29,24 @@
 <body>
 <th:block id="th-body">
   <script>
-    // Định dạng tiền tệ cho giá trị voucher khi trang tải
-     document.addEventListener("DOMContentLoaded", function() {
-         const valueElements = document.querySelectorAll('.total-revenue');
-         valueElements.forEach(function (element) {
-    // Lấy giá trị và loại bỏ các ký tự không phải số, bao gồm dấu phân cách hàng nghìn
+    document.addEventListener("DOMContentLoaded", function() {
+     const valueElements = document.querySelectorAll('.total-revenue');
+     valueElements.forEach(function (element) {
+         // Lấy giá trị và loại bỏ các ký tự không phải số, bao gồm dấu phân cách hàng nghìn
          const value = parseFloat(element.innerText.replace(/[^\d.-]/g, ''));
-    // Đảm bảo giá trị là số hợp lệ
-      if (!isNaN(value)) {
-    // Làm tròn xuống đến 2 chữ số thập phân
-      const roundedValue = Math.floor(value * 100) / 100;
-    // Định dạng số theo kiểu tiền tệ Việt Nam
-    element.innerText = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(roundedValue);
-}
-});
-});
+         // Đảm bảo giá trị là số hợp lệ
+         if (!isNaN(value)) {
+             // Làm tròn xuống đến 2 chữ số thập phân
+             const roundedValue = Math.floor(value * 100) / 100;
+             // Định dạng số theo kiểu tiền tệ Việt Nam
+             let formatted = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(roundedValue);
+             // Thay '₫' bằng 'VNDD'
+             formatted = formatted.replace('₫', 'VNĐ');
+             element.innerText = formatted;
+         }
+     });
+ });
+
   </script>
 
       <div class="content-body">
@@ -67,12 +70,12 @@
                 </div>
               </div>
 
-              <div class="col-md-3">
-                <div class="card text-white bg-warning shadow-sm text-center p-3">
-                  <p class="fs-4 fw-bold" th:text="${totalProductRefund}"></p>
-                  <p class="mb-0">Tổng các đơn trả hàng (Cửa hàng)</p>
-                </div>
-              </div>
+<!--              <div class="col-md-3">-->
+<!--                <div class="card text-white bg-warning shadow-sm text-center p-3">-->
+<!--                  <p class="fs-4 fw-bold" th:text="${totalProductRefund}"></p>-->
+<!--                  <p class="mb-0">Tổng các đơn trả hàng (Cửa hàng)</p>-->
+<!--                </div>-->
+<!--              </div>-->
 
               <div class="col-md-3">
                 <div class="card text-white bg-danger shadow-sm text-center p-3">
@@ -88,7 +91,7 @@
                 <tr>
                   <th>Tổng doanh thu</th>
                   <th>Tổng số lương sản phẩm</th>
-                  <th>Trả hàng</th>
+<!--                  <th>Trả hàng</th>-->
                   <th>Hủy đơn hàng</th>
 
                 </tr>
@@ -107,11 +110,11 @@
                     </div>
                     (<span th:text="${timePeriod}"></span>)
                   </td>
-                  <td>
-                    <div th:text="${totalProductRefundToday}">
-                    </div>
-                    (<span th:text="${timePeriod}"></span>)
-                  </td>
+<!--                  <td>-->
+<!--                    <div th:text="${totalProductRefundToday}">-->
+<!--                    </div>-->
+<!--                    (<span th:text="${timePeriod}"></span>)-->
+<!--                  </td>-->
                   <td>
                     <div th:text="${totalProductCandelToday}">
                     </div>
@@ -197,7 +200,33 @@
               </tbody>
             </table>
           </div>
-
+            <!--            <div class="m-5">-->
+            <!--              <h4>THỐNG KÊ CÁC HOÁ ĐƠN ĐÃ HUỶ</h4>-->
+            <!--              <table class="table table-bordered table-hover" id="cancelledBillsTable">-->
+            <!--                <thead>-->
+            <!--                <tr>-->
+            <!--                  <th>STT</th>-->
+            <!--                  <th>Thời gian hủy</th>-->
+            <!--                  <th>Mã hóa đơn</th>-->
+            <!--                  <th>Loại hóa đơn</th>-->
+            <!--                  <th>Tên khách hàng</th>-->
+            <!--                  <th>Tên nhân viên</th>-->
+            <!--                  <th>Lý do hủy</th>-->
+            <!--                </tr>-->
+            <!--                </thead>-->
+            <!--                <tbody>-->
+            <!--                <tr th:each="bill, iterStat : ${totalsCancelledBillsToday}">-->
+            <!--                  <td th:text="${iterStat.index + 1}"></td>-->
+            <!--                  <td th:text="${#dates.format(bill.confirmationDate, 'dd/MM/yyyy HH:mm')}"></td>-->
+            <!--                  <td th:text="${bill.code}"></td>-->
+            <!--                  <td th:text="${bill.type}"></td>-->
+            <!--                  <td th:text="${bill.user != null ? bill.user.fullName : 'Khách lẻ'}"></td>-->
+            <!--                  <td th:text="${bill.employee != null ? bill.employee.fullName : 'Chưa xác định'}"></td>-->
+            <!--                  <td th:text="${bill.note}"></td>-->
+            <!--                </tr>-->
+            <!--                </tbody>-->
+            <!--              </table>-->
+            <!--            </div>-->
 
           </div>
     </div>

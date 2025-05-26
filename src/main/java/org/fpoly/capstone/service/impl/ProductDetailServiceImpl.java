@@ -68,10 +68,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         }
 
         if (images != null && images.length > 0) {
-            this.imageService.deleteImageByProductDetailId(productDetail.getId());
-            for (MultipartFile imageFile : images) {
-                if (imageFile != null && !imageFile.isEmpty()) {
-                    this.imageService.saveImageToProductDetail(productDetail, imageFile);
+            if (images[0].getOriginalFilename() != null && !images[0].getOriginalFilename().isEmpty()) {
+                this.imageService.deleteImageByProductDetailId(productDetail.getId());
+                for (MultipartFile imageFile : images) {
+                    if (imageFile != null && !imageFile.isEmpty()) {
+                        this.imageService.saveImageToProductDetail(productDetail, imageFile);
+                    }
                 }
             }
         }

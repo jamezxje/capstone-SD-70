@@ -1137,5 +1137,19 @@ public class BillServiceImpl implements BillService {
         return optional;
     }
 
+    public List<Bill> findCancelledBillsDate(LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+        return this.billRepository.findCancelledBillsByDate(startOfDay, endOfDay);
+    }
+
+    @Override
+    public List<Bill> findByCancelledDateBetween(LocalDate start, LocalDate end) {
+        LocalDateTime startDate = start.atStartOfDay();
+        LocalDateTime endDate = end.atTime(23, 59, 59);
+        return this.billRepository.findCancelledBillsByDate(startDate, endDate);
+    }
+
 
 }
