@@ -97,4 +97,10 @@ public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     @Query("SELECT v FROM Voucher v WHERE v.status = 'ACTIVE' ORDER BY v.value DESC")
     List<Voucher> findAllActiveVouchers();
 
+    @Query("SELECT v FROM Voucher v WHERE v.name = :name")
+    Voucher findByName(@Param("name") String name);
+
+    @Query("SELECT v.name FROM Voucher v")
+    List<String> findAllNames();
+
 }

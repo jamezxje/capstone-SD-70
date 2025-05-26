@@ -35,6 +35,16 @@ public class VoucherServiceImpl implements VoucherService {
     private final UserService userService;
 
     @Override
+    public Voucher findByName(String name) {
+        return voucherRepository.findByName(name);
+    }
+
+    @Override
+    public List<String> findAllNames() {
+        return voucherRepository.findAllNames();
+    }
+
+    @Override
     public Voucher createVoucher(Voucher voucher){
         String user = userService.getName();
         if(voucher.getStartDate().isAfter(voucher.getEndDate())){
@@ -97,7 +107,7 @@ public class VoucherServiceImpl implements VoucherService {
 
         Voucher update = findById(voucher.getId());
 
-
+    
         update.setName(voucher.getName());
         update.setValue(value);
         update.setQuantity(voucher.getQuantity());

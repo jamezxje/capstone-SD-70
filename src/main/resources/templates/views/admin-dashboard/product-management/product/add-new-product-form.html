@@ -250,6 +250,13 @@
   </script>
   <script th:src="@{/assets/admin-dashboard/vendor/jquery-validation/jquery.validate.min.js}"></script>
   <script th:src="@{/js/product-management/product/add-new-product.js}"></script>
+  <script>
+    const input = document.getElementById('productName');
+    input.addEventListener('input', function () {
+      // Loại bỏ tất cả ký tự không phải chữ, số, khoảng trắng
+      this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+    });
+  </script>
 </th:block>
 
 </body>
