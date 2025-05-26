@@ -445,7 +445,7 @@ localStorage.setItem('totalPayment' , vnpay_amount);
 localStorage.setItem('totalPrice' , totalItem)
     const payModel = {
         vnp_Amount: vnpay_amount,
-        vnp_OrderInfo: "Thanh toán khách khong dang nhap",
+        vnp_OrderInfo: "Thanh toán khách không đăng nhập",
         vnp_OrderType: "other",
         vnp_TxnRef: generateVnpTxnRef() ,
         userType: "GUEST"
@@ -490,15 +490,27 @@ localStorage.setItem('totalPrice' , totalItem)
 })
 
 function checkName() {
-    const nameCustomer = document.getElementById("nameCustomer").value;
+    const nameCustomerInput = document.getElementById("nameCustomer");
+    const nameCustomer = nameCustomerInput.value;
     const nameCustomerError = document.getElementById("nameCustomerError");
+
+    const hasLeadingSpace = /^\s/.test(nameCustomer);
+    const hasNumber = /\d/.test(nameCustomer);
 
     if (!nameCustomer) {
         nameCustomerError.innerText = "Vui lòng nhập tên";
         nameCustomerError.style.display = "block";
         return false;
-    } else if (nameCustomer.length < 3) {
-        nameCustomerError.innerText = "Vui lòng nhập tên trên 3 ký tự"
+    } else if (hasLeadingSpace) {
+        nameCustomerError.innerText = "Tên không được bắt đầu bằng khoảng trắng";
+        nameCustomerError.style.display = "block";
+        return false;
+    } else if (hasNumber) {
+        nameCustomerError.innerText = "Tên không được chứa số";
+        nameCustomerError.style.display = "block";
+        return false;
+    } else if (nameCustomer.trim().length < 3) {
+        nameCustomerError.innerText = "Vui lòng nhập tên trên 3 ký tự";
         nameCustomerError.style.display = "block";
         return false;
     } else {
@@ -508,15 +520,23 @@ function checkName() {
     }
 }
 
+
+
 function checkPhone() {
-    const phoneCustomer = document.getElementById("numberPhoneCustomer").value;
+    const phoneCustomerInput = document.getElementById("numberPhoneCustomer");
+    const phoneCustomer = phoneCustomerInput.value;
     const numberPhoneCustomerError = document.getElementById("numberPhoneCustomerError");
     const phoneRegex = /^(?:\+84|84|0)\d{9}$/;
+
     if (!phoneCustomer) {
         numberPhoneCustomerError.innerText = "Vui lòng nhập số điện thoại";
         numberPhoneCustomerError.style.display = "block";
         return false;
-    } else if (!phoneRegex.test(phoneCustomer)) {
+    } else if (/^\s/.test(phoneCustomer)) {
+        numberPhoneCustomerError.innerText = "Số điện thoại không được bắt đầu bằng khoảng trắng";
+        numberPhoneCustomerError.style.display = "block";
+        return false;
+    } else if (!phoneRegex.test(phoneCustomer.trim())) {
         numberPhoneCustomerError.innerText = "Vui lòng đúng định dạng số điện thoại";
         numberPhoneCustomerError.style.display = "block";
         return false;
@@ -526,6 +546,8 @@ function checkPhone() {
         return true;
     }
 }
+
+
 
 function checkProvince() {
     const provinceSelect = document.getElementById("provinceSelect").value;
@@ -576,43 +598,55 @@ function checkWard() {
     }
 }
 function checkFullAddress() {
-    const addressValue = document.getElementById('addressValue').value;
+    const addressInput = document.getElementById('addressValue');
+    const addressValue = addressInput.value;
     const addressValueError = document.getElementById('addressValueError');
-    const nameRegex = /^[a-zA-Z\s]*$/;
+
     if (!addressValue) {
         addressValueError.innerText = 'Vui lòng nhập địa chỉ cụ thể';
         addressValueError.style.display = 'block';
         return false;
-    } else if (addressValue.length < 10) {
-        addressValueError.innerText = 'Vui lòng nhập tối thiểu 10 chữ';
+    } else if (/^\s/.test(addressValue)) {
+        addressValueError.innerText = 'Địa chỉ không được bắt đầu bằng khoảng trắng';
+        addressValueError.style.display = 'block';
+        return false;
+    } else if (addressValue.trim().length < 10) {
+        addressValueError.innerText = 'Vui lòng nhập tối thiểu 10 ký tự';
         addressValueError.style.display = 'block';
         return false;
     } else {
-        addressValueError.innerText = "";
+        addressValueError.innerText = '';
         addressValueError.style.display = 'none';
         return true;
     }
 }
 
-function checkEmail(){
-    const emailCustomer = document.getElementById("emailCustomer").value;
+
+function checkEmail() {
+    const emailCustomerInput = document.getElementById("emailCustomer");
+    const emailCustomer = emailCustomerInput.value;
     const emailCustomerError = document.getElementById("emailCustomerError");
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailCustomer) {
         emailCustomerError.innerText = "Vui lòng nhập email";
         emailCustomerError.style.display = "block";
         return false;
-    }else if (!emailRegex.test(emailCustomer)) {
+    } else if (/^\s/.test(emailCustomer)) {
+        emailCustomerError.innerText = "Email không được bắt đầu bằng khoảng trắng";
+        emailCustomerError.style.display = "block";
+        return false;
+    } else if (!emailRegex.test(emailCustomer.trim())) {
         emailCustomerError.innerText = "Vui lòng nhập đúng định dạng email";
         emailCustomerError.style.display = "block";
         return false;
-    }
-    else {
+    } else {
         emailCustomerError.innerText = "";
         emailCustomerError.style.display = "none";
         return true;
     }
 }
+
 
 document.getElementById("provinceSelect").addEventListener('change', checkProvince);
 document.getElementById("districtSelect").addEventListener('change', checkDistrict);
@@ -621,4 +655,5 @@ document.getElementById("wardSelect").addEventListener('change', checkWard);
 document.getElementById("nameCustomer").addEventListener('input', checkName);
 document.getElementById("numberPhoneCustomer").addEventListener('input', checkPhone);
 document.getElementById("addressValue").addEventListener('input', checkFullAddress);
+document.getElementById('emailCustomer').addEventListener('input' , checkEmail);
 

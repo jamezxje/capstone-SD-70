@@ -254,7 +254,7 @@ document.getElementById('btnApplyVoucher').addEventListener('click', function ()
         console.log("Selected Voucher Value:", voucherValue);
         console.log("Selected Voucher Name:", voucherName);
         console.log("Selected Voucher Minimum Bill:", minimumBill);
-        document.getElementById('voucher').innerHTML = parseInt(voucherValue, 10).toLocaleString() + ' VND';
+        document.getElementById('voucher').innerHTML = voucherName + ' - ' +  parseInt(voucherValue, 10).toLocaleString() + ' VND';
 
         const totalPaymentElement = document.getElementById('totalPayMent');
         if (totalPaymentElement) {
@@ -290,7 +290,7 @@ document.getElementById('cart_checkout_button').addEventListener('click', functi
     if (selectedProducts.length > 0) {
         localStorage.setItem('selectedProductsForCheckout', JSON.stringify(selectedProducts));
     } else {
-        alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán.');
+        showToastError('Vui lòng chọn  sản phẩm để thanh toán.' , 'error');
         return;
     }
 
@@ -348,13 +348,13 @@ async function updateQty(index, change) {
             const availableQuantity = response.data.quantity;
             console.log('Check available quantity:', availableQuantity);
             if (item.quantity + change > availableQuantity) {
-               showToastError("Số lươợng sản phảm vượt quá số lượng trong kho!");
+               showToastError("Số lượng sản phảm vượt quá số lượng trong kho!");
                 return;
             }
 
             item.quantity += change;
             if (item.quantity <= 0) {
-                removeItem(index);
+             showToastError("Vui lòng không giảm số lượng về 0!");
                 return;
             }
             localStorage.setItem('noLoginCart', JSON.stringify(cart));
