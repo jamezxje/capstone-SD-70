@@ -11,15 +11,20 @@
     <div class="deznav-scroll">
       <div class="main-profile">
         <div class="image-bx">
-          <img src="/assets/admin-dashboard/images/50dd76c083216f5d694aefab8579c3c6.jpg" class="rounded-circle" alt="">
-          <a href="javascript:void(0);"><i class="fa fa-cog" aria-hidden="true"></i></a>
+          <a th:href="@{/dashboard/product-management/revenue/list}" class="brand-logo">
+            <img th:if="${avatar != null and !#strings.isEmpty(avatar)}"
+                 th:src="@{${avatar}}"
+                 width="50" alt="Avatar"/>
+          </a>
+          <!-- <img src="/assets/admin-dashboard/images/50dd76c083216f5d694aefab8579c3c6.jpg" class="rounded-circle" alt="">
+          <a href="javascript:void(0);"><i class="fa fa-cog" aria-hidden="true"></i></a> -->
         </div>
-        <h5 class="name"><span class="font-w400">Hello,</span> James</h5>
+        <!-- <h5 class="name"><span class="font-w400">Hello,</span> James</h5>
         <p class="email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                            data-cfemail="95f8f4e7e4e0f0efefefefd5f8f4fcf9bbf6faf8">[[${email}]]</a></p>
+                            data-cfemail="95f8f4e7e4e0f0efefefefd5f8f4fcf9bbf6faf8">[[${email}]]</a></p> -->
       </div>
       <ul class="metismenu" id="menu">
-        <li class="nav-label first">Main Menu</li>
+        <!-- <li class="nav-label first">Main Menu</li> -->
 
         <li>
           <a th:href="@{/sale-counter}" class="has-arrow ai-icon" aria-expanded="false">
