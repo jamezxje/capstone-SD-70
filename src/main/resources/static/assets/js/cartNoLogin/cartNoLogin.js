@@ -171,7 +171,11 @@ openModalVoucher.addEventListener('click', function () {
     modal.show();
 
 });
-
+document.getElementById('btnClose').addEventListener('click' , function () {
+    const voucherModal = document.getElementById('modalVoucher');
+    const modal = bootstrap.Modal.getInstance(voucherModal) || new bootstrap.Modal(voucherModal);
+    modal.hide();
+})
 async function getVoucherInBill(minimumBill) {
     console.log("Fetching vouchers for minimum bill:", minimumBill);
 

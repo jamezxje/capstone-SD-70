@@ -236,36 +236,15 @@
 
     </div>
     <div class="modal fade" id="modalVoucher" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 450px;">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 450px; height: 300px; overflow-y: auto;" >
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title mb-0">Chọn mã giảm giá</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Đóng" id="btnClose">
                         <span>&times;</span>
                     </button>
                 </div>
                 <div id="voucherList"></div>
-<!--                <div class="modal-body" style="max-height: 450px; overflow-y: auto;">-->
-<!--                    &lt;!&ndash; Lặp lại phần này với mỗi voucher (render bằng JS hoặc backend) &ndash;&gt;-->
-<!--                    <div class="voucher-item border rounded p-3 mb-2 d-flex justify-content-between align-items-center">-->
-<!--                        <div class="voucher-info">-->
-<!--                            <p class="mb-1" id="nameVoucher"><span>Tên mã giảm giá</span></p>-->
-<!--                            <p class="mb-1" id="discount">Giảm: <span>100,000</span> VND</p>-->
-<!--                            <p class="mb-1" id="miniBill">Đơn tối thiểu: <span>500,000</span> VND</p>-->
-<!--                            <p class="mb-0" id="endDate">HSD: <span>31/12/2025</span></p>-->
-<!--                        </div>-->
-<!--                        <div class="voucher-select">-->
-<!--                            <input type="radio"-->
-<!--                                   name="selectedVoucher"-->
-<!--                                   value="1"-->
-<!--                                   data-value="100000"-->
-<!--                                   data-name="GIAM100"-->
-<!--                                   data-minimum="500000"-->
-<!--                                   style="transform: scale(1.3); cursor: pointer;">-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnCancelVoucher">Hủy mã giảm giá</button>
                     <button type="button" class="btn btn-primary" id="btnApplyVoucher">Chọn</button>

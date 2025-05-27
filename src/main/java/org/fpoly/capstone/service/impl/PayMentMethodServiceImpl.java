@@ -13,6 +13,7 @@ import org.fpoly.capstone.entity.*;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.BillType;
 import org.fpoly.capstone.entity.enum_status.PaymentMethod;
+import org.fpoly.capstone.entity.enum_status.ProductVariantStatus;
 import org.fpoly.capstone.repository.*;
 import org.fpoly.capstone.service.EmailService;
 import org.fpoly.capstone.service.PaymentMethodService;
@@ -287,6 +288,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 }
 
                 ProductDetail productDetail = optional.get();
+
                 BillDetail billDetail = BillDetail.builder()
                         .productDetail(productDetail)
                         .price(x.getPrice())
@@ -295,6 +297,11 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                         .statusBill(BillStatus.THANH_CONG)
                         .build();
                 billDetailRepository.save(billDetail);
+                productDetail.setQuantity(productDetail.getQuantity() - x.getQuantity());
+                if (productDetail.getQuantity() == 0) {
+                    productDetail.setStatus(ProductVariantStatus.HET_SAN_PHAM);
+                }
+                productDetailRepository.save(productDetail);
             }
             if (response.getIdVoucher() != null) {
                 Optional<Voucher> optional = voucherRepository.findById(response.getIdVoucher());
