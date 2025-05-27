@@ -69,7 +69,7 @@
 
                 <div id="confirmModalStatus" class="modal">
                     <div class="modal-content">
-                        <span class="close">&times;</span>
+                        <span class="closexacnhan">&times;</span>
                         <h4>Xác nhận chuyển trạng thái</h4>
                         <p>Vui lòng nhập lý do chuyển trạng thái (tối thiểu 5 chữ):</p>
                         <textarea id="confirmationReason" rows="4" cols="50"></textarea>
@@ -257,12 +257,25 @@
                             VND</h5>
                         <hr>
                         <h4>Tổng tiền thanh toán:<span
-                                    th:text="${#numbers.formatDecimal(voucherDetail.afterPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                                th:text="${#numbers.formatDecimal(voucherDetail.afterPrice, 0, 'COMMA', 0, 'POINT')}"></span>
                             VND</h4>
                     </div>
                 </div>
             </div>
 
+            <div id="toast-success" style="
+                display: none;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #4CAF50; /* xanh lá đậm */
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                transition: opacity 0.5s ease;
+                z-index: 9999;
+            "></div>
 
             <div class="invoice-container" id="invoice-container" style="display: none">
 
