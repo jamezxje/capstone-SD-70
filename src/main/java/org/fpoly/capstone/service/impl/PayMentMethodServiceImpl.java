@@ -323,7 +323,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
 
                 try {
                     if (bill.getEmail() != null) {
-                        emailService.sendEmail(bill.getEmail() , "Thannh toán hóa đơn online" ,emailService.generateHtmlContent(bill) );
+                        emailService.sendEmail(bill.getEmail() , "Thanh toán hóa đơn online" ,emailService.generateHtmlContent(bill) );
                     }else {
                         System.out.println("Email null no send");
                     }
