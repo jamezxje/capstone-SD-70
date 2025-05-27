@@ -2,10 +2,22 @@ package org.fpoly.capstone.service;
 
 import jakarta.mail.MessagingException;
 import org.fpoly.capstone.dto.address.BaseAddressRequest;
-import org.fpoly.capstone.dto.bill.*;
+import org.fpoly.capstone.dto.bill.CreateBillCustomerOnlineRequest;
+import org.fpoly.capstone.dto.bill.CreateBillOfflineDTO;
+import org.fpoly.capstone.dto.bill.CreateCustomerBill;
+import org.fpoly.capstone.dto.bill.GetAllCusomter;
+import org.fpoly.capstone.dto.bill.ProductRequest;
+import org.fpoly.capstone.dto.bill.VoucherRequest1;
 import org.fpoly.capstone.dto.billDetail.BillProductDTO;
 import org.fpoly.capstone.dto.voucher.VoucherRequest;
-import org.fpoly.capstone.entity.*;
+import org.fpoly.capstone.entity.Bill;
+import org.fpoly.capstone.entity.Brand;
+import org.fpoly.capstone.entity.Category;
+import org.fpoly.capstone.entity.Color;
+import org.fpoly.capstone.entity.Material;
+import org.fpoly.capstone.entity.ProductDetail;
+import org.fpoly.capstone.entity.Size;
+import org.fpoly.capstone.entity.Voucher;
 import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.entity.enum_status.BillType;
 import org.fpoly.capstone.service.payload.bill.BuyNowBillRequest;
@@ -81,6 +93,8 @@ public interface BillService {
 
     void saveToBillForOnlineUser(CreateBillRequest request);
 
+    void saveToBillForOnlineUserVnPay(CreateBillRequest request);
+
     void saveToBillForOnlineUserSelectFromCart(List<CreateBillDetailFromCartRequest> createBillDetailFromCartRequests, CreateBillRequest request);
 
     void buyNowForOnlineUser(BuyNowBillRequest request);
@@ -106,12 +120,13 @@ public interface BillService {
                                        Pageable pageable);
 
     Bill createBillOnlieCustomerRequest(CreateBillCustomerOnlineRequest request) throws MessagingException;
+
     List<Bill> findCancelledBillsDate(LocalDate date);
 
     List<Bill> findByCancelledDateBetween(LocalDate start, LocalDate end);
 
 
-    Optional<ProductDetail> finProductDetailById(Long idProduct , Long idSize , Long idColor);
+    Optional<ProductDetail> finProductDetailById(Long idProduct, Long idSize, Long idColor);
 
-Optional<ProductDetail> findByIDProductDetail(Integer idProductDetail);
+    Optional<ProductDetail> findByIDProductDetail(Integer idProductDetail);
 }

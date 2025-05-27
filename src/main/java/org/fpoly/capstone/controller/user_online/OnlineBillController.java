@@ -217,7 +217,9 @@ public class OnlineBillController {
             if (orderInfo.contains("data_itemDiscount")) {
                 int start = orderInfo.indexOf("data_itemDiscount") + "data_itemDiscount:".length();
                 int end = orderInfo.indexOf(",", start);
-                if (end == -1) end = orderInfo.length();
+                if (end == -1) {
+                    end = orderInfo.length();
+                }
                 itemDiscount = orderInfo.substring(start, end).trim();
             }
 
@@ -225,7 +227,9 @@ public class OnlineBillController {
             if (orderInfo.contains("data_beforePrice")) {
                 int start = orderInfo.indexOf("data_beforePrice") + "data_beforePrice:".length();
                 int end = orderInfo.indexOf(",", start);
-                if (end == -1) end = orderInfo.length();
+                if (end == -1) {
+                    end = orderInfo.length();
+                }
                 beforePrice = orderInfo.substring(start, end).trim();
             }
 
@@ -233,7 +237,9 @@ public class OnlineBillController {
             if (orderInfo.contains("data_voucherId")) {
                 int start = orderInfo.indexOf("data_voucherId") + "data_voucherId:".length();
                 int end = orderInfo.indexOf(",", start);
-                if (end == -1) end = orderInfo.length();
+                if (end == -1) {
+                    end = orderInfo.length();
+                }
                 voucherId = orderInfo.substring(start, end).trim();
             }
         }
@@ -278,7 +284,7 @@ public class OnlineBillController {
                     }
                     if ("addToCart".equals(transactionType)) {
                         // Gọi phương thức lưu hóa đơn cho giỏ hàng
-                        this.billService.saveToBillForOnlineUser(createBillRequest);
+                        this.billService.saveToBillForOnlineUserVnPay(createBillRequest);
                     } else if ("buyNow".equals(transactionType)) {
                         // Gọi phương thức lưu hóa đơn cho mua ngay
                         this.billService.saveToBillForBuyNow(createBillRequest);

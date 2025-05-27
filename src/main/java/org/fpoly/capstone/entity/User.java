@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 import org.fpoly.capstone.entity.enum_status.UserRole;
 import org.fpoly.capstone.entity.enum_status.UserStatus;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +32,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 @Builder
 
 public class User {

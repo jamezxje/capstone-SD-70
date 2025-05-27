@@ -5,10 +5,14 @@ import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.fpoly.capstone.constant.MessageError;
 import org.fpoly.capstone.dto.address.BaseAddressRequest;
-import org.fpoly.capstone.dto.bill.*;
+import org.fpoly.capstone.dto.bill.CreateBillCustomerOnlineRequest;
+import org.fpoly.capstone.dto.bill.CreateBillOfflineDTO;
+import org.fpoly.capstone.dto.bill.CreateCustomerBill;
+import org.fpoly.capstone.dto.bill.GetAllCusomter;
+import org.fpoly.capstone.dto.bill.ProductRequest;
+import org.fpoly.capstone.dto.bill.VoucherRequest1;
 import org.fpoly.capstone.dto.billDetail.BillDetailOnline;
 import org.fpoly.capstone.dto.billDetail.BillProductDTO;
 import org.fpoly.capstone.dto.voucher.VoucherRequest;
@@ -556,8 +560,110 @@ public class BillServiceImpl implements BillService {
 //        bill.setReceiveDate(recieveDate);
         bill.setShipDate(recieveDate);
         bill.setAddress(address);
-        bill.setUserName(address);
-        bill.setPhoneNumber(address);
+        bill.setUserName(customer.getFullName());
+        bill.setPhoneNumber(customer.getPhoneNumber());
+
+        bill.setNote(note);
+        bill.setMethod(paymentMethod);
+
+        bill.setBillDetailList(billDetailList);
+        selectedCartDetails.forEach(cart.getCartDetails()::remove);
+        this.cartDetailRepository.deleteAll(selectedCartDetails);
+        this.billRepository.save(bill);
+
+        VoucherDetail voucherDetail = new VoucherDetail();
+
+        Long voucherId = request.getVoucherId();
+        BigDecimal beforePrice = request.getBeforePrice();
+        BigDecimal grandTotals = request.getGrandTotal();
+        // Lấy đối tượng Voucher từ voucherId
+        if (voucherId != null) {
+            try {
+                Voucher voucher = this.voucherService.findById(voucherId);
+                voucherDetail.setVoucher(voucher); // ✅ Truyền đúng đối tượng
+            } catch (NotException e) {
+                throw new IllegalArgumentException("Voucher không tồn tại.");
+            }
+        }
+
+        voucherDetail.setBill(bill);
+        voucherDetail.setBeforePrice(beforePrice);
+        voucherDetail.setAfterPrice(grandTotals);
+        voucherDetail.setDiscountPrice(itemDiscount);
+        voucherDetail.setCreateDate(new Date());
+
+        this.voucherDetailReponsitory.save(voucherDetail);
+
+        try {
+            if (bill.getEmail() != null) {
+                this.emailService.sendEmail(bill.getEmail(), "Thông tin mua hàng online", this.emailService.generateHtmlContentBillForOnlineUser(bill));
+            } else {
+                System.out.println("Email null no send");
+            }
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public void saveToBillForOnlineUserVnPay(CreateBillRequest request) {
+
+        User loggedUser = this.userService.getUserFromContext();
+        Cart cart = this.cartRepository.findCartByUserId(loggedUser.getId());
+        Bill bill = new Bill();
+
+        User customer = cart.getUser();
+        bill.setUser(customer);
+        bill.setType(BillType.ONLINE);
+        bill.setStatus(BillStatus.DA_THANH_TOAN);
+        bill.setCode(GeneralStringCode.generateCodeAdmin());
+        bill.setEmail(customer.getEmail());
+
+        List<CartDetail> selectedCartDetails = cart.getCartDetails().stream()
+                .filter(cartDetail -> cartDetail.getIsSelected() != null && cartDetail.getIsSelected())  // Only keep cart details where isSelected is true
+                .collect(Collectors.toList());
+
+        double totalPrice = selectedCartDetails.stream()
+                .mapToDouble(detail -> detail.getPrice().doubleValue() * detail.getQuantity())
+                .sum();
+        bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
+
+        // Save the Bill object first
+        this.billRepository.save(bill);
+
+        List<BillDetail> billDetailList = new ArrayList<>();
+        for (CartDetail cartDetail : selectedCartDetails) {
+            BillDetail billDetail = new BillDetail();
+            billDetail.setBill(bill);
+            billDetail.setProductDetail(cartDetail.getProductDetail());
+            billDetail.setQuantity(cartDetail.getQuantity());
+            billDetail.setPrice(cartDetail.getPrice());
+            this.billDetailRepository.save(billDetail);
+            billDetailList.add(billDetail);
+
+            ProductDetail productDetail = cartDetail.getProductDetail();
+            productDetail.setQuantity(productDetail.getQuantity() - cartDetail.getQuantity());
+            productDetailRepository.save(productDetail);
+        }
+
+        BigDecimal itemDiscount = request.getItemDiscount();
+        BigDecimal moneyShip = request.getMoneyShip();
+        Date recieveDate = request.getReceiveDate();
+        BigDecimal grandTotal = request.getGrandTotal();
+        String address = request.getAddress();
+        String note = request.getNote();
+        PaymentMethod paymentMethod = request.getPaymentMethod();
+
+        bill.setItemDiscount(itemDiscount);
+        bill.setTotalMoney(grandTotal);
+        bill.setMoneyShip(moneyShip);
+
+//        bill.setReceiveDate(recieveDate);
+        bill.setShipDate(recieveDate);
+        bill.setAddress(address);
+        bill.setUserName(customer.getFullName());
+        bill.setPhoneNumber(customer.getPhoneNumber());
 
         bill.setNote(note);
         bill.setMethod(paymentMethod);
@@ -929,8 +1035,8 @@ public class BillServiceImpl implements BillService {
 //        lastestBill.setReceiveDate(receiveDate);
         lastestBill.setShipDate(receiveDate);
         lastestBill.setAddress(address);
-        lastestBill.setUserName(address);
-        lastestBill.setPhoneNumber(address);
+        lastestBill.setUserName(lastestBill.getUserName());
+        lastestBill.setPhoneNumber(lastestBill.getPhoneNumber());
         lastestBill.setNote(note);
         lastestBill.setMethod(paymentMethod);
         lastestBill.setCode(GeneralStringCode.generateCodeAdmin());

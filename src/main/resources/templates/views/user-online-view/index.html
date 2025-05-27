@@ -151,7 +151,7 @@
                           <span class="price"
                                 th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'POINT')} + ' VND'"></span>
                         </div>
-
+                        
                         <!-- End product price -->
                         
                         <div class="product-review">
@@ -182,7 +182,7 @@
                     </div>
                   </div>
                 </div>
-
+                
                 <div id="tab2" class="tab_content grid-products">
                   <div class="productSlider">
                     <div class="col-12 item">
@@ -1658,8 +1658,8 @@
 <th:block id="th-js">
   <script th:src="@{/assets/user-online/js/vendor/jquery-3.3.1.min.js}"></script>
   <script th:src="@{/assets/user-online/js/vendor/jquery.cookie.js}"></script>
-
-
+  
+  
   <script>
     $(document).on('click', '[data-target="#content_quickview"]', function () {
       const button = $(this);
@@ -1689,84 +1689,84 @@
   
   <!--For Newsletter Popup-->
   <script>
-    jQuery(document).ready(function () {
-      jQuery('.closepopup').on('click', function () {
-        jQuery('#popup-container').fadeOut();
-        jQuery('#modalOverly').fadeOut();
-      });
-      
-      var visits = jQuery.cookie('visits') || 0;
-      visits++;
-      jQuery.cookie('visits', visits, {expires: 1, path: '/'});
-      console.debug(jQuery.cookie('visits'));
-      if (jQuery.cookie('visits') > 1) {
-        jQuery('#modalOverly').hide();
-        jQuery('#popup-container').hide();
-      } else {
-        var pageHeight = jQuery(document).height();
-        jQuery('<div id="modalOverly"></div>').insertBefore('body');
-        jQuery('#modalOverly').css("height", pageHeight);
-        jQuery('#popup-container').show();
-      }
-      if (jQuery.cookie('noShowWelcome')) {
-        jQuery('#popup-container').hide();
-        jQuery('#active-popup').hide();
-      }
-    });
-    
-    jQuery(document).mouseup(function (e) {
-      var container = jQuery('#popup-container');
-      if (!container.is(e.target) && container.has(e.target).length === 0) {
-        container.fadeOut();
-        jQuery('#modalOverly').fadeIn(200);
-        jQuery('#modalOverly').hide();
-      }
-    });
+    // jQuery(document).ready(function () {
+    //   jQuery('.closepopup').on('click', function () {
+    //     jQuery('#popup-container').fadeOut();
+    //     jQuery('#modalOverly').fadeOut();
+    //   });
+    //
+    //   var visits = jQuery.cookie('visits') || 0;
+    //   visits++;
+    //   jQuery.cookie('visits', visits, {expires: 1, path: '/'});
+    //   console.debug(jQuery.cookie('visits'));
+    //   if (jQuery.cookie('visits') > 1) {
+    //     jQuery('#modalOverly').hide();
+    //     jQuery('#popup-container').hide();
+    //   } else {
+    //     var pageHeight = jQuery(document).height();
+    //     jQuery('<div id="modalOverly"></div>').insertBefore('body');
+    //     jQuery('#modalOverly').css("height", pageHeight);
+    //     jQuery('#popup-container').show();
+    //   }
+    //   if (jQuery.cookie('noShowWelcome')) {
+    //     jQuery('#popup-container').hide();
+    //     jQuery('#active-popup').hide();
+    //   }
+    // });
+    //
+    // jQuery(document).mouseup(function (e) {
+    //   var container = jQuery('#popup-container');
+    //   if (!container.is(e.target) && container.has(e.target).length === 0) {
+    //     container.fadeOut();
+    //     jQuery('#modalOverly').fadeIn(200);
+    //     jQuery('#modalOverly').hide();
+    //   }
+    // });
   </script>
   <!--End For Newsletter Popup-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <script type="text/javascript" th:src="@{/assets/js/cartNoLogin/header.js}"></script>
   <script>
- document.addEventListener('DOMContentLoaded' , function () {
-   localStorage.removeItem('idUserNoLogin')
-   localStorage.removeItem('userNameNoLogin')
-   localStorage.removeItem('noteNoLogin')
-   localStorage.removeItem('phoneNumberNoLogin')
-   localStorage.removeItem('emailNoLogin')
-   localStorage.removeItem('itemDiscountNoLogin')
-   localStorage.removeItem('totalItemNoLogin')
-   localStorage.removeItem('moneyShipNoLogin')
-   localStorage.removeItem('billDetailNoLogin')
-   localStorage.removeItem('addressNoLogin')
-   localStorage.removeItem('shipDateNoLogin')
-   localStorage.removeItem('voucherIdNoLogin')
-   localStorage.removeItem('afterPriceNoLogin')
-   localStorage.removeItem('voucherIdNoLogin')
-   localStorage.removeItem('voucherIDNoLogin')
-    localStorage.removeItem('voucherValueNoLogin')
-   const selectedProducts = JSON.parse(localStorage.getItem('selectedProductsForCheckout')) || [];
-   const cart = JSON.parse(localStorage.getItem('noLoginCart')) || [];
-   selectedProducts.forEach(purchasedItem => {
-     const indexInCart = cart.findIndex(cartItem =>
-             cartItem.idProductLocal === purchasedItem.idProductLocal &&
-             cartItem.color.id === purchasedItem.color.id &&
-             cartItem.size.id === purchasedItem.size.id
-     );
-
-     if (indexInCart !== -1) {
-       const cartItem = cart[indexInCart];
-       if (purchasedItem.quantity < cartItem.quantity) {
-         cartItem.quantity -= purchasedItem.quantity;
-       } else {
-         cart.splice(indexInCart, 1);
-       }
-     }
-   });
-   localStorage.removeItem('selectedProductsForCheckout');
-   localStorage.setItem('noLoginCart', JSON.stringify(cart));
-   localStorage.setItem('cartUpdated', Date.now());
-   updateCartQuantity();
- })
+    document.addEventListener('DOMContentLoaded', function () {
+      localStorage.removeItem('idUserNoLogin')
+      localStorage.removeItem('userNameNoLogin')
+      localStorage.removeItem('noteNoLogin')
+      localStorage.removeItem('phoneNumberNoLogin')
+      localStorage.removeItem('emailNoLogin')
+      localStorage.removeItem('itemDiscountNoLogin')
+      localStorage.removeItem('totalItemNoLogin')
+      localStorage.removeItem('moneyShipNoLogin')
+      localStorage.removeItem('billDetailNoLogin')
+      localStorage.removeItem('addressNoLogin')
+      localStorage.removeItem('shipDateNoLogin')
+      localStorage.removeItem('voucherIdNoLogin')
+      localStorage.removeItem('afterPriceNoLogin')
+      localStorage.removeItem('voucherIdNoLogin')
+      localStorage.removeItem('voucherIDNoLogin')
+      localStorage.removeItem('voucherValueNoLogin')
+      const selectedProducts = JSON.parse(localStorage.getItem('selectedProductsForCheckout')) || [];
+      const cart = JSON.parse(localStorage.getItem('noLoginCart')) || [];
+      selectedProducts.forEach(purchasedItem => {
+        const indexInCart = cart.findIndex(cartItem =>
+            cartItem.idProductLocal === purchasedItem.idProductLocal &&
+            cartItem.color.id === purchasedItem.color.id &&
+            cartItem.size.id === purchasedItem.size.id
+        );
+        
+        if (indexInCart !== -1) {
+          const cartItem = cart[indexInCart];
+          if (purchasedItem.quantity < cartItem.quantity) {
+            cartItem.quantity -= purchasedItem.quantity;
+          } else {
+            cart.splice(indexInCart, 1);
+          }
+        }
+      });
+      localStorage.removeItem('selectedProductsForCheckout');
+      localStorage.setItem('noLoginCart', JSON.stringify(cart));
+      localStorage.setItem('cartUpdated', Date.now());
+      updateCartQuantity();
+    })
   </script>
   <script>
     function showToast(message) {
