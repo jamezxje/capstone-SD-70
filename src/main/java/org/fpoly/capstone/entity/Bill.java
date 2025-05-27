@@ -136,6 +136,11 @@ public class Bill {
     private List<BillDetail> billDetailList;
 
 
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<BillHistory> billHistories;
+
+
     @PrePersist
     public void prePersist() {
         if (this.createDate == null) {

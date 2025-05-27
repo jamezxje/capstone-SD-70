@@ -7,7 +7,9 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.fpoly.capstone.entity.Bill;
+import org.fpoly.capstone.entity.BillHistory;
 import org.fpoly.capstone.entity.ProductDetail;
+import org.fpoly.capstone.entity.enum_status.BillStatus;
 import org.fpoly.capstone.service.RevenueService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -450,9 +452,14 @@ public class RevenueController {
             }
             cell5.setCellStyle(baseCenterStyle);
 
+            String cancelReason = bill.getBillHistories().stream()
+                    .filter(bh -> bh.getStatus() == BillStatus.DA_HUY)
+                    .map(BillHistory::getActionDescription)
+                    .findFirst()
+                    .orElse("");
             // Lý do hủy (giả sử getCancelReason())
             Cell cell6 = row.createCell(columnOffset + 6);
-            cell6.setCellValue(bill.getNote() != null ? bill.getNote() : "");
+            cell6.setCellValue(cancelReason);
             cell6.setCellStyle(baseCenterStyle);
         }
         Row totalRow = sheet.createRow(rowIndex++);
