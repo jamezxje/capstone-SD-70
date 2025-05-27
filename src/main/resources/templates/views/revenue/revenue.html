@@ -55,35 +55,30 @@
           <div class="card">
 
 
-            <div class="row m-4 gx-2">
-              <div class="col-md-3">
+            <div class="row m-4 gx-3 justify-content-center">
+              <div class="col">
                 <div class="card text-white bg-primary shadow-sm text-center p-3">
                   <span class="fs-4 fw-bold total-revenue" th:text="${totalRevenue}"></span>
                   <p class="mb-0">Tổng doanh thu (Cửa hàng)</p>
                 </div>
               </div>
 
-              <div class="col-md-3">
+              <div class="col">
                 <div class="card text-white bg-success shadow-sm text-center p-3">
                   <span class="fs-4 fw-bold" th:text="${totalProduct}"></span>
                   <p class="mb-0">Tổng sản phẩm đã bán (Cửa hàng)</p>
                 </div>
               </div>
 
-<!--              <div class="col-md-3">-->
-<!--                <div class="card text-white bg-warning shadow-sm text-center p-3">-->
-<!--                  <p class="fs-4 fw-bold" th:text="${totalProductRefund}"></p>-->
-<!--                  <p class="mb-0">Tổng các đơn trả hàng (Cửa hàng)</p>-->
-<!--                </div>-->
-<!--              </div>-->
-
-              <div class="col-md-3">
+              <div class="col">
                 <div class="card text-white bg-danger shadow-sm text-center p-3">
                   <p class="fs-4 fw-bold" th:text="${totalProductCandel}"></p>
                   <p class="mb-0">Tổng các đơn hủy hàng (Cửa hàng)</p>
                 </div>
               </div>
             </div>
+
+
 
             <div class="m-5">
               <table class="table table-bordered table-hover" id="ListDatatableViewToday" border="1">
