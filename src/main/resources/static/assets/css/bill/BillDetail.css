@@ -271,7 +271,7 @@ button {
 }
 
 button:hover {
-    background-color: white;
+    background-color: #63e592;
 }
 textarea {
     padding: 10px;
