@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -414,8 +415,9 @@ public class RevenueController {
             row.setHeightInPoints(35);
 
             // Thời gian hủy (giả sử có getter getCancelledTime() kiểu Date/LocalDateTime)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             Cell cell0 = row.createCell(columnOffset);
-            cell0.setCellValue(bill.getConfirmationDate() != null ? bill.getConfirmationDate().toString() : "");
+            cell0.setCellValue(bill.getLastModifiedDate() != null ? bill.getLastModifiedDate().format(formatter) : "");
             cell0.setCellStyle(baseCenterStyle);
 
             // Mã hóa đơn (giả sử getCode())
