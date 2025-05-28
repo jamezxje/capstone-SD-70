@@ -882,7 +882,7 @@ btnPayment.addEventListener("click", async () => {
                 const btnBank = document.getElementById('btn-bank');
                 let totalPayment = document.getElementById('input-payment').value;
 
-                localStorage.setItem('isComfirmPay', 'true');
+
                 let missing = 0;
                 totalPayment = totalPayment.replace(/,/g, '');
                 totalPayment = parseFloat(totalPayment);
@@ -897,8 +897,16 @@ btnPayment.addEventListener("click", async () => {
                 if (isCancelled) {
                     voucherValueLocal = null;
                 }
+                if (totalPayment < totalCustomerPayment)  {
+                    document.getElementById('missing').textContent = "Vui lòng nhâp đúng số tiền thanh toán";
+                    strMissing.style.color = 'red';
+                    return;
+                }
+                localStorage.setItem('isComfirmPay', 'true');
                 document.getElementById('customer-payment').innerText = formatVND(totalPayment) + "đ";
                 console.log("check voucher valie loca" , voucherValueLocal)
+
+
                 if (voucherValueLocal == null) {
                     console.log("Check total payment", totalPayment);
                     console.log("Check tổng tiền đơn hàng", totalBill);
