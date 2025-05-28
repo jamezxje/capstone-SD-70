@@ -78,9 +78,10 @@ public class RevenueServiceImpl implements RevenueService {
                 .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
-                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
+                    BigDecimal itemDiscount = b.getItemDiscount() != null ? b.getItemDiscount() : BigDecimal.ZERO;
+//                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
 //                    return b.getTotalMoney().subtract(shipCost);
-                    return totalMoney.subtract(shipCost);
+                    return totalMoney.subtract(itemDiscount);
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -129,9 +130,10 @@ public class RevenueServiceImpl implements RevenueService {
                 .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
-                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
+                    BigDecimal itemDiscount = b.getItemDiscount() != null ? b.getItemDiscount() : BigDecimal.ZERO;
+//                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
 //                    return b.getTotalMoney().subtract(shipCost);
-                    return totalMoney.subtract(shipCost);
+                    return totalMoney.subtract(itemDiscount);
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -177,9 +179,10 @@ public class RevenueServiceImpl implements RevenueService {
                 .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
-                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
+                    BigDecimal itemDiscount = b.getItemDiscount() != null ? b.getItemDiscount() : BigDecimal.ZERO;
+//                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
 //                    return b.getTotalMoney().subtract(shipCost);
-                    return totalMoney.subtract(shipCost);
+                    return totalMoney.subtract(itemDiscount);
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -237,9 +240,10 @@ public class RevenueServiceImpl implements RevenueService {
                 .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
-                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
+                    BigDecimal itemDiscount = b.getItemDiscount() != null ? b.getItemDiscount() : BigDecimal.ZERO;
+//                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
 //                    return b.getTotalMoney().subtract(shipCost);
-                    return totalMoney.subtract(shipCost);
+                    return totalMoney.subtract(itemDiscount);
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -321,9 +325,10 @@ public class RevenueServiceImpl implements RevenueService {
                 .filter(b -> b.getStatus() == BillStatus.THANH_CONG)
                 .map(b -> {
                     BigDecimal totalMoney = b.getTotalMoney() != null ? b.getTotalMoney() : BigDecimal.ZERO;
-                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
+                    BigDecimal itemDiscount = b.getItemDiscount() != null ? b.getItemDiscount() : BigDecimal.ZERO;
+//                    BigDecimal shipCost = b.getMoneyShip() != null ? b.getMoneyShip() : BigDecimal.ZERO;
 //                    return b.getTotalMoney().subtract(shipCost);
-                    return totalMoney.subtract(shipCost);
+                    return totalMoney.subtract(itemDiscount);
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
