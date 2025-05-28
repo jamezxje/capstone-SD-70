@@ -83,10 +83,10 @@
         
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
           <div class="customer-box customer-coupon">
-            <h3 class="font-15 xs-font-13"><i class="icon anm anm-gift-l"></i> Có voucher? <a href="#have-coupon"
-                                                                                              class="text-white text-decoration-underline"
-                                                                                              data-toggle="collapse">Click
-              vào đây để nhập mã voucher</a></h3>
+<!--            <h3 class="font-15 xs-font-13"><i class="icon anm anm-gift-l"></i> Có voucher? <a href="#have-coupon"-->
+<!--                                                                                              class="text-white text-decoration-underline"-->
+<!--                                                                                              data-toggle="collapse">Click-->
+<!--              vào đây để nhập mã voucher</a></h3>-->
             <div id="have-coupon" class="collapse coupon-checkout-content">
               <div class="discount-coupon">
                 <div id="coupon" class="coupon-dec tab-pane active">
@@ -168,6 +168,10 @@
                   <div class="col-6 text-right">
                     <span id="openVoucherModalBtn" class="text-primary" style="cursor: pointer;">
                       Chọn mã giảm giá
+                    </span>
+                  </div>
+                  <div class="col-12 mt-2">
+                    <span id="voucherInfo" class="d-flex align-items-center fw-bold border rounded p-2" style="display: none; gap: 12px; border-color: #28a745;">
                     </span>
                   </div>
                 </div>
@@ -345,7 +349,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-danger" id="btnCancelVoucher">Hủy mã giảm giá</button>
           <button type="button" class="btn btn-primary" id="btnApplyVoucher">Chọn</button>
         </div>
       </div>
@@ -388,6 +392,8 @@
           // Tính tổng tiền
           const totalProductMoney = totalMoney || 0;
           const finalTotal = totalProductMoney + shipFee - discountValue;
+          const voucherName = selectedVoucher.data('name') || '';
+          $('#voucherInfo').text(`Bạn đang sử dụng: ${voucherName} - Giá trị giảm: ${discountValue.toLocaleString('vi-VN')} VND`);
 
           // Cập nhật thông tin giảm giá và tổng tiền
           $('#voucherDiscount').text(discountValue.toLocaleString('vi-VN') + ' VND');
@@ -399,6 +405,30 @@
         } else {
           showToast('Vui lòng chọn mã giảm giá!', 'error');
         }
+      });
+
+      // Đóng modal bằng nút đóng hoặc nút hủy
+      //Hủy mã giảm giá
+      $('#btnCancelVoucher').on('click', function () {
+        // Xóa voucher đã chọn
+        $('#selectedVoucherId').val('');
+        // Xóa thông tin voucher hiển thị
+        $('#voucherInfo').text('');
+        // Bỏ chọn tất cả radio voucher
+        $('input[name="selectedVoucher"]').prop('checked', false);
+
+        // Tính lại tổng tiền (không voucher)
+        const shipFeeText = $('#shipFee').text().replace(' VND', '').replace(/\./g, '').trim();
+        const shipFee = parseInt(shipFeeText) || 0;
+        const totalProductMoney = cartTotalMoney || 0;
+        const finalTotal = totalProductMoney + shipFee;
+        $('#totalPriceWithShipping').text(finalTotal.toLocaleString('vi-VN') + ' VND');
+
+        // Đóng modal
+        $('#modalVoucher').modal('hide');
+
+        // Thông báo
+        showToast('Đã hủy mã giảm giá.', 'info');
       });
 
       // Đóng modal bằng nút đóng hoặc nút hủy
