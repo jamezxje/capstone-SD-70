@@ -904,7 +904,7 @@ public class BillServiceImpl implements BillService {
     }
 
     public void sendInVoiceEmail(Bill bill) throws MessagingException {
-        String subject = "Hóa đơn thanh toán CAPSTONE";
+        String subject = "Hóa đơn thanh toán POlY SPORT";
         String reciprient = bill.getEmail();
         String htmlContent = this.emailService.generateHtmlContent(bill);
         System.out.println("Gửi email đến: " + reciprient);
