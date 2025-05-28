@@ -61,40 +61,113 @@
           <div id="cartLoggedIn" class="site-cart" style="position: relative; display: none;">
             <a href="/cart" class="site-header__cart" title="Cart" style="position: relative; display: inline-block;">
               <i class="icon anm anm-bag-l" style="font-size: 24px;"></i>
-              <span class="cart-count-badge"
-                    th:if="${cartQuantity != null and cartQuantity > 0}"
-                    th:text="${cartQuantity}"></span>
+              <span id="cart-count-badge" class="cart-count-badge" style="display: none;"></span>
+<!--              <span class="cart-count-badge"-->
+<!--                    th:if="${cartQuantity != null and cartQuantity > 0}"-->
+<!--                    th:text="${cartQuantity}"></span>-->
             </a>
           </div>
 
+          <!--          <div id="cartGuest" class="site-cart" style="position: relative; display: none;">-->
+          <!--            <a href="/NoLogin" class="site-header__cart" title="Cart" style="position: relative; display: inline-block;">-->
+          <!--              <i class="icon anm anm-bag-l" style="font-size: 24px;"></i>-->
+          <!--              <span class="cart-count-badge"></span>-->
+          <!--            </a>-->
+          <!--          </div>-->
           <div id="cartGuest" class="site-cart" style="position: relative; display: none;">
             <a href="/NoLogin" class="site-header__cart" title="Cart" style="position: relative; display: inline-block;">
               <i class="icon anm anm-bag-l" style="font-size: 24px;"></i>
-              <span class="cart-count-badge"></span>
+              <span id="cart-count-badge-guest" class="cart-count-badge" style="display: none;"></span>
             </a>
           </div>
 
 
-        </div>
         </div>
       </div>
     </div>
   </div>
+  </div>
+  <!--  <script>-->
+  <!--    document.addEventListener("DOMContentLoaded", function () {-->
+  <!--      fetch("/cart/api/quantity")-->
+  <!--              .then(res => res.json())-->
+  <!--              .then(data => {-->
+  <!--                const badge = document.getElementById("cart-count-badge");-->
+  <!--                if (data > 0) {-->
+  <!--                  badge.textContent = data;-->
+  <!--                  badge.style.display = "inline-block";-->
+  <!--                }-->
+  <!--              })-->
+  <!--              .catch(err => console.error("Error fetching cart quantity:", err));-->
+  <!--    });-->
+  <!--  </script>-->
+  <!--  <script>-->
+  <!--    document.addEventListener('DOMContentLoaded', function () {-->
+  <!--      const emailCustomer = localStorage.getItem('tempEmail');-->
+  <!--      const cartLoggedIn = document.getElementById('cartLoggedIn');-->
+  <!--      const cartGuest = document.getElementById('cartGuest');-->
+
+  <!--      console.log("Check emailCustomer:", emailCustomer);-->
+
+  <!--      if (emailCustomer && emailCustomer.trim() !== "") {-->
+  <!--        cartLoggedIn.style.display = 'block';-->
+  <!--        cartGuest.style.display = 'none';-->
+  <!--        localStorage.removeItem('noLoginCart')-->
+  <!--      } else {-->
+  <!--        cartLoggedIn.style.display = 'none';-->
+  <!--        cartGuest.style.display = 'block';-->
+  <!--      }-->
+  <!--    });-->
+  <!--  </script>-->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const emailCustomer = localStorage.getItem('tempEmail');
       const cartLoggedIn = document.getElementById('cartLoggedIn');
       const cartGuest = document.getElementById('cartGuest');
 
-      console.log("Check emailCustomer:", emailCustomer);
+      function updateGuestCartQuantity() {
+        const badge = document.getElementById('cart-count-badge-guest');
+        let guestCart = JSON.parse(localStorage.getItem('noLoginCart')) || [];
+        let quantity = 0;
+        guestCart.forEach(item => {
+          quantity += item.quantity || 0;
+        });
+
+        if (quantity > 0) {
+          badge.textContent = quantity;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
 
       if (emailCustomer && emailCustomer.trim() !== "") {
         cartLoggedIn.style.display = 'block';
         cartGuest.style.display = 'none';
-        localStorage.removeItem('noLoginCart')
+
+        fetch('/cart/api/quantity')
+                .then(res => res.ok ? res.json() : Promise.reject(res.statusText))
+                .then(quantity => {
+                  const badge = document.getElementById('cart-count-badge');
+                  if (quantity > 0) {
+                    badge.textContent = quantity;
+                    badge.style.display = 'inline-block';
+                  } else {
+                    badge.style.display = 'none';
+                  }
+                })
+                .catch(err => {
+                  console.error('Error fetching logged-in cart quantity:', err);
+                  const badge = document.getElementById('cart-count-badge');
+                  badge.style.display = 'none';
+                });
+
+        localStorage.removeItem('noLoginCart');
       } else {
         cartLoggedIn.style.display = 'none';
         cartGuest.style.display = 'block';
+
+        updateGuestCartQuantity();
       }
     });
 
