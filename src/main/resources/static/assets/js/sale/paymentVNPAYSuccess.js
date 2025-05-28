@@ -94,6 +94,7 @@ document.getElementById('changeSale').addEventListener('click' , function (){
     const idVoucher = localStorage.getItem('idVoucher');
     const voucherDetails = JSON.parse(localStorage.getItem('voucherDetails'));
     const idBill = localStorage.getItem('idBill');
+    const billDetailsLocal = JSON.parse(localStorage.getItem('billDetailsLocal'));
     localStorage.setItem('printBillVNPAY' , 'true')
     const response = {
         idUser: idUser,
@@ -105,11 +106,12 @@ document.getElementById('changeSale').addEventListener('click' , function (){
         itemDiscount: itemDiscount,
         moneyShip: moneyShip,
         type: type,
-        address: address,
+        address: address || '',
         deliveryDate: deliveryDate,
         idVoucher : idVoucher ,
         voucherDetails: voucherDetails,
         idBill : idBill ,
+        billDetail : billDetailsLocal,
         vnp_Amount: urlParams.get('vnp_Amount'),
         vnp_BankCode: urlParams.get('vnp_BankCode'),
         vnp_BankTranNo: urlParams.get('vnp_BankTranNo'),

@@ -150,7 +150,7 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 Bill billId = idBillOptional.get();
                 bill.setUser(user);
                 bill.setLastModifiedDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")));
-                bill.setTotalMoney(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() - 2)));  // Chuyển đổi tiền
+                bill.setTotalMoney(new BigDecimal(response.getVnp_Amount().substring(0, response.getVnp_Amount().length() - 2)).add(response.getItemDiscount()).subtract(response.getMoneyShip()));  // Chuyển đổi tiền
                 bill.setMethod(PaymentMethod.CHUYEN_KHOAN);
                 bill.setUserName(response.getUserName());
                 System.out.println("Láy username " + response.getUserName());
@@ -194,7 +194,9 @@ public class PayMentMethodServiceImpl implements PaymentMethodService {
                 ));
 
                 response.getVoucherDetails().forEach(voucher -> {
+                    System.out.println("Check id voucher " + voucher.getIdVoucher());
                     Optional<Voucher> vouchers = voucherRepository.findById(idVoucher);
+
                     if (!vouchers.isPresent()) {
                         throw new RuntimeException("Voucher not found");
                     }

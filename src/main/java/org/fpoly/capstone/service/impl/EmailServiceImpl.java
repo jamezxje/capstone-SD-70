@@ -77,7 +77,7 @@ public class EmailServiceImpl implements EmailService {
                 .append("</style>")
                 .append("</head><body>")
 
-                .append("<h2 style=\"color: blue\">CAPSTOME</h2>")
+                .append("<h2 style=\"color: blue\">Poly Sport</h2>")
                 .append("<p style=\"color: black ; font-size: 15px ; text-align: center\">Thông tin hóa đơn</p>")
                 .append("<div class='info-section'>")
                 .append("<div class='info-left'>")
@@ -108,7 +108,7 @@ public class EmailServiceImpl implements EmailService {
 
                 // Bảng sản phẩm
                 .append("<h3>Sản phẩm đã mua:</h3>")
-                .append("<table><tr><th>STT</th><th>Tên sản phẩm</th><th>Số lượng</th><th>Đơn giá</th><th>Tổng tiền</th></tr>");
+                .append("<table><tr><th>STT</th><th>Tên sản phẩm</th><th>Kích cỡ</th><th>Màu sắc</th><th>Số lượng</th><th>Đơn giá</th><th>Tổng tiền</th></tr>");
 
         BigDecimal totalAmount = BigDecimal.ZERO;
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
@@ -119,6 +119,10 @@ public class EmailServiceImpl implements EmailService {
                     .append(detail.getProductDetail() != null && detail.getProductDetail().getProduct() != null ?
                             detail.getProductDetail().getProduct().getName() : "Sản phẩm không có tên")
                     .append("</td>")
+                    .append(detail.getProductDetail() != null && detail.getProductDetail().getProduct() != null ?
+                            detail.getProductDetail().getSize().getName() : "Sản phẩm không có size").append("</td>")
+                    .append(detail.getProductDetail() != null && detail.getProductDetail().getProduct() != null ?
+                            detail.getProductDetail().getColor().getName() : "Sản phẩm không có color").append("</td>")
                     .append("<td>").append(detail.getQuantity()).append("</td>")
                     .append("<td>").append(currencyFormat.format(detail.getPrice())).append("</td>")
                     .append("<td>").append(currencyFormat.format(productTotal)).append("</td></tr>");
@@ -129,7 +133,7 @@ public class EmailServiceImpl implements EmailService {
                 .append("<p class='total'>Tổng tiền: <strong>").append(currencyFormat.format(totalAmount)).append("</strong></p>")
                 .append("<p class='total'>Giảm giá: <strong>").append(currencyFormat.format(bill.getItemDiscount())).append("</strong></p>")
                 .append("<p class='total'>Phí giao hàng: <strong>").append(currencyFormat.format(bill.getMoneyShip())).append("</strong></p>")
-                .append("<p class='total'>Tổng tiền thanh toán: <strong>").append(currencyFormat.format(bill.getTotalMoney().add(bill.getMoneyShip()))).append("</strong></p>")
+                .append("<p class='total'>Tổng tiền thanh toán: <strong>").append(currencyFormat.format(bill.getTotalMoney().add(bill.getMoneyShip()).subtract(bill.getItemDiscount()))).append("</strong></p>")
 
                 .append("</body></html>");
 

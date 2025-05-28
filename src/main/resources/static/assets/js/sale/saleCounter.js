@@ -356,7 +356,7 @@ function reduceQuantity() {
 
     }
 }
-
+let billDetailsLocal = [];
 // Hàm xác nhận sản phẩm
 async function confirmProduct() {
     const quantityInput = document.getElementById('input-quantity');
@@ -384,8 +384,17 @@ async function confirmProduct() {
             quantity: quantityInputChange,
             price: parseInt(priceProductD)
         });
+        const id = parseInt(idProductD);
+        const price = parseInt(priceProductD);
+        const quantity = quantityInputChange;
 
-        console.log("data send ", billDetails);
+        const existing = billDetailsLocal.find(p => p.idProduct === id);
+
+        existing
+            ? existing.quantity += quantity
+            : billDetailsLocal.push({ idProductDetail: id, quantity, price });
+        localStorage.setItem('billDetailsLocal', JSON.stringify(billDetailsLocal));
+        console.log("data send ", billDetailsLocal);
         addProductToInvoice1(idProductD, nameProductD, sizeProductD, colorProductD, quantityInputChange, priceProductD, imageD);
         await saveProductInBill(idBill);
         fetchProducts(0);
@@ -753,7 +762,6 @@ function applyVoucher(totalPrice, voucherId, voucherValue, voucherMinium, shippi
         afterVoucher: totalPrice - voucherValue + shipFromLocal,
         discountVoucher: voucherValue
     });
-
     localStorage.setItem('idVoucher', voucherId);
     console.log("Check voucher detail push", voucherDetail);
     console.log("Total Customer Payment:", totalCustomerPayment);
@@ -1179,7 +1187,7 @@ document.getElementById('wardSelect').addEventListener('change', function () {
     const wardCode = this.value;
     const selectOption = this.options[this.selectedIndex]
     wardName = selectOption.textContent || selectOption.innerText;
-
+    checkChoseAddress = false;
     if (!wardCode) {
         wardSelectError.style.display = 'block';
         wardSelectError.innerText = 'Vui lòng chọn xã/phường!';
@@ -1277,7 +1285,7 @@ async function fetchMoneyShip(to_id_district, to_code_ward, quantity) {
                 document.getElementById('total-amount').innerText = formatVND(priceAmountBillAndShipNoVoucher) + "đ";
                 document.getElementById('amount').innerText = formatVND(priceAmountBillAndShipNoVoucher);
                 document.getElementById('input-payment').value = formatVND(priceAmountBillAndShipNoVoucher);
-                applyVoucher(totalBill, voucherIDLocal, voucherValueLocal, voucherMininumLocal, totalShipLocal);
+               getVoucherInBill(priceAmountBillAndShipNoVoucher)
                 return totalShipLocal;
             } else {
                 console.log("Không có giá trị total.");
@@ -1356,6 +1364,12 @@ function saveBill(id) {
     if (voucherValueLocal == null) {
         voucherValueLocal = 0; // Gán giá trị mặc định 0 nếu voucherNameLocal là null
     }
+    let fullAddressSend = null;
+    if (checkChoseAddress === true) {
+        fullAddressSend = fullAddressChose;
+    }else {
+        fullAddressSend = fullAddress;
+    }
     console.log("Check date ship ", dateShip)
     console.log("voucherDetail:", voucherDetail);
     let changeIDCustomer = idCusomter || 3;
@@ -1367,10 +1381,10 @@ function saveBill(id) {
         email: mail,
         openDelivery: isDelivery,
         itemDiscount: voucherValueLocal,
-        totalMoney: customerPayMentInput - totalShipLocal,
+        totalMoney: customerPayMentInput - totalShipLocal + voucherValueLocal,
         moneyShip: totalShipLocal,
         type: 'OFFLINE',
-        address: fullAddress,
+        address: fullAddressSend,
         deliveryDate: dateShip,
         voucherDetails: voucherDetail
     }
@@ -1540,6 +1554,12 @@ function printBill(billData) {
 
     document.getElementById('printCustomerPayment').innerText = formatVND(customerPayMentInput) || '0đ';
     document.getElementById('printBack').innerText = formatVND(confirmPayemt) || '0đ';
+    let fullAddressSend = null;
+    if (checkChoseAddress === true) {
+        fullAddressSend = fullAddressChose;
+    }else {
+        fullAddressSend = fullAddress;
+    }
     if (dateShip === null) {
         document.getElementById('p-printShipDay').style.display = 'none';
         document.getElementById('printInforShip').style.display = 'none';
@@ -1551,7 +1571,7 @@ function printBill(billData) {
         document.getElementById('printShipDay').innerText = dateShip;
         document.getElementById('printNameShip').innerText = nameCustomer;
         document.getElementById('printPhoneShip').innerText = phoneCustomer;
-        document.getElementById('printAddress').innerText = fullAddress || '';
+        document.getElementById('printAddress').innerText = fullAddressSend || '';
         document.getElementById('p-printShipDay').style.display = 'block';
         document.getElementById('printInforShip').style.display = 'block';
 
@@ -1666,7 +1686,8 @@ function fetchAllAddressCustomer(idCustomer) {
 }
 
 let idDistrictChose = null, idWardCodeChose = null;
-
+let fullAddressChose = null;
+let checkChoseAddress = null;
 function displayAddress(addresses) {
     const addressListContainer = document.getElementById('addressList');
 
@@ -1702,14 +1723,20 @@ function displayAddress(addresses) {
                     ${address.status === 'DANG_SU_DUNG' ? `<p style="border-radius: 5px;color: orange ; border: 1px solid orange; width: 140px;padding: 4px; text-align: center;">${status}</p>` : ''}
                 </div>
                 <div class="address-right">
-                    <button class="btnChoseAddress"
-                        data-id="${address.id}"
-                        data-fullname="${address.fullName}"
-                        data-phone="${address.phoneNumber}" 
-                        data-address="${address.line}"
-                        data-province="${address.provinceId}" 
-                        data-district="${address.districtId}" 
-                        data-ward="${address.wardCode}">Chọn</button>
+                  <button class="btnChoseAddress"
+    data-id="${address.id}"
+    data-fullname="${address.fullName}"
+    data-phone="${address.phoneNumber}" 
+    data-address="${address.line}"
+    data-province="${address.provinceId}" 
+    data-district="${address.districtId}" 
+    data-ward="${address.wardCode}"
+    data-province-name="${address.province}"
+    data-district-name="${address.district}"
+    data-ward-name="${address.ward}"
+    data-line-name = "${address.line}"
+>Chọn</button>
+
                 </div>
             </div>
         `;
@@ -1720,6 +1747,7 @@ function displayAddress(addresses) {
 
     document.querySelectorAll('.btnChoseAddress').forEach(button => {
         button.addEventListener('click', function () {
+            checkChoseAddress = true;
             // Lấy thông tin từ thuộc tính data-* của button
             const fullName = this.getAttribute('data-fullname');
             const phoneNumber = this.getAttribute('data-phone');
@@ -1727,11 +1755,16 @@ function displayAddress(addresses) {
             const district = this.getAttribute('data-district');
             const ward = this.getAttribute('data-ward');
             const address = this.getAttribute('data-address');
-
-            // Điền vào các trường trong form
-            console.log("Tỉnh", province)
-            console.log("Huyen", district)
-            console.log("xa", ward)
+            const provinceName = this.getAttribute('data-province-name');
+            const districtName = this.getAttribute('data-district-name');
+            const wardName = this.getAttribute('data-ward-name');
+            const lineName = this.getAttribute('data-line-name');
+            console.log("Check provin Name" , provinceName)
+            console.log("Check district Name" , districtName)
+            console.log("Check ward Name" , wardName)
+            console.log("Check line Name" , lineName)
+            const fulladdress = `${lineName}, ${wardName}, ${districtName}, ${provinceName}`;
+            fullAddressChose = fulladdress;
             idDistrictChose = district;
             idWardCodeChose = ward;
 
@@ -1743,9 +1776,12 @@ function displayAddress(addresses) {
             document.getElementById('districtSelect').value = district;
             document.getElementById('wardSelect').value = ward
             document.getElementById('addressValue').value = address;
+
             document.getElementById('provinceSelect').dispatchEvent(new Event('change'));
             document.getElementById('districtSelect').dispatchEvent(new Event('change'));
             document.getElementById('wardSelect').dispatchEvent(new Event('change'));
+
+
             fetchDayShip(district, ward);
             fetchMoneyShip(district, ward, 1)
             document.getElementById('modalAddress').style.display = 'none';
@@ -2076,7 +2112,12 @@ document.getElementById('btn-bank').addEventListener('click', function () {
     const nameCustomer = document.getElementById('nameCustomer').value;
     const phoneCustomer = document.getElementById('numberPhoneCustomer').value;
     let idCustomerPay = idCusomter || "13";
-
+    let fullAddressSend = null;
+    if (checkChoseAddress === true) {
+        fullAddressSend = fullAddressChose;
+    }else {
+        fullAddressSend = fullAddress;
+    }
     localStorage.setItem('idUser', idCustomerPay);
     localStorage.setItem('name', name);
     localStorage.setItem('phone', phoneNumber)
@@ -2089,10 +2130,12 @@ document.getElementById('btn-bank').addEventListener('click', function () {
     localStorage.setItem('itemDiscount', voucherValueLocal);
     localStorage.setItem('moneyShip', totalShipLocal);
     localStorage.setItem('type', 'OFFLINE');
-    localStorage.setItem('address', fullAddress);
+    localStorage.setItem('address', fullAddressSend);
     localStorage.setItem('deliveryDate', dateShip);
     localStorage.setItem('voucherDetails', JSON.stringify(voucherDetail));
     localStorage.setItem('idBill', idBill)
+
+
 
     console.log("Check payModal", payModel)
     axios.post('http://localhost:8080/payment-vnpay', payModel)
@@ -2323,6 +2366,7 @@ function revoveLocalStrong() {
     localStorage.removeItem('address');
     localStorage.removeItem('deliveryDate');
     localStorage.removeItem('voucherDetails');
+
 }
 
 let currentPageVoucher = 0;

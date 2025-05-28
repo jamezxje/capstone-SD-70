@@ -91,6 +91,7 @@
       if (emailCustomer && emailCustomer.trim() !== "") {
         cartLoggedIn.style.display = 'block';
         cartGuest.style.display = 'none';
+        localStorage.removeItem('noLoginCart')
       } else {
         cartLoggedIn.style.display = 'none';
         cartGuest.style.display = 'block';

@@ -372,7 +372,7 @@ document.getElementById('cod-btn').addEventListener('click', function (event) {
                 shipDate: dateShip,
                 moneyShip: totalShipLocal,
                 itemDiscount: itemDiscountLocal,
-                totalMoney: totalShipAndItem,
+                totalMoney: totalItem,
                 billDetail: billDetail,
                 paymentMethod: "paymentReceive",
                 idVoucher: idVoucher,
