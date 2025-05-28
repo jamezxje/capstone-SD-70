@@ -8,7 +8,7 @@ const modal = document.getElementById("confirmModalStatus");
 const cancelModal = document.getElementById('cancelModalStatus');
 const historyModal = document.getElementById('historyModalStatus');
 const btn = document.getElementById("changeStatusButton");
-const closeBtn = document.getElementsByClassName("close")[0];
+const closeBtn = document.getElementsByClassName("closexacnhan")[0];
 const closeBtnhuy = document.getElementsByClassName("closehuy")[0];
 const closeBtnhistory = document.getElementsByClassName("closehistory")[0];
 const confirmButton = document.getElementById("confirmButton");
@@ -76,6 +76,20 @@ confirmButton.onclick = function () {
 
 };
 
+function showSuccessToast(message) {
+    const toast = document.getElementById("toast-success");
+    toast.textContent = message;
+    toast.style.display = "block";
+    toast.style.opacity = "1";
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 500);
+    }, 3000);
+}
+
 function showToast(message) {
     const toast = document.getElementById("toast");
     toast.textContent = message;
@@ -104,12 +118,13 @@ function changeStatus() {
     })
         .then(response => {
             const newStatus = response.data.status;
-              if (newStatus === "XAC_NHAN") {
-                  printBill();
-              }
+            if (newStatus === "XAC_NHAN") {
+                printBill();
+            }
             console.log("New Status: ", newStatus);
             updateTimelineStatus(newStatus);
-            getInforBill(billId)
+            getInforBill(billId);
+            showSuccessToast("Chuyển trạng thái thành công!");
         })
         .catch(error => {
             console.error("Error changing status", error);
@@ -137,7 +152,8 @@ function cancelBill() {
             const newStatus = response.data.status;
             console.log("New Status: ", newStatus);
             updateTimelineStatus(newStatus);
-            getInforBill(billId)
+            getInforBill(billId);
+            showSuccessToast("Hủy thành công!");
         })
         .catch(error => {
             console.error("Error changing status", error);

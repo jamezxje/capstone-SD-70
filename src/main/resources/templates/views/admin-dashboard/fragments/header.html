@@ -218,9 +218,7 @@
                   <span>Tran Xuan Duy</span>
                   <small>Super Admin</small>
                 </div> -->
-                <img th:if="${avatar != null and !#strings.isEmpty(avatar)}"
-                     th:src="@{${avatar}}"
-                     width="20" alt="Avatar" class="rounded-circle"/>
+                <img th:src="@{${avatar}}" class="rounded-circle" width="20" alt="Avatar">
                 <div class="header-info">
                   <span>[[${fullName}]]</span>
                   <small>[[${email}]]</small>

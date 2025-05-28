@@ -23,18 +23,20 @@ public class GlobalControllerAdvice {
     @Autowired
     private UserRepository userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @ModelAttribute
     public void addContextModel(Model model) {
         String email = CommonUtils.getPrincipal();
         if (email == null || email.equalsIgnoreCase("anonymousUser")) {
             model.addAttribute("email", null);
-            model.addAttribute("fullName", null);
+            model.addAttribute("fullname", null);
             model.addAttribute("avatar", null);
         } else {
             model.addAttribute("email", email);
 
-            // Lấy user từ email
-            User user = userService.findByEmail(email);
+            User user = userRepository.findByEmail(email);
             String fullName = (user != null) ? user.getFullName() : null;
             String avatar = (user != null) ? user.getAvatar() : null;
             model.addAttribute("fullName", fullName);
