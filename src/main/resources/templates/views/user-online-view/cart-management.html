@@ -182,42 +182,37 @@
                   <h2 class="order-title mb-0 " style="text-align: center">Đơn hàng</h2>
                   <!-- Voucher chọn mã -->
                   <div class="row border-bottom pb-2 pt-2 align-items-center">
-                    <div class="col-6">
-                      <span class="cart__subtotal-title font-weight-bold">Giảm giá</span>
-                    </div>
-                    <div class="col-6 text-right">
-                      <button class="btn btn-outline-primary" id="openVoucherModalBtn">Chọn mã giảm giá</button>
-                    </div>
-                    <!--                  <div class="col-6 text-right">-->
-                    <!--                    <button type="button" id="openVoucherModalBtn" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalVoucher">-->
-                    <!--                      Chọn mã giảm giá-->
-                    <!--                    </button>-->
-                    <!--                  </div>-->
+<!--                    <div class="col-6">-->
+<!--                      <span class="cart__subtotal-title font-weight-bold">Giảm giá</span>-->
+<!--                    </div>-->
+<!--                    <div class="col-6 text-right">-->
+<!--                      <button class="btn btn-outline-primary" id="openVoucherModalBtn">Chọn mã giảm giá</button>-->
+<!--                    </div>-->
                   </div>
                   
                   <!-- Dòng đơn hàng và giảm -->
-                  <div class="row pb-2 pt-2">
-                    <div class="col-6">
-                      <span class="cart__subtotal-title">Đơn hàng</span>
-                    </div>
-                    <div class="col-6 text-right">
-                      <span class="cart__subtotal-title money"
-                            th:text="${shoppingCart != null && shoppingCart.totalPrice != null
-                            ? #numbers.formatDecimal(shoppingCart.totalPrice, 0, 'POINT', 0, 'POINT') + ' VND' : '0 VND'}">
-                      </span>
-                    </div>
-                  </div>
-                  <div class="row border-bottom pb-2 pt-2">
-                    <div class="col-6">
-                      <span class="cart__subtotal-title">Giảm</span>
-                      <input type="hidden" id="selectedVoucherId" name="voucherId" value="">
-                    </div>
-                    <div class="col-6 text-right">
-                      <span class="cart__subtotal-title money" id="vouCher">
-                        0 VND
-                      </span>
-                    </div>
-                  </div>
+<!--                  <div class="row pb-2 pt-2">-->
+<!--                    <div class="col-6">-->
+<!--                      <span class="cart__subtotal-title">Đơn hàng</span>-->
+<!--                    </div>-->
+<!--                    <div class="col-6 text-right">-->
+<!--                      <span class="cart__subtotal-title money"-->
+<!--                            th:text="${shoppingCart != null && shoppingCart.totalPrice != null-->
+<!--                            ? #numbers.formatDecimal(shoppingCart.totalPrice, 0, 'POINT', 0, 'POINT') + ' VND' : '0 VND'}">-->
+<!--                      </span>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="row border-bottom pb-2 pt-2">-->
+<!--                    <div class="col-6">-->
+<!--                      <span class="cart__subtotal-title">Giảm</span>-->
+<!--                      <input type="hidden" id="selectedVoucherId" name="voucherId" value="">-->
+<!--                    </div>-->
+<!--                    <div class="col-6 text-right">-->
+<!--                      <span class="cart__subtotal-title money" id="vouCher">-->
+<!--                        0 VND-->
+<!--                      </span>-->
+<!--                    </div>-->
+<!--                  </div>-->
                   
                   <div class="row border-bottom pb-2 pt-2">
                     <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Tổng tiền</strong></span>
@@ -248,49 +243,49 @@
     </div>
   
   </div>
-  <div class="modal fade" id="modalVoucher" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 450px;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title mb-0">Chọn mã giảm giá</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
-            <span>&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" style="max-height: 450px; overflow-y: auto;">
-          <div th:each="voucher, index : ${listVoucher}"
-               class="voucher-item border rounded p-3 mb-2 d-flex justify-content-between align-items-center">
-            <div class="voucher-info">
-              <p class="mb-1" th:if="${voucher.name != null and !voucher.name.isEmpty()}"><span
-                  th:text="${voucher.name}"></span></p>
-              <p class="mb-1" th:if="${voucher.value != null}">
-                Giảm: <span th:text="${#numbers.formatDecimal(voucher.value, 0, 'POINT', 0, 'POINT')}"></span> VND
-              </p>
-              <p class="mb-1" th:if="${voucher.minimumBill != null}">
-                Đơn tối thiểu: <span
-                  th:text="${#numbers.formatDecimal(voucher.minimumBill, 0, 'POINT', 0, 'POINT')}"></span> VND
-              </p>
-              <p class="mb-0" th:if="${voucher.endDate != null}">
-                HSD: <span th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy')}"></span>
-              </p>
-            </div>
-            <div class="voucher-select">
-              <input type="radio"
-                     name="selectedVoucher"
-                     th:value="${voucher.id}"
-                     th:attr="data-value=${voucher.value}, data-name=${voucher.name}, data-minimum=${voucher.minimumBill}"
-                     style="transform: scale(1.3); cursor: pointer;">
-            </div>
-          </div>
-        </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
-          <button type="button" class="btn btn-primary" id="btnApplyVoucher">Chọn</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<!--  <div class="modal fade" id="modalVoucher" tabindex="-1" role="dialog" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 450px;">-->
+<!--      <div class="modal-content">-->
+<!--        <div class="modal-header">-->
+<!--          <h5 class="modal-title mb-0">Chọn mã giảm giá</h5>-->
+<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">-->
+<!--            <span>&times;</span>-->
+<!--          </button>-->
+<!--        </div>-->
+<!--        <div class="modal-body" style="max-height: 450px; overflow-y: auto;">-->
+<!--          <div th:each="voucher, index : ${listVoucher}"-->
+<!--               class="voucher-item border rounded p-3 mb-2 d-flex justify-content-between align-items-center">-->
+<!--            <div class="voucher-info">-->
+<!--              <p class="mb-1" th:if="${voucher.name != null and !voucher.name.isEmpty()}"><span-->
+<!--                  th:text="${voucher.name}"></span></p>-->
+<!--              <p class="mb-1" th:if="${voucher.value != null}">-->
+<!--                Giảm: <span th:text="${#numbers.formatDecimal(voucher.value, 0, 'POINT', 0, 'POINT')}"></span> VND-->
+<!--              </p>-->
+<!--              <p class="mb-1" th:if="${voucher.minimumBill != null}">-->
+<!--                Đơn tối thiểu: <span-->
+<!--                  th:text="${#numbers.formatDecimal(voucher.minimumBill, 0, 'POINT', 0, 'POINT')}"></span> VND-->
+<!--              </p>-->
+<!--              <p class="mb-0" th:if="${voucher.endDate != null}">-->
+<!--                HSD: <span th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy')}"></span>-->
+<!--              </p>-->
+<!--            </div>-->
+<!--            <div class="voucher-select">-->
+<!--              <input type="radio"-->
+<!--                     name="selectedVoucher"-->
+<!--                     th:value="${voucher.id}"-->
+<!--                     th:attr="data-value=${voucher.value}, data-name=${voucher.name}, data-minimum=${voucher.minimumBill}"-->
+<!--                     style="transform: scale(1.3); cursor: pointer;">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        -->
+<!--        <div class="modal-footer">-->
+<!--          <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>-->
+<!--          <button type="button" class="btn btn-primary" id="btnApplyVoucher">Chọn</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
   <!--End Body Content-->
 </th:block>
 
@@ -303,42 +298,42 @@
       $('#modalVoucher .close, #modalVoucher .btn-danger').on('click', function () {
         $('#modalVoucher').modal('hide');
       });
-      
+
       // Hoặc đóng khi chọn voucher
       $('#btnApplyVoucher').on('click', function () {
         $('#modalVoucher').modal('hide');
       });
     });
-    
+
     function formatCurrency(amount) {
       return amount.toLocaleString('vi-VN') + ' VND';
     }
-    
+
     //Voucher thỏa mãn
     function updateVoucherVisibility(totalSelectedPrice) {
       const voucherContainer = $('#modalVoucher .modal-body');
       const vouchers = [];
-      
+
       $('.voucher-item input[type="radio"]').each(function () {
         const input = $(this);
         const minimum = parseFloat(input.attr('data-minimum')) || 0;
         const value = parseFloat(input.attr('data-value')) || 0;
         const item = input.closest('.voucher-item');
-        
+
         const isValid = totalSelectedPrice >= minimum;
-        
+
         input.prop('disabled', !isValid);
         input.prop('checked', false); // Reset khi thay đổi tổng tiền
-        
+
         if (!isValid) {
           item.addClass('disabled-voucher');
         } else {
           item.removeClass('disabled-voucher');
         }
-        
+
         vouchers.push({isValid, value, element: item});
       });
-      
+
       // Re-render: đủ điều kiện lên đầu và sắp theo mức giảm từ cao đến thấp
       voucherContainer.empty();
       vouchers
@@ -349,16 +344,16 @@
           })
           .forEach(v => voucherContainer.append(v.element));
     }
-    
+
     $(document).ready(function () {
       const totalOrderElement = $('.order-title + .row + .row span.money');
       const totalAmountElement = $('.cart__subtotal.text-right .money');
       const checkoutBtn = $('#cartCheckout');
-      
+
       function updateTotals() {
         let total = 0;
         let selectedCount = 0;
-        
+
         $('.cart-body .custom-control-input').each(function () {
           if ($(this).is(':checked')) {
             selectedCount++;
@@ -367,34 +362,34 @@
             total += parseFloat(priceText);
           }
         });
-        
+
         totalOrderElement.text(formatCurrency(total));
         totalAmountElement.text(formatCurrency(total));
         checkoutBtn.prop('disabled', selectedCount === 0);
-        
+
         updateVoucherVisibility(total); // Cập nhật voucher mỗi lần cập nhật tổng
-        
+
         // Reset giá trị giảm giá nếu không có sản phẩm nào được chọn
         if (selectedCount === 0) {
           $('#vouCher').text(formatCurrency(0));
           $('.cart__subtotal.text-right .money').text(formatCurrency(total)); // Đảm bảo tổng tiền không bị giảm giá
         }
       }
-      
+
       // Checkbox: Check All
       $('#checkAll').change(function () {
         const isChecked = $(this).prop('checked');
         $('tbody .custom-control-input').prop('checked', isChecked);
         updateTotals();
       });
-      
+
       // Checkbox: Item thay đổi
       $('tbody .custom-control-input').change(function () {
         const allChecked = $('tbody .custom-control-input').length === $('tbody .custom-control-input:checked').length;
         $('#checkAll').prop('checked', allChecked);
         updateTotals(); // Tính lại tổng tiền và kiểm tra voucher sau mỗi thay đổi
       });
-      
+
       // Mở modal voucher
       $('#openVoucherModalBtn').click(function () {
         event.preventDefault();
@@ -403,18 +398,18 @@
           showToast('Vui lòng chọn sản phẩm!', 'error');
           return;
         }
-        
+
         let total = 0;
         selectedCheckboxes.each(function () {
           const row = $(this).closest('tr');
           const priceText = row.find('.cart-price .money').text().replace(/\D/g, '');
           total += parseFloat(priceText);
         });
-        
+
         updateVoucherVisibility(total);
         $('#modalVoucher').modal('show');
       });
-      
+
       // Áp dụng voucher
       $('#btnApplyVoucher').click(function () {
         const selected = $('input[name="selectedVoucher"]:checked');
@@ -422,13 +417,13 @@
           showToast('Vui lòng chọn mã giảm giá!', 'error');
           return;
         }
-        
+
         const voucherValue = parseFloat(selected.attr('data-value')) || 0;
         const voucherId = selected.val();
-        
+
         localStorage.setItem('selectedVoucher', voucherValue);
         localStorage.setItem('selectedVoucherId', voucherId);
-        
+
         // Cập nhật tổng số tiền cho các sản phẩm đã chọn
         let total = 0;
         $('.cart-body .custom-control-input:checked').each(function () {
@@ -436,23 +431,23 @@
           const priceText = row.find('.cart-price .money').text().replace(/\D/g, '');
           total += parseFloat(priceText);
         });
-        
+
         // Cập nhật tổng tiền sau khi áp dụng giảm giá
         const finalTotal = Math.max(0, total - voucherValue);
-        
+
         // Cập nhật hiển thị tổng tiền và giá trị voucher
         $('#vouCher').text(formatCurrency(voucherValue));
         $('.cart__subtotal.text-right .money').text(formatCurrency(finalTotal));
-        
+
         showToast('Áp dụng mã giảm giá thành công!', 'success');
         $('#modalVoucher').modal('hide');
       });
-      
+
       // Giảm request
       function updateTotals() {
         let total = 0;
         let selectedCount = 0;
-        
+
         $('.cart-body .custom-control-input').each(function () {
           if ($(this).is(':checked')) {
             selectedCount++;
@@ -461,18 +456,18 @@
             total += parseFloat(priceText);
           }
         });
-        
+
         // Reset giảm giá mặc định
         let appliedVoucherValue = 0;
-        
+
         // Kiểm tra nếu voucher cũ vẫn còn trong localStorage và còn hợp lệ
         const storedVoucherId = localStorage.getItem('selectedVoucherId');
         const storedVoucherValue = parseFloat(localStorage.getItem('selectedVoucher')) || 0;
-        
+
         if (storedVoucherId) {
           const voucherInput = $(`input[name="selectedVoucher"][value="${storedVoucherId}"]`);
           const minValue = parseFloat(voucherInput.attr('data-minimum')) || 0;
-          
+
           if (total >= minValue) {
             // Áp lại nếu vẫn hợp lệ
             appliedVoucherValue = storedVoucherValue;
@@ -483,32 +478,32 @@
             localStorage.removeItem('selectedVoucher');
           }
         }
-        
+
         // Cập nhật hiển thị
         $('#vouCher').text(formatCurrency(appliedVoucherValue));
         totalOrderElement.text(formatCurrency(total));
         totalAmountElement.text(formatCurrency(Math.max(0, total - appliedVoucherValue)));
-        
+
         checkoutBtn.prop('disabled', selectedCount === 0);
-        
+
         updateVoucherVisibility(total);
       }
-      
+
       // Nút thanh toán
       $('#cartCheckout').click(function (event) {
         event.preventDefault();
-        
+
         const selectedItems = [];
-        
+
         $('.cart-body .custom-control-input:checked').each(function () {
           const checkbox = $(this);
           const row = checkbox.closest('tr');
-          
+
           const cartDetailId = checkbox.attr('id').split('_')[1];
           const productName = row.find('.list-view-item__title a').text().trim();
           const quantity = row.find('.cart__qty-input').val();
           const price = row.find('.cart__price-wrapper .money').text().trim();
-          
+
           selectedItems.push({
             cartDetailId
             // productName,
@@ -516,7 +511,7 @@
             // price
           });
         });
-        
+
         if (selectedItems.length > 0) {
           console.log("Các sản phẩm đã chọn để thanh toán:");
           selectedItems.forEach(function (item) {
@@ -525,7 +520,7 @@
             // console.log("Số lượng: " + item.quantity);
             // console.log("Giá tiền: " + item.price);
           });
-          
+
           console.log("selected id:", JSON.stringify(selectedItems));
         } else {
           // showToast('Chưa có sản phẩm nào được chọn để thanh toán!', 'error');
@@ -534,11 +529,11 @@
         }
         window.location.href = '/bill/checkout';
       });
-      
+
       // Gọi khi load
       updateTotals();
     });
-  
+
   </script>
   
   <script>

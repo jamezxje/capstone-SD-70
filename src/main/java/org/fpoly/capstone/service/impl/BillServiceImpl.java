@@ -547,6 +547,7 @@ public class BillServiceImpl implements BillService {
 
         BigDecimal itemDiscount = request.getItemDiscount();
         BigDecimal moneyShip = request.getMoneyShip();
+        BigDecimal beforePrice = request.getBeforePrice();
         Date recieveDate = request.getReceiveDate();
         BigDecimal grandTotal = request.getGrandTotal();
         String address = request.getAddress();
@@ -554,7 +555,7 @@ public class BillServiceImpl implements BillService {
         PaymentMethod paymentMethod = request.getPaymentMethod();
 
         bill.setItemDiscount(itemDiscount);
-        bill.setTotalMoney(grandTotal);
+        bill.setTotalMoney(beforePrice);
         bill.setMoneyShip(moneyShip);
 
 //        bill.setReceiveDate(recieveDate);
@@ -574,7 +575,6 @@ public class BillServiceImpl implements BillService {
         VoucherDetail voucherDetail = new VoucherDetail();
 
         Long voucherId = request.getVoucherId();
-        BigDecimal beforePrice = request.getBeforePrice();
         BigDecimal grandTotals = request.getGrandTotal();
         // Lấy đối tượng Voucher từ voucherId
         if (voucherId != null) {
