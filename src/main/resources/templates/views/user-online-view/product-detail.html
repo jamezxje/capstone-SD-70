@@ -1193,12 +1193,15 @@
   
   
   </script>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const addToCartBtn = document.getElementById('product-form__item--submit');
       const btnNoLogin = document.getElementById('btnNoLogin');
       const btnLogin = document.getElementById('btnLogin');
       const noLoginBtn = document.getElementById('noLogin');
+
+      console.log("Check btn " , btnLoginNo);
       console.log("Check loggeed UserEmail" , loggedUserEmail);
       function toggleButtons() {
         if (loggedUserEmail) {
@@ -1222,17 +1225,15 @@
       toggleButtons();
     });
 
-    const checkPay = document.getElementById('checkpay');
-    checkPay.addEventListener('click' , function () {
-      window.location.href = 'http://localhost:8080/NoLogin'
-    })
-    const btnNoLogin = document.getElementById('btnLoginNo');
-    if (btnNoLogin) {
-      btnNoLogin.addEventListener('click', handleNoLoginPurchase);
-    }
+    // const btnNoLogin = document.getElementById('btnLoginNo');
+    const btnLoginNo = document.getElementById('btnLoginNo');
+    btnLoginNo.addEventListener('click' , handleNoLoginPurchase);
+
+
+
     async function handleNoLoginPurchase(e) {
       e.preventDefault();
-
+      console.log("Check chạy")
       const productId = document.querySelector('input[name="productId"]').value;
       const featureImageUrl = document.querySelector('.zoompro')?.getAttribute('src') || '';
       const name = document.querySelector('.product-single__title')?.innerText || '';
@@ -1392,6 +1393,7 @@
         localStorage.setItem('cartUpdated', Date.now());
         showToast('Sản phẩm đã được thêm vào giỏ hàng!');
         updateCartQuantity();
+        window.location.reload();
       });
     });
   </script>

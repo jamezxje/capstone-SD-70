@@ -3,7 +3,7 @@ function updateCartQuantity() {
     const cartBadge = document.querySelector('.cart-count-badge');
     const cart = JSON.parse(localStorage.getItem('noLoginCart')) || [];
     const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
-
+    console.log("Check quanttiy card" , totalQuantity)
     if (totalQuantity > 0) {
         cartBadge.textContent = totalQuantity;
         cartBadge.style.display = 'inline-block';
