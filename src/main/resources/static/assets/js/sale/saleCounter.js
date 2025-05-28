@@ -1285,7 +1285,7 @@ async function fetchMoneyShip(to_id_district, to_code_ward, quantity) {
                 document.getElementById('total-amount').innerText = formatVND(priceAmountBillAndShipNoVoucher) + "đ";
                 document.getElementById('amount').innerText = formatVND(priceAmountBillAndShipNoVoucher);
                 document.getElementById('input-payment').value = formatVND(priceAmountBillAndShipNoVoucher);
-               getVoucherInBill(priceAmountBillAndShipNoVoucher)
+               getVoucherInBill(totalBill)
                 return totalShipLocal;
             } else {
                 console.log("Không có giá trị total.");
