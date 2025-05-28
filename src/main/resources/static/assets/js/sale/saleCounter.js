@@ -42,7 +42,12 @@ function createInvoiceTab(invoiceNumber, invoiceData) {
 
     async function deleteBill(invoiceId) {
         try {
-
+            const allTabs = document.querySelectorAll('.tab');
+            if (allTabs.length <= 1) {
+                toastr.options.positionClass = 'toast-top-right'
+                toastr.error('Không thể xóa hóa đơn cuối!');
+                return;
+            }
             const response = await axios.get(`/products/${invoiceId}`, {
                 params: {t: new Date().getTime()}
             });

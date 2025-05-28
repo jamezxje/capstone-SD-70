@@ -236,7 +236,7 @@
 
     </div>
     <div class="modal fade" id="modalVoucher" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 450px; height: 300px; overflow-y: auto;" >
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 450px; max-height: 150px; overflow-y: auto;" >
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title mb-0">Chọn mã giảm giá</h5>
@@ -244,7 +244,7 @@
                         <span>&times;</span>
                     </button>
                 </div>
-                <div id="voucherList"></div>
+                <div id="voucherList" style="max-height: 400px ; max-height: 500px; overflow-y: auto"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnCancelVoucher">Hủy mã giảm giá</button>
                     <button type="button" class="btn btn-primary" id="btnApplyVoucher">Chọn</button>
