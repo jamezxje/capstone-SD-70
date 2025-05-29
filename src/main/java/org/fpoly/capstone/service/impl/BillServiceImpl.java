@@ -1012,22 +1012,25 @@ public class BillServiceImpl implements BillService {
 
         double totalPrice = request.getQuantity() * productDetailRequest.getPrice().doubleValue();
         bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
-        this.billRepository.save(bill);
+        Bill savedBill = this.billRepository.save(bill);
 
 
         List<BillDetail> billDetailList = new ArrayList<>();
 
         BillDetail billDetail = new BillDetail();
-        billDetail.setBill(bill);
+        billDetail.setBill(savedBill);
         billDetail.setProductDetail(productDetailRequest);
+
+        productDetailRequest.setQuantity(productDetailRequest.getQuantity() - request.getQuantity());
+        this.productDetailRepository.save(productDetailRequest);
         billDetail.setQuantity(request.getQuantity());
         billDetail.setPrice(productDetailRequest.getPrice());
         this.billDetailRepository.save(billDetail);
         billDetailList.add(billDetail);
 
 
-        bill.setBillDetailList(billDetailList);
-        this.billRepository.save(bill);
+        savedBill.setBillDetailList(billDetailList);
+        this.billRepository.save(savedBill);
 
     }
 
@@ -1069,6 +1072,96 @@ public class BillServiceImpl implements BillService {
         // Lưu hóa đơn đã cập nhật
         this.billRepository.save(lastestBill); // Không tạo một bill mới, chỉ cập nhật hóa đơn hiện tại
 
+        VoucherDetail voucherDetail = new VoucherDetail();
+        Long voucherId = request.getVoucherId();
+//        BigDecimal grandTotals = request.getGrandTotal();
+        // Lấy đối tượng Voucher từ voucherId
+        if (voucherId != null) {
+            try {
+                Voucher voucher = this.voucherService.findById(voucherId);
+                voucherDetail.setVoucher(voucher); // ✅ Truyền đúng đối tượng
+            } catch (NotException e) {
+                throw new IllegalArgumentException("Voucher không tồn tại.");
+            }
+        }
+        voucherDetail.setBill(lastestBill);
+        voucherDetail.setBeforePrice(beforePrice);
+        voucherDetail.setAfterPrice(grandTotal);
+        voucherDetail.setDiscountPrice(itemDiscount);
+        voucherDetail.setCreateDate(new Date());
+        this.voucherDetailReponsitory.save(voucherDetail);
+
+        try {
+            if (lastestBill.getEmail() != null) {
+                this.emailService.sendEmail(lastestBill.getEmail(), "Thông tin mua hàng online", this.emailService.generateHtmlContentBillForOnlineUser(lastestBill));
+            } else {
+                System.out.println("Email null no send");
+            }
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public void saveToBillForBuyNowVnPay(CreateBillRequest request) {
+        List<Bill> lastestBillList = this.findLastestBillByCustomerId();
+
+        if (lastestBillList.isEmpty()) {
+            throw new EntityNotFoundException("No bill found for the user.");
+        }
+
+        Bill lastestBill = lastestBillList.get(0); // Lấy hóa đơn mới nhất
+
+
+        log.info("Lastest bill id: ", lastestBill.getId());
+        BigDecimal itemDiscount = request.getItemDiscount();
+        BigDecimal moneyShip = request.getMoneyShip();
+        BigDecimal beforePrice = request.getBeforePrice();
+        Date receiveDate = request.getReceiveDate();
+        BigDecimal grandTotal = request.getGrandTotal();
+        String address = request.getAddress();
+        String fullName = request.getFullName();
+        String phoneNumber = request.getPhoneNumber();
+        String note = request.getNote();
+        PaymentMethod paymentMethod = request.getPaymentMethod();
+
+        // Cập nhật các giá trị của bill
+        lastestBill.setItemDiscount(itemDiscount);
+        lastestBill.setTotalMoney(beforePrice);
+        lastestBill.setMoneyShip(moneyShip);
+//        lastestBill.setReceiveDate(receiveDate);
+        lastestBill.setStatus(BillStatus.DA_THANH_TOAN);
+        lastestBill.setShipDate(receiveDate);
+        lastestBill.setAddress(address);
+        lastestBill.setUserName(fullName);
+        lastestBill.setPhoneNumber(phoneNumber);
+        lastestBill.setNote(note);
+        lastestBill.setMethod(paymentMethod);
+        lastestBill.setCode(GeneralStringCode.generateCodeAdmin());
+
+        // Lưu hóa đơn đã cập nhật
+        Bill savedLastestBill = this.billRepository.save(lastestBill); // Không tạo một bill mới, chỉ cập nhật hóa đơn hiện tại
+
+        this.billHistoryRepository.saveAll(List.of(
+                BillHistory.builder()
+                        .status(BillStatus.CHO_XAC_NHAN)
+                        .bill(savedLastestBill)
+                        .user(savedLastestBill.getUser())
+                        .build(),
+
+                BillHistory.builder()
+                        .status(BillStatus.XAC_NHAN)
+                        .bill(savedLastestBill)
+                        .user(savedLastestBill.getUser())
+                        .build(),
+
+                BillHistory.builder()
+                        .status(BillStatus.DA_THANH_TOAN)
+                        .bill(savedLastestBill)
+                        .user(savedLastestBill.getUser())
+                        .build()
+        ));
         VoucherDetail voucherDetail = new VoucherDetail();
         Long voucherId = request.getVoucherId();
 //        BigDecimal grandTotals = request.getGrandTotal();

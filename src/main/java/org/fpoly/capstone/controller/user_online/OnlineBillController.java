@@ -287,7 +287,7 @@ public class OnlineBillController {
                         this.billService.saveToBillForOnlineUserVnPay(createBillRequest);
                     } else if ("buyNow".equals(transactionType)) {
                         // Gọi phương thức lưu hóa đơn cho mua ngay
-                        this.billService.saveToBillForBuyNow(createBillRequest);
+                        this.billService.saveToBillForBuyNowVnPay(createBillRequest);
                     }
 
                     log.info("Bill saved successfully after VNPAY payment.");
