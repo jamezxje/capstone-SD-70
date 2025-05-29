@@ -775,6 +775,8 @@
       console.log("grand total: ", grandTotal)
       console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
       
+      const formatedGrandTotal = formatCurrency(grandTotal);
+      
       // const address = $('#customer-address').find(":selected").val();
       const selectedOption = $('#customer-address').find(":selected");
       const fullName = selectedOption.data('fullname');
@@ -815,7 +817,7 @@
           url: '/bill/online-payment',
           type: 'POST', // GET vì phương thức của bạn là @GetMapping
           data: {
-            amount: formatCurrency(grandTotal), // Truyền tổng tiền đã định dạng
+            amount: formatedGrandTotal, // Truyền tổng tiền đã định dạng
             orderInfo: orderInfo // Truyền thông tin đơn hàng
           }, // Truyền grandTotal dưới dạng tham số query
           success: function (paymentUrl) {
