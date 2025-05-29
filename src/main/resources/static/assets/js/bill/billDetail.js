@@ -17,6 +17,14 @@ const btnhistory = document.getElementById('historyBill');
 const confirmationReason = document.getElementById("confirmationReason");
 const cancelReason = document.getElementById("cancelmationReason");
 const cancelButton = document.getElementById("cancelButton");
+
+// const customerNameInfor = document.getElementById("customerNameModal");
+// const phoneNumberInfor = document.getElementById("phoneNumberModal");
+// const citySelectInfor = document.getElementById("citySelectModal");
+// const districtSelectInfor = document.getElementById("districtSelectModal");
+// const wardSelectInfor = document.getElementById("wardSelectModal");
+// const detailAddressInfor = document.getElementById("detailAddressModal");
+
 let actionDescription = null;
 
 btn.onclick = function () {
@@ -103,13 +111,63 @@ function showToast(message) {
         }, 500); // chờ hiệu ứng mờ xong mới ẩn
     }, 3000); // hiện trong 3s
 }
-
 document.getElementById('btn-changeInfor').addEventListener('click', function () {
+    // Lấy các giá trị từ input/select
+    const customerName = document.getElementById("customerNameModal").value.trim();
+    const phoneNumber = document.getElementById("phoneNumberModal").value.trim();
+    const city = document.getElementById("citySelectModal").value;
+    const district = document.getElementById("districtSelectModal").value;
+    const ward = document.getElementById("wardSelectModal").value;
+    const detailAddress = document.getElementById("detailAddressModal").value.trim();
+
+    // Validate
+    const phoneRegex = /^0\d{9}$/;
+
+    if (customerName === "") {
+    showToast("Tên khách hàng không được để trống.");
+    return;
+    }
+
+    const nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/;
+
+    if (!nameRegex.test(customerName)) {
+        showToast("Tên khách hàng không được chứa ký tự đặc biệt hoặc số.");
+        return;
+    }
+
+    if (!phoneRegex.test(phoneNumber)) {
+    showToast("Số điện thoại không hợp lệ (phải có 10 chữ số và bắt đầu bằng 0).");
+    return;
+    }
+
+    if (city === "") {
+    showToast("Vui lòng chọn thành phố.");
+    return;
+    }
+
+    if (district === "") {
+    showToast("Vui lòng chọn huyện.");
+    return;
+    }
+
+    if (ward === "") {
+    showToast("Vui lòng chọn xã.");
+    return;
+    }
+
+    if (detailAddress === "") {
+    showToast("Vui lòng nhập địa chỉ chi tiết.");
+    return;
+    }
+
     updateInforBill(billId);
     const modal = document.getElementById("changeAddressModal");
-    location.reload();
     modal.style.display = "none";
-})
+    location.reload();
+    showSuccessToast("Thay đổi thông tin khách hàng thành công.");
+});
+
+
 
 function changeStatus() {
     const employeeId = 1;
