@@ -551,6 +551,8 @@ public class BillServiceImpl implements BillService {
         Date recieveDate = request.getReceiveDate();
         BigDecimal grandTotal = request.getGrandTotal();
         String address = request.getAddress();
+        String fullName = request.getFullName();
+        String phoneNumber = request.getPhoneNumber();
         String note = request.getNote();
         PaymentMethod paymentMethod = request.getPaymentMethod();
 
@@ -561,8 +563,8 @@ public class BillServiceImpl implements BillService {
 //        bill.setReceiveDate(recieveDate);
         bill.setShipDate(recieveDate);
         bill.setAddress(address);
-        bill.setUserName(customer.getFullName());
-        bill.setPhoneNumber(customer.getPhoneNumber());
+        bill.setUserName(fullName);
+        bill.setPhoneNumber(phoneNumber);
 
         bill.setNote(note);
         bill.setMethod(paymentMethod);
@@ -1026,6 +1028,8 @@ public class BillServiceImpl implements BillService {
         Date receiveDate = request.getReceiveDate();
         BigDecimal grandTotal = request.getGrandTotal();
         String address = request.getAddress();
+        String fullName = request.getFullName();
+        String phoneNumber = request.getPhoneNumber();
         String note = request.getNote();
         PaymentMethod paymentMethod = request.getPaymentMethod();
 
@@ -1036,8 +1040,8 @@ public class BillServiceImpl implements BillService {
 //        lastestBill.setReceiveDate(receiveDate);
         lastestBill.setShipDate(receiveDate);
         lastestBill.setAddress(address);
-        lastestBill.setUserName(lastestBill.getUserName());
-        lastestBill.setPhoneNumber(lastestBill.getPhoneNumber());
+        lastestBill.setUserName(fullName);
+        lastestBill.setPhoneNumber(phoneNumber);
         lastestBill.setNote(note);
         lastestBill.setMethod(paymentMethod);
         lastestBill.setCode(GeneralStringCode.generateCodeAdmin());

@@ -136,13 +136,24 @@
                     <div class="form-group col-md-12 col-lg-12 col-xl-12 required">
                       <label for="customer-address">Địa chỉ nhận hàng</label>
                       <select id="customer-address" name="address">
-                        <option th:each="address : ${addressList}"
+                        <!-- <option th:each="address : ${addressList}"
                                 th:value="${address.detailAddress} + ' - '+${address.ward} + ' - ' + ${address.district} + ' - ' + ${address.province}"
                                 th:data-districtId="${address.toDistrictId}"
                                 th:data-wardCode="${address.wardCode}"
                                 th:text="${address.fullName} + ' - ' + ${address.phoneNumber} + ' , ' + ${address.detailAddress} + ' , '+${address.ward} + ' , ' + ${address.district} + ' , ' + ${address.province}"
                                 th:selected="${address.id == defaultAddress.id}">
-                        </option>
+                        </option> -->
+                        <option
+                                th:each="address : ${addressList}"
+                                th:value="${address.detailAddress} + ' - '+${address.ward} + ' - ' + ${address.district} + ' - ' + ${address.province}"
+                                th:data-districtId="${address.toDistrictId}"
+                                th:data-wardCode="${address.wardCode}"
+                                th:data-fullname="${address.fullName}"
+                                th:data-phone="${address.phoneNumber}"
+                                th:text="${address.fullName} + ' - ' + ${address.phoneNumber} + ' , ' + ${address.detailAddress} + ' , '+${address.ward} + ' , ' + ${address.district} + ' , ' + ${address.province}"
+                                th:selected="${address.id == defaultAddress.id}">
+                          </option>
+
                       </select>
                     </div>
                   </div>
@@ -763,7 +774,11 @@
       console.log("grand total: ", grandTotal)
       console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
 
-      const address = $('#customer-address').find(":selected").val();
+      // const address = $('#customer-address').find(":selected").val();
+      const selectedOption = $('#customer-address').find(":selected");
+      const fullName = selectedOption.data('fullname');
+      const phoneNumber = selectedOption.data('phone');
+      const address = selectedOption.val();
 
       const requestBody = {
         receiveDate: receiveDate,
@@ -771,7 +786,10 @@
         beforePrice: beforePrice,
         voucherId: voucherId,
         moneyShip: $('#shipFee').val(),
-        address: $('#customer-address').find(":selected").text(),
+        phoneNumber: phoneNumber,
+        fullName: fullName,
+        address: address,
+        // address: $('#customer-address').find(":selected").text(),
         note: $('#orderNote').val(),
         grandTotal: parseCurrency(grandTotal),
         paymentMethod: paymentMethod

@@ -136,6 +136,8 @@
                                 th:value="${address.detailAddress} + ' - '+${address.ward} + ' - ' + ${address.district} + ' - ' + ${address.province}"
                                 th:data-districtId="${address.toDistrictId}"
                                 th:data-wardCode="${address.wardCode}"
+                                th:data-fullname="${address.fullName}"
+                                th:data-phone="${address.phoneNumber}"
                                 th:text="${address.fullName} + ' - ' + ${address.phoneNumber} + ' , ' + ${address.detailAddress} + ' , '+${address.ward} + ' , ' + ${address.district} + ' , ' + ${address.province}"
                                 th:selected="${address.id == defaultAddress.id}">
                         </option>
@@ -690,18 +692,24 @@
       const grandTotal = parseCurrency($('#totalPriceWithShipping').text());
       console.log("grand total: ", grandTotal)
       console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
-      
-      const address = $('#customer-address').find(":selected").val();
-      
+
+      const selectedOption = $('#customer-address').find(":selected");
+      const fullName = selectedOption.data('fullname');
+      const phoneNumber = selectedOption.data('phone');
+      const address = selectedOption.val();
+
       const requestBody = {
         receiveDate: receiveDate,
         itemDiscount: itemDiscount,
         beforePrice: beforePrice,
         voucherId: voucherId,
         moneyShip: $('#shipFee').val(),
-        address: $('#customer-address').find(":selected").text(),
+        phoneNumber: phoneNumber,
+        fullName: fullName,
+        address: address,
+        // address: $('#customer-address').find(":selected").text(),
         note: $('#orderNote').val(),
-        grandTotal: grandTotal,
+        grandTotal: parseCurrency(grandTotal),
         paymentMethod: paymentMethod
       };
       

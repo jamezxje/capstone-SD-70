@@ -22,6 +22,8 @@ public class CreateBillRequest {
     private BigDecimal grandTotal;
     private PaymentMethod paymentMethod;
 
+    private String fullName;
+    private String phoneNumber;
     private BigDecimal itemDiscount;
     private Long voucherId;
     private BigDecimal beforePrice;
