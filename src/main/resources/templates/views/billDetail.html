@@ -239,7 +239,7 @@
                         <td th:text="${detailsp.color}"></td>
                         <td th:text="${detailsp.quantity}"></td>
                         <td th:text="${#numbers.formatDecimal(detailsp.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
-                        <td th:text="${#numbers.formatDecimal((detailsp.price ?: 0) * (detailsp.quantity ?: 0), 0, 'COMMA', 0, 'POINT')}"></td>
+                        <td th:text="${#numbers.formatDecimal((detailsp.price ?: 0) * (detailsp.quantity ?: 0), 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -257,7 +257,7 @@
                             VND</h5>
                         <hr>
                         <h4>Tổng tiền thanh toán:<span
-                                th:text="${#numbers.formatDecimal(voucherDetail.afterPrice, 0, 'COMMA', 0, 'POINT')}"></span>
+                                th:text="${#numbers.formatDecimal(voucherDetail.beforePrice + voucherDetail.moneyShip - voucherDetail.discountPrice, 0, 'COMMA', 0, 'POINT')}"></span>
                             VND</h4>
                     </div>
                 </div>

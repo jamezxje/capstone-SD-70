@@ -106,8 +106,8 @@ function showToast(message) {
 
 document.getElementById('btn-changeInfor').addEventListener('click', function () {
     updateInforBill(billId);
-    location.reload();
     const modal = document.getElementById("changeAddressModal");
+    location.reload();
     modal.style.display = "none";
 })
 
@@ -810,7 +810,7 @@ document.getElementById('checkprint').addEventListener('click', function () {
 })
 
 function printBill() {
-    console.log("Chechk chạy vòa")
+    console.log("Chechk chạy vào")
     document.getElementById('printCode').innerText = codeBill || 'Chưa có mã';
     document.getElementById('printCreateDate').innerText = formatRawDateToVN(createDate);
     // document.getElementById('printStaff').innerText = billData.idUser || 'Nhân viên chưa có';
