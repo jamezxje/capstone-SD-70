@@ -18,7 +18,7 @@
                         </div>
                         <div class="card-body">
                             <div class="form-validation">
-                                <form class="form-valide"
+                                <form id="yourFormId" class="form-valide"
                                       method="post"
                                       th:action="@{/customer-management/add}"
                                       enctype="multipart/form-data">
@@ -48,7 +48,7 @@
                                             <div class="form-group row">
                                                 <label class="col-lg-4 col-form-label" for="dateOfBirth">Ngày sinh</label>
                                                 <div class="col-lg-6">
-                                                    <input type="date" class="form-control" id="dateOfBirth" th:field="*{customer.dateOfBirth}" min="1944-01-01" max="2006-12-31">
+                                                    <input type="date" class="form-control" id="dateOfBirth" th:field="*{customer.dateOfBirth}">
                                                     <p class="error" th:if="${errors['dateOfBirth']}" th:text="${errors['dateOfBirth']}" th:classappend="text-danger"></p>
                                                 </div>
                                             </div>
@@ -151,13 +151,34 @@
                                         </div>
                                     </div>
                                     <div style="text-align: right; margin-top: 20px">
-                                        <a class="btn btn-primary mr-2" href="/customer-management">Hủy</a>
-                                        <button type="submit" class="btn btn-primary">Thêm khách hàng</button>
+                                        <a class="btn btn-primary mr-2" href="/customer-management">Quay lại</a>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmAddStaffModal">
+                                            Thêm khách hàng
+                                        </button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmAddStaffModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm khách hàng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn thêm khách hàng này không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary" form="yourFormId">Xác nhận</button>
                 </div>
             </div>
         </div>

@@ -43,6 +43,36 @@
         text-decoration: none;
         cursor: pointer;
       }
+      /* Modal close button - dấu X */
+      .closehuy {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      /* Modal box */
+      .modal-content {
+        position: relative;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: white;
+        margin: 100px auto;
+      }
+
+      /* Button xác nhận */
+      #cancelButton {
+        margin-top: 4px;
+        padding: 12px 24px; /* tăng chiều cao */
+        font-size: 16px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
     </style>
   </th:block>
 </head>
@@ -170,6 +200,7 @@
           <button id="cancelButton" style="background-color: #4CAF50">Xác nhận</button>
         </div>
       </div>
+
     </div>
   
   </div>

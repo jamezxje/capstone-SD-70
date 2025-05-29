@@ -33,7 +33,7 @@ public class UserValidator {
                 long age = ChronoUnit.YEARS.between(birthDate, today);
 
                 if (birthDate.isAfter(today)) {
-                    errors.put("dateOfBirth", "Ngày sinh phải là ngày trong quá khứ");
+                    errors.put("dateOfBirth", "Vui lòng không chọn ngày sinh trong tương lai");
                 } else if (age < 18) {
                     errors.put("dateOfBirth", "Tuổi phải từ 18 tuổi trở lên");
                 } else if (age > 100) {
