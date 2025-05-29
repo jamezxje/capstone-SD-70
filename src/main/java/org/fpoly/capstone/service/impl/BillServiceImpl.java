@@ -646,19 +646,20 @@ public class BillServiceImpl implements BillService {
 
             ProductDetail productDetail = cartDetail.getProductDetail();
             productDetail.setQuantity(productDetail.getQuantity() - cartDetail.getQuantity());
-            productDetailRepository.save(productDetail);
+            this.productDetailRepository.save(productDetail);
         }
 
         BigDecimal itemDiscount = request.getItemDiscount();
         BigDecimal moneyShip = request.getMoneyShip();
         Date recieveDate = request.getReceiveDate();
         BigDecimal grandTotal = request.getGrandTotal();
+        BigDecimal beforePrice = request.getBeforePrice();
         String address = request.getAddress();
         String note = request.getNote();
         PaymentMethod paymentMethod = request.getPaymentMethod();
 
         bill.setItemDiscount(itemDiscount);
-        bill.setTotalMoney(grandTotal);
+        bill.setTotalMoney(beforePrice);
         bill.setMoneyShip(moneyShip);
 
 //        bill.setReceiveDate(recieveDate);
@@ -673,12 +674,31 @@ public class BillServiceImpl implements BillService {
         bill.setBillDetailList(billDetailList);
         selectedCartDetails.forEach(cart.getCartDetails()::remove);
         this.cartDetailRepository.deleteAll(selectedCartDetails);
-        this.billRepository.save(bill);
+        Bill savedBill = this.billRepository.save(bill);
+
+        this.billHistoryRepository.saveAll(List.of(
+                BillHistory.builder()
+                        .status(BillStatus.CHO_XAC_NHAN)
+                        .bill(savedBill)
+                        .user(savedBill.getUser())
+                        .build(),
+
+                BillHistory.builder()
+                        .status(BillStatus.XAC_NHAN)
+                        .bill(savedBill)
+                        .user(savedBill.getUser())
+                        .build(),
+
+                BillHistory.builder()
+                        .status(BillStatus.DA_THANH_TOAN)
+                        .bill(savedBill)
+                        .user(savedBill.getUser())
+                        .build()
+        ));
 
         VoucherDetail voucherDetail = new VoucherDetail();
 
         Long voucherId = request.getVoucherId();
-        BigDecimal beforePrice = request.getBeforePrice();
         BigDecimal grandTotals = request.getGrandTotal();
         // Lấy đối tượng Voucher từ voucherId
         if (voucherId != null) {
@@ -992,22 +1012,25 @@ public class BillServiceImpl implements BillService {
 
         double totalPrice = request.getQuantity() * productDetailRequest.getPrice().doubleValue();
         bill.setTotalMoney(BigDecimal.valueOf(totalPrice));
-        this.billRepository.save(bill);
+        Bill savedBill = this.billRepository.save(bill);
 
 
         List<BillDetail> billDetailList = new ArrayList<>();
 
         BillDetail billDetail = new BillDetail();
-        billDetail.setBill(bill);
+        billDetail.setBill(savedBill);
         billDetail.setProductDetail(productDetailRequest);
+
+        productDetailRequest.setQuantity(productDetailRequest.getQuantity() - request.getQuantity());
+        this.productDetailRepository.save(productDetailRequest);
         billDetail.setQuantity(request.getQuantity());
         billDetail.setPrice(productDetailRequest.getPrice());
         this.billDetailRepository.save(billDetail);
         billDetailList.add(billDetail);
 
 
-        bill.setBillDetailList(billDetailList);
-        this.billRepository.save(bill);
+        savedBill.setBillDetailList(billDetailList);
+        this.billRepository.save(savedBill);
 
     }
 
@@ -1049,6 +1072,96 @@ public class BillServiceImpl implements BillService {
         // Lưu hóa đơn đã cập nhật
         this.billRepository.save(lastestBill); // Không tạo một bill mới, chỉ cập nhật hóa đơn hiện tại
 
+        VoucherDetail voucherDetail = new VoucherDetail();
+        Long voucherId = request.getVoucherId();
+//        BigDecimal grandTotals = request.getGrandTotal();
+        // Lấy đối tượng Voucher từ voucherId
+        if (voucherId != null) {
+            try {
+                Voucher voucher = this.voucherService.findById(voucherId);
+                voucherDetail.setVoucher(voucher); // ✅ Truyền đúng đối tượng
+            } catch (NotException e) {
+                throw new IllegalArgumentException("Voucher không tồn tại.");
+            }
+        }
+        voucherDetail.setBill(lastestBill);
+        voucherDetail.setBeforePrice(beforePrice);
+        voucherDetail.setAfterPrice(grandTotal);
+        voucherDetail.setDiscountPrice(itemDiscount);
+        voucherDetail.setCreateDate(new Date());
+        this.voucherDetailReponsitory.save(voucherDetail);
+
+        try {
+            if (lastestBill.getEmail() != null) {
+                this.emailService.sendEmail(lastestBill.getEmail(), "Thông tin mua hàng online", this.emailService.generateHtmlContentBillForOnlineUser(lastestBill));
+            } else {
+                System.out.println("Email null no send");
+            }
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public void saveToBillForBuyNowVnPay(CreateBillRequest request) {
+        List<Bill> lastestBillList = this.findLastestBillByCustomerId();
+
+        if (lastestBillList.isEmpty()) {
+            throw new EntityNotFoundException("No bill found for the user.");
+        }
+
+        Bill lastestBill = lastestBillList.get(0); // Lấy hóa đơn mới nhất
+
+
+        log.info("Lastest bill id: ", lastestBill.getId());
+        BigDecimal itemDiscount = request.getItemDiscount();
+        BigDecimal moneyShip = request.getMoneyShip();
+        BigDecimal beforePrice = request.getBeforePrice();
+        Date receiveDate = request.getReceiveDate();
+        BigDecimal grandTotal = request.getGrandTotal();
+        String address = request.getAddress();
+        String fullName = request.getFullName();
+        String phoneNumber = request.getPhoneNumber();
+        String note = request.getNote();
+        PaymentMethod paymentMethod = request.getPaymentMethod();
+
+        // Cập nhật các giá trị của bill
+        lastestBill.setItemDiscount(itemDiscount);
+        lastestBill.setTotalMoney(beforePrice);
+        lastestBill.setMoneyShip(moneyShip);
+//        lastestBill.setReceiveDate(receiveDate);
+        lastestBill.setStatus(BillStatus.DA_THANH_TOAN);
+        lastestBill.setShipDate(receiveDate);
+        lastestBill.setAddress(address);
+        lastestBill.setUserName(fullName);
+        lastestBill.setPhoneNumber(phoneNumber);
+        lastestBill.setNote(note);
+        lastestBill.setMethod(paymentMethod);
+        lastestBill.setCode(GeneralStringCode.generateCodeAdmin());
+
+        // Lưu hóa đơn đã cập nhật
+        Bill savedLastestBill = this.billRepository.save(lastestBill); // Không tạo một bill mới, chỉ cập nhật hóa đơn hiện tại
+
+        this.billHistoryRepository.saveAll(List.of(
+                BillHistory.builder()
+                        .status(BillStatus.CHO_XAC_NHAN)
+                        .bill(savedLastestBill)
+                        .user(savedLastestBill.getUser())
+                        .build(),
+
+                BillHistory.builder()
+                        .status(BillStatus.XAC_NHAN)
+                        .bill(savedLastestBill)
+                        .user(savedLastestBill.getUser())
+                        .build(),
+
+                BillHistory.builder()
+                        .status(BillStatus.DA_THANH_TOAN)
+                        .bill(savedLastestBill)
+                        .user(savedLastestBill.getUser())
+                        .build()
+        ));
         VoucherDetail voucherDetail = new VoucherDetail();
         Long voucherId = request.getVoucherId();
 //        BigDecimal grandTotals = request.getGrandTotal();
@@ -1139,7 +1252,7 @@ public class BillServiceImpl implements BillService {
                                               LocalDateTime startDate,
                                               LocalDateTime endDate,
                                               Pageable pageable) {
-        return billRepository.findByMultipleStatuses(statuses, keyword, billType, startDate, endDate, pageable);
+        return this.billRepository.findByMultipleStatuses(statuses, keyword, billType, startDate, endDate, pageable);
     }
 
     @Override
@@ -1147,7 +1260,7 @@ public class BillServiceImpl implements BillService {
 
         if (request.getPaymentMethod().equals("paymentReceive")) {
             for (BillDetailOnline x : request.getBillDetail()) {
-                Optional<ProductDetail> optional = productDetailRepository.findById(x.getIdProductDetail());
+                Optional<ProductDetail> optional = this.productDetailRepository.findById(x.getIdProductDetail());
                 if (!optional.isPresent()) {
                     throw new RuntimeException(" Sản phẩm không tồn tại");
                 }
@@ -1161,7 +1274,7 @@ public class BillServiceImpl implements BillService {
                 if (productDetail.getQuantity() == 0) {
                     productDetail.setStatus(ProductVariantStatus.HET_SAN_PHAM);
                 }
-                productDetailRepository.save(productDetail);
+                this.productDetailRepository.save(productDetail);
             }
         }
 
@@ -1171,7 +1284,7 @@ public class BillServiceImpl implements BillService {
         }
 
         Bill bill = Bill.builder()
-                .code(generalStringCode.generateCodeAdmin())
+                .code(this.generalStringCode.generateCodeAdmin())
                 .shipDate(request.getShipDate())
                 .user(user.get())
                 .phoneNumber(request.getPhoneNumber())
@@ -1189,7 +1302,7 @@ public class BillServiceImpl implements BillService {
         if (!request.getPaymentMethod().equals("paymentReceive")) {
             bill.setVnpTransaction(request.getVnpTransaction());
         }
-        billRepository.save(bill);
+        this.billRepository.save(bill);
         BillHistory billHistory = BillHistory.builder()
                 .bill(bill)
                 .status(request.getPaymentMethod().equals("paymentReceive") ? BillStatus.CHO_XAC_NHAN : BillStatus.DA_THANH_TOAN)
@@ -1197,9 +1310,9 @@ public class BillServiceImpl implements BillService {
                         request.getPaymentMethod().equals("paymentReceive") ? "Chưa thanh toán" : "Đã thanh toán"
                 )
                 .build();
-        billHistoryRepository.save(billHistory);
+        this.billHistoryRepository.save(billHistory);
         for (BillDetailOnline x : request.getBillDetail()) {
-            Optional<ProductDetail> optional = productDetailRepository.findById(x.getIdProductDetail());
+            Optional<ProductDetail> optional = this.productDetailRepository.findById(x.getIdProductDetail());
             if (!optional.isPresent()) {
                 throw new RuntimeException("Sản phẩm không tồn tại");
             }
@@ -1212,10 +1325,10 @@ public class BillServiceImpl implements BillService {
                     .bill(bill)
                     .statusBill(BillStatus.THANH_CONG)
                     .build();
-            billDetailRepository.save(billDetail);
+            this.billDetailRepository.save(billDetail);
         }
         if (request.getIdVoucher() != null) {
-            Optional<Voucher> optional = voucherRepository.findById(request.getIdVoucher());
+            Optional<Voucher> optional = this.voucherRepository.findById(request.getIdVoucher());
             if (!optional.isPresent()) {
                 throw new RuntimeException("Voucher không tồn tại");
             }
@@ -1227,26 +1340,27 @@ public class BillServiceImpl implements BillService {
                     .afterPrice(request.getAfterPrice())
                     .discountPrice(request.getItemDiscount())
                     .build();
-            voucherDetailReponsitory.save(voucherDetail);
+            this.voucherDetailReponsitory.save(voucherDetail);
             voucher.setQuantity(voucher.getQuantity() - 1);
-            voucherRepository.save(voucher);
+            this.voucherRepository.save(voucher);
         }
-        sendInVoiceEmail(bill);
+        this.sendInVoiceEmail(bill);
         return bill;
     }
 
     @Override
     public Optional<ProductDetail> finProductDetailById(Long idProduct, Long idSize, Long idColor) {
-        Optional<ProductDetail> optional = productDetailRepository.findByProductIdAndSizeIdAndColorId(idProduct, idSize, idColor);
+        Optional<ProductDetail> optional = this.productDetailRepository.findByProductIdAndSizeIdAndColorId(idProduct, idSize, idColor);
         return optional;
     }
 
     @Override
     public Optional<ProductDetail> findByIDProductDetail(Integer idProductDetail) {
-        Optional<ProductDetail> optional = productDetailRepository.findById(idProductDetail);
+        Optional<ProductDetail> optional = this.productDetailRepository.findById(idProductDetail);
         return optional;
     }
 
+    @Override
     public List<Bill> findCancelledBillsDate(LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(23, 59, 59);

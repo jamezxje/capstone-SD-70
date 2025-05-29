@@ -101,6 +101,8 @@ public interface BillService {
 
     void saveToBillForBuyNow(CreateBillRequest createBillRequest);
 
+    void saveToBillForBuyNowVnPay(CreateBillRequest createBillRequest);
+
     List<Bill> findBillsByCustomerId(Long customerId);
 
     Page<Bill> searchBills(String keyword, BillType orderType, BillStatus status,

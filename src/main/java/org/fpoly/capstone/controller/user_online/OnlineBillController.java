@@ -153,6 +153,8 @@ public class OnlineBillController {
 
     @GetMapping("/vnpay-payment-return")
     public String paymentCompleted(HttpServletRequest request, Model model) {
+        User loggedUser = this.userService.getUserFromContext();
+        model.addAttribute("loggedUser", loggedUser);
         // Kiểm tra trạng thái thanh toán từ VNPAY
         int paymentStatus = this.vnPayService.orderReturn(request);
 
@@ -287,7 +289,7 @@ public class OnlineBillController {
                         this.billService.saveToBillForOnlineUserVnPay(createBillRequest);
                     } else if ("buyNow".equals(transactionType)) {
                         // Gọi phương thức lưu hóa đơn cho mua ngay
-                        this.billService.saveToBillForBuyNow(createBillRequest);
+                        this.billService.saveToBillForBuyNowVnPay(createBillRequest);
                     }
 
                     log.info("Bill saved successfully after VNPAY payment.");
