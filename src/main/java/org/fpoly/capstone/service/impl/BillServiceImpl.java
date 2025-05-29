@@ -646,7 +646,7 @@ public class BillServiceImpl implements BillService {
 
             ProductDetail productDetail = cartDetail.getProductDetail();
             productDetail.setQuantity(productDetail.getQuantity() - cartDetail.getQuantity());
-            productDetailRepository.save(productDetail);
+            this.productDetailRepository.save(productDetail);
         }
 
         BigDecimal itemDiscount = request.getItemDiscount();
@@ -658,7 +658,7 @@ public class BillServiceImpl implements BillService {
         PaymentMethod paymentMethod = request.getPaymentMethod();
 
         bill.setItemDiscount(itemDiscount);
-        bill.setTotalMoney(grandTotal);
+        bill.setTotalMoney(grandTotal.subtract(moneyShip));
         bill.setMoneyShip(moneyShip);
 
 //        bill.setReceiveDate(recieveDate);
@@ -673,7 +673,27 @@ public class BillServiceImpl implements BillService {
         bill.setBillDetailList(billDetailList);
         selectedCartDetails.forEach(cart.getCartDetails()::remove);
         this.cartDetailRepository.deleteAll(selectedCartDetails);
-        this.billRepository.save(bill);
+        Bill savedBill = this.billRepository.save(bill);
+
+        this.billHistoryRepository.saveAll(List.of(
+                BillHistory.builder()
+                        .status(BillStatus.CHO_XAC_NHAN)
+                        .bill(savedBill)
+                        .user(savedBill.getUser())
+                        .build(),
+
+                BillHistory.builder()
+                        .status(BillStatus.XAC_NHAN)
+                        .bill(savedBill)
+                        .user(savedBill.getUser())
+                        .build(),
+
+                BillHistory.builder()
+                        .status(BillStatus.DA_THANH_TOAN)
+                        .bill(savedBill)
+                        .user(savedBill.getUser())
+                        .build()
+        ));
 
         VoucherDetail voucherDetail = new VoucherDetail();
 
@@ -1139,7 +1159,7 @@ public class BillServiceImpl implements BillService {
                                               LocalDateTime startDate,
                                               LocalDateTime endDate,
                                               Pageable pageable) {
-        return billRepository.findByMultipleStatuses(statuses, keyword, billType, startDate, endDate, pageable);
+        return this.billRepository.findByMultipleStatuses(statuses, keyword, billType, startDate, endDate, pageable);
     }
 
     @Override
@@ -1147,7 +1167,7 @@ public class BillServiceImpl implements BillService {
 
         if (request.getPaymentMethod().equals("paymentReceive")) {
             for (BillDetailOnline x : request.getBillDetail()) {
-                Optional<ProductDetail> optional = productDetailRepository.findById(x.getIdProductDetail());
+                Optional<ProductDetail> optional = this.productDetailRepository.findById(x.getIdProductDetail());
                 if (!optional.isPresent()) {
                     throw new RuntimeException(" Sản phẩm không tồn tại");
                 }
@@ -1161,7 +1181,7 @@ public class BillServiceImpl implements BillService {
                 if (productDetail.getQuantity() == 0) {
                     productDetail.setStatus(ProductVariantStatus.HET_SAN_PHAM);
                 }
-                productDetailRepository.save(productDetail);
+                this.productDetailRepository.save(productDetail);
             }
         }
 
@@ -1171,7 +1191,7 @@ public class BillServiceImpl implements BillService {
         }
 
         Bill bill = Bill.builder()
-                .code(generalStringCode.generateCodeAdmin())
+                .code(this.generalStringCode.generateCodeAdmin())
                 .shipDate(request.getShipDate())
                 .user(user.get())
                 .phoneNumber(request.getPhoneNumber())
@@ -1189,7 +1209,7 @@ public class BillServiceImpl implements BillService {
         if (!request.getPaymentMethod().equals("paymentReceive")) {
             bill.setVnpTransaction(request.getVnpTransaction());
         }
-        billRepository.save(bill);
+        this.billRepository.save(bill);
         BillHistory billHistory = BillHistory.builder()
                 .bill(bill)
                 .status(request.getPaymentMethod().equals("paymentReceive") ? BillStatus.CHO_XAC_NHAN : BillStatus.DA_THANH_TOAN)
@@ -1197,9 +1217,9 @@ public class BillServiceImpl implements BillService {
                         request.getPaymentMethod().equals("paymentReceive") ? "Chưa thanh toán" : "Đã thanh toán"
                 )
                 .build();
-        billHistoryRepository.save(billHistory);
+        this.billHistoryRepository.save(billHistory);
         for (BillDetailOnline x : request.getBillDetail()) {
-            Optional<ProductDetail> optional = productDetailRepository.findById(x.getIdProductDetail());
+            Optional<ProductDetail> optional = this.productDetailRepository.findById(x.getIdProductDetail());
             if (!optional.isPresent()) {
                 throw new RuntimeException("Sản phẩm không tồn tại");
             }
@@ -1212,10 +1232,10 @@ public class BillServiceImpl implements BillService {
                     .bill(bill)
                     .statusBill(BillStatus.THANH_CONG)
                     .build();
-            billDetailRepository.save(billDetail);
+            this.billDetailRepository.save(billDetail);
         }
         if (request.getIdVoucher() != null) {
-            Optional<Voucher> optional = voucherRepository.findById(request.getIdVoucher());
+            Optional<Voucher> optional = this.voucherRepository.findById(request.getIdVoucher());
             if (!optional.isPresent()) {
                 throw new RuntimeException("Voucher không tồn tại");
             }
@@ -1227,26 +1247,27 @@ public class BillServiceImpl implements BillService {
                     .afterPrice(request.getAfterPrice())
                     .discountPrice(request.getItemDiscount())
                     .build();
-            voucherDetailReponsitory.save(voucherDetail);
+            this.voucherDetailReponsitory.save(voucherDetail);
             voucher.setQuantity(voucher.getQuantity() - 1);
-            voucherRepository.save(voucher);
+            this.voucherRepository.save(voucher);
         }
-        sendInVoiceEmail(bill);
+        this.sendInVoiceEmail(bill);
         return bill;
     }
 
     @Override
     public Optional<ProductDetail> finProductDetailById(Long idProduct, Long idSize, Long idColor) {
-        Optional<ProductDetail> optional = productDetailRepository.findByProductIdAndSizeIdAndColorId(idProduct, idSize, idColor);
+        Optional<ProductDetail> optional = this.productDetailRepository.findByProductIdAndSizeIdAndColorId(idProduct, idSize, idColor);
         return optional;
     }
 
     @Override
     public Optional<ProductDetail> findByIDProductDetail(Integer idProductDetail) {
-        Optional<ProductDetail> optional = productDetailRepository.findById(idProductDetail);
+        Optional<ProductDetail> optional = this.productDetailRepository.findById(idProductDetail);
         return optional;
     }
 
+    @Override
     public List<Bill> findCancelledBillsDate(LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(23, 59, 59);
