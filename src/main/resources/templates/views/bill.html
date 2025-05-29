@@ -179,7 +179,8 @@
                 <td th:text="${bill.userName}"></td>
                 <td th:text="${bill.employee != null ? bill.employee.fullName : 'Không có dữ liệu'}"></td>
                 <td th:text="${bill.phoneNumber}"></td>
-                <td th:text="${bill.address}"></td>
+                <td th:text="${bill.address != null ? bill.address : 'Không có dữ liệu'}"></td>
+
                 <td>
                   <span th:switch="${#strings.trim(bill.type)}">
                     <span th:case="'ONLINE'">Online</span>
