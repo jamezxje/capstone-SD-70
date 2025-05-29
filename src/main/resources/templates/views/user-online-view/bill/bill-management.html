@@ -141,7 +141,7 @@
                     <td th:text="${@globalControllerAdvice.formatDateTime(bill.createDate)}">
                       Spike Jacket
                     </td>
-                    <td th:text="${#numbers.formatDecimal(bill.totalMoney, 0, 'POINT', 0, 'POINT')} + ' VND'">
+                    <td th:text="${#numbers.formatDecimal(bill.totalMoney - bill.itemDiscount + bill.moneyShip, 0, 'POINT', 0, 'POINT')} + ' VND'">
                       Spike Jacket
                     </td>
                     <td th:text="${#dates.format(bill.shipDate, 'dd-MM-yyyy')}"></td>
