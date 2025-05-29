@@ -131,7 +131,7 @@ public Page<User> searchAndFilterEmployees(String keyword, String status, Pageab
             System.out.println("Address ID: " + savedAddress.getId()); // Debug xem có lưu không
 //        }
         System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
-        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên CAPSTONE";
+        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản nhân viên Poly Sport";
         emailServiceImpl.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return savedUser;
     }

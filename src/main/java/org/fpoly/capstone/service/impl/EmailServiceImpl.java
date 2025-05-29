@@ -148,6 +148,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessage message = this.mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+
             String htmlBody = "<html>"
                     + "<head>"
                     + "<style>"
@@ -156,21 +157,21 @@ public class EmailServiceImpl implements EmailService {
                     + ".container { max-width: 600px; margin: auto; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0,0,0,0.1); }"
                     + ".header { text-align: center; padding-bottom: 10px; border-bottom: 2px solid #E67E22; }"
                     + ".header h1 { color: #2C3E50; }"
-                    + ".content { padding: 20px; text-align: center; }"
-                    + ".info { background: #E67E22; color: white; padding: 10px; border-radius: 5px; font-size: 18px; margin-bottom: 10px; }"
-                    + ".button { display: inline-block; background: #2C3E50; color: #ffffff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-size: 16px; margin-top: 10px; }"
+                    + ".content { padding: 20px; text-align: left; font-size: 16px; color: #2C3E50; }"
+                    + ".field { margin-bottom: 10px; }"
+                    + ".field strong { color: #2C3E50; }"
                     + ".footer { text-align: center; font-size: 12px; color: #7f8c8d; margin-top: 20px; }"
                     + "</style>"
                     + "</head>"
                     + "<body>"
                     + "<div class='container'>"
                     + "<div class='header'>"
-                    + "<h1>CAPSTONE</h1>"
+                    + "<h1>Poly Sport</h1>"
                     + "</div>"
                     + "<div class='content'>"
-                    + "<p>Chào mừng bạn đến với <strong>CAPSTONE</strong>! Dưới đây là thông tin tài khoản của bạn:</p>"
-                    + "<div class='info'>Email đăng nhập: " + to + "</div>"
-                    + "<div class='info'>Mật khẩu: " + password + "</div>"
+                    + "<p>Chào mừng bạn đến với <strong>Poly Sport</strong>! Dưới đây là thông tin tài khoản của bạn:</p>"
+                    + "<div class='field'>Email đăng nhập: <strong>" + to + "</strong></div>"
+                    + "<div class='field'>Mật khẩu: <strong>" + password + "</strong></div>"
                     + "</div>"
                     + "<div class='footer'>"
                     + "Nếu bạn không đăng ký tài khoản, vui lòng bỏ qua email này."
@@ -178,6 +179,7 @@ public class EmailServiceImpl implements EmailService {
                     + "</div>"
                     + "</body>"
                     + "</html>";
+
             helper.setFrom(this.sender);
             helper.setTo(to);
             helper.setSubject(subject);
@@ -187,6 +189,7 @@ public class EmailServiceImpl implements EmailService {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public String generateHtmlContentBillForOnlineUser(Bill bill) {
@@ -216,7 +219,7 @@ public class EmailServiceImpl implements EmailService {
                 .append("</style>")
                 .append("</head><body>")
 
-                .append("<h2 style=\"color: blue\">CAPSTOME</h2>")
+                .append("<h2 style=\"color: blue\">Poly Sport</h2>")
                 .append("<p style=\"color: black ; font-size: 15px ; text-align: center\">Thông tin hóa đơn</p>")
                 .append("<div class='info-section'>")
                 .append("<div class='info-left'>")

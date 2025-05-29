@@ -132,7 +132,7 @@ public class CustomerServiceImpl implements CustomerService {
             addressRepository.save(newAddress);
         }
         System.out.println("Mật khẩu tài khoản mới: " + rawPassword);
-        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản CAPSTONE";
+        String subject = "Xin chào, bạn đã đăng ký thành công tài khoản Poly Sport";
         emailServiceImpl.sendEmailPassword(newUser.getEmail(), subject, rawPassword);
         return savedUser;
     }
