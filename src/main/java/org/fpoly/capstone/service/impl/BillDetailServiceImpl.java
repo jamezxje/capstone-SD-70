@@ -196,7 +196,7 @@ public class BillDetailServiceImpl implements BillDetailService {
 
     @Override
     public Bill updateInforBill(Long id, UpdateInForCustomer request) {
-        System.out.println("Check vào đây");
+        System.out.println("Check vào đây abc");
         Optional<Bill> optionalBill = billRepository.findById(id);
         if (!optionalBill.isPresent()) {
             throw new RuntimeException("Bill not found for ID: " + id);
@@ -208,7 +208,27 @@ public class BillDetailServiceImpl implements BillDetailService {
         bill.setAddress(request.getCustomerAddress());
         bill.setShipDate(request.getShipDate());
         bill.setMoneyShip(new BigDecimal(request.getMoneyShip()));
+
+
         billRepository.save(bill);
+
+        Optional<VoucherDetail> optional = voucherDetailRepository.findByBill_Id(id);
+
+        if (optional.isPresent()) {
+            VoucherDetail voucherDetail = optional.get();
+            BigDecimal totalMoney = bill.getTotalMoney() != null ? bill.getTotalMoney() : BigDecimal.ZERO;
+            BigDecimal moneyShip = bill.getMoneyShip() != null ? bill.getMoneyShip() : BigDecimal.ZERO;
+            BigDecimal itemDiscount = bill.getItemDiscount() != null ? bill.getItemDiscount() : BigDecimal.ZERO;
+
+            BigDecimal afterPrice = totalMoney.add(moneyShip.subtract(itemDiscount));
+            voucherDetail.setAfterPrice(afterPrice);
+
+            voucherDetailRepository.save(voucherDetail);
+            System.out.println("Đã cập nhật VoucherDetail id: " + voucherDetail.getId());
+        } else {
+            System.out.println("VoucherDetail không tồn tại với Bill ID: " + id + ", vui lòng kiểm tra dữ liệu.");
+        }
+
         return bill;
     }
 

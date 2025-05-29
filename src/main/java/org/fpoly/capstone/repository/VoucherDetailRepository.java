@@ -39,4 +39,7 @@ public interface VoucherDetailRepository extends JpaRepository<VoucherDetail, Lo
             """, nativeQuery = true)
     List<Object[]> findPriceForBillCodeCustomer(@Param("code") String code);
 
+    Optional<VoucherDetail> findByBill_Id(Long id);
+
+
 }

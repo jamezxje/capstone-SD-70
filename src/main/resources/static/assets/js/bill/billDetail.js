@@ -104,6 +104,7 @@ function showToast(message) {
         }, 500); // chờ hiệu ứng mờ xong mới ẩn
     }, 3000); // hiện trong 3s
 }
+
 document.getElementById('btn-changeInfor').addEventListener('click', function () {
     // Lấy các giá trị từ input/select
     const customerName = document.getElementById("customerNameModal").value.trim();
@@ -117,8 +118,8 @@ document.getElementById('btn-changeInfor').addEventListener('click', function ()
     const phoneRegex = /^0\d{9}$/;
 
     if (customerName === "") {
-    showToast("Tên khách hàng không được để trống.");
-    return;
+        showToast("Tên khách hàng không được để trống.");
+        return;
     }
 
     const nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/;
@@ -129,37 +130,36 @@ document.getElementById('btn-changeInfor').addEventListener('click', function ()
     }
 
     if (!phoneRegex.test(phoneNumber)) {
-    showToast("Số điện thoại không hợp lệ (phải có 10 chữ số và bắt đầu bằng 0).");
-    return;
+        showToast("Số điện thoại không hợp lệ (phải có 10 chữ số và bắt đầu bằng 0).");
+        return;
     }
 
     if (city === "") {
-    showToast("Vui lòng chọn thành phố.");
-    return;
+        showToast("Vui lòng chọn thành phố.");
+        return;
     }
 
     if (district === "") {
-    showToast("Vui lòng chọn huyện.");
-    return;
+        showToast("Vui lòng chọn huyện.");
+        return;
     }
 
     if (ward === "") {
-    showToast("Vui lòng chọn xã.");
-    return;
+        showToast("Vui lòng chọn xã.");
+        return;
     }
 
     if (detailAddress === "") {
-    showToast("Vui lòng nhập địa chỉ chi tiết.");
-    return;
+        showToast("Vui lòng nhập địa chỉ chi tiết.");
+        return;
     }
 
     updateInforBill(billId);
     const modal = document.getElementById("changeAddressModal");
     modal.style.display = "none";
-    location.reload();
+
     showSuccessToast("Thay đổi thông tin khách hàng thành công.");
 });
-
 
 
 function changeStatus() {
@@ -181,7 +181,7 @@ function changeStatus() {
             console.error("Error changing status", error);
             if (error.response && error.response.data) {
                 const errorMessage = error.response.data.message || "Đã có lỗi xảy ra!";
-                console.log('Check error' , errorMessage)
+                console.log('Check error', errorMessage)
                 // alert(`Lỗi: ${errorMessage}`);
                 showToast(errorMessage)
                 // toastr.options.positionClass = 'toast-top-right'
@@ -790,7 +790,7 @@ function updateInforBill(billId) {
     axios.post(`/updateCustomer-bill/${billId}`, request)
         .then(response => {
             console.log("update thanh cong", response.data);
-
+window.location.reload();
             getInforBill(billId)
         })
         .catch(error => {
@@ -841,7 +841,7 @@ function getTotalPayMentCustomer(billCode) {
                 console.log("Tổng thanh toán:", billInfo.afterPrice);
                 const afterPrice = billInfo.afterPrice;
                 const moneyShip = billInfo.moneyShip;
-                const totalCustomerPayMent = afterPrice ;
+                const totalCustomerPayMent = afterPrice;
                 customerPaymentBill = totalCustomerPayMent;
                 console.log('Check customerPayMentBill', customerPaymentBill)
                 // Gán vào HTML nếu muốn
