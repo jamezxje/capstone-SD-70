@@ -18,13 +18,6 @@ const confirmationReason = document.getElementById("confirmationReason");
 const cancelReason = document.getElementById("cancelmationReason");
 const cancelButton = document.getElementById("cancelButton");
 
-// const customerNameInfor = document.getElementById("customerNameModal");
-// const phoneNumberInfor = document.getElementById("phoneNumberModal");
-// const citySelectInfor = document.getElementById("citySelectModal");
-// const districtSelectInfor = document.getElementById("districtSelectModal");
-// const wardSelectInfor = document.getElementById("wardSelectModal");
-// const detailAddressInfor = document.getElementById("detailAddressModal");
-
 let actionDescription = null;
 
 btn.onclick = function () {
