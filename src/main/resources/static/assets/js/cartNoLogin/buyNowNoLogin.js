@@ -352,6 +352,11 @@ document.getElementById('cod-btn').addEventListener('click', function (event) {
         cancelButtonText: 'Hủy'
     }).then((result) => {
         if (result.isConfirmed) {
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'flex';
+            setTimeout(() => {
+                spinner.style.display = 'none';
+            }, 3000);
             const userName = document.getElementById('nameCustomer').value;
             const phoneNumber = document.getElementById('numberPhoneCustomer').value;
             const email = document.getElementById('emailCustomer').value;
