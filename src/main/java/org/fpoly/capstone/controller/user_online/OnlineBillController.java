@@ -153,6 +153,8 @@ public class OnlineBillController {
 
     @GetMapping("/vnpay-payment-return")
     public String paymentCompleted(HttpServletRequest request, Model model) {
+        User loggedUser = this.userService.getUserFromContext();
+        model.addAttribute("loggedUser", loggedUser);
         // Kiểm tra trạng thái thanh toán từ VNPAY
         int paymentStatus = this.vnPayService.orderReturn(request);
 
