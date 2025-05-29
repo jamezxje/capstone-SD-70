@@ -292,7 +292,7 @@ public class OnlineBillController {
 
                     log.info("Bill saved successfully after VNPAY payment.");
 
-                    return "redirect:/";
+                    return "/views/user-online-view/vn-pay/PayMentVNPAYSuccess";
                 } catch (Exception e) {
                     log.error("Failed to save bill after VNPAY payment", e);
                     return "/views/user-online-view/vn-pay/orderFail";
