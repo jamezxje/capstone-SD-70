@@ -193,7 +193,7 @@
                           style="display: none; gap: 12px; border-color: #28a745;">
                     </span>
                   </div>
-                
+
                 </div>
                 <br>
                 <div class="table-responsive-sm order-table">
@@ -766,23 +766,21 @@
       //   grandTotal: grandTotal,
       //   paymentMethod: paymentMethod
       // };
-      const receiveDate = formatDate($('#confirm-day').text());
-      const moneyShip = $('#shipFee').val();
       const itemDiscount = parseCurrency($('#voucherDiscount').text());
       const beforePrice = getBeforePriceTotal();
       const voucherId = $('#selectedVoucherId').val();
-      const grandTotal = $('#totalPriceWithShipping').text();
+      const receiveDate = formatDate($('#confirm-day').text());
+      const moneyShip = $('#shipFee').val();
+
+      const grandTotal = parseCurrency($('#totalPriceWithShipping').text());
       console.log("grand total: ", grandTotal)
       console.log("formatted grand total: ", formatCurrency(grandTotal)); // Check if it's correctly formatted
-      
-      const formatedGrandTotal = formatCurrency(grandTotal);
-      
-      // const address = $('#customer-address').find(":selected").val();
+
       const selectedOption = $('#customer-address').find(":selected");
       const fullName = selectedOption.data('fullname');
       const phoneNumber = selectedOption.data('phone');
       const address = selectedOption.val();
-      
+
       const requestBody = {
         receiveDate: receiveDate,
         itemDiscount: itemDiscount,
@@ -794,34 +792,35 @@
         address: address,
         // address: $('#customer-address').find(":selected").text(),
         note: $('#orderNote').val(),
-        grandTotal: formatCurrency(grandTotal),
+        grandTotal: parseCurrency(grandTotal),
         paymentMethod: paymentMethod
       };
-      
+
       console.log("Create bill online request body: ", JSON.stringify(requestBody))
-      
+
       // Kiểm tra nếu phương thức thanh toán là "chuyen_khoan"
       if (paymentMethod === 'CHUYEN_KHOAN') {
-        // const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}, data_buyType: addToCart, data_address: ${address}`;
+        // const orderInfo = `data_grandTotal: ${grandTotal}, data_receiveDate: ${receiveDate}, data_shipFee: ${moneyShip}, data_buyType: buyNow, data_address: ${address}`;
         const orderInfo =
-            `data_grandTotal: ${grandTotal}, ` +
-            `data_receiveDate: ${receiveDate}, ` +
-            `data_shipFee: ${moneyShip}, ` +
-            `data_buyType: addToCart, ` +
-            `data_itemDiscount: ${itemDiscount}, ` +
-            `data_beforePrice: ${beforePrice}, ` +
-            `data_voucherId: ${voucherId}, ` +
-            `data_address: ${address}`;
+                `data_grandTotal: ${grandTotal}, ` +
+                `data_receiveDate: ${receiveDate}, ` +
+                `data_shipFee: ${moneyShip}, ` +
+                `data_buyType: addToCart, ` +
+                `data_itemDiscount: ${itemDiscount}, ` +
+                `data_beforePrice: ${beforePrice}, ` +
+                `data_voucherId: ${voucherId}, `+
+                `data_address: ${address}`;
         // Gọi API "online-payment"
         $.ajax({
           url: '/bill/online-payment',
           type: 'POST', // GET vì phương thức của bạn là @GetMapping
           data: {
-            amount: formatedGrandTotal, // Truyền tổng tiền đã định dạng
+            amount: formatCurrency(grandTotal), // Truyền tổng tiền đã định dạng
             orderInfo: orderInfo // Truyền thông tin đơn hàng
           }, // Truyền grandTotal dưới dạng tham số query
           success: function (paymentUrl) {
             console.log("payment url khi thành coong: ", paymentUrl);
+            console.log("order info: ", orderInfo)
             // Nếu gọi API thành công và trả về URL, chuyển hướng người dùng
             window.location.href = paymentUrl; // Chuyển hướng người dùng tới URL thanh toán
           },
