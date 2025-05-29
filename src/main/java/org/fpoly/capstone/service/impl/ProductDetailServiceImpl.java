@@ -95,15 +95,6 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         BigDecimal price = request.getPrice();
         BigDecimal multiplier = new BigDecimal(1000);
 
-        // Kiểm tra số lượng
-        if (request.getQuantity() < 0) {
-            throw new IllegalArgumentException("Số lượng không thể nhỏ hơn 0");
-        } else if (request.getQuantity() == 0) {
-            productDetail.setStatus(ProductVariantStatus.HET_SAN_PHAM); // Giả sử ProductStatus có giá trị HET_SAN_PHAM
-            productDetail.setQuantity(0);
-        } else {
-            productDetail.setQuantity(request.getQuantity());
-        }
 
         productDetail.setProduct(product);
         productDetail.setBrand(brand);
@@ -155,6 +146,16 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         this.setCommonProductDetailProperties(existingProductDetail, request);
 
         existingProductDetail.setStatus(request.getStatus());
+
+        // Kiểm tra số lượng
+        if (request.getQuantity() < 0) {
+            throw new IllegalArgumentException("Số lượng không thể nhỏ hơn 0");
+        } else if (request.getQuantity() == 0) {
+            existingProductDetail.setStatus(ProductVariantStatus.HET_SAN_PHAM); // Giả sử ProductStatus có giá trị HET_SAN_PHAM
+            existingProductDetail.setQuantity(0);
+        } else {
+            existingProductDetail.setQuantity(request.getQuantity());
+        }
 
         this.handleImageUpload(existingProductDetail, request.getFeatureImage(), request.getImages());
 

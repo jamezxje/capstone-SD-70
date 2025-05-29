@@ -122,7 +122,13 @@
                         <option value="" selected>Chọn giới tính</option>
                         <option
                             th:each="gender : ${T(org.fpoly.capstone.entity.enum_status.Gender).values()}"
-                            th:value="${gender}" th:text="${gender}">
+                            th:value="${gender}">
+                           <span
+                               th:if="${gender == T(org.fpoly.capstone.entity.enum_status.Gender).Male}">Nam</span>
+                          <span
+                              th:if="${gender == T(org.fpoly.capstone.entity.enum_status.Gender).Female}">Nữ</span>
+                          <span
+                              th:if="${gender == T(org.fpoly.capstone.entity.enum_status.Gender).Unisex}">Phi giới tính</span>
                         </option>
                       </select>
                     </div>
