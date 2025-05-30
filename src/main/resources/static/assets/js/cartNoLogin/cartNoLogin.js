@@ -297,32 +297,59 @@ document.getElementById('btnCancelVoucher').addEventListener('click' , function 
     modal.hide();
     showToast('Hủy voucher thành công')
 })
-document.getElementById('cart_checkout_button').addEventListener('click', function () {
+
+async function checkQtyOnly(item) {
+    try {
+        const response = await axios.get(`/getQuantityProductDetail/${item.idProductLocal}`);
+        const availableQuantity = response.data.quantity;
+
+        if (item.quantity > availableQuantity) {
+            showToastError(`Sản phẩm vượt quá số lượng trong kho!`);
+            return false;
+        }
+
+        if (item.quantity <= 0) {
+            showToastError(`Sản phẩm có số lượng không hợp lệ!`);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Lỗi kiểm tra số lượng:', error);
+        alert('Không thể kiểm tra số lượng sản phẩm. Vui lòng thử lại sau.');
+        return false;
+    }
+}
+
+
+document.getElementById('cart_checkout_button').addEventListener('click', async function () {
     const selectedProducts = [];
     const checkboxes = document.querySelectorAll('input[name="selectedCartDetailIds"]:checked');
     const cart = JSON.parse(localStorage.getItem('noLoginCart')) || [];
 
-    checkboxes.forEach(checkbox => {
+    for (const checkbox of checkboxes) {
         const index = checkbox.getAttribute('data-index');
         const item = cart[index];
         if (item) {
+            const isValid = await checkQtyOnly(item);
+            if (!isValid) {
+                return;
+            }
             selectedProducts.push(item);
         }
-    });
+    }
 
     if (selectedProducts.length > 0) {
         localStorage.setItem('selectedProductsForCheckout', JSON.stringify(selectedProducts));
         if (!voucherValueLocal || voucherValueLocal === "0") {
             localStorage.setItem('checkUseVoucher', true);
         }
-
+        window.location.href = '/buyNow-NoLogin';
     } else {
-        showToastError('Vui lòng chọn  sản phẩm để thanh toán.' , 'error');
-        return;
+        showToastError('Vui lòng chọn sản phẩm để thanh toán.', 'error');
     }
-
-    window.location.href = '/buyNow-NoLogin';
 });
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const checkAll = document.getElementById('checkAll');

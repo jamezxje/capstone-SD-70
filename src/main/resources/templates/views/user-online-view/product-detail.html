@@ -1394,7 +1394,10 @@
         localStorage.setItem('cartUpdated', Date.now());
         showToast('Sản phẩm đã được thêm vào giỏ hàng!');
         updateCartQuantity();
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+
       });
     });
   </script>
