@@ -618,7 +618,7 @@ public class BillServiceImpl implements BillService {
         User customer = cart.getUser();
         bill.setUser(customer);
         bill.setType(BillType.ONLINE);
-        bill.setStatus(BillStatus.DA_THANH_TOAN);
+        bill.setStatus(BillStatus.XAC_NHAN);
         bill.setCode(GeneralStringCode.generateCodeAdmin());
         bill.setEmail(customer.getEmail());
 
@@ -1131,7 +1131,7 @@ public class BillServiceImpl implements BillService {
         lastestBill.setTotalMoney(beforePrice);
         lastestBill.setMoneyShip(moneyShip);
 //        lastestBill.setReceiveDate(receiveDate);
-        lastestBill.setStatus(BillStatus.DA_THANH_TOAN);
+        lastestBill.setStatus(BillStatus.XAC_NHAN);
         lastestBill.setShipDate(receiveDate);
         lastestBill.setAddress(address);
         lastestBill.setUserName(fullName);
