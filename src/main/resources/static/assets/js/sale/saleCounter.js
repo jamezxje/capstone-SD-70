@@ -1698,6 +1698,7 @@ function fetchAllAddressCustomer(idCustomer) {
         });
 }
 
+
 let idDistrictChose = null, idWardCodeChose = null;
 let fullAddressChose = null;
 let checkChoseAddress = null;
